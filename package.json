@@ -8,9 +8,9 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start-react": "cd app/popup && react-scripts start && cd ../../",
+    "build-react": "cd app/popup && react-scripts build && cd ../../",
+    "test-react": "cd app/popup && react-scripts test --env=jsdom && cd ../../",
+    "eject-react": "cd app/popup && react-scripts eject && cd ../../"
   }
 }

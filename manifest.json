@@ -6,7 +6,7 @@
     "author": "https://github.com/TronWatch",
     "background": {
         "scripts": [
-            "./scripts/backgroundScript.js"
+            "app/backgroundScript.js"
         ],
         "persistent": true
     },
@@ -18,7 +18,7 @@
                 "https://*/*"
             ],
             "js": [
-                "./scripts/contentScript.js"
+                "app/contentScript.js"
             ],
             "run_at": "document_start",
             "all_frames": true
@@ -39,10 +39,10 @@
         ]
     },
     "web_accessible_resources": [
-        "scripts/pageHook.js"
+        "app/pageHook.js"
     ],
     "browser_action": {
-        "default_popup": "index.html",
+        "default_popup": "app/popup/build/index.html",
         "default_title": "Tron Chrome"
     }
 }
