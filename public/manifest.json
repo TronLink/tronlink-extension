@@ -39,7 +39,7 @@
         ]
     },
     "web_accessible_resources": [
-        "./scripts/pagehook.js"
+        "scripts/pageHook.js"
     ],
     "browser_action": {
         "default_popup": "index.html",

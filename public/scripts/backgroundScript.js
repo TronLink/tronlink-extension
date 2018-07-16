@@ -1,6 +1,11 @@
-console.log('Loaded background script');
+let port = false;
 
-chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
-    if(req.message == 'ping')
-        sendRes({ message: 'pong' })
+const messageListener = message => {
+    port.postMessage('Returning message ' + message);
+}
+
+chrome.runtime.onConnect.addListener(messagePort => {
+    port = messagePort;
+    port.postMessage('Connection established');
+    port.onMessage.addListener(messageListener);
 });
