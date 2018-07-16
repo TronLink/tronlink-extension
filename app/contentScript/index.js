@@ -1,3 +1,5 @@
+import Communication, { CommunicationChannel } from 'lib/communication/index.js';
+
 const port = chrome.runtime.connect({ name: 'tronContentScript' });
 
 port.onMessage.addListener(message => {
@@ -28,7 +30,7 @@ document.addEventListener('DOMContentLoaded', event => {
     const script = document.createElement('script');
 
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', chrome.extension.getURL('scripts/pageHook.js'));
+    script.setAttribute('src', chrome.extension.getURL('dist/pageHook.js'));
 
     node.appendChild(script);
 });

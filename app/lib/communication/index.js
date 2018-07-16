@@ -1,9 +1,9 @@
-const CommunicationChannel = {
+export const CommunicationChannel = {
     PORT: Symbol('PORT'),
     EVENT_LISTENER: Symbol('EVENT_LISTENER')
 }
 
-class Communication {
+export default class Communication {
     constructor(communicationChannel = false, channelKey = false) {
         if(!communicationChannel)
             throw 'No communication channel provided';
@@ -63,8 +63,3 @@ class Communication {
             this._sendEventListener(channel, action, data);
     }
 }
-
-module.exports = {
-    Communication,
-    CommunicationChannel
-};

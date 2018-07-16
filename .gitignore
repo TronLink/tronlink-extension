@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+/app/popup/node_modules
+/app/popup/build
 
 # testing
 /coverage
@@ -19,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Extension
+/key.pem
+/chrome-extension.zip
