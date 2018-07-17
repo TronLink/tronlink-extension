@@ -1,11 +1,16 @@
-let port = false;
+import Communication, { CommunicationChannel } from 'lib/communication/index.js';
 
-const messageListener = message => {
-    port.postMessage('Returning message ' + message);
-}
+console.log('Background script loaded');
 
-chrome.runtime.onConnect.addListener(messagePort => {
-    port = messagePort;
-    port.postMessage('Connection established');
-    port.onMessage.addListener(messageListener);
-});
+/*const portCommunication = new Communication(CommunicationChannel.PORT, 'tronBackgroundScript');
+
+portCommunication.on('test', data => {
+    console.log('received port with data', data);
+
+    portCommunication.send('test', { from: 'backgroundScript 1' });
+    portCommunication.send('test', { from: 'backgroundScript 2' });
+
+    setTimeout(() => {
+        portCommunication.send('test', { from: 'backgroundScript 3' });
+    }, 3000);
+});*/

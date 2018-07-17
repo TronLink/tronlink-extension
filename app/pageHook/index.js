@@ -1,8 +1,11 @@
-console.log('Loaded page hook');
+import Communication, { CommunicationChannel } from 'lib/communication/index.js';
 
-window.addEventListener('tronPageHook', ({ detail: message }) => {
-    console.log('pageHook received message', message);
+console.log('Page hook loaded');
+
+/*const eventCommunication = new Communication(CommunicationChannel.EVENT_LISTENER, 'tronPageHook');
+
+eventCommunication.on('test', data => {
+    console.log('received event with data', data);
 });
 
-// detail is a required key, it is the payload you want to send with the event
-window.dispatchEvent(new CustomEvent('tronContentScript', { detail: 'test message' }));
+eventCommunication.send('test', { from: 'pageHook' }, 'tronContentScript');*/

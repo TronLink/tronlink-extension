@@ -8,6 +8,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "bestzip": "^1.1.4",
+    "eventemitter3": "^3.1.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-scripts": "1.1.4",
@@ -21,6 +22,6 @@
     "test-react": "cd app/popup && npm run test && cd ../../",
     "eject-react": "cd app/popup && npm run eject && cd ../../",
     "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
-    "zip": "bestzip chrome-extension.zip dist key.pem manifest.json"
+    "zip": "bestzip chrome-extension.zip dist key.pem manifest.json app/popup"
   }
 }

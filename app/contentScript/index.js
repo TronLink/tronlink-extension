@@ -1,30 +1,24 @@
 import Communication, { CommunicationChannel } from 'lib/communication/index.js';
 
-const port = chrome.runtime.connect({ name: 'tronContentScript' });
+console.log('Content script loaded');
 
-port.onMessage.addListener(message => {
-    console.log('contentScript received message', message);
+/*const portCommunication = new Communication(CommunicationChannel.PORT, 'tronContentScript');
+const eventCommunication = new Communication(CommunicationChannel.EVENT_LISTENER, 'tronContentScript');
+
+portCommunication.on('test', data => {
+    console.log('received port with data', data);
 });
 
-console.log('contentScript sending message ping');
-port.postMessage('ping');
-
-// Listen to messages from pageHook.js
-window.addEventListener('tronContentScript', ({ detail: message }) => {
-    // We should add a target param to the message
-    // so we know when to forward to backgroundScript.js
-
-    // forward with port.postMessage('ping')
-    // reply with window.dispatchEvent (we should make 
-    // this a wrapper that calls back with a reply method)
-
-    console.log('contentScript receive message (from pageHook):', message);
-    window.dispatchEvent(new CustomEvent('tronPageHook', { detail: 'Returning message ' + message }));
+eventCommunication.on('test', data => {
+    console.log('received event with data', data);
 });
+
+portCommunication.send('test', { from: 'contentScript' });
+eventCommunication.send('test', { from: 'contentScript' }, 'tronPageHook');*/
 
 // Inject pageHook.js into page
 document.addEventListener('DOMContentLoaded', event => {
-    console.log('DOM loaded, injecting pageHook.js');
+    // console.log('DOM loaded, injecting pageHook.js');
 
     const node = document.getElementsByTagName('body')[0];
     const script = document.createElement('script');
