@@ -1,0 +1,30 @@
+.app {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    cursor: default;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.button {
+    height: 45px;
+    width: 140px;
+    border-radius: 10px;
+    background: linear-gradient(to right, #DC2C73, #ED3F21);
+    line-height: 45px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    margin: 0px 10px;
+    cursor: pointer;
+}
