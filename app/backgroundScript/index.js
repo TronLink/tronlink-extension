@@ -1,6 +1,16 @@
-import Communication, { CommunicationChannel } from 'lib/communication/index.js';
+import PortHost from 'lib/communication/PortHost';
 
 console.log('Background script loaded');
+
+const contentChannel = new PortHost();
+
+contentChannel.on('test', ({ tabID, data }) => {
+    console.log('received event with data', data, 'from', tabID);
+
+    contentChannel.send(tabID, 'test', { from: 'backgroundScript' });
+});
+
+
 
 /*const portCommunication = new Communication(CommunicationChannel.PORT, 'tronBackgroundScript');
 

@@ -1,11 +1,11 @@
-import Communication, { CommunicationChannel } from 'lib/communication/index.js';
+import EventDispatcher from 'lib/communication/EventDispatcher.js';
 
 console.log('Page hook loaded');
 
-/*const eventCommunication = new Communication(CommunicationChannel.EVENT_LISTENER, 'tronPageHook');
+const communicationChannel = new EventDispatcher('tronPageHook');
 
-eventCommunication.on('test', data => {
+communicationChannel.on('test', data => {
     console.log('received event with data', data);
 });
 
-eventCommunication.send('test', { from: 'pageHook' }, 'tronContentScript');*/
+communicationChannel.send('tronContentScript', 'test', { from: 'pageHook' });

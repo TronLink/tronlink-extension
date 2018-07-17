@@ -1,16 +1,11 @@
 import EventEmitter from 'eventemitter3';
 
 export default class PortHost extends EventEmitter {
-    constructor(channelKey = false) {
+    constructor() {
         super();
-
-        if(!channelKey)
-            throw 'No communication channel provided';
 
         // Emit tab ID for port key?
         this._ports = {};
-        this._channelKey = channelKey;
-
         this._registerListeners();
     }
 
@@ -23,7 +18,7 @@ export default class PortHost extends EventEmitter {
 
             port.onMessage.addListener(({ action, data }) => {
                 console.log('Received port event', { action, data, tabID });
-                this.emit(tabID, action, data);
+                this.emit(action, { tabID, data });
             });
 
             port.onDisconnect.addListener(() => {
@@ -38,8 +33,6 @@ export default class PortHost extends EventEmitter {
 
         console.log('Sending port event', { tabID, action, data });
 
-        if(!this._portConnected)
-            this._connectPort();
 
         if(!this._ports.hasOwnProperty(tabID))
             return false;

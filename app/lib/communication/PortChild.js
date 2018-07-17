@@ -19,6 +19,7 @@ export default class PortChild extends EventEmitter {
 
         this._port.onMessage.addListener(({ action, data }) => {
             console.log('Received port event', { action, data });
+            this.emit(action, data);
         });
 
         this._port.onDisconnect.addListener(port => {
