@@ -4,40 +4,35 @@ export default class PortHost extends EventEmitter {
     constructor() {
         super();
 
-        // Emit tab ID for port key?
         this._ports = {};
         this._registerListeners();
     }
 
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
-            const tabID = Date.now(); // Temporary, wait for incoming tabID first
+            const source = `${port.name}-${port.sender.tab.id}`;
 
-            this._ports[tabID] = port;
-            console.log('Incoming port connected');
+            this._ports[source] = port;
+            console.log(`Port ${source} connected`);
 
-            port.onMessage.addListener(({ action, data }) => {
-                console.log('Received port event', { action, data, tabID });
-                this.emit(action, { tabID, data });
+            port.onMessage.addListener(({ action, data }, sendingPort) => {
+                this.emit(action, { source, data });
             });
 
             port.onDisconnect.addListener(() => {
-                console.log('Port disconnected:', chrome.runtime.lastError);
-                delete this._ports[tabID];
+                console.log(`Port ${source} disconnected: ${chrome.runtime.lastError}`);
+                delete this._ports[source];
             });
         });
     }
     
-    send(tabID, action, data = {}) {
+    send(source, action, data = {}) {
         // Check if action is valid
 
-        console.log('Sending port event', { tabID, action, data });
-
-
-        if(!this._ports.hasOwnProperty(tabID))
+        if(!this._ports.hasOwnProperty(source))
             return false;
 
-        this._ports[tabID].postMessage({ action, data });
+        this._ports[source].postMessage({ action, data });
         return true;
     }
 

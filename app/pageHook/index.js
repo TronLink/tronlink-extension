@@ -2,10 +2,10 @@ import EventDispatcher from 'lib/communication/EventDispatcher.js';
 
 console.log('Page hook loaded');
 
-const communicationChannel = new EventDispatcher('tronPageHook');
+const contentScript = new EventDispatcher('pageHook', 'contentScript');
 
-communicationChannel.on('test', data => {
-    console.log('received event with data', data);
+contentScript.on('test', ({ data, source }) => {
+    console.log(`pageHook received ${JSON.stringify(data)} from ${source}`);
 });
 
-communicationChannel.send('tronContentScript', 'test', { from: 'pageHook' });
+contentScript.send('test', { time: Date.now() });

@@ -3,24 +3,23 @@ console.log('Content script loaded');
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import PortChild from 'lib/communication/PortChild';
 
-const pageHookChannel = new EventDispatcher('tronContentScript');
-const contentChannel = new PortChild('tronContentScript');
+const pageHook = new EventDispatcher('contentScript', 'pageHook');
+const backgroundScript = new PortChild('contentScript');
 
-pageHookChannel.on('test', data => {
-    console.log('received event with data', data);
-
-    pageHookChannel.send('tronPageHook', 'test', { from: 'contentScript' });
+pageHook.on('test', ({ data, source }) => {
+    console.log(`contentScript received ${JSON.stringify(data)} from ${source}`);
+    pageHook.send('test', { time: Date.now() });
 });
 
-contentChannel.on('test', data => {
-    console.log('received port event with data', data);
+backgroundScript.on('test', data => {
+    console.log(`contentScript port received ${JSON.stringify(data)}`);
 });
 
-contentChannel.send('test', { from:'contentScript' });
+backgroundScript.send('test', { time: Date.now() });
 
 // Inject pageHook.js into page
 document.addEventListener('DOMContentLoaded', event => {
-    // console.log('DOM loaded, injecting pageHook.js');
+    console.log('DOM loaded, injecting pageHook');
 
     const node = document.getElementsByTagName('body')[0];
     const script = document.createElement('script');

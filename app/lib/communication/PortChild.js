@@ -15,15 +15,12 @@ export default class PortChild extends EventEmitter {
     _connect() {
         this._port = chrome.runtime.connect({ name: this._channelKey });
 
-        console.log('Port connected');
-
         this._port.onMessage.addListener(({ action, data }) => {
-            console.log('Received port event', { action, data });
             this.emit(action, data);
         });
 
         this._port.onDisconnect.addListener(port => {
-            console.log('Port disconnected', chrome.runtime.lastError);
+            console.log(`Lost connection to backgroundScript ${chrome.runtime.lastError}`);
         });
     }
 
