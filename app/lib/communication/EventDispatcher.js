@@ -39,7 +39,7 @@ export default class EventDispatcher extends EventEmitter {
             )
         );
 
-        const response = { success: !success };
+        const response = { success };
 
         if(!success)
             response.error = 'At least one handler cancelled the event';
