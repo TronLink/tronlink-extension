@@ -26,24 +26,33 @@ export default class PortHost extends EventEmitter {
         });
     }
     
-    send(source, action, data = {}) {
-        // Check if action is valid
+    send(source = false, action = false, data = {}) {
+        if(!source)
+            return { success: false, error: 'Function requires source {string} parameter' };
+
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
 
         if(!this._ports.hasOwnProperty(source))
-            return false;
+            return { success: false, error: 'Specified port does not exist' };;
 
         this._ports[source].postMessage({ action, data });
-        return true;
+        return { success: true };
     }
 
-    broadcast(action, data = {}) {
-        // Check if action is valid
+    broadcast(action = false, data = {}) {
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
+
+        const portAmount = Object.keys(this._ports).length;
+
+        if(!portAmount)
+            return { success: false, error: 'No ports available to broadcast to' };
 
         Object.values(this._ports).forEach(port => {
             port.postMessage({ action, data });
         });
 
-        // How many ports were sent the message
-        return Object.keys(this._ports).length;
+        return { success: true, data: { portAmount } };
     }
 }
