@@ -1,0 +1,75 @@
+import randomUUID from 'uuid/v4';
+
+export default class LinkedRequest {
+    constructor(eventHandler = false, outputMap = false) {
+        if(!eventHandler)
+            throw 'No event handler specified';
+
+        if(outputMap && {}.toString.call(outputMap) !== '[object Function]')
+            throw 'Invalid output map passed. Expected type function';
+            
+        this._outputMap = outputMap;     
+        this._eventHandler = eventHandler;
+
+        this._pendingRequests = {};
+        this._defaultTimeout = 30;        
+        
+        this._registerListener();
+    }
+
+    _registerListener() {
+        this._eventHandler.on('tunnel', data => {
+            const responseSent = this._dataStream(data);
+
+            if(!responseSent)
+                return console.log(`Promise timed out for linked request ${data.uuid}`);
+        });
+    }
+
+    _dataStream(output) {        
+        if(this._outputMap)
+            output = this._outputMap(output);
+
+        const { 
+            uuid, 
+            data,
+            error,
+            success
+        } = output;
+
+        if(!this._pendingRequests.hasOwnProperty(uuid))
+            return false;
+
+        if(success)
+            this._pendingRequests[uuid].resolve(data);
+        else this._pendingRequests[uuid].reject(error);
+
+        clearTimeout(this._pendingRequests[uuid].timeout);
+        delete this._pendingRequests[uuid];
+
+        return true;
+    }
+
+    build(input = false, expiration = this._defaultTimeout) {
+        if(isNaN(expiration) || expiration !== parseInt(expiration))
+            throw 'Invalid expiration argument passed. Expected type integer';
+
+        const uuid = randomUUID();
+
+        this._eventHandler.send('tunnel', { 
+            data: input,
+            uuid
+        });
+
+        return new Promise((resolve, reject) => {
+            this._pendingRequests[uuid] = {
+                timeout: setTimeout(() => {
+                    reject('Request timed out');    
+                    delete this._pendingRequests[uuid];
+                }, expiration * 1000),
+                resolve,
+                reject
+            };
+        });
+    }
+}

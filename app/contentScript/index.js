@@ -6,16 +6,13 @@ import PortChild from 'lib/communication/PortChild';
 const pageHook = new EventDispatcher('contentScript', 'pageHook');
 const backgroundScript = new PortChild('contentScript');
 
-pageHook.on('test', ({ data, source }) => {
-    console.log(`contentScript received ${JSON.stringify(data)} from ${source}`);
-    pageHook.send('test', { time: Date.now() });
+pageHook.on('tunnel', ({ data, source }) => {
+    backgroundScript.send('tunnel', data);
 });
 
-backgroundScript.on('test', data => {
-    console.log(`contentScript port received ${JSON.stringify(data)}`);
+backgroundScript.on('tunnel', data => {
+    pageHook.send('tunnel', data);
 });
-
-backgroundScript.send('test', { time: Date.now() });
 
 // Inject pageHook.js into page
 document.addEventListener('DOMContentLoaded', event => {
