@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Header.css';
 
-import AccountView from './AccountView/AccountView.js';
+import AccountView from './AccountView';
 
 class Header extends Component {
     render() {

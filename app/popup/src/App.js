@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 
-import Header from './components/Header/Header.js';
-import MainContent from './components/MainContent/MainContent.js';
+import Welcome from './components/Welcome';
+import Main from './components/Main';
 
 class App extends Component {
     render() {
         return (
-            <div className="app">
-                <Header />
-                <MainContent />
-            </div>
+            <MemoryRouter className="app">
+                <Switch>
+                    <Route exact path="/" component={Welcome} />
+                    <Route path="/main" component={Main} />
+                </Switch>
+            </MemoryRouter>
         );
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Transaction.css';
 
-import { TopRightArrow, TokensIcon, SnowIcon, PencilIcon, VoteIcon } from "../../../../Icons";
+import { TopRightArrow, TokensIcon, SnowIcon, PencilIcon, VoteIcon } from "../../../../../Icons";
 
 class Transaction extends Component {
 

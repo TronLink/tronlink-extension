@@ -7,10 +7,9 @@
     width: 100%;
 }
 
-.logo {
+.welcomeLogo {
     height: 140px;
     width: 210px;
-    background: #ccc;
     margin-bottom: 60px;
 }
 
