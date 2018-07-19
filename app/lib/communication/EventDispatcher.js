@@ -24,9 +24,9 @@ export default class EventDispatcher extends EventEmitter {
 
     send(action = false, data = {}) {
         if(!action)
-            return { success: false, error: 'Function requires action {string} method' };
+            return { success: false, error: 'Function requires action {string} parameter' };
 
-        const success = window.dispatchEvent(
+        window.dispatchEvent(
             new CustomEvent(
                 this._target,
                 {
@@ -38,12 +38,5 @@ export default class EventDispatcher extends EventEmitter {
                 }
             )
         );
-
-        const response = { success };
-
-        if(!success)
-            response.error = 'At least one handler cancelled the event';
-
-        return response;
     }
 }

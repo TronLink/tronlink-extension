@@ -1,21 +1,18 @@
 import PortHost from 'lib/communication/PortHost';
+import LinkedResponse from 'lib/messages/LinkedResponse';
 
 console.log('Background script loaded');
 
 const contentScript = new PortHost();
+const linkedResponse = new LinkedResponse(contentScript);
 
-// contentScript.on('test', ({ source, data }) => {
-//     console.log(`backgroundScript received ${JSON.stringify(data)} from ${source}`);
-// 
-//     contentScript.send(source, 'test', { time: Date.now() });
-// });
+linkedResponse.on('request', ({ request, resolve, reject }) => {
+    console.log({ request });
 
-// Sends reverse of current input for now
-contentScript.on('tunnel', ({ source, data: { uuid, data } }) => {
-    console.log(`backgroundScript received ${JSON.stringify(data)} tunneled from ${source}`);
-
-    contentScript.send(source, 'tunnel', {
-        uuid,
-        data: JSON.stringify(data).split('').reverse().join('')
-    });
+    resolve(
+        JSON.stringify(request)
+            .split('')
+            .reverse()
+            .join('')
+    );
 });
