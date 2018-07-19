@@ -9,8 +9,8 @@ const linkedRequest = new LinkedRequest(contentScript, ({ source, data }) => ({ 
 const beginTest = () => {
     const result = linkedRequest.build({ hello: 'world' }, 5);
 
-    result.then(data => {
-        console.log({ data });
+    result.then(response => {
+        console.log({ response });
     }).catch(error => {
         console.warn({ error });
     });

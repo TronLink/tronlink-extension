@@ -7,8 +7,6 @@ const contentScript = new PortHost();
 const linkedResponse = new LinkedResponse(contentScript);
 
 linkedResponse.on('request', ({ request, resolve, reject }) => {
-    console.log({ request });
-
     resolve(
         JSON.stringify(request)
             .split('')
