@@ -1,0 +1,86 @@
+.transaction {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    border-radius: 5px;
+    background: #fff;
+    margin-bottom: 5px;
+    box-shadow: 1px 1px 2px #d2d2d2;
+    font-weight: 500;
+}
+
+.transaction > svg {
+    margin: 0px 10px;
+}
+
+.iconFreeze {
+    fill: #00b2ff;
+}
+
+.iconToken {
+    fill: #ffdb00;
+}
+
+.iconReceived {
+    fill: #1fbe9a;
+    transform: rotate(180deg);
+}
+
+.iconSent {
+    fill: #ed3f23;
+}
+
+.red {
+    color: #ED3F23;
+}
+
+.green {
+    color: #1FBE9A;
+}
+
+.txInfoLeft {
+
+}
+
+.txLabel {
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+.txAddress {
+    font-size: 11px;
+}
+
+.txInfoRight {
+    flex-grow: 1;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.txAmount {
+    font-size: 12px;
+    margin-bottom: 4px;
+    font-family: 'Source Code Pro', monospace;
+}
+
+.txAmount > span {
+    margin-left: 5px;
+}
+
+.txDate {
+    font-size: 10px;
+}
+
+.copyButton {
+    height: 20px;
+    font-size: 10px;
+    color: #fff;
+    line-height: 20px;
+    text-align: center;
+    width: 45px;
+    border-radius: 10px;
+    background: linear-gradient(to right, #DC2C73, #ED3F21);
+    cursor: pointer;
+    margin-right: 10px;
+}

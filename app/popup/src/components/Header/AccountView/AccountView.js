@@ -38,8 +38,8 @@ class AccountView extends Component {
                 </div>
 
                 <div className="buttonContainer">
-                    <div className="button">Send</div>
-                    <div className="button">Buy</div>
+                    <div className="button btn">Send</div>
+                    <div className="button btn">Buy</div>
                 </div>
             </div>
         );

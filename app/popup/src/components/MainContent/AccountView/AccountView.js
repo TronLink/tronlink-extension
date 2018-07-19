@@ -8,11 +8,13 @@ class AccountView extends Component {
         return (
             <div className="accountView container">
                 <div className="tabContainer">
-                    <div className="tab active">SENT</div>
+                    <div className="tab active">Transactions</div>
                     <div className="tab">TOKENS</div>
                 </div>
 
-                <Transactions />
+                <div className="contentContainer">
+                    <Transactions />
+                </div>
             </div>
         );
     }

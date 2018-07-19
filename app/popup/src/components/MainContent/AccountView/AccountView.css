@@ -24,3 +24,13 @@
 .tab.active {
     background: #ebebeb;
 }
+
+.contentContainer {
+    display: flex;
+    background: #ebebeb;
+    margin-top: -5px;
+    border-radius: 5px;
+    flex: 1;
+    padding: 10px;
+    box-sizing: border-box;
+}
