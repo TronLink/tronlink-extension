@@ -14,3 +14,7 @@ body, #root {
     overflow: hidden;
     font-family: 'Roboto', sans-serif;
 }
+
+:focus {
+    outline: none;
+}
