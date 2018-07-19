@@ -3,6 +3,77 @@ import { NavLink } from 'react-router-dom';
 import './Welcome.css';
 
 class Welcome extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            password: '',
+            passwordRepeat: '',
+        };
+    }
+
+    handlePasswordChange = (e) => this.setState({ [e.target.name]: e.target.value });
+
+    createPasswordCheck() {
+        console.log(this.state.password, this.state.passwordRepeat);
+        let { password, passwordRepeat } = this.state;
+        if (password.length > 0) {
+            if (password === passwordRepeat) {
+                return ' ';
+            }
+            return 'Passwords do not match.';
+        }
+        return ' ';
+    }
+
+    renderInputs() {
+        // if account exists, decrypt, otherwise set password
+        if (false) {
+            return (
+                <div>
+                    <div className="decryptContainer">
+                        <input 
+                            placeholder="Enter Password to Decrypt Wallet..."
+                            className="textInput"
+                            type="password"
+                            value={this.state.password}
+                            onChange={this.handlePasswordChange}
+                        />
+                        <NavLink to="/main/transactions">
+                            <div className="loginBtn">Decrypt</div>
+                        </NavLink>
+                    </div>
+                    <div className="restoreWallet">Restore from seed phrase</div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="decryptContainer">
+                    <input 
+                        placeholder="Enter Password to Encrypt Extension..."
+                        className="textInput"
+                        type="password"
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handlePasswordChange}
+                    />
+                    <input 
+                        placeholder="Enter Password Again to Encrypt Extension..."
+                        className="textInput"
+                        type="password"
+                        name="passwordRepeat"
+                        value={this.state.passwordRepeat}
+                        onChange={this.handlePasswordChange}
+                    />
+                    <span>{ this.createPasswordCheck() }</span>
+                    <NavLink to="/import">
+                        <div className="loginBtn">Continue</div>
+                    </NavLink>
+                </div>
+            );
+        }
+    }
+
     render() {
         return (
             <div className="welcome">
@@ -27,17 +98,7 @@ class Welcome extends Component {
                         </g>
                     </g>
                 </svg>
-                <div className="decryptContainer">
-                    <input 
-                        placeholder="Enter Password to decrypt wallet..."
-                        className="textInput"
-                        type="password"
-                    />
-                    <NavLink to="/main/transactions">
-                        <div className="loginBtn">Login</div>
-                    </NavLink>
-                </div>
-                <div className="restoreWallet">Restore from seed phrase</div>
+                { this.renderInputs() }
             </div>
         );
     }

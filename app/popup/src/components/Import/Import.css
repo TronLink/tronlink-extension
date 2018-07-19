@@ -1,4 +1,4 @@
-.welcome {
+.import {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,21 +7,20 @@
     width: 100%;
 }
 
-.welcomeLogo {
-    height: 140px;
-    width: 210px;
-    margin-bottom: 50px;
+.importHeader {
+    font-weight: 600;
+    color: #b3b3b3;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
 }
 
-.decryptContainer {
-
-}
-
-.decryptContainer > span {
-    display: block;
-    height: 12px;
-    font-size: 12px;
-    color: #ef3636;
+.importText {
+    text-align: center;
+    font-size: 13px;
+    width: 320px;
+    margin-bottom: 30px;
+    line-height: 20px;
+    letter-spacing: 0.2px;
 }
 
 .textInput {

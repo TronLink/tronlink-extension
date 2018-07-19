@@ -86,7 +86,7 @@ class Transaction extends Component {
     }
 
     copyButton() {
-        if (true) {
+        if (false) {
             return <div className="copyButton btn">Copy</div>;
         }
     }
