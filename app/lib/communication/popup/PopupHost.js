@@ -1,4 +1,5 @@
 import EventEmitter from 'eventemitter3';
+import randomUUID from 'uuid/v4';
 
 export default class PopupHost extends EventEmitter {
     constructor(portChild = false) {
@@ -14,18 +15,9 @@ export default class PopupHost extends EventEmitter {
     }
 
     _registerListener() {
-        this._portHost.on('popupCommunication', ( { action, data: { uuid, data, expectsResponse } }) => {
-            console.log('popup received', { action, data });
-
-            if(action == 'internalResponse') {
-                const { 
-                    action, 
-                    success, 
-                    data 
-                } = data;
-
-                return this._handleResponse(uuid, success, data);
-            }
+        this._portChild.on('popupCommunication', ({ action, data: { uuid, data, expectsResponse } }) => {
+            if(action == 'internalResponse')
+                return this._handleResponse(uuid, data.success, data.data);
                 
             this._handleEvent(action, uuid, data, expectsResponse);
         });
@@ -36,10 +28,10 @@ export default class PopupHost extends EventEmitter {
             return;
 
         if(success)
-            this._pendingRequests.resolve(data);
-        else this._pendingRequests.reject(data);
+            this._pendingRequests[uuid].resolve(data);
+        else this._pendingRequests[uuid].reject(data);
 
-        clearTimeout(this._pendingRequests.timeout);
+        clearTimeout(this._pendingRequests[uuid].timeout);
         delete this._pendingRequests[uuid];
     }
 
@@ -49,19 +41,27 @@ export default class PopupHost extends EventEmitter {
 
         return this.emit(action, {
             resolve: data => {
-                this._portHost.send('popup', 'internalResponse', {
-                    success: true,
-                    action,                    
-                    data,
-                    uuid
+                this._portChild.send('popupCommunication', { 
+                    action: 'internalResponse', 
+                    data: {
+                        data: {
+                            success: true,
+                            data
+                        },
+                        uuid
+                    }
                 });
             },
             reject: data => {
-                this._portHost.send('popup', 'internalResponse', {
-                    success: false,
-                    action,                    
-                    data,
-                    uuid
+                this._portChild.send('popupCommunication', { 
+                    action: 'internalResponse', 
+                    data: {
+                        data: {
+                            success: false,
+                            data
+                        },
+                        uuid
+                    }
                 });
             },
             data
@@ -71,13 +71,17 @@ export default class PopupHost extends EventEmitter {
     raw(action = false, data = false, expectsResponse = true) {
         const uuid = randomUUID();
 
-        if(!expectsResponse) {
-            return this._portHost.send('popup', action, {
-                expectsResponse: false,
+        this._portChild.send('popupCommunication', {
+            action,
+            data: {
+                expectsResponse,
                 uuid,
                 data
-            });
-        }
+            }
+        });
+
+        if(!expectsResponse)
+            return;
 
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
@@ -92,10 +96,10 @@ export default class PopupHost extends EventEmitter {
     }
 
     requestFreeze(account = false, amount = false) {
-        // -> background
+        return this.raw('requestFreeze', { account, amount });
     }
 
     requestUnfreeze(account = false) {
-        // -> background
+        return this.raw('requestUnfreeze', { account });
     }
 }

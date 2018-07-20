@@ -16,17 +16,8 @@ export default class PopupClient extends EventEmitter {
 
     _registerListener() {
         this._portHost.on('popupCommunication', ({ source, data: { action, data: { uuid, data, expectsResponse } } }) => {
-            console.log('backgroundScript received', { source, action, data });
-
-            if(action == 'internalResponse') {
-                const { 
-                    action, 
-                    success, 
-                    data 
-                } = data;
-
-                return this._handleResponse(uuid, success, data);
-            }
+            if(action == 'internalResponse')
+                return this._handleResponse(uuid, data.success, data.data);
                 
             this._handleEvent(action, uuid, data, expectsResponse);
         });
@@ -37,32 +28,40 @@ export default class PopupClient extends EventEmitter {
             return;
 
         if(success)
-            this._pendingRequests.resolve(data);
-        else this._pendingRequests.reject(data);
+            this._pendingRequests[uuid].resolve(data);
+        else this._pendingRequests[uuid].reject(data);
 
-        clearTimeout(this._pendingRequests.timeout);
+        clearTimeout(this._pendingRequests[uuid].timeout);
         delete this._pendingRequests[uuid];
     }
 
     _handleEvent(action, uuid, data, expectsResponse) {
         if(!expectsResponse)
-            return this.emit(action, data);
+            return this.emit(action, data);        
 
         return this.emit(action, {
             resolve: data => {
-                this._portHost.send('popup', 'internalResponse', {
-                    success: true,
-                    action,                    
-                    data,
-                    uuid
+                this._portHost.send('popup', 'popupCommunication', { 
+                    action: 'internalResponse', 
+                    data: {
+                        data: {
+                            success: true,
+                            data
+                        },
+                        uuid
+                    }
                 });
             },
             reject: data => {
-                this._portHost.send('popup', 'internalResponse', {
-                    success: false,
-                    action,                    
-                    data,
-                    uuid
+                this._portHost.send('popup', 'popupCommunication', { 
+                    action: 'internalResponse', 
+                    data: {
+                        data: {
+                            success: false,
+                            data
+                        },
+                        uuid
+                    }
                 });
             },
             data
@@ -72,13 +71,17 @@ export default class PopupClient extends EventEmitter {
     raw(action = false, data = false, expectsResponse = true) {
         const uuid = randomUUID();
 
-        if(!expectsResponse) {
-            return this._portHost.send('popup', action, {
-                expectsResponse: false,
+        this._portHost.send('popup', 'popupCommunication', {
+            action,
+            data: {
+                expectsResponse,
                 uuid,
                 data
-            });
-        }
+            }
+        });
+
+        if(!expectsResponse)
+            return;
 
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
@@ -104,21 +107,3 @@ export default class PopupClient extends EventEmitter {
         return this.raw('requestVote', { to });
     }
 }
-
-// if possible two-way communication
-//
-// we'll expose a `raw` method that sends
-// data without formatting, it would be
-// raw(eventName, data)
-//
-// we'll also add custom methods such as:
-// - requestTronSend
-// - requestTokenSend
-// - requestVote
-//
-// and then whatever methods need to be
-// added for popup -> backgroundScript comms
-
-// nevermind this will be two seperate files
-// that wrap around PortHost for backgroundScript
-// and PortChild for popup
