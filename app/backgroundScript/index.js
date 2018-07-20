@@ -1,6 +1,11 @@
 import PortHost from 'lib/communication/PortHost';
 
+import tron from 'TronUtils';
+
+console.log(tron.accounts.generateRandomBip39());
+
 console.log('Background script loaded');
+
 
 const contentChannel = new PortHost();
 
