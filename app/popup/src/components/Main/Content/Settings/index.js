@@ -35,7 +35,7 @@ class Settings extends Component {
                 <div className="settingsContainer">
                     <div className="settingHeader">State logs contain your public account address and sent transaction :</div>
                     <div className="settingsbtn button gradient">Download State Logs</div>
-                    <div className="settingsbtn button white">Reveal Seed Words</div>
+                    <div className="settingsbtn button outline">Reveal Seed Words</div>
                 </div>
                 <div className="settingsContainer">
                     <div className="settingHeader">Resetting is for developer use only. <span>Read More</span></div>

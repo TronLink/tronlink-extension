@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import './AccountView.css';
 
 class AccountView extends Component {
@@ -12,7 +13,7 @@ class AccountView extends Component {
                 </div>
 
                 <div className="buttonContainer">
-                    <div className="accBtn button gradient">Send</div>
+                    <NavLink to="/main/confirm"><div className="accBtn button gradient">Send</div></NavLink>
                     <div className="accBtn button gradient">Buy</div>
                 </div>
             </div>
