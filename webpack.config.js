@@ -25,6 +25,9 @@ module.exports = function(env) {
                         presets: [ 
                             'es2015', 
                             'stage-3' 
+                        ],
+                        plugins: [
+                            'transform-runtime'
                         ]
                     }
                 },
@@ -40,6 +43,7 @@ module.exports = function(env) {
         plugins: [
             new webpack.optimize.ModuleConcatenationPlugin(),
             new webpack.DefinePlugin({
+                ENVIRONMENT: JSON.stringify(process.env.NODE_ENV || 'development'),
                 EXTENSION_ID: JSON.stringify('ibnejdfjmmkpcnlpebklmnkoeoihofec')
             })
         ]

@@ -21,8 +21,16 @@ document.addEventListener('DOMContentLoaded', event => {
     const node = document.getElementsByTagName('body')[0];
     const script = document.createElement('script');
 
+    const config = {
+        version: chrome.runtime.getManifest().version,
+        environment: ENVIRONMENT
+    };
+
+    const queryString = Object.keys(config).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(config[k])}`).join('&');
+
+    script.setAttribute('id', 'tronWatchAPI');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', chrome.extension.getURL('dist/pageHook.js'));
+    script.setAttribute('src', `${chrome.extension.getURL('dist/pageHook.js')}?${queryString}`);
 
     node.appendChild(script);
 });
