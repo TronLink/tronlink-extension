@@ -1,0 +1,73 @@
+.app {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    cursor: default;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.button {
+    height: 45px;
+    width: 100%;
+    border-radius: 10px;
+    line-height: 45px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 300ms;
+}
+
+.button.gradient {
+    background: linear-gradient(to right, #DC2C73, #ED3F21);
+    color: #fff;
+}
+
+.button.gradient:hover {
+    background: linear-gradient(90deg,#ff3888,#ff4a2b);
+    transition: 0ms;
+    box-shadow: inset 0 0 100px #ff9d9d;
+}
+
+.button.white {
+    background: #fff;
+    color: #000;
+    border: 2px solid #bfbfbf;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.button.white:hover {
+    background: transparent;
+    border: 2px solid #ef3636;
+    color: #333;
+    transition: 0ms;
+}
+
+.button.black {
+    color: #fff;
+    background: #000;
+}
+
+.button.black:hover {
+    background: #333;
+    transition: 0s;
+}
+
+.button.black:active {
+    background: #616161;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}

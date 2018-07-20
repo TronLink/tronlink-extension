@@ -1,0 +1,63 @@
+.header {
+    position: relative;
+    width: 100%;
+    cursor: default;
+}
+
+.navbarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    width: 100%;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.navbarIconLeft, .navbarIconRight {
+    cursor: pointer;
+    padding: 10px 15px;
+    width: 24px;
+    height: 24px;
+}
+
+.navbarIconLeft.disabled, .navbarIconRight.disabled {
+    cursor: default;
+}
+
+.navbarIconLeft svg, .navbarIconRight svg {
+    fill: #000;
+    width: 24px;
+    height: 24px;
+}
+
+.navbarHeader {
+    position: relative;
+    flex-grow: 1;
+    text-align: center;
+    font-weight: 500;
+}
+
+.navbarHeaderMain {
+    color: #000;
+    font-size: 12px;
+}
+
+.navbarHeaderSub {
+    color: #7B7B7B;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.navbarHeader > svg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 55px;
+    width: 55px;
+    margin: auto;
+    fill: #f1f1f1;
+    z-index: -1;
+}

@@ -1,0 +1,37 @@
+.mainContent .accountView {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.tabContainer {
+    display: flex;
+    justify-content: space-between;
+    min-height: 55px;
+}
+
+.tab {
+    height: 55px;
+    line-height: 55px;
+    flex-grow: 1;
+    background: #D8D8D8;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.tab.active  {
+    background: #ebebeb;
+}
+
+.contentContainer {
+    display: flex;
+    background: #ebebeb;
+    margin-top: -5px;
+    border-radius: 5px;
+    flex: 1;
+    padding: 10px;
+    box-sizing: border-box;
+}

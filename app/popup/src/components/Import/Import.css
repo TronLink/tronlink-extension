@@ -1,0 +1,80 @@
+.import {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.importHeader {
+    font-weight: 600;
+    color: #b3b3b3;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.importText {
+    text-align: center;
+    font-size: 13px;
+    width: 320px;
+    margin-bottom: 30px;
+    line-height: 20px;
+    letter-spacing: 0.2px;
+}
+
+.textInput {
+    display: block;
+    height: 32px;
+    width: 306px;
+    text-indent: 20px;
+    font-size: 12px;
+    padding: 0;
+    border-radius: 3px;
+    border: 2px solid #bfbfbf;
+    font-weight: 500;
+    margin: 10px 0px;
+}
+
+.textInput::placeholder {
+    color: #bfbfbf;
+}
+
+.textInput:focus {
+    border: 2px solid #ef3636;
+}
+
+.loginBtn {
+    height: 45px;
+    width: 310px;
+    font-size: 14px;
+    color: #fff;
+    background: #000;
+    text-align: center;
+    line-height: 45px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 250ms;
+}
+
+.loginBtn:hover {
+    background: #333;
+    transition: 0s;
+}
+
+.loginBtn:active {
+    background: #616161;
+}
+
+.restoreWallet {
+    font-size: 12px;
+    text-align: center;
+    text-decoration: underline;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.restoreWallet:hover {
+    color: #bfbfbf;
+}
