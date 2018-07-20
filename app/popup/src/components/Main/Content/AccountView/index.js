@@ -11,7 +11,7 @@ class AccountView extends Component {
             <div className="accountView container">
                 <div className="tabContainer">
                     <NavLink exact to="/main/transactions" className="tab" activeClassName="active">Transactions</NavLink>
-                    <NavLink exact to="/main/tokens" className="tab" activeClassName="active">TOKENS</NavLink>
+                    <NavLink exact to="/main/tokens" className="tab" activeClassName="active">Tokens</NavLink>
                 </div>
 
                 <div className="contentContainer">

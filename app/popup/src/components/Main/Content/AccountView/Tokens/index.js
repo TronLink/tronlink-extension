@@ -13,7 +13,7 @@ class Tokens extends Component {
     render() {
         return (
             <div className="tokens">
-                tokens
+                <div className="tokenPlaceholder">Token Support Coming Soon</div>
             </div>
         );
     }

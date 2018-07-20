@@ -9,6 +9,12 @@
     box-shadow: 1px 1px 2px #d2d2d2;
     font-weight: 500;
     cursor: default;
+    transition: 100ms;
+}
+
+.transaction:hover {
+    transform: translateX(2px);
+    transition: 0ms;
 }
 
 .transaction > svg {

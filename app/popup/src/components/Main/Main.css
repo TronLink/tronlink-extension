@@ -1,5 +1,6 @@
-.mainContent {
-    height: 380px;
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     width: 100%;
-    background: linear-gradient(to bottom, #d8d8d8, #efefef);
 }

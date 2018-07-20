@@ -40,7 +40,7 @@ class Welcome extends Component {
                             onChange={this.handlePasswordChange}
                         />
                         <NavLink to="/main/transactions">
-                            <div className="loginBtn">Decrypt</div>
+                            <div className="loginBtn button black">Decrypt</div>
                         </NavLink>
                     </div>
                     <div className="restoreWallet">Restore from seed phrase</div>
@@ -67,7 +67,7 @@ class Welcome extends Component {
                     />
                     <span>{ this.createPasswordCheck() }</span>
                     <NavLink to="/import">
-                        <div className="loginBtn">Continue</div>
+                        <div className="loginBtn button black">Continue</div>
                     </NavLink>
                 </div>
             );
