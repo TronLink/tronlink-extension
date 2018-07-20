@@ -4,51 +4,58 @@ export default class PortHost extends EventEmitter {
     constructor() {
         super();
 
-        // Emit tab ID for port key?
         this._ports = {};
         this._registerListeners();
     }
 
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
-            const tabID = Date.now(); // Temporary, wait for incoming tabID first
+            let source = port.name;
+        
+            if(port.sender.tab)
+                source += `-${port.sender.tab.id}`;
 
-            this._ports[tabID] = port;
-            console.log('Incoming port connected');
+            this._ports[source] = port;
+            console.log(`Port ${source} connected`);
 
-            port.onMessage.addListener(({ action, data }) => {
-                console.log('Received port event', { action, data, tabID });
-                this.emit(action, { tabID, data });
+            port.onMessage.addListener(({ action, data }, sendingPort) => {
+                this.emit(action, { source, data });
             });
 
             port.onDisconnect.addListener(() => {
-                console.log('Port disconnected:', chrome.runtime.lastError);
-                delete this._ports[tabID];
+                console.log(`Port ${source} disconnected: ${chrome.runtime.lastError}`);
+                delete this._ports[source];
             });
         });
     }
     
-    send(tabID, action, data = {}) {
-        // Check if action is valid
+    send(source = false, action = false, data = {}) {
+        if(!source)
+            return { success: false, error: 'Function requires source {string} parameter' };
 
-        console.log('Sending port event', { tabID, action, data });
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
 
+        if(!this._ports.hasOwnProperty(source))
+            return { success: false, error: 'Specified port does not exist' };;
 
-        if(!this._ports.hasOwnProperty(tabID))
-            return false;
-
-        this._ports[tabID].postMessage({ action, data });
-        return true;
+        this._ports[source].postMessage({ action, data });
+        return { success: true };
     }
 
-    broadcast(action, data = {}) {
-        // Check if action is valid
+    broadcast(action = false, data = {}) {
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
+
+        const portAmount = Object.keys(this._ports).length;
+
+        if(!portAmount)
+            return { success: false, error: 'No ports available to broadcast to' };
 
         Object.values(this._ports).forEach(port => {
             port.postMessage({ action, data });
         });
 
-        // How many ports were sent the message
-        return Object.keys(this._ports).length;
+        return { success: true, data: { portAmount } };
     }
 }
