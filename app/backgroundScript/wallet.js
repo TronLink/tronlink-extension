@@ -17,6 +17,7 @@ function decrypt(text, password) {
 }
 
 export default class Wallet {
+
   constructor(){
     this.loadStorage();
   }
@@ -42,7 +43,7 @@ export default class Wallet {
   }
 
   initWallet(pass = null){
-    if(this.storage.encrypted !== null)
+    if(this.storage.decrypted !== null)
       throw "Wallet cannot be initialized while another wallet already exists.";
     if(pass === null)
       throw "Wallet cannot be initialized without passing a password.";
@@ -61,6 +62,14 @@ export default class Wallet {
       console.log("error unlocking wallet");
       console.log(e);
       return false;
+    }
+  }
+
+  getAccount(){
+    if(this.storage.decrypted){
+      return TronUtils.accounts.accountFromPrivateKey(this.storage.decrypted.privateKey);
+    }else{
+      return null;
     }
   }
 }

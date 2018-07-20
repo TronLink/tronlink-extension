@@ -1,12 +1,14 @@
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
+import Wallet from './wallet';
 
 console.log('Background script loaded');
 
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
+const wallet = new Wallet();
 
 popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
     const { account } = data;
@@ -19,6 +21,31 @@ popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
     }).catch(err => {
         console.log('Vote confirmation rejected:', err);
     });
+});
+
+popup.on('initializeWallet', ({data, resolve, reject}) =>{
+    const {pass} = data;
+    wallet.initWallet(pass);
+    resolve();
+});
+
+popup.on('unlockWallet', ({data, resolve, reject}) =>{
+    const {pass} = data;
+    if(wallet.unlockWallet(pass)){
+        resolve();
+    }else {
+        reject();
+    }
+});
+
+popup.on('getAccount', ({data, resolve, reject}) =>{
+    const {pass} = data;
+
+    if(wallet.unlockWallet(pass)){
+        resolve();
+    }else {
+        reject();
+    }
 });
 
 const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
@@ -43,7 +70,11 @@ const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
         break;
         case 'getUserAccount':
             // Expects { address: string, balance: integer }
-            reject('Method pending implementation');
+            let account = wallet.getAccount();
+            if(account)
+                resolve(account);
+            else
+                reject("No account present.");
         break;
         case 'simulateSmartContract':
             // I'm not sure what the input / output will be here
