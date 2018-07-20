@@ -1,3 +1,4 @@
+/*global chrome*/
 import EventEmitter from 'eventemitter3';
 
 export default class PortChild extends EventEmitter {
@@ -9,27 +10,33 @@ export default class PortChild extends EventEmitter {
 
 
         this._channelKey = channelKey;
+        this._connected = false;
+
         this._connect();
     }
 
     _connect() {
         this._port = chrome.runtime.connect({ name: this._channelKey });
-
-        console.log('Port connected');
+        this._connected = true;
 
         this._port.onMessage.addListener(({ action, data }) => {
-            console.log('Received port event', { action, data });
             this.emit(action, data);
         });
 
         this._port.onDisconnect.addListener(port => {
-            console.log('Port disconnected', chrome.runtime.lastError);
+            console.log(`Lost connection to backgroundScript: ${chrome.runtime.lastError}`);
+            this._connected = false;
         });
     }
 
-    send(action, data = {}) {
-        // Check if connected
-        // Check if action is valid string
+    send(action = false, data = {}) {
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
+
+        if(!this._connected)
+            return { success: false, error: 'Connection to backgroundScript failed' };
+
         this._port.postMessage({ action, data });
+        return { success: true };
     }
 }

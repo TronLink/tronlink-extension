@@ -3,30 +3,34 @@ console.log('Content script loaded');
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import PortChild from 'lib/communication/PortChild';
 
-const pageHookChannel = new EventDispatcher('tronContentScript');
-const contentChannel = new PortChild('tronContentScript');
+const pageHook = new EventDispatcher('contentScript', 'pageHook');
+const backgroundScript = new PortChild('contentScript');
 
-pageHookChannel.on('test', data => {
-    console.log('received event with data', data);
-
-    pageHookChannel.send('tronPageHook', 'test', { from: 'contentScript' });
+pageHook.on('tunnel', ({ data, source }) => {
+    backgroundScript.send('tunnel', data);
 });
 
-contentChannel.on('test', data => {
-    console.log('received port event with data', data);
+backgroundScript.on('tunnel', data => {
+    pageHook.send('tunnel', data);
 });
-
-contentChannel.send('test', { from:'contentScript' });
 
 // Inject pageHook.js into page
 document.addEventListener('DOMContentLoaded', event => {
-    // console.log('DOM loaded, injecting pageHook.js');
+    console.log('DOM loaded, injecting pageHook');
 
     const node = document.getElementsByTagName('body')[0];
     const script = document.createElement('script');
 
+    const config = {
+        version: chrome.runtime.getManifest().version,
+        environment: ENVIRONMENT
+    };
+
+    const queryString = Object.keys(config).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(config[k])}`).join('&');
+
+    script.setAttribute('id', 'tronWatchAPI');
     script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', chrome.extension.getURL('dist/pageHook.js'));
+    script.setAttribute('src', `${chrome.extension.getURL('dist/pageHook.js')}?${queryString}`);
 
     node.appendChild(script);
 });

@@ -1,26 +1,61 @@
 import PortHost from 'lib/communication/PortHost';
+import PopupClient from 'lib/communication/popup/PopupClient';
+import LinkedResponse from 'lib/messages/LinkedResponse';
 
 console.log('Background script loaded');
 
-const contentChannel = new PortHost();
+const portHost = new PortHost();
+const popup = new PopupClient(portHost);
+const linkedResponse = new LinkedResponse(portHost);
 
-contentChannel.on('test', ({ tabID, data }) => {
-    console.log('received event with data', data, 'from', tabID);
+popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
+    const { account } = data;
 
-    contentChannel.send(tabID, 'test', { from: 'backgroundScript' });
+    console.log(`Requested unfreeze for account ${account}`);
+    resolve(50); // we unfroze 50 tokens    
+
+    popup.requestVote('your mother').then(({ amount, account }) => {
+        console.log(`Vote confirmation for your mother: ${amount} tron power from ${account}`);
+    }).catch(err => {
+        console.log('Vote confirmation rejected:', err);
+    });
 });
 
+const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
+    switch(method) {
+        case 'signTransaction':
+            // Expects { signedTransaction: string, broadcasted: bool, transactionID: string }
 
+            const { 
+                transaction,
+                broadcast
+            } = args;
+            
+            resolve({
+                signedTransaction: btoa(String(transaction)),
+                broadcasted: false,
+                transaction: false
+            });
+        break;
+        case 'getTransaction':
+            // Expects { transaction: obj }
+            reject('Method pending implementation');
+        break;
+        case 'getUserAccount':
+            // Expects { address: string, balance: integer }
+            reject('Method pending implementation');
+        break;
+        case 'simulateSmartContract':
+            // I'm not sure what the input / output will be here
+            reject('Method pending implementation');
+        default:
+            reject('Unknown method called');
+    }
+}
 
-/*const portCommunication = new Communication(CommunicationChannel.PORT, 'tronBackgroundScript');
+linkedResponse.on('request', ({ request, resolve, reject }) => {
+    if(request.method)
+        return handleWebCall({ request, resolve, reject });
 
-portCommunication.on('test', data => {
-    console.log('received port with data', data);
-
-    portCommunication.send('test', { from: 'backgroundScript 1' });
-    portCommunication.send('test', { from: 'backgroundScript 2' });
-
-    setTimeout(() => {
-        portCommunication.send('test', { from: 'backgroundScript 3' });
-    }, 3000);
-});*/
+    // other functionality here or w/e
+});

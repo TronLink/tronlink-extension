@@ -1,36 +1,39 @@
 import EventEmitter from 'eventemitter3';
 
 export default class EventDispatcher extends EventEmitter {
-    constructor(channelKey = false) {
+    constructor(channelKey = false, target = false) {
         super();
 
         if(!channelKey)
             throw 'No communication channel provided';
 
+        if(!target)
+            throw 'No communication target provided';
+
         this._channelKey = channelKey;
+        this._target = target;
+
         this._registerEventListener();
     }
 
     _registerEventListener() {
-        window.addEventListener(this._channelKey, ({ detail: { action, data } }) => {
-            console.log('Received event', { action, data });
-            this.emit(action, data);
+        window.addEventListener(this._channelKey, ({ detail: { action, data, source } }) => {
+            this.emit(action, { data, source });
         });
     }
 
-    send(channel, action, data = {}) {
-        // Check if channel is valid
-        // Check if action is valid
+    send(action = false, data = {}) {
+        if(!action)
+            return { success: false, error: 'Function requires action {string} parameter' };
 
-        console.log('Sending event', { channel, action, data });
-        
         window.dispatchEvent(
             new CustomEvent(
-                channel,
+                this._target,
                 {
                     detail: {
                         action,
-                        data
+                        data,
+                        source: this._channelKey
                     }
                 }
             )
