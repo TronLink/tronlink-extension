@@ -1,3 +1,4 @@
+/*global chrome*/
 import EventEmitter from 'eventemitter3';
 
 export default class PortHost extends EventEmitter {
