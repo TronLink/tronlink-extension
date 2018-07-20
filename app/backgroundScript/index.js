@@ -9,6 +9,8 @@ const linkedResponse = new LinkedResponse(contentScript);
 const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
     switch(method) {
         case 'signTransaction':
+            // Expects { signedTransaction: string, broadcasted: bool, transactionID: string }
+
             const { 
                 transaction,
                 broadcast
@@ -21,12 +23,15 @@ const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
             });
         break;
         case 'getTransaction':
+            // Expects { transaction: obj }
             reject('Method pending implementation');
         break;
         case 'getUserAccount':
+            // Expects { address: string, balance: integer }
             reject('Method pending implementation');
         break;
         case 'simulateSmartContract':
+            // I'm not sure what the input / output will be here
             reject('Method pending implementation');
         default:
             reject('Unknown method called');
