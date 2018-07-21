@@ -1,3 +1,4 @@
+/*global chrome*/
 import EventEmitter from 'eventemitter3';
 
 export default class PortHost extends EventEmitter {
@@ -10,7 +11,10 @@ export default class PortHost extends EventEmitter {
 
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
-            const source = `${port.name}-${port.sender.tab.id}`;
+            let source = port.name;
+        
+            if(port.sender.tab)
+                source += `-${port.sender.tab.id}`;
 
             this._ports[source] = port;
             console.log(`Port ${source} connected`);
