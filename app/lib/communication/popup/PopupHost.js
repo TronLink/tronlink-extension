@@ -95,11 +95,31 @@ export default class PopupHost extends EventEmitter {
         });
     }
 
-    requestFreeze(account = false, amount = false) {
-        return this.raw('requestFreeze', { account, amount });
+    requestFreeze(address, amount) {
+        return this.raw('requestFreeze', { address, amount });
     }
 
-    requestUnfreeze(account = false) {
-        return this.raw('requestUnfreeze', { account });
+    requestUnfreeze(address) {
+        return this.raw('requestUnfreeze', { address });
+    }
+
+    generateWallet() {
+        return this.raw('generateWallet');
+    }
+
+    importWalletFromKey(privateKey) {
+        return this.raw('importWalletFromKey', { privateKey });
+    }
+
+    importWalletFromPhrase(backupPhrase) {
+        return this.raw('importWalletFromPhrase', { backupPhrase });
+    }
+
+    unlockWallets(password) {
+        return this.raw('unlockWallet', { password });
+    }
+
+    setPassword(password) {
+        return this.raw('setPassword', { password });
     }
 }
