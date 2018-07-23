@@ -12,11 +12,11 @@ import './index.css';
 import App from './App';
 
 // need to connect to port to send/receive data here
-
 const createStoreWithMiddleware = applyMiddleware()(createStore);
+export const store = createStoreWithMiddleware(reducers);
 
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(reducers)}>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root')

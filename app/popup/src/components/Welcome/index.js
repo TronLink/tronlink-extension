@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Welcome.css';
 
+import {store} from '../../index';
+
+import PopupHost from '../../extension/communication/popup/PopupHost';
+import PopupClient from '../../extension/communication/popup/PopupClient';
+//const popupClient = new PopupClient();
+
+
 class Welcome extends Component {
     constructor(props) {
         super(props);
@@ -24,6 +31,10 @@ class Welcome extends Component {
             return 'Passwords do not match.';
         }
         return ' ';
+    }
+
+    onCreatePassword(){
+        alert("onCreatePassword");
     }
 
     renderInputs() {
@@ -66,9 +77,7 @@ class Welcome extends Component {
                         onChange={this.handlePasswordChange}
                     />
                     <span>{ this.createPasswordCheck() }</span>
-                    <NavLink to="/import">
-                        <div className="loginBtn button black">Continue</div>
-                    </NavLink>
+                    <div onClick={this.onCreatePassword.bind(this)} className="loginBtn button black">Continue</div>
                 </div>
             );
         }
