@@ -30,14 +30,6 @@
         "clipboardWrite",
         "activeTab"
     ],
-    "externally_connectable": {
-        "ids": [
-            "*"
-        ],
-        "matches": [
-            "http://localhost:3000/*"
-        ]
-    },
     "web_accessible_resources": [
         "dist/pageHook.js"
     ],
