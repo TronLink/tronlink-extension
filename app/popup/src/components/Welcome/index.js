@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import './Welcome.css';
 
@@ -11,7 +12,25 @@ class Welcome extends Component {
         this.state = {
             password: '',
             passwordRepeat: '',
+            status : 'UNINITIALIZED'
         };
+        this.loadStatus();
+    }
+
+    goToWallet(){
+        this.props.history.push('/main');
+    }
+
+    async loadStatus(){
+        let status = await popup.getWalletStatus();
+        if(status === 'UNLOCKED'){
+            this.goToWallet();
+        }
+        console.log('status:' + status);
+
+        this.setState({
+            status
+        });
     }
 
     handlePasswordChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -34,9 +53,16 @@ class Welcome extends Component {
         }
     }
 
+    async onEnterPassword(){
+        let response = await popup.unlockWallets(this.state.password);
+        if(response){
+            this.goToWallet();
+        }
+    }
+
     renderInputs() {
         // if account exists, decrypt, otherwise set password
-        if (false) {
+        if (this.state.status === 'LOCKED') {
             return (
                 <div>
                     <div className="decryptContainer">
@@ -44,11 +70,12 @@ class Welcome extends Component {
                             placeholder="Enter Password to Decrypt Wallet..."
                             className="textInput"
                             type="password"
+                            name="password"
                             value={this.state.password}
                             onChange={this.handlePasswordChange}
                         />
                         <NavLink to="/main/transactions">
-                            <div className="loginBtn button black">Decrypt</div>
+                            <div onClick={this.onEnterPassword.bind(this)} className="loginBtn button black">Decrypt</div>
                         </NavLink>
                     </div>
                     <div className="restoreWallet">Restore from seed phrase</div>
@@ -110,4 +137,4 @@ class Welcome extends Component {
     }
 }
 
-export default Welcome;
+export default withRouter(Welcome);

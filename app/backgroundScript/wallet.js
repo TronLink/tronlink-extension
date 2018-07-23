@@ -17,6 +17,12 @@ function decrypt(text, password) {
   return dec;
 }
 
+export const WALLET_STATUS = {
+    UNINITIALIZED : 'UNINITIALIZED',
+    LOCKED : 'LOCKED',
+    UNLOCKED : 'UNLOCKED'
+};
+
 export default class Wallet {
 
   constructor(){
@@ -77,6 +83,16 @@ export default class Wallet {
       console.log("isInitialized:");
       console.log(this);
       return this.storage.encrypted;
+  }
+
+  getStatus(){
+      if(!this.isInitialized()){
+        return WALLET_STATUS.UNINITIALIZED;
+      }else if (this.storage.decrypted){
+        return WALLET_STATUS.UNLOCKED;
+      }else{
+        return WALLET_STATUS.LOCKED;
+      }
   }
 
   unlockWallet(pass = null){

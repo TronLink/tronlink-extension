@@ -33,6 +33,16 @@ popup.on('setPassword', ({data, resolve, reject})=>{
     }
 });
 
+popup.on('unlockWallet', ({data, resolve, reject})=>{
+    console.log('unlockWallet');
+    console.log(data);
+    resolve(wallet.unlockWallet(data.password));
+});
+
+popup.on('getWalletStatus', ({data, resolve, reject})=>{
+    resolve(wallet.getStatus());
+});
+
 const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
     switch(method) {
         case 'signTransaction':
