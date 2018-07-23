@@ -1,12 +1,14 @@
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
+import Wallet from './wallet';
 
 console.log('Background script loaded');
 
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
+const wallet = new Wallet();
 
 popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
     const { account } = data;
@@ -19,6 +21,16 @@ popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
     }).catch(err => {
         console.log('Vote confirmation rejected:', err);
     });
+});
+
+popup.on('setPassword', ({data, resolve, reject})=>{
+    console.log("before, wallet:");
+    console.log(wallet);
+    if(wallet.isInitialized()){
+        alert("Wallet already initialized. Need to explicitly clear before doing this.");
+    }else{
+        wallet.initWallet(data.password);
+    }
 });
 
 const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {

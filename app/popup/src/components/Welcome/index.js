@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Welcome.css';
 
-import {store} from '../../index';
-
-import PopupHost from '../../extension/communication/popup/PopupHost';
-import PopupClient from '../../extension/communication/popup/PopupClient';
-//const popupClient = new PopupClient();
-
+import { store, popup } from '../../index.js';
 
 class Welcome extends Component {
     constructor(props) {
@@ -33,8 +28,10 @@ class Welcome extends Component {
         return ' ';
     }
 
-    onCreatePassword(){
-        alert("onCreatePassword");
+    async onCreatePassword(){
+        if(this.state.password === this.state.passwordRepeat){
+            let response = popup.setPassword(this.state.password);
+        }
     }
 
     renderInputs() {
