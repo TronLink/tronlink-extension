@@ -3,6 +3,8 @@ import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
 
+import { wallet_status } from './reducers/wallet.js';
+
 import Welcome from './components/Welcome';
 import Import from './components/Import';
 import Main from './components/Main';
@@ -12,7 +14,7 @@ class App extends Component {
     render() {
         let { confirmations, status } = this.props;
         console.log(status)
-        if (status === 3 && confirmations.length > 0) return <Queue />;
+        if (status === wallet_status.unlocked && confirmations.length > 0) return <Queue />;
         return (
             <MemoryRouter className="app">
                 <Switch>
