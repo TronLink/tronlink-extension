@@ -2,21 +2,22 @@ import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
+import Logger from 'lib/logger';
 
-console.log('Background script loaded');
-
+const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
-
 const pendingConfirmations = {};
+
+logger.info('Script loaded');
 
 let currentConfirmationId = 0;
 
 function addConfirmation(confirmation, resolve, reject){
-    console.log("adding confirmation:");
-    console.log(confirmation);
+    logger.info('Adding confirmation: ');
+    logger.info(confirmation);
 
     currentConfirmationId++;
     confirmation.id = currentConfirmationId;
@@ -26,7 +27,7 @@ function addConfirmation(confirmation, resolve, reject){
         reject
     };
 
-    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=no");
+    window.open('app/popup/build/index.html', 'extension_popup', 'width=420,height=595,status=no,scrollbars=yes,resizable=no');
 }
 function getConfirmations(){
     let out = [];
@@ -52,33 +53,33 @@ popup.on('acceptConfirmation', ({data, resolve, reject})=>{
         alert("tried accepting confirmation, but confirmation went missing.");
 
     let confirmation = pendingConfirmations[data.id];
-    console.log('accepting confirmation');
-    console.log(confirmation);
+    logger.info('accepting confirmation');
+    logger.info(confirmation);
     confirmation.resolve("accepted");
     resolve();
 });
 
 popup.on('getConfirmations', ({data, resolve, reject})=>{
-    console.log('getConfirmations called');
+    logger.info('getConfirmations called');
     resolve(getConfirmations());
 });
 
 popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
     const { account } = data;
 
-    console.log(`Requested unfreeze for account ${account}`);
+    logger.info(`Requested unfreeze for account ${account}`);
     resolve(50); // we unfroze 50 tokens    
 
     popup.requestVote('your mother').then(({ amount, account }) => {
-        console.log(`Vote confirmation for your mother: ${amount} tron power from ${account}`);
+        logger.info(`Vote confirmation for your mother: ${amount} tron power from ${account}`);
     }).catch(err => {
-        console.log('Vote confirmation rejected:', err);
+        logger.warn('Vote confirmation rejected:', err);
     });
 });
 
 popup.on('setPassword', ({data, resolve, reject})=>{
-    console.log("before, wallet:");
-    console.log(wallet);
+    logger.info('before, wallet:');
+    logger.info(wallet);
     if(wallet.isInitialized()){
         alert("Wallet already initialized. Need to explicitly clear before doing this.");
     }else{
@@ -87,8 +88,8 @@ popup.on('setPassword', ({data, resolve, reject})=>{
 });
 
 popup.on('unlockWallet', ({data, resolve, reject})=>{
-    console.log('unlockWallet');
-    console.log(data);
+    logger.info('unlockWallet');
+    logger.info(data);
     resolve(wallet.unlockWallet(data.password));
 });
 

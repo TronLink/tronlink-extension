@@ -1,8 +1,8 @@
-console.log('Content script loaded');
-
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import PortChild from 'lib/communication/PortChild';
+import Logger from 'lib/logger';
 
+const logger = new Logger('contentScript');
 const pageHook = new EventDispatcher('contentScript', 'pageHook');
 const backgroundScript = new PortChild('contentScript');
 
@@ -14,9 +14,10 @@ backgroundScript.on('tunnel', data => {
     pageHook.send('tunnel', data);
 });
 
-// Inject pageHook.js into page
+logger.info('Script loaded. Waiting for DOM load event');
+
 document.addEventListener('DOMContentLoaded', event => {
-    console.log('DOM loaded, injecting pageHook');
+    logger.info('DOM loaded, injecting pageHook');
 
     const node = document.getElementsByTagName('head')[0];
     const script = document.createElement('script');
