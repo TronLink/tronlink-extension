@@ -2,15 +2,17 @@ import {
   INITIALIZE
 } from "../actions/wallet"
 
-const WALLET_STATUS= {
-  NONE : 0, //only before loading
-  UNINITIALIZED : 1,
-  LOCKED : 2,
-  UNLOCKED : 3
+const wallet_status= {
+  none : 0, //only before loading
+  uninitialized : 1,
+  locked : 2,
+  unlocked : 3
 };
 
 const initialState = {
-  status : WALLET_STATUS.UNINITIALIZED
+    status : wallet_status.uninitialized,
+    accounts : {},
+    selectedAccountId : 0,
 };
 
 export function walletReducer(state = initialState, action) {
@@ -18,7 +20,7 @@ export function walletReducer(state = initialState, action) {
     case INITIALIZE: {
       return {
         ...state,
-        status : WALLET_STATUS.UNINITIALIZED
+        status : wallet_status.uninitialized
       };
     }
     default:

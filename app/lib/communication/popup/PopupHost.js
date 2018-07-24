@@ -122,4 +122,12 @@ export default class PopupHost extends EventEmitter {
     setPassword(password) {
         return this.raw('setPassword', { password });
     }
+
+    getWalletStatus(){
+        return this.raw('getWalletStatus');
+    }
+
+    getConfirmations(){
+        return this.raw('getConfirmations');
+    }
 }

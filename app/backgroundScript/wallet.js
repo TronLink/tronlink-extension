@@ -1,4 +1,5 @@
 import TronUtils from 'tronutils';
+import crypto from 'crypto';
 const algorithm = "aes-256-ctr";
 const WALLET_LOCALSTORAGE_KEY = "TW_WALLET";
 
@@ -16,6 +17,12 @@ function decrypt(text, password) {
   return dec;
 }
 
+export const WALLET_STATUS = {
+    UNINITIALIZED : 'UNINITIALIZED',
+    LOCKED : 'LOCKED',
+    UNLOCKED : 'UNLOCKED'
+};
+
 export default class Wallet {
 
   constructor(){
@@ -24,13 +31,20 @@ export default class Wallet {
 
   loadStorage(){
     try{
-      this.storage = JSON.parse(window.localStorage.getItem(WALLET_LOCALSTORAGE_KEY));
+      let loaded = window.localStorage.getItem(WALLET_LOCALSTORAGE_KEY);
+      if(loaded){
+          this.storage = JSON.parse(loaded);
+      }else{
+          this.storage = {};
+      }
     }catch (e) {
-      this.storage = {}
+      this.storage = {};
     }
   }
 
   saveStorage(pass = null){
+    console.log("saving storage with:" + pass);
+    console.log(this);
     if(pass === null)
       throw "Storage can't be saved without a password.";
 
@@ -38,20 +52,47 @@ export default class Wallet {
     let toStore = {
       encrypted : encrypt(JSON.stringify(this.storage.decrypted), pass)
     };
+    this.encrypted = toStore.encrypted;
+
+    console.log("tostore:");
+    console.log(toStore);
 
     window.localStorage.setItem(WALLET_LOCALSTORAGE_KEY, JSON.stringify(toStore));
+    this.pass = pass;
+  }
+
+  addAccount(newAccount){
+      this.storage.decrypted.accounts[newAccount.address] = newAccount;
   }
 
   initWallet(pass = null){
-    if(this.storage.decrypted !== null)
+    console.log("init wallet with pass: " + pass);
+    if(this.storage.decrypted)
       throw "Wallet cannot be initialized while another wallet already exists.";
     if(pass === null)
       throw "Wallet cannot be initialized without passing a password.";
 
     this.storage.decrypted = {
-      wallet : TronUtils.accounts.generateRandomBip39()
+      accounts : {}
     };
+    this.addAccount(TronUtils.accounts.generateRandomBip39());
     this.saveStorage(pass);
+  }
+
+  isInitialized(){
+      console.log("isInitialized:");
+      console.log(this);
+      return this.storage.encrypted;
+  }
+
+  getStatus(){
+      if(!this.isInitialized()){
+        return WALLET_STATUS.UNINITIALIZED;
+      }else if (this.storage.decrypted){
+        return WALLET_STATUS.UNLOCKED;
+      }else{
+        return WALLET_STATUS.LOCKED;
+      }
   }
 
   unlockWallet(pass = null){
@@ -65,9 +106,9 @@ export default class Wallet {
     }
   }
 
-  getAccount(){
+  getAccount(index = 0){
     if(this.storage.decrypted){
-      return TronUtils.accounts.accountFromPrivateKey(this.storage.decrypted.privateKey);
+      return TronUtils.accounts.accountFromPrivateKey(this.storage.decrypted.accounts[index].privateKey);
     }else{
       return null;
     }
