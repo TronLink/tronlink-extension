@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './Settings.css';
 
 class Settings extends Component {
@@ -26,11 +27,11 @@ class Settings extends Component {
             <div className="settings">
                 <div className="settingsContainer">
                     <div className="settingHeader">Current Network :</div>
-                    <div className="settingSubHeader">Main Tron Network</div>
+                    <div className="settingSubHeader">TestNet Tron Network</div>
                 </div>
                 <div className="settingsContainer">
-                    <div className="settingHeader">Current Conversion :</div>
-                    <div className="settingSubHeader">Updated Wed Jul 18 2018 08:49:34 GMT</div>
+                    <div className="settingHeader">Current Price :</div>
+                    <div className="settingSubHeader">Updated { (new Date()).toLocaleString() }</div>
                 </div>
                 <div className="settingsContainer">
                     <div className="settingHeader">State logs contain your public account address and sent transaction :</div>
@@ -46,4 +47,6 @@ class Settings extends Component {
     }
 }
 
-export default Settings;
+export default connect(state => ({
+    settings: state.settings
+}))(Settings);

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import './ConfirmSend.css';
+import './Queue.css';
 
-import { store } from '../../../../index.js';
+import { store } from '../../index.js';
 
 
-class ConfirmSend extends Component {
+class Queue extends Component {
     constructor(props) {
         super(props);
 
@@ -22,6 +22,14 @@ class ConfirmSend extends Component {
         value={this.state.privateKey}
         onChange={this.handlePrivateKeyChange}
     />
+    */
+
+    /*
+    {
+        type : 'send',
+        amount : '123127387192'
+        to : '123123578192376123901'
+    }
     */
 
     rejectSend() {
@@ -44,7 +52,7 @@ class ConfirmSend extends Component {
                 <div className="confirmGroup">
                     <div className="confirmGroupTop">
                         <div className="confirmGroupHeader bold">Total</div>
-                        <div className="confirmGroupAmount bold orange">{ confirmation.amount } { confirmation.label }</div>
+                        <div className="confirmGroupAmount bold orange">{ confirmation.amount } TRX</div>
                     </div>
                     <div className="confirmGroupBottom">11.28 <span>USD</span></div>
                 </div>
@@ -59,5 +67,6 @@ class ConfirmSend extends Component {
 }
 
 export default connect(state => ({
-    confirmations: state.confirmations.confirmations
-}))(ConfirmSend);
+    confirmations: state.confirmations.confirmations,
+    accounts: state.wallets
+}))(Queue);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './AccountView.css';
 
 class AccountView extends Component {
@@ -21,4 +22,7 @@ class AccountView extends Component {
     }
 }
 
-export default AccountView;
+export default connect(state => ({
+    accounts: state.accounts,
+    selectedAccountId: state.selectedAccountId
+}))(AccountView);
