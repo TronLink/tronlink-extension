@@ -39,6 +39,16 @@ class TronWatch {
         };
     }
 
+    sendTrx(recipient, amount){
+        return this._linkedRequest.build({
+            method : 'sendTrx',
+            args : {
+                recipient,
+                amount
+            }
+        });
+    }
+
     signTransaction(transaction = false, broadcast = true) {
         // { signedTransaction: string, broadcasted: bool, transactionID: string }
 

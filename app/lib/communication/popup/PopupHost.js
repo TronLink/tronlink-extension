@@ -126,4 +126,8 @@ export default class PopupHost extends EventEmitter {
     getWalletStatus(){
         return this.raw('getWalletStatus');
     }
+
+    getConfirmations(){
+        return this.raw('getConfirmations');
+    }
 }
