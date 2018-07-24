@@ -27,3 +27,4 @@ yarn-error.log*
 /key.pem
 /chrome-extension.zip
 /.idea
+app/popup/src/extension

@@ -26,8 +26,10 @@ function addConfirmation(confirmation, resolve, reject){
         reject
     };
 
-    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=no");
+    popup.sendNewConfirmation(confirmation);
+    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=false");
 }
+
 function getConfirmations(){
     let out = [];
     let keys = Object.keys(pendingConfirmations);
@@ -40,10 +42,11 @@ function getConfirmations(){
 //open popup
 
 
-popup.on('denyConfirmation', ({data, resolve, reject})=>{
+popup.on('declineConfirmation', ({data, resolve, reject})=>{
     if(!pendingConfirmations[data.id])
         alert("tried denying confirmation, but confirmation went missing.");
     pendingConfirmations[data.id].resolve("denied");
+    delete pendingConfirmations[data.id];
     resolve();
 });
 
@@ -55,6 +58,7 @@ popup.on('acceptConfirmation', ({data, resolve, reject})=>{
     console.log('accepting confirmation');
     console.log(confirmation);
     confirmation.resolve("accepted");
+    delete pendingConfirmations[data.id];
     resolve();
 });
 

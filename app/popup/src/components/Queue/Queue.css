@@ -1,0 +1,65 @@
+.mainContent .confirmSend {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+    padding: 35px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.confirmGroup {
+    padding: 0px 20px;
+    box-sizing: border-box;
+    margin-top: 35px;
+}
+
+.confirmGroup:first-child {
+    margin-top: 0px;
+}
+
+.confirmGroupTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirmGroupHeader {
+
+}
+
+.confirmGroupAmount {
+    font-family: 'Source Code Pro', monospace;
+}
+
+.confirmGroupBottom {
+    font-family: 'Source Code Pro', monospace;
+    text-align: right;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.confirmGroupDetail {
+    margin-top: 10px;
+    padding-top: 10px;
+    font-size: 12px;
+    border-top: 1px solid #ccc;
+    text-indent: 20px;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.orange {
+    color: #ED3F23;
+}
+
+.confirmButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.confirmButton {
+    width: 150px;
+}
