@@ -19,12 +19,11 @@
     "webpack": "3"
   },
   "scripts": {
-    "clean": "rimraf dist",
-    "start-react": "cd app/popup && npm run start && cd ../../",
-    "build-react": "cd app/popup && npm run build && cd ../../",
-    "test-react": "cd app/popup && npm run test && cd ../../",
-    "eject-react": "cd app/popup && npm run eject && cd ../../",
+    "clean": "rimraf dist",    
     "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
-    "zip": "bestzip chrome-extension.zip dist key.pem manifest.json app/popup"
+    "build:react": "cd app/popup && npm run build && cd ../../",
+    "build:all": "npm run build && npm run build:react",
+    "test:react": "cd app/popup && npm run test && cd ../../",
+    "zip": "npm run build:all && bestzip chrome-extension.zip dist key.pem manifest.json app/popup/build"
   }
 }
