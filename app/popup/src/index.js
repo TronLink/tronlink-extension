@@ -7,42 +7,39 @@ import { createStore, applyMiddleware } from 'redux';
 import PortChild from './extension/communication/PortChild';
 import PopupHost from './extension/communication/popup/PopupHost';
 
-import registerServiceWorker from './registerServiceWorker';
-
-import {addConfirmation, updateConfirmations} from "./reducers/confirmations";
+import { addConfirmation, updateConfirmations } from './reducers/confirmations';
 
 import reducers from './reducers';
+import { updateStatus } from './reducers/wallet';
+
 import './index.css';
 
 import App from './App';
 
-// need to connect to port to send/receive data here
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 export const store = createStoreWithMiddleware(reducers);
 
 const portChild = new PortChild('popup');
 export const popup = new PopupHost(portChild);
 
-
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
 );
-
-registerServiceWorker();
 
 /**********************************
  ********** LISTENERS *************
  **********************************/
-popup.on('addConfirmation', ({data, resolve, reject})=>{
-    alert("ADD CONFIRMATION");
-    console.log("ADD CONFIRMATION");
-    console.log(data);
+popup.on('addConfirmation', ({ data, resolve, reject })=>{
+    alert('ADD CONFIRMATION');
+    
+    console.log('ADD CONFIRMATION', { data });
 
     store.dispatch(addConfirmation(data));
     resolve();
 });
 
 updateConfirmations();
+updateStatus();

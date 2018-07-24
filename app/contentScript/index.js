@@ -18,7 +18,7 @@ backgroundScript.on('tunnel', data => {
 document.addEventListener('DOMContentLoaded', event => {
     console.log('DOM loaded, injecting pageHook');
 
-    const node = document.getElementsByTagName('body')[0];
+    const node = document.getElementsByTagName('head')[0];
     const script = document.createElement('script');
 
     const config = {
@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', event => {
 
     const queryString = Object.keys(config).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(config[k])}`).join('&');
 
-    script.setAttribute('id', 'tronWatchAPI');
+    script.setAttribute('id', 'tronLinkAPI');
     script.setAttribute('type', 'text/javascript');
     script.setAttribute('src', `${chrome.extension.getURL('dist/pageHook.js')}?${queryString}`);
 
-    node.appendChild(script);
+    node.prepend(script);
 });
 
 // To wait for dom element to be created:

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { connect } from "react-redux";
 import './Welcome.css';
 
-import { store, popup } from '../../index.js';
-import {updateStatus} from "../../reducers/wallet";
+import { popup } from '../../index.js';
+import { updateStatus } from '../../reducers/wallet';
 
 class Welcome extends Component {
     constructor(props) {
@@ -15,8 +14,6 @@ class Welcome extends Component {
             password: '',
             passwordRepeat: ''
         };
-
-        updateStatus();
     }
 
     goToWallet(){
