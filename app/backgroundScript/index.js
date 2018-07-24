@@ -26,7 +26,7 @@ function addConfirmation(confirmation, resolve, reject){
         reject
     };
 
-    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=no");
+    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=false");
 }
 function getConfirmations(){
     let out = [];

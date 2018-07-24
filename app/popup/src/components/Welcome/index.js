@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import { connect } from "react-redux";
 import './Welcome.css';
 
 import { store, popup } from '../../index.js';
+import {updateStatus} from "../../reducers/wallet";
 
 class Welcome extends Component {
     constructor(props) {
@@ -11,26 +13,14 @@ class Welcome extends Component {
 
         this.state = {
             password: '',
-            passwordRepeat: '',
-            status : 'UNINITIALIZED'
+            passwordRepeat: ''
         };
-        this.loadStatus();
+
+        updateStatus();
     }
 
     goToWallet(){
-        this.props.history.push('/main');
-    }
-
-    async loadStatus(){
-        let status = await popup.getWalletStatus();
-        if(status === 'UNLOCKED'){
-            this.goToWallet();
-        }
-        console.log('status:' + status);
-
-        this.setState({
-            status
-        });
+        this.props.history.push('/main/transactions');
     }
 
     handlePasswordChange = (e) => this.setState({ [e.target.name]: e.target.value });
@@ -49,20 +39,26 @@ class Welcome extends Component {
 
     async onCreatePassword(){
         if(this.state.password === this.state.passwordRepeat){
+            console.log("setting password...");
             let response = popup.setPassword(this.state.password);
+            this.goToWallet();
+            updateStatus();
+        }else{
+            console.log("password !== passwordRepeat");
         }
     }
 
     async onEnterPassword(){
         let response = await popup.unlockWallets(this.state.password);
-        if(response){
+        console.log("on enter password response:" + response);
+        if(response === true){
+            updateStatus();
             this.goToWallet();
         }
     }
 
     renderInputs() {
-        // if account exists, decrypt, otherwise set password
-        if (this.state.status === 'LOCKED') {
+        if (this.props.wallet.status === 'LOCKED') {
             return (
                 <div>
                     <div className="decryptContainer">
@@ -74,14 +70,12 @@ class Welcome extends Component {
                             value={this.state.password}
                             onChange={this.handlePasswordChange}
                         />
-                        <NavLink to="/main/transactions">
-                            <div onClick={this.onEnterPassword.bind(this)} className="loginBtn button black">Decrypt</div>
-                        </NavLink>
+                        <div onClick={this.onEnterPassword.bind(this)} className="loginBtn button black">Decrypt</div>
                     </div>
                     <div className="restoreWallet">Restore from seed phrase</div>
                 </div>
             );
-        } else {
+        } else if (this.props.wallet.status === 'UNINITIALIZED') {
             return (
                 <div className="decryptContainer">
                     <input 
@@ -137,4 +131,8 @@ class Welcome extends Component {
     }
 }
 
-export default withRouter(Welcome);
+export default withRouter(
+    connect(
+        state => ({wallet : state.wallet}),
+    )(Welcome)
+);

@@ -16,7 +16,7 @@ export default class PopupHost extends EventEmitter {
 
     _registerListener() {
         this._portChild.on('popupCommunication', ({ action, data: { uuid, data, expectsResponse } }) => {
-            if(action == 'internalResponse')
+            if(action === 'internalResponse')
                 return this._handleResponse(uuid, data.success, data.data);
                 
             this._handleEvent(action, uuid, data, expectsResponse);
