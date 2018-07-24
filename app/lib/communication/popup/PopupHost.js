@@ -130,4 +130,12 @@ export default class PopupHost extends EventEmitter {
     getConfirmations(){
         return this.raw('getConfirmations');
     }
+
+    declineConfirmation(id){
+        return this.raw('declineConfirmation', { id });
+    }
+
+    acceptConfirmation(id){
+        return this.raw('acceptConfirmation', { id });
+    }
 }

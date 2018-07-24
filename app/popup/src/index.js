@@ -9,6 +9,7 @@ import PopupHost from './extension/communication/popup/PopupHost';
 
 import registerServiceWorker from './registerServiceWorker';
 
+import {addConfirmation, updateConfirmations} from "./reducers/confirmations";
 
 import reducers from './reducers';
 import './index.css';
@@ -22,6 +23,7 @@ export const store = createStoreWithMiddleware(reducers);
 const portChild = new PortChild('popup');
 export const popup = new PopupHost(portChild);
 
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
@@ -30,3 +32,17 @@ ReactDOM.render(
 );
 
 registerServiceWorker();
+
+/**********************************
+ ********** LISTENERS *************
+ **********************************/
+popup.on('addConfirmation', ({data, resolve, reject})=>{
+    alert("ADD CONFIRMATION");
+    console.log("ADD CONFIRMATION");
+    console.log(data);
+
+    store.dispatch(addConfirmation(data));
+    resolve();
+});
+
+updateConfirmations();

@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './Queue.css';
 
-import { store } from '../../index.js';
-
+import { store, popup} from '../../index.js';
+import {updateConfirmations} from "../../reducers/confirmations";
 
 class Queue extends Component {
     constructor(props) {
@@ -32,16 +32,17 @@ class Queue extends Component {
     }
     */
 
-    rejectSend() {
-        console.log('Rejected.')
-        // store.dispatch();
+    async rejectSend() {
+        console.log('Rejected.');
+        await popup.declineConfirmation(this.props.confirmations[0].id);
+        return updateConfirmations();
     }
 
-    confirmSend() {
-        console.log('Confirmed.')
-        // store.dispatch();
+    async confirmSend() {
+        console.log('Confirmed.');
+        await popup.acceptConfirmation(this.props.confirmations[0].id);
+        return updateConfirmations();
     }
-
 
     render() {
         // return most recent confirmation from queue
@@ -58,8 +59,8 @@ class Queue extends Component {
                 </div>
                 <div className="confirmGroupDetail">Data Included: 36 bytes</div>
                 <div className="confirmGroup confirmButtonContainer">
-                    <div className="confirmButton button outline" onClick={this.rejectSend()}>Reject</div>
-                    <div className="confirmButton button gradient" onClick={this.confirmSend()}>Confirm</div>
+                    <div className="confirmButton button outline" onClick={this.rejectSend.bind(this)}>Reject</div>
+                    <div className="confirmButton button gradient" onClick={this.confirmSend.bind(this)}>Confirm</div>
                 </div>
             </div>
         );
