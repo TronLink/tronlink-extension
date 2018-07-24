@@ -98,6 +98,8 @@ class Welcome extends Component {
                     <div onClick={this.onCreatePassword.bind(this)} className="loginBtn button black">Continue</div>
                 </div>
             );
+        }else{
+            this.goToWallet();
         }
     }
 

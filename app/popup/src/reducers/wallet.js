@@ -21,7 +21,7 @@ export const setWalletStatus = status => ({
  *********** UPDATES **************
  **********************************/
 
-export const updateStatus = async () =>{
+export const updateStatus = async () => {
     let status = await popup.getWalletStatus();
     console.log("update status, dispatching new status: " + status);
     store.dispatch(setWalletStatus(status));
@@ -54,7 +54,7 @@ export function walletReducer(state = initialState, action) {
         case SET_STATUS : {
             return {
                 ...state,
-                status : action.status
+                status: action.status
             }
         }
         default:
