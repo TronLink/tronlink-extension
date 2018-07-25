@@ -29,10 +29,6 @@ export const WALLET_STATUS = {
 };
 
 export default class Wallet {
-    constructor() {
-        this.loadStorage();
-    }
-
 
     constructor() {
         this.loadStorage();
