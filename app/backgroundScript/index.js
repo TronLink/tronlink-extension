@@ -4,6 +4,7 @@ import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
 import Logger from 'lib/logger';
 import TronUtils from 'TronUtils';
+import {CONFIRMATION_TYPE} from "../lib/consts";
 
 const rpc = new TronUtils.rpc();
 
@@ -14,10 +15,6 @@ const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 
-const CONFIRMATION_TYPE = {
-    SEND : "SEND"
-};
-
 const pendingConfirmations = {};
 
 logger.info('Script loaded');
@@ -26,6 +23,7 @@ let currentConfirmationId = 0;
 let popup2 = null;
 
 function addConfirmation(confirmation, resolve, reject){
+
     logger.info('Adding confirmation: ');
     logger.info(confirmation);
 
@@ -36,7 +34,6 @@ function addConfirmation(confirmation, resolve, reject){
         resolve,
         reject
     };
-
 
     popup.sendNewConfirmation(confirmation);
     if(popup2){
@@ -52,6 +49,9 @@ function getConfirmations(){
     for(let i in keys){
         out.push(pendingConfirmations[keys[i]].confirmation);
     }
+    logger.info("getConfirmations returning:");
+    logger.info(out);
+
     return out;
 }
 //open popup

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './Queue.css';
 
+import {CONFIRMATION_TYPE} from "../../extension/consts";
 import { store } from '../../index.js';
 
 import Send from './send.js';
@@ -40,7 +41,7 @@ class Queue extends Component {
         // return most recent confirmation from queue to check type
         const confirmation = this.props.confirmations[0];
 
-        if (confirmation.type === 'send') return <Send />;
+        if (confirmation.type === CONFIRMATION_TYPE.SEND) return <Send />;
     }
 
     render() {
