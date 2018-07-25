@@ -64,19 +64,6 @@ popup.on('getConfirmations', ({data, resolve, reject})=>{
     resolve(getConfirmations());
 });
 
-popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
-    const { account } = data;
-
-    logger.info(`Requested unfreeze for account ${account}`);
-    resolve(50); // we unfroze 50 tokens    
-
-    popup.requestVote('your mother').then(({ amount, account }) => {
-        logger.info(`Vote confirmation for your mother: ${amount} tron power from ${account}`);
-    }).catch(err => {
-        logger.warn('Vote confirmation rejected:', err);
-    });
-});
-
 popup.on('setPassword', ({data, resolve, reject})=>{
     logger.info('before, wallet:');
     logger.info(wallet);
