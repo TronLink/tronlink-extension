@@ -1,5 +1,7 @@
-import TronUtils from 'tronutils';
+import TronUtils from 'TronUtils';
 import crypto from 'crypto';
+
+const rpc = new TronUtils.rpc();
 
 const algorithm = "aes-256-ctr";
 const WALLET_LOCALSTORAGE_KEY = "TW_WALLET";
@@ -41,6 +43,9 @@ export default class Wallet {
         } catch (e) {
             this.storage = {};
         }
+
+        /* will contain objects with balances and such */
+        this.accountInfos = {};
     }
 
     saveStorage(pass = null) {
@@ -60,6 +65,27 @@ export default class Wallet {
 
         window.localStorage.setItem(WALLET_LOCALSTORAGE_KEY, JSON.stringify(toStore));
         this.pass = pass;
+    }
+
+    getAddresses(){
+        return this.storage.decrypted ? Object.keys(this.storage.decrypted.accounts) : [];
+    }
+
+    async updateAccounts(){
+        let addresses = this.getAddresses();
+        console.log('rpc');
+        console.log(rpc);
+        console.log('rpc.getAccount');
+        console.log(rpc.getAccount);
+        for(let i in addresses){
+            let address = addresses[i];
+            let response = await rpc.getAccount(address);
+            this.accountInfos[address] = response;
+            console.log(address);
+            console.log(response);
+        }
+        console.log('updated accounts');
+        console.log(this.accountInfos);
     }
 
     addAccount(newAccount) {

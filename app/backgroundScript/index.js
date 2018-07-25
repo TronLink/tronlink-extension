@@ -3,6 +3,8 @@ import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
 
+import tron from 'TronUtils';
+
 console.log('Background script loaded');
 
 const portHost = new PortHost();
@@ -94,6 +96,8 @@ popup.on('unlockWallet', ({data, resolve, reject})=>{
     console.log('unlockWallet');
     console.log(data);
     resolve(wallet.unlockWallet(data.password));
+
+    wallet.updateAccounts();
 });
 
 popup.on('getWalletStatus', ({data, resolve, reject})=>{
