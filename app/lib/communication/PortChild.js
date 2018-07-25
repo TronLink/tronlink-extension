@@ -1,6 +1,6 @@
 /*global chrome*/
 import EventEmitter from 'eventemitter3';
-import Logger from 'lib/logger';
+import Logger from '../logger';
 
 const logger = new Logger('PortChild');
 
