@@ -110,4 +110,8 @@ export default class PopupClient extends EventEmitter {
     sendNewConfirmation(confirmation){
         return this.raw('addConfirmation', confirmation);
     }
+
+    sendAccount(account){
+        return this.raw('sendAccount', account);
+    }
 }

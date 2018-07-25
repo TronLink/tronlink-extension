@@ -46,6 +46,7 @@ export default class Wallet {
 
         /* will contain objects with balances and such */
         this.accountInfos = {};
+        this.selectedAccount = null;
     }
 
     saveStorage(pass = null) {
@@ -71,18 +72,26 @@ export default class Wallet {
         return this.storage.decrypted ? Object.keys(this.storage.decrypted.accounts) : [];
     }
 
+    static convertAccountObject(address, object){
+        return {
+            address : address,
+            balance : object.balance,
+            tokens : {}
+        };
+    }
+
+    async updateAccount(address){
+        console.log("updateAccount " + address);
+        let accountInfo = await rpc.getAccount(address);
+        console.log(accountInfo);
+        this.accountInfos[address] = Wallet.convertAccountObject(address, accountInfo);
+    }
+
     async updateAccounts(){
         let addresses = this.getAddresses();
-        console.log('rpc');
-        console.log(rpc);
-        console.log('rpc.getAccount');
-        console.log(rpc.getAccount);
         for(let i in addresses){
             let address = addresses[i];
-            let response = await rpc.getAccount(address);
-            this.accountInfos[address] = response;
-            console.log(address);
-            console.log(response);
+            await this.updateAccount(address);
         }
         console.log('updated accounts');
         console.log(this.accountInfos);
@@ -104,6 +113,9 @@ export default class Wallet {
         };
         this.addAccount(TronUtils.accounts.generateRandomBip39());
         this.saveStorage(pass);
+
+        this.storage.decrypted = null;
+        this.unlockWallet(pass);
     }
 
     isInitialized() {
@@ -128,6 +140,7 @@ export default class Wallet {
     unlockWallet(pass = null) {
         try {
             this.storage.decrypted = JSON.parse(decrypt(this.storage.encrypted, pass));
+            this.selectedAccount = Object.keys(this.storage.decrypted.accounts)[0];
             return true;
         } catch (e) {
             console.log("error unlocking wallet");
@@ -136,9 +149,9 @@ export default class Wallet {
         }
     }
 
-    getAccount(index = 0) {
+    getAccount(address = this.selectedAccount) {
         if (this.storage.decrypted) {
-            return TronUtils.accounts.accountFromPrivateKey(this.storage.decrypted.accounts[index].privateKey);
+            return this.accountInfos[address];
         } else {
             return null;
         }

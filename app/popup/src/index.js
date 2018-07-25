@@ -8,6 +8,7 @@ import PortChild from './extension/communication/PortChild';
 import PopupHost from './extension/communication/popup/PopupHost';
 
 import { addConfirmation, updateConfirmations } from './reducers/confirmations';
+import { setAccount } from "./reducers/wallet";
 
 import reducers from './reducers';
 import { updateStatus } from './reducers/wallet';
@@ -24,7 +25,7 @@ export const popup = new PopupHost(portChild);
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <App/>
     </Provider>,
     document.getElementById('root')
 );
@@ -32,13 +33,15 @@ ReactDOM.render(
 /**********************************
  ********** LISTENERS *************
  **********************************/
-popup.on('addConfirmation', ({ data, resolve, reject })=>{
-    alert('ADD CONFIRMATION');
-    
+popup.on('addConfirmation', ({ data, resolve, reject }) => {
     console.log('ADD CONFIRMATION', { data });
-
     store.dispatch(addConfirmation(data));
     resolve();
+});
+
+popup.on('sendAccount', ({ data, resolve, reject }) => {
+    console.log('received account');
+    store.dispatch(setAccount(data));
 });
 
 updateConfirmations();

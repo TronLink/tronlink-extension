@@ -40,9 +40,7 @@ function getConfirmations(){
     }
     return out;
 }
-
 //open popup
-
 
 popup.on('declineConfirmation', ({data, resolve, reject})=>{
     if(!pendingConfirmations[data.id])
@@ -92,12 +90,18 @@ popup.on('setPassword', ({data, resolve, reject})=>{
     }
 });
 
+async function updateAccount(){
+    await wallet.updateAccounts();
+
+    let account = wallet.getAccount();
+    popup.sendAccount(account);
+}
+
 popup.on('unlockWallet', ({data, resolve, reject})=>{
     console.log('unlockWallet');
     console.log(data);
     resolve(wallet.unlockWallet(data.password));
-
-    wallet.updateAccounts();
+    updateAccount();
 });
 
 popup.on('getWalletStatus', ({data, resolve, reject})=>{
@@ -142,7 +146,7 @@ const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
         default:
             reject('Unknown method called (' + method + ')');
     }
-}
+};
 
 linkedResponse.on('request', ({ request, resolve, reject }) => {
     if(request.method)
