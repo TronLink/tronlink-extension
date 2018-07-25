@@ -1,5 +1,5 @@
 import randomUUID from 'uuid/v4';
-import Logger from 'lib/logger';
+import Logger from '../logger';
 
 const logger = new Logger('LinkedRequest');
 
