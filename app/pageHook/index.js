@@ -3,16 +3,19 @@ import LinkedRequest from 'lib/messages/LinkedRequest';
 import TronLink  from 'pageHook/api/v1';
 import Logger from 'lib/logger';
 
+
 const logger = new Logger('pageHook');
 const contentScript = new EventDispatcher('pageHook', 'contentScript');
 const linkedRequest = new LinkedRequest(contentScript, ({ source, data }) => ({ ...data }));
 const scriptVariable = (window.TRON_LINK_VARIABLE  || 'TronLink').toString();
+
 
 window[scriptVariable] = {
     v1: (network = 'mainnet') => new TronLink(linkedRequest, network)
 };
 
 window.TRON_LINK_ENABLED  = true;
+
 
 // Set any configuration options
 const scriptUrl = document.getElementById('tronLinkAPI').src;

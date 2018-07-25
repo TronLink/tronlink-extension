@@ -1,8 +1,9 @@
-import TronUtils from 'tronutils';
+import TronUtils from 'TronUtils';
 import crypto from 'crypto';
 import Logger from 'lib/logger';
 
 const logger = new Logger('wallet');
+const rpc = new TronUtils.rpc();
 
 const algorithm = "aes-256-ctr";
 const WALLET_LOCALSTORAGE_KEY = "TW_WALLET";
@@ -32,6 +33,12 @@ export default class Wallet {
         this.loadStorage();
     }
 
+
+    constructor() {
+        this.loadStorage();
+    }
+
+
     loadStorage() {
         try {
             let loaded = window.localStorage.getItem(WALLET_LOCALSTORAGE_KEY);
@@ -43,6 +50,11 @@ export default class Wallet {
         } catch (e) {
             this.storage = {};
         }
+
+
+        /* will contain objects with balances and such */
+        this.accountInfos = {};
+        this.selectedAccount = null;
     }
 
     saveStorage(pass = null) {
@@ -64,6 +76,35 @@ export default class Wallet {
         this.pass = pass;
     }
 
+    getAddresses(){
+        return this.storage.decrypted ? Object.keys(this.storage.decrypted.accounts) : [];
+    }
+
+    static convertAccountObject(address, object){
+        return {
+            address : address,
+            balance : object.balance,
+            tokens : {}
+        };
+    }
+
+    async updateAccount(address){
+        logger.info("updateAccount " + address);
+        let accountInfo = await rpc.getAccount(address);
+        logger.info(accountInfo);
+        this.accountInfos[address] = Wallet.convertAccountObject(address, accountInfo);
+    }
+
+    async updateAccounts(){
+        let addresses = this.getAddresses();
+        for(let i in addresses){
+            let address = addresses[i];
+            await this.updateAccount(address);
+        }
+        logger.info('updated accounts');
+        logger.info(this.accountInfos);
+    }
+
     addAccount(newAccount) {
         this.storage.decrypted.accounts[newAccount.address] = newAccount;
     }
@@ -71,6 +112,7 @@ export default class Wallet {
     initWallet(pass = null) {
         // please remove this Till
         logger.info('init wallet with pass: ' + pass);
+
         if (this.storage.decrypted)
             throw "Wallet cannot be initialized while another wallet already exists.";
         if (pass === null)
@@ -81,12 +123,19 @@ export default class Wallet {
         };
         this.addAccount(TronUtils.accounts.generateRandomBip39());
         this.saveStorage(pass);
+
+        this.storage.decrypted = null;
+        this.unlockWallet(pass);
     }
 
     isInitialized() {
-        logger.info('isInitialized:');
-        logger.info(this);
-        return this.storage.encrypted;
+        let out = (this.storage.encrypted !== null &&
+            this.storage.encrypted !== undefined &&
+            this.storage.encrypted !== false);
+
+        logger.info("isInitialized: " + out);
+        return out;
+
     }
 
     getStatus() {
@@ -102,17 +151,18 @@ export default class Wallet {
     unlockWallet(pass = null) {
         try {
             this.storage.decrypted = JSON.parse(decrypt(this.storage.encrypted, pass));
+            this.selectedAccount = Object.keys(this.storage.decrypted.accounts)[0];
             return true;
         } catch (e) {
-            logger.warn('error unlocking wallet');
-            logger.error(e);
+            logger.warn("error unlocking wallet");
+            logger.warn(e);
             return false;
         }
     }
 
-    getAccount(index = 0) {
+    getAccount(address = this.selectedAccount) {
         if (this.storage.decrypted) {
-            return TronUtils.accounts.accountFromPrivateKey(this.storage.decrypted.accounts[index].privateKey);
+            return this.accountInfos[address];
         } else {
             return null;
         }

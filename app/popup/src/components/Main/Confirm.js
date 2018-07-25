@@ -43,10 +43,7 @@ class Confirm extends Component {
                         />
                     </Header>
                     <Content>
-                        <ConfirmSendContent 
-                            sendAmount={this.state.sendAmount}
-                            sendLabel="TronWatch"
-                        />
+                        <ConfirmSendContent />
                     </Content>
                 </div>
             );
@@ -66,10 +63,7 @@ class Confirm extends Component {
                     />
                 </Header>
                 <Content>
-                    <ConfirmSendContent 
-                        sendAmount={this.state.sendAmount}
-                        sendLabel="TRX"
-                    />
+                    <ConfirmSendContent />
                 </Content>
             </div>
         );

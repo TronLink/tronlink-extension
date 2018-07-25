@@ -15,7 +15,7 @@ export default class PortHost extends EventEmitter {
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
             let source = port.name;
-        
+
             if(port.sender.tab && source !== 'popup')
                 source += `-${port.sender.tab.id}`;
 
