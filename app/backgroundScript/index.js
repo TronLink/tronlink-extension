@@ -16,6 +16,8 @@ const pendingConfirmations = {};
 
 let currentConfirmationId = 0;
 
+let popup2 = null;
+
 function addConfirmation(confirmation, resolve, reject){
     console.log("adding confirmation:");
     console.log(confirmation);
@@ -29,7 +31,11 @@ function addConfirmation(confirmation, resolve, reject){
     };
 
     popup.sendNewConfirmation(confirmation);
-    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=false");
+    if(popup2){
+        popup2.focus();
+    }else{
+        popup2 = window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=false");
+    }
 }
 
 function getConfirmations(){
@@ -42,12 +48,20 @@ function getConfirmations(){
 }
 //open popup
 
+function closePopup2IfQueueEmpty(){
+    if(Object.keys(pendingConfirmations) <= 0 && popup2){
+        popup2.close();
+        popup2 = null;
+    }
+}
+
 popup.on('declineConfirmation', ({data, resolve, reject})=>{
     if(!pendingConfirmations[data.id])
         alert("tried denying confirmation, but confirmation went missing.");
     pendingConfirmations[data.id].resolve("denied");
     delete pendingConfirmations[data.id];
     resolve();
+    closePopup2IfQueueEmpty();
 });
 
 popup.on('acceptConfirmation', ({data, resolve, reject})=>{
@@ -60,6 +74,7 @@ popup.on('acceptConfirmation', ({data, resolve, reject})=>{
     confirmation.resolve("accepted");
     delete pendingConfirmations[data.id];
     resolve();
+    closePopup2IfQueueEmpty();
 });
 
 popup.on('getConfirmations', ({data, resolve, reject})=>{
