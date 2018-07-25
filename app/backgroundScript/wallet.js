@@ -1,166 +1,125 @@
 import TronUtils from 'TronUtils';
-import crypto from 'crypto';
 import Logger from 'lib/logger';
+import Utils from 'lib/utils';
+
+import { WALLET_STATUS } from 'lib/constants';
 
 const logger = new Logger('wallet');
 const rpc = new TronUtils.rpc();
 
-const algorithm = "aes-256-ctr";
-const WALLET_LOCALSTORAGE_KEY = "TW_WALLET";
-
-function encrypt(text, password) {
-    let cipher = crypto.createCipher(algorithm, password);
-    let crypted = cipher.update(text, "utf8", "hex");
-    crypted += cipher.final("hex");
-    return crypted;
-}
-
-function decrypt(text, password) {
-    let decipher = crypto.createDecipher(algorithm, password);
-    let dec = decipher.update(text, "hex", "utf8");
-    dec += decipher.final("utf8");
-    return dec;
-}
-
-export const WALLET_STATUS = {
-    UNINITIALIZED: 'UNINITIALIZED',
-    LOCKED: 'LOCKED',
-    UNLOCKED: 'UNLOCKED'
-};
-
 export default class Wallet {
-
     constructor() {
-        this.loadStorage();
+        this._walletStatus = WALLET_STATUS.UNINITIALIZED;
+
+        this._password = false;
+        this._currentAccount = false;
+
+        this._loadWallet();
     }
 
+    _loadWallet() {
+        this._storage = Utils.loadStorage();
 
-    loadStorage() {
-        try {
-            let loaded = window.localStorage.getItem(WALLET_LOCALSTORAGE_KEY);
-            if (loaded) {
-                this.storage = JSON.parse(loaded);
-            } else {
-                this.storage = {};
-            }
-        } catch (e) {
-            this.storage = {};
-        }
-
-
-        /* will contain objects with balances and such */
-        this.accountInfos = {};
-        this.selectedAccount = null;
+        if(this._storage.hasOwnProperty('encrypted'))
+            this._walletStatus = WALLET_STATUS.LOCKED;
     }
 
-    saveStorage(pass = null) {
-        logger.info("saving storage with:" + pass);
-        logger.info(this);
-        if (pass === null)
-            throw "Storage can't be saved without a password.";
+    saveStorage(password = false) {
+        if (!this._password && !password)
+            throw 'Storage requires a password for encryption';
 
-        /*THIS MUST NEVER CONTAIN UNENCRYPTED INFORMATION*/
-        let toStore = {
-            encrypted: encrypt(JSON.stringify(this.storage.decrypted), pass)
-        };
-        this.encrypted = toStore.encrypted;
+        this._storage.encrypted = Utils.encrypt(JSON.stringify(this._storage.decrypted), this._password || password);
 
-        logger.info("tostore:");
-        logger.info(toStore);
+        if(!this._password)
+            this._password = password;
 
-        window.localStorage.setItem(WALLET_LOCALSTORAGE_KEY, JSON.stringify(toStore));
-        this.pass = pass;
+        logger.info('Saving storage');
+        logger.info('-> Storing:', this._storage.encrypted);
+        
+        Utils.saveStorage({ encrypted: this._storage.encrypted });
     }
 
-    getAddresses(){
-        return this.storage.decrypted ? Object.keys(this.storage.decrypted.accounts) : [];
+    getAddresses() {
+        if(this._walletStatus == WALLET_STATUS.UNLOCKED)
+            return this._storage.decrypted.accounts;
+
+        return {};
     }
 
-    static convertAccountObject(address, object){
-        return {
-            address : address,
-            balance : object.balance,
-            tokens : {}
-        };
-    }
+    async updateAccount(address ){
+        logger.info(`Account update requested for ${address}`);
 
-    async updateAccount(address){
-        logger.info("updateAccount " + address);
-        let accountInfo = await rpc.getAccount(address);
-        logger.info(accountInfo);
-        this.accountInfos[address] = Wallet.convertAccountObject(address, accountInfo);
+        const account = await rpc.getAccount(address);
+        logger.info('Account updated', { account });
+        
+        this._storage.decrypted.accounts[address] = Utils.convertAccountObject(address, account);
     }
 
     async updateAccounts(){
-        let addresses = this.getAddresses();
-        for(let i in addresses){
-            let address = addresses[i];
+        logger.info('Requesting batch account update');
+        
+        Object.keys(this.getAddresses()).forEach(async address => {
             await this.updateAccount(address);
-        }
-        logger.info('updated accounts');
-        logger.info(this.accountInfos);
+        });
+
+        logger.info('Batch account update complete');
     }
 
-    addAccount(newAccount) {
-        this.storage.decrypted.accounts[newAccount.address] = newAccount;
+    addAccount(account) {
+        logger.info(`Adding account to wallet ${account.address}`);
+
+        if(!this._storage.decrypted)
+            this._storage.decrypted = { accounts: {} };
+
+        this._storage.decrypted.accounts[account.address] = account;
     }
 
-    initWallet(pass = null) {
-        // please remove this Till
-        logger.info('init wallet with pass: ' + pass);
+    setupWallet(password = false) {      
+        if (this._walletStatus !== WALLET_STATUS.UNINITIALIZED)
+            throw 'Wallet cannot be initialized multiple times';
 
-        if (this.storage.decrypted)
-            throw "Wallet cannot be initialized while another wallet already exists.";
-        if (pass === null)
-            throw "Wallet cannot be initialized without passing a password.";
+        if (!password)
+            throw 'Wallet cannot be initialized without a password';
 
-        this.storage.decrypted = {
-            accounts: {}
-        };
+        logger.info('Initialising wallet for first use');
+
         this.addAccount(TronUtils.accounts.generateRandomBip39());
-        this.saveStorage(pass);
-
-        this.storage.decrypted = null;
-        this.unlockWallet(pass);
+        this.saveStorage(password);
+        this.unlockWallet(password);
     }
 
-    isInitialized() {
-        let out = (this.storage.encrypted !== null &&
-            this.storage.encrypted !== undefined &&
-            this.storage.encrypted !== false);
-
-        logger.info("isInitialized: " + out);
-        return out;
-
+    isSetup() {
+        return this._walletStatus !== WALLET_STATUS.UNINITIALIZED;
     }
 
-    getStatus() {
-        if (!this.isInitialized()) {
-            return WALLET_STATUS.UNINITIALIZED;
-        } else if (this.storage.decrypted) {
-            return WALLET_STATUS.UNLOCKED;
-        } else {
-            return WALLET_STATUS.LOCKED;
-        }
-    }
+    unlockWallet(password) {
+        logger.info('Requested wallet unlock');
 
-    unlockWallet(pass = null) {
         try {
-            this.storage.decrypted = JSON.parse(decrypt(this.storage.encrypted, pass));
-            this.selectedAccount = Object.keys(this.storage.decrypted.accounts)[0];
+            this._storage.decrypted = JSON.parse(Utils.decrypt(this._storage.encrypted, password));
+            this._currentAccount = Object.keys(this._storage.decrypted.accounts)[0];
+            this._walletStatus = WALLET_STATUS.UNLOCKED;
+
+            logger.info('Wallet unlocked successfully');
             return true;
         } catch (e) {
-            logger.warn("error unlocking wallet");
-            logger.warn(e);
+            logger.warn('Error unlocking wallet');
+            logger.error(e);
+
             return false;
         }
     }
 
-    getAccount(address = this.selectedAccount) {
-        if (this.storage.decrypted) {
-            return this.accountInfos[address];
-        } else {
-            return null;
-        }
+    getAccount(address = this._currentAccount) {
+        logger.info(`Reqeusted account ${address}`);
+
+        if(this._walletStatus !== WALLET_STATUS.UNLOCKED)
+            return false;
+
+        return this._storage.decrypted.accounts[address];
+    }
+
+    get status() {
+        return this._walletStatus;
     }
 }
