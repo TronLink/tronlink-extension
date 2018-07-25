@@ -2,6 +2,9 @@ import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
+import TronUtils from 'TronUtils';
+
+const rpc = new TronUtils.rpc();
 
 import tron from 'TronUtils';
 
@@ -12,10 +15,13 @@ const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 
+const CONFIRMATION_TYPE = {
+    SEND : "SEND"
+};
+
 const pendingConfirmations = {};
 
 let currentConfirmationId = 0;
-
 let popup2 = null;
 
 function addConfirmation(confirmation, resolve, reject){
@@ -71,7 +77,7 @@ popup.on('acceptConfirmation', ({data, resolve, reject})=>{
     let confirmation = pendingConfirmations[data.id];
     console.log('accepting confirmation');
     console.log(confirmation);
-    confirmation.resolve("accepted");
+    confirmation.resolve("accepted " + JSON.stringify(confirmation.confirmation));
     delete pendingConfirmations[data.id];
     resolve();
     closePopup2IfQueueEmpty();
@@ -127,7 +133,7 @@ const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
     switch(method) {
         case 'sendTrx':
             addConfirmation({
-                type : "send",
+                type : CONFIRMATION_TYPE.SEND,
                 from : args.from,
                 amount : args.amount
             }, resolve, reject);
