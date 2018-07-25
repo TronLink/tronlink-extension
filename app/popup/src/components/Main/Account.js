@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import { SettingsIcon } from '../../Icons.js';
 
@@ -14,7 +15,7 @@ class Account extends Component {
             <div class="mainContainer">
                 <Header 
                     navbarTitle="ACCOUNT 1"
-                    navbarLabel="0X548845F...F8XG"
+                    navbarLabel={this.props.account.address}
                     leftIcon={false}
                     rightIcon={true}
                     rightIconImg={<SettingsIcon />}
@@ -30,4 +31,9 @@ class Account extends Component {
     }
 }
 
-export default Account;
+
+
+export default connect(state => ({
+    account: state.wallet.account,
+    status: state.wallet.status
+}))(Account);
