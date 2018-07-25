@@ -1,6 +1,8 @@
 import TronUtils from 'TronUtils';
 import crypto from 'crypto';
+import Logger from 'lib/logger';
 
+const logger = new Logger('wallet');
 const rpc = new TronUtils.rpc();
 
 const algorithm = "aes-256-ctr";
@@ -27,10 +29,15 @@ export const WALLET_STATUS = {
 };
 
 export default class Wallet {
+    constructor() {
+        this.loadStorage();
+    }
+
 
     constructor() {
         this.loadStorage();
     }
+
 
     loadStorage() {
         try {
@@ -44,14 +51,15 @@ export default class Wallet {
             this.storage = {};
         }
 
+
         /* will contain objects with balances and such */
         this.accountInfos = {};
         this.selectedAccount = null;
     }
 
     saveStorage(pass = null) {
-        console.log("saving storage with:" + pass);
-        console.log(this);
+        logger.info("saving storage with:" + pass);
+        logger.info(this);
         if (pass === null)
             throw "Storage can't be saved without a password.";
 
@@ -61,8 +69,8 @@ export default class Wallet {
         };
         this.encrypted = toStore.encrypted;
 
-        console.log("tostore:");
-        console.log(toStore);
+        logger.info("tostore:");
+        logger.info(toStore);
 
         window.localStorage.setItem(WALLET_LOCALSTORAGE_KEY, JSON.stringify(toStore));
         this.pass = pass;
@@ -81,9 +89,9 @@ export default class Wallet {
     }
 
     async updateAccount(address){
-        console.log("updateAccount " + address);
+        logger.info("updateAccount " + address);
         let accountInfo = await rpc.getAccount(address);
-        console.log(accountInfo);
+        logger.info(accountInfo);
         this.accountInfos[address] = Wallet.convertAccountObject(address, accountInfo);
     }
 
@@ -93,8 +101,8 @@ export default class Wallet {
             let address = addresses[i];
             await this.updateAccount(address);
         }
-        console.log('updated accounts');
-        console.log(this.accountInfos);
+        logger.info('updated accounts');
+        logger.info(this.accountInfos);
     }
 
     addAccount(newAccount) {
@@ -102,7 +110,9 @@ export default class Wallet {
     }
 
     initWallet(pass = null) {
-        console.log("init wallet with pass: " + pass);
+        // please remove this Till
+        logger.info('init wallet with pass: ' + pass);
+
         if (this.storage.decrypted)
             throw "Wallet cannot be initialized while another wallet already exists.";
         if (pass === null)
@@ -123,8 +133,9 @@ export default class Wallet {
             this.storage.encrypted !== undefined &&
             this.storage.encrypted !== false);
 
-        console.log("isInitialized: " + out);
+        logger.info("isInitialized: " + out);
         return out;
+
     }
 
     getStatus() {
@@ -143,8 +154,8 @@ export default class Wallet {
             this.selectedAccount = Object.keys(this.storage.decrypted.accounts)[0];
             return true;
         } catch (e) {
-            console.log("error unlocking wallet");
-            console.log(e);
+            logger.warn("error unlocking wallet");
+            logger.warn(e);
             return false;
         }
     }

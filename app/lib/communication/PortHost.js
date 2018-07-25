@@ -1,5 +1,8 @@
 /*global chrome*/
 import EventEmitter from 'eventemitter3';
+import Logger from 'lib/logger';
+
+const logger = new Logger('PortHost');
 
 export default class PortHost extends EventEmitter {
     constructor() {
@@ -17,14 +20,14 @@ export default class PortHost extends EventEmitter {
                 source += `-${port.sender.tab.id}`;
 
             this._ports[source] = port;
-            console.log(`Port ${source} connected`);
+            logger.info(`Port ${source} connected`);
 
             port.onMessage.addListener(({ action, data }, sendingPort) => {
                 this.emit(action, { source, data });
             });
 
             port.onDisconnect.addListener(() => {
-                console.log(`Port ${source} disconnected: ${chrome.runtime.lastError}`);
+                logger.info(`Port ${source} disconnected: ${chrome.runtime.lastError || 'No reason provided'}`);
                 delete this._ports[source];
             });
         });
