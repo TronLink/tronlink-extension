@@ -99,11 +99,10 @@ popup.on('getWalletStatus', ({data, resolve, reject})=>{
 
 const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
     switch(method) {
-        case 'sendTrx':
+        case 'sendTron':
             addConfirmation({
-                type : "send",
-                from : args.from,
-                amount : args.amount
+                type: 'send',
+                ...args
             }, resolve, reject);
         break;
         case 'signTransaction':

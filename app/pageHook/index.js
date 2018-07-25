@@ -9,7 +9,7 @@ const linkedRequest = new LinkedRequest(contentScript, ({ source, data }) => ({ 
 const scriptVariable = (window.TRON_LINK_VARIABLE  || 'TronLink').toString();
 
 window[scriptVariable] = {
-    v1: new TronLink(linkedRequest)
+    v1: (network = 'mainnet') => new TronLink(linkedRequest, network)
 };
 
 window.TRON_LINK_ENABLED  = true;
