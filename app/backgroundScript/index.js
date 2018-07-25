@@ -3,6 +3,9 @@ import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
 import Logger from 'lib/logger';
+import TronUtils from 'TronUtils';
+
+const rpc = new TronUtils.rpc();
 
 const logger = new Logger('backgroundScript');
 import tron from 'TronUtils';
@@ -10,12 +13,16 @@ const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
+
+const CONFIRMATION_TYPE = {
+    SEND : "SEND"
+};
+
 const pendingConfirmations = {};
 
 logger.info('Script loaded');
 
 let currentConfirmationId = 0;
-
 let popup2 = null;
 
 function addConfirmation(confirmation, resolve, reject){
@@ -70,9 +77,11 @@ popup.on('acceptConfirmation', ({data, resolve, reject})=>{
         alert("tried accepting confirmation, but confirmation went missing.");
 
     let confirmation = pendingConfirmations[data.id];
+
     logger.info('accepting confirmation');
     logger.info(confirmation);
-    confirmation.resolve("accepted");
+    confirmation.resolve("accepted " + JSON.stringify(confirmation.confirmation));
+
     delete pendingConfirmations[data.id];
     resolve();
     closePopup2IfQueueEmpty();
@@ -115,8 +124,9 @@ const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
     switch(method) {
         case 'sendTron':
             addConfirmation({
-                type: 'send',
-                ...args
+                type : CONFIRMATION_TYPE.SEND,
+                from : args.from,
+                amount : args.amount
             }, resolve, reject);
         break;
         case 'signTransaction':
