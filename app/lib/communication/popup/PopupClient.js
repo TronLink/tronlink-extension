@@ -106,4 +106,12 @@ export default class PopupClient extends EventEmitter {
     requestVote(address) {
         return this.raw('requestVote', { address });
     }
+
+    sendNewConfirmation(confirmation){
+        return this.raw('addConfirmation', confirmation);
+    }
+
+    sendAccount(account){
+        return this.raw('sendAccount', account);
+    }
 }

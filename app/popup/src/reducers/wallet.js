@@ -1,30 +1,75 @@
-import {
-  INITIALIZE
-} from "../actions/wallet"
+import {store, popup} from "../index";
 
-const wallet_status= {
-  none : 0, //only before loading
-  uninitialized : 1,
-  locked : 2,
-  unlocked : 3
+/**********************************
+ *********** ACTIONS **************
+ **********************************/
+export const INITIALIZE = "INITIALIZE";
+export const SET_STATUS = "SET_STATUS";
+export const SET_ACCOUNT = "SET_ACCOUNT";
+
+export const unlockWallet = pass => ({
+    type: INITIALIZE,
+    pass: pass
+});
+
+export const setWalletStatus = status => ({
+    type: SET_STATUS,
+    status
+});
+
+export const setAccount  = account => ({
+    type : SET_ACCOUNT,
+    account
+});
+
+/**********************************
+ *********** UPDATES **************
+ **********************************/
+
+export const updateStatus = async () => {
+    let status = await popup.getWalletStatus();
+    console.log("update status, dispatching new status: " + status);
+    store.dispatch(setWalletStatus(status));
+};
+
+/**********************************
+ *********** REDUCER **************
+ **********************************/
+export const wallet_status = {
+    none: 'NONE', //only before loading
+    uninitialized: 'UNINITIALIZED',
+    locked: 'LOCKED',
+    unlocked: 'UNLOCKED'
 };
 
 const initialState = {
-    status : wallet_status.uninitialized,
-    accounts : {},
-    selectedAccountId : 0,
+    status: wallet_status.uninitialized,
+    account : {},
+    selectedAccountId: 0,
 };
 
 export function walletReducer(state = initialState, action) {
-  switch (action.type) {
-    case INITIALIZE: {
-      return {
-        ...state,
-        status : wallet_status.uninitialized
-      };
+    switch (action.type) {
+        case INITIALIZE: {
+            return {
+                ...state,
+                status: wallet_status.uninitialized
+            };
+        }
+        case SET_ACCOUNT:{
+            return {
+                ...state,
+                account : action.account
+            }
+        }
+        case SET_STATUS : {
+            return {
+                ...state,
+                status: action.status
+            }
+        }
+        default:
+            return state;
     }
-    default:
-      return state;
-  }
 }
 
