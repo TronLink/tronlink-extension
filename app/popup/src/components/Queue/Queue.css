@@ -1,4 +1,4 @@
-.mainContent .confirmSend {
+.queue .confirmSend {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -6,6 +6,22 @@
     padding: 35px;
     box-sizing: border-box;
     height: 100%;
+}
+
+.confirmSubContainer {
+    background: white;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #ccc;
+    padding: 20px 30px;
+    box-sizing: border-box;
+}
+
+.confirmSubContainer > .noteTitle {
+    font-weight: 700;
+}
+
+.confirmSubContainer > .noteBody {
+    margin-top: 10px;
 }
 
 .confirmGroup {
@@ -38,12 +54,21 @@
     margin-top: 4px;
 }
 
-.confirmGroupDetail {
+.confirmWarningHeader {
     margin-top: 10px;
     padding-top: 10px;
-    font-size: 12px;
     border-top: 1px solid #ccc;
-    text-indent: 20px;
+    text-align: center;
+    color: red;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.confirmWarningBody {
+    text-align: center;
+    color: red;
+    font-weight: 500;
 }
 
 .bold {
