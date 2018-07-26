@@ -12,12 +12,12 @@ export default class LinkedResponse extends EventEmitter {
     }
 
     _registerListener() {
-        this._eventHandler.on('tunnel', ({ source, data: { uuid, data } }) => {
-            this._respond(source, uuid, data);
+        this._eventHandler.on('tunnel', ({ source, meta, data: { uuid, data } }) => {
+            this._respond(source, uuid, data, meta);
         });
     }
 
-    _respond(source, uuid, request) {
+    _respond(source, uuid, request, meta) {
         const response = {            
             resolve: data => {
                 this._eventHandler.send(source, 'tunnel', { 
@@ -33,7 +33,8 @@ export default class LinkedResponse extends EventEmitter {
                     error
                 });
             },
-            request
+            request,
+            meta
         };
 
         this.emit('request', response);

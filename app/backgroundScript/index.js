@@ -4,7 +4,7 @@ import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
 import Logger from 'lib/logger';
-import TronUtils from 'TronUtils';
+import TronLinkUtils from 'pageHook/lib/Utils';
 import randomUUID from 'uuid/v4';
 
 // Constants
@@ -24,7 +24,7 @@ let dialog = false;
 
 function addConfirmation(confirmation, resolve, reject) {
     confirmation.id = randomUUID();
-    logger.info('Adding confirmation:', confirmation);
+    logger.info(`Adding confirmation from site ${confirmation.hostname}:`, confirmation);
 
     pendingConfirmations[confirmation.id] = {
         confirmation,
@@ -36,7 +36,7 @@ function addConfirmation(confirmation, resolve, reject) {
 
     if (dialog)
         dialog.focus();
-    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=420,height=595,status=no,scrollbars=yes,resizable=false');
+    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=420,height=595,status=no,scrollbars=no');
 }
 
 function closeDialog() {
@@ -156,14 +156,32 @@ const handleWebCall = ({
         method,
         args = {}
     },
+    meta: {
+        hostname
+    },
     resolve,
     reject
 }) => {
     switch (method) {
         case 'sendTron':
+            const {
+                recipient,
+                amount,
+                desc
+            } = args;
+
+            if(!TronLinkUtils.validateAmount(amount))
+                return reject('Invalid amount provided');
+
+            if(!TronLinkUtils.validateDescription(desc))
+                return reject('Invalid description provided');
+
             addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
-                amount: args.amount
+                recipient,
+                amount,
+                desc,
+                hostname,
             }, resolve, reject);        
         default:
             reject('Unknown method called (' + method + ')');
@@ -172,12 +190,14 @@ const handleWebCall = ({
 
 linkedResponse.on('request', ({
     request,
+    meta,
     resolve,
     reject
 }) => {
     if (request.method) {
         return handleWebCall({
             request,
+            meta,
             resolve,
             reject
         });

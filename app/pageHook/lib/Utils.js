@@ -54,6 +54,27 @@ const Utils = {
 
             return temp;
         }).join('');
+    },
+    isString(string) {
+        return Object.prototype.toString.call(string) === '[object String]';
+    },
+    isNumber(number) {
+        return !isNaN(parseFloat(number)) && isFinite(number);
+    },
+    validateDescription(desc) {
+        if(desc && !this.isString(desc))
+            return false;
+
+        if(desc && desc.length > 240)
+            return false;
+
+        if(desc && !desc.length)
+            return false;
+
+        return true;
+    },
+    validateAmount(amount) {
+        return this.isNumber(amount) && amount > 0;
     }
 }
 

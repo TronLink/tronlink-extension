@@ -15,15 +15,25 @@ export default class PortHost extends EventEmitter {
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
             let source = port.name;
+            let hostname = false;
 
             if(port.sender.tab && source !== 'popup')
                 source += `-${port.sender.tab.id}`;
+
+            if(port.sender.url)
+                hostname = new URL(port.sender.url).hostname;
 
             this._ports[source] = port;
             logger.info(`Port ${source} connected`);
 
             port.onMessage.addListener(({ action, data }, sendingPort) => {
-                this.emit(action, { source, data });
+                this.emit(action, { 
+                    meta: {
+                        hostname
+                    },
+                    source, 
+                    data
+                });
             });
 
             port.onDisconnect.addListener(() => {
