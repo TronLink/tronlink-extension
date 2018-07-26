@@ -5,6 +5,7 @@ import {store, popup} from "../index";
  **********************************/
 export const INITIALIZE = "INITIALIZE";
 export const SET_STATUS = "SET_STATUS";
+export const SET_ACCOUNT = "SET_ACCOUNT";
 
 export const unlockWallet = pass => ({
     type: INITIALIZE,
@@ -16,6 +17,10 @@ export const setWalletStatus = status => ({
     status
 });
 
+export const setAccount  = account => ({
+    type : SET_ACCOUNT,
+    account
+});
 
 /**********************************
  *********** UPDATES **************
@@ -39,7 +44,7 @@ export const wallet_status = {
 
 const initialState = {
     status: wallet_status.uninitialized,
-    accounts: {},
+    account : {},
     selectedAccountId: 0,
 };
 
@@ -50,6 +55,12 @@ export function walletReducer(state = initialState, action) {
                 ...state,
                 status: wallet_status.uninitialized
             };
+        }
+        case SET_ACCOUNT:{
+            return {
+                ...state,
+                account : action.account
+            }
         }
         case SET_STATUS : {
             return {

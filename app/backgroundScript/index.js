@@ -1,25 +1,31 @@
+// Libraries
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
+import Logger from 'lib/logger';
+import TronLinkUtils from 'pageHook/lib/Utils';
+import randomUUID from 'uuid/v4';
 
-console.log('Background script loaded');
+// Constants
+import { CONFIRMATION_TYPE } from 'lib/constants';
 
+// Initialise utilities
+const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 
+logger.info('Script loaded');
+
 const pendingConfirmations = {};
+let dialog = false;
 
-let currentConfirmationId = 0;
+function addConfirmation(confirmation, resolve, reject) {
+    confirmation.id = randomUUID();
+    logger.info(`Adding confirmation from site ${confirmation.hostname}:`, confirmation);
 
-function addConfirmation(confirmation, resolve, reject){
-    console.log("adding confirmation:");
-    console.log(confirmation);
-
-    currentConfirmationId++;
-    confirmation.id = currentConfirmationId;
     pendingConfirmations[confirmation.id] = {
         confirmation,
         resolve,
@@ -27,122 +33,175 @@ function addConfirmation(confirmation, resolve, reject){
     };
 
     popup.sendNewConfirmation(confirmation);
-    window.open("app/popup/build/index.html", "extension_popup", "width=420,height=595,status=no,scrollbars=yes,resizable=false");
+
+    if (dialog)
+        dialog.focus();
+    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=420,height=595,status=no,scrollbars=no');
 }
 
-function getConfirmations(){
-    let out = [];
-    let keys = Object.keys(pendingConfirmations);
-    for(let i in keys){
-        out.push(pendingConfirmations[keys[i]].confirmation);
-    }
-    return out;
+function closeDialog() {
+    if(Object.keys(pendingConfirmations).length)
+        return;
+
+    if(!dialog)
+        return;
+
+    dialog.close();
+    dialog = false;
 }
 
-//open popup
+popup.on('declineConfirmation', ({
+    data,
+    resolve,
+    reject
+}) => {
+    const { id: confirmationID } = data;
 
+    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+        return logger.warn(`Attempted to reject non-existent confirmation ${confirmationID}`);
 
-popup.on('declineConfirmation', ({data, resolve, reject})=>{
-    if(!pendingConfirmations[data.id])
-        alert("tried denying confirmation, but confirmation went missing.");
-    pendingConfirmations[data.id].resolve("denied");
+    const confirmation = pendingConfirmations[confirmationID];
+
+    logger.info(`Declining confirmation ${confirmationID}`);
+    logger.info(confirmation);
+
+    confirmation.reject('denied');
     delete pendingConfirmations[data.id];
+    
+    closeDialog();
     resolve();
 });
 
-popup.on('acceptConfirmation', ({data, resolve, reject})=>{
-    if(!pendingConfirmations[data.id])
-        alert("tried accepting confirmation, but confirmation went missing.");
+popup.on('acceptConfirmation', ({
+    data,
+    resolve,
+    reject
+}) => {
+    const { id: confirmationID } = data;
 
-    let confirmation = pendingConfirmations[data.id];
-    console.log('accepting confirmation');
-    console.log(confirmation);
-    confirmation.resolve("accepted");
+    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+        return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
+
+    const confirmation = pendingConfirmations[confirmationID];
+
+    logger.info(`Accepting confirmation ${confirmationID}`);
+    logger.info(confirmation);
+
+    confirmation.resolve(`accepted ${JSON.stringify(confirmation.confirmation)}`);
     delete pendingConfirmations[data.id];
+    
+    closeDialog();
     resolve();
 });
 
-popup.on('getConfirmations', ({data, resolve, reject})=>{
-    console.log('getConfirmations called');
-    resolve(getConfirmations());
-});
+popup.on('getConfirmations', ({
+    data,
+    resolve,
+    reject
+}) => {
+    logger.info('Requesting confirmation list');
 
-popup.on('requestUnfreeze', ({ data, resolve, reject }) => {
-    const { account } = data;
-
-    console.log(`Requested unfreeze for account ${account}`);
-    resolve(50); // we unfroze 50 tokens    
-
-    popup.requestVote('your mother').then(({ amount, account }) => {
-        console.log(`Vote confirmation for your mother: ${amount} tron power from ${account}`);
-    }).catch(err => {
-        console.log('Vote confirmation rejected:', err);
+    const confirmations = Object.values(pendingConfirmations).map(({ confirmation }) => {
+        return confirmation
     });
+
+    resolve(confirmations);
 });
 
-popup.on('setPassword', ({data, resolve, reject})=>{
-    console.log("before, wallet:");
-    console.log(wallet);
-    if(wallet.isInitialized()){
-        alert("Wallet already initialized. Need to explicitly clear before doing this.");
-    }else{
-        wallet.initWallet(data.password);
-    }
+popup.on('setPassword', ({
+    data,
+    resolve,
+    reject
+}) => {
+    logger.info('Setting password for wallet', { wallet });
+
+    if (wallet.isSetup())
+        return logger.warn('Attempted to set password post initialisation');
+
+    wallet.setupWallet(data.password);
 });
 
-popup.on('unlockWallet', ({data, resolve, reject})=>{
-    console.log('unlockWallet');
-    console.log(data);
-    resolve(wallet.unlockWallet(data.password));
+async function updateAccount() {
+    logger.info('Requesting account update');
+
+    await wallet.updateAccounts();
+
+    popup.sendAccount(
+        wallet.getAccount()
+    );
+}
+
+popup.on('unlockWallet', ({
+    data,
+    resolve,
+    reject
+}) => {
+    logger.info('Requesting to unlock wallet');
+
+    const success = wallet.unlockWallet(data.password);
+
+    if(success)
+        updateAccount();
+
+    resolve(success);
 });
 
-popup.on('getWalletStatus', ({data, resolve, reject})=>{
-    resolve(wallet.getStatus());
+popup.on('getWalletStatus', ({ data, resolve, reject }) => {
+    logger.info('Requesting wallet status');
+    resolve(wallet.status);
 });
 
-const handleWebCall = ({ request: { method, args = {} }, resolve, reject }) => {
-    switch(method) {
-        case 'sendTrx':
-            addConfirmation({
-                type : "send",
-                from : args.from,
-                amount : args.amount
-            }, resolve, reject);
-        break;
-        case 'signTransaction':
-            // Expects { signedTransaction: string, broadcasted: bool, transactionID: string }
-
-            const { 
-                transaction,
-                broadcast
+const handleWebCall = ({
+    request: {
+        method,
+        args = {}
+    },
+    meta: {
+        hostname
+    },
+    resolve,
+    reject
+}) => {
+    switch (method) {
+        case 'sendTron':
+            const {
+                recipient,
+                amount,
+                desc
             } = args;
-            
-            resolve({
-                signedTransaction: btoa(String(transaction)),
-                broadcasted: false,
-                transaction: false
-            });
-        break;
-        case 'getTransaction':
-            // Expects { transaction: obj }
-            reject('Method pending implementation');
-        break;
-        case 'getUserAccount':
-            // Expects { address: string, balance: integer }
-            reject('Method pending implementation');
-        break;
-        case 'simulateSmartContract':
-            // I'm not sure what the input / output will be here
-            reject('Method pending implementation');
-        break;
+
+            if(!TronLinkUtils.validateAmount(amount))
+                return reject('Invalid amount provided');
+
+            if(!TronLinkUtils.validateDescription(desc))
+                return reject('Invalid description provided');
+
+            addConfirmation({
+                type: CONFIRMATION_TYPE.SEND_TRON,
+                recipient,
+                amount,
+                desc,
+                hostname,
+            }, resolve, reject);        
         default:
             reject('Unknown method called (' + method + ')');
     }
-}
+};
 
-linkedResponse.on('request', ({ request, resolve, reject }) => {
-    if(request.method)
-        return handleWebCall({ request, resolve, reject });
+linkedResponse.on('request', ({
+    request,
+    meta,
+    resolve,
+    reject
+}) => {
+    if (request.method) {
+        return handleWebCall({
+            request,
+            meta,
+            resolve,
+            reject
+        });
+    }
 
-    // other functionality here or w/e
+    reject('Unknown protocol called');
 });

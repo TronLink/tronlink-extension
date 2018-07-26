@@ -1,5 +1,8 @@
 /*global chrome*/
 import EventEmitter from 'eventemitter3';
+import Logger from '../logger';
+
+const logger = new Logger('PortChild');
 
 export default class PortChild extends EventEmitter {
     constructor(channelKey = false) {
@@ -24,7 +27,7 @@ export default class PortChild extends EventEmitter {
         });
 
         this._port.onDisconnect.addListener(port => {
-            console.log(`Lost connection to backgroundScript: ${chrome.runtime.lastError}`);
+            logger.warn(`Lost connection to backgroundScript: ${chrome.runtime.lastError || 'No reason provided'}`);
             this._connected = false;
         });
     }

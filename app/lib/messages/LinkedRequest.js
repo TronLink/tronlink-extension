@@ -1,4 +1,7 @@
 import randomUUID from 'uuid/v4';
+import Logger from '../logger';
+
+const logger = new Logger('LinkedRequest');
 
 export default class LinkedRequest {
     constructor(eventHandler = false, outputMap = false) {
@@ -22,7 +25,7 @@ export default class LinkedRequest {
             const responseSent = this._dataStream(data);
 
             if(!responseSent)
-                return console.log(`Promise timed out for linked request ${data.uuid}`);
+                return logger.error(`Promise timed out for linked request ${data.uuid}`);
         });
     }
 
