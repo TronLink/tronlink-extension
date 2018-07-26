@@ -61,7 +61,7 @@ class TronLink {
     }
 
     _transformAddress(address) {
-        if(Object.prototype.toString.call(address) !== '[object String]')
+        if(!Utils.isString(address))
             return false;
 
         switch(address.length) {
@@ -110,6 +110,9 @@ class TronLink {
                 return this._dispatch('getLatestBlock', { transactionID });
             },
             getAccount: address => {
+                if(!this.utils.validateAddress(address))
+                    throw new Error('Invalid address provided');
+
                 return this._dispatch('getLatestBlock', { address });
             }
         };
@@ -117,11 +120,29 @@ class TronLink {
 
     get wallet() {
         return {
-            sendTron: (recipient, amount) => {
-                return this._dispatch('sendTron', { recipient, amount });
+            sendTron: (recipient, amount, desc = false) => {
+                if(!this.utils.validateAddress(recipient))
+                    throw new Error('Invalid recipient provided');
+
+                if(!Utils.validateAmount(amount))
+                    throw new Error('Invalid amount provided');
+
+                if(!Utils.validateDescription(desc))
+                    throw new Error('Invalid description provided');
+                
+                return this._dispatch('sendTron', { recipient, amount, desc });
             },
-            sendAsset: (recipient, amount, assetID) => {
-                return this._dispatch('sendAsset', { recipient, amount, assetID });
+            sendAsset: (recipient, amount, assetID, desc) => {
+                if(!this.utils.validateAddress(recipient))
+                    throw new Error('Invalid recipient provided');
+
+                if(!Utils.validateAmount(amount))
+                    throw new Error('Invalid amount provided');
+
+                if(!Utils.validateDescription(desc))
+                    throw new Error('Invalid description provided');
+
+                return this._dispatch('sendAsset', { recipient, amount, assetID, desc });
             },
             sendTransaction: transaction => {
                 return this._dispatch('sendTransaction', { transaction });
@@ -130,6 +151,9 @@ class TronLink {
                 return this._dispatch('signTransaction', { transaction });
             },
             simulateSmartContract: (address, data) => {
+                if(!this.utils.validateAddress(address))
+                    throw new Error('Invalid smart contract address provided');
+
                 return this._dispatch('simulateSmartContract', { address, data });
             },
             getAccount: () => {

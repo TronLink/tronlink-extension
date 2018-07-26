@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-TronUtils@Flott-org/TronUtils:
+"TronUtils@https://github.com/Flott-org/TronUtils":
   version "1.0.0"
-  resolved "https://codeload.github.com/Flott-org/TronUtils/tar.gz/1236e67909a13df8b64369df256bf82390a4a2eb"
+  resolved "https://github.com/Flott-org/TronUtils#1236e67909a13df8b64369df256bf82390a4a2eb"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"
