@@ -15,6 +15,7 @@ export default class Wallet {
         this._currentAccount = false;
 
         this._loadWallet();
+        this._accountInfos = {};
     }
 
     _loadWallet() {
@@ -40,24 +41,24 @@ export default class Wallet {
     }
 
     getAddresses() {
-        if(this._walletStatus == WALLET_STATUS.UNLOCKED)
+        if(this._walletStatus === WALLET_STATUS.UNLOCKED)
             return this._storage.decrypted.accounts;
 
         return {};
     }
 
-    async updateAccount(address ){
+    async updateAccount(address){
         logger.info(`Account update requested for ${address}`);
 
         const account = await rpc.getAccount(address);
         logger.info('Account updated', { account });
-        
-        this._storage.decrypted.accounts[address] = Utils.convertAccountObject(address, account);
+
+        this._accountInfos[address] = Utils.convertAccountObject(address, account);
     }
 
     async updateAccounts(){
         logger.info('Requesting batch account update');
-        
+
         Object.keys(this.getAddresses()).forEach(async address => {
             await this.updateAccount(address);
         });
@@ -111,12 +112,18 @@ export default class Wallet {
     }
 
     getAccount(address = this._currentAccount) {
-        logger.info(`Reqeusted account ${address}`);
+        //logger.info('keys before:');
+        //logger.info(Object.keys(this._accountInfos));
+        //logger.info(`Requested account ${address}`);
+        //logger.info(JSON.stringify(this._accountInfos));
+        //logger.info('keys after:');
+        //logger.info(Object.keys(this._accountInfos));
+        //logger.info('abc');
 
         if(this._walletStatus !== WALLET_STATUS.UNLOCKED)
             return false;
 
-        return this._storage.decrypted.accounts[address];
+        return this._accountInfos[address];
     }
 
     get status() {

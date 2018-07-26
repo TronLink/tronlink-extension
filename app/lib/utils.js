@@ -46,7 +46,8 @@ const utils = {
         return {
             tokens: {},
             address,
-            balance
+            balance,
+            name : "Account 1"
         };
     }
 };
