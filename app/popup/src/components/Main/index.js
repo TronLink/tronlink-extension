@@ -4,7 +4,7 @@ import './Main.css';
 
 import Account from './Account.js';
 import Settings from './Settings.js';
-import Confirm from './Confirm.js';
+import Send from './Send.js';
 
 
 /*
@@ -22,7 +22,7 @@ class Main extends Component {
         return (
             <div className="mainContainer">
                 <Switch>
-                    <Route path="/main/confirm" component={Confirm} />
+                    <Route path="/main/confirm" component={Send} />
                     <Route path="/main/settings" component={Settings} />
                     <Route path="/main" component={Account} />
                 </Switch>

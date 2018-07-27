@@ -39,14 +39,26 @@
 }
 
 .navbarHeaderMain {
+    position: relative;
     color: #000;
     font-size: 12px;
+    z-index: 2;
 }
 
 .navbarHeaderSub {
+    position: relative;
     color: #7B7B7B;
     font-size: 11px;
     margin-top: 2px;
+    z-index: 2;
+}
+
+.navbarHeaderSub.address span:last-child, .navbarHeaderSub.address:hover span:first-child {
+    display: none;
+}
+
+.navbarHeaderSub.address:hover span:last-child, .navbarHeaderSub.address span:first-child {
+    display: inline-block;
 }
 
 .navbarHeader > svg {
@@ -59,5 +71,5 @@
     width: 55px;
     margin: auto;
     fill: #f1f1f1;
-    z-index: -1;
+    z-index: 0;
 }

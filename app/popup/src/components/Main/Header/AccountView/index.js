@@ -23,6 +23,6 @@ class AccountView extends Component {
 }
 
 export default connect(state => ({
-    accounts: state.accounts,
+    account: state.wallet.account,
     selectedAccountId: state.selectedAccountId
 }))(AccountView);

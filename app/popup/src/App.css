@@ -38,6 +38,11 @@
     box-shadow: inset 0 0 100px #ff9d9d;
 }
 
+.button.gradient:active {
+    background: linear-gradient(to right, #DC2C73, #ED3F21);
+    box-shadow: inset 0 0 0px #ff9d9d;
+}
+
 .button.outline {
     background: transparent;
     color: #000;
@@ -51,6 +56,10 @@
     border: 2px solid #ef3636;
     color: #6b6b6b;
     transition: 0ms;
+}
+
+.button.outline:active {
+    border: 2px solid #bfbfbf;
 }
 
 .button.black {

@@ -40,7 +40,7 @@ function addConfirmation(confirmation, resolve, reject) {
 
     if (dialog)
         dialog.focus();
-    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=420,height=595,status=no,scrollbars=no');
+    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=436,height=634,status=no,scrollbars=no,centerscreen=yes');
 }
 
 function closeDialog() {
