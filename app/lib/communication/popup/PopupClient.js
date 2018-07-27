@@ -114,4 +114,9 @@ export default class PopupClient extends EventEmitter {
     sendAccount(account){
         return this.raw('sendAccount', account);
     }
+
+    broadcastPrice(price){
+        return this.raw('broadcastPrice', price);
+    }
+
 }
