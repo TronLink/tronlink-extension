@@ -3,6 +3,7 @@ import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Wallet from './wallet';
+import TronWebsocket from './websocket'
 import Logger from 'lib/logger';
 import TronLinkUtils from 'pageHook/lib/Utils';
 import randomUUID from 'uuid/v4';
@@ -16,8 +17,11 @@ const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
+const websocket = new TronWebsocket(popup);
 
 logger.info('Script loaded');
+
+websocket.start();
 
 const pendingConfirmations = {};
 let dialog = false;
