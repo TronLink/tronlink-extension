@@ -38,6 +38,11 @@ export const updateStatus = async () => {
     store.dispatch(setWalletStatus(status));
 };
 
+export const updatePrice = async () => {
+    let price = await popup.getPrice();
+    store.dispatch(setTrxPrice(price));
+};
+
 /**********************************
  *********** REDUCER **************
  **********************************/
