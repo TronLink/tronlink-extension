@@ -80,8 +80,13 @@ export function walletReducer(state = initialState, action) {
                 status: action.status
             }
         }
+        case SET_TRX_PRICE:{
+            return {
+                ...state,
+                price : action.price
+            }
+        }
         default:
             return state;
     }
 }
-
