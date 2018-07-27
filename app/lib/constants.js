@@ -12,5 +12,5 @@ export const ENCRYPTION_ALGORITHM = 'aes-256-ctr';
 export const LOCALSTORAGE_KEY = 'TW_WALLET';
 
 export const CURRENCY = {
-    USD: "USD"
+    USD: 'USD'
 };

@@ -17,11 +17,11 @@ const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
-const websocket = new TronWebsocket(popup);
+const webSocket = new TronWebsocket(popup);
 
 logger.info('Script loaded');
 
-websocket.start();
+webSocket.start();
 
 const pendingConfirmations = {};
 let dialog = false;

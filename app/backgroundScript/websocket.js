@@ -1,105 +1,104 @@
-import {CURRENCY} from '../lib/constants';
+import randomUUID from 'uuid/v4';
+import { CURRENCY } from 'lib/constants';
+import Logger from 'lib/logger';
 
-export default class TronWebsocket{
+const logger = new Logger('WebSocket');
 
-    constructor(popup, url = "ws://ws.tron.watch:8089"){
-        this.popup = popup;
-        this.url = url;
-        this.state = {
-            userid : this.guid()
-        };
-        this.accounts = [];
+export default class TronWebsocket {
+    constructor(popup, url = 'ws://ws.tron.watch:8089') {
+        this._popup = popup;
+        this._url = url;
+
+        this._webSocket = false;
+        this._connectionID = randomUUID();
+        this._addresses = {};
     }
 
-    websocketOnMessage(event) {
+    onEvent(event) {
+        let message;
+
         try {
-            let msg = JSON.parse(event.data);
-            if (msg.cmd === "ADDRESS_EVENT") {
-                //UPDATE AN ACCOUNT...
-                //this.props.startUpdating(this.props.wallet.persistent, msg.address);
-            } else if (msg.symbol === "TRX" && msg["USD"].price) {
-                this.popup.broadcastPrice(parseFloat(msg['USD'].price));
-                //this.props.setFiatPrice(CURRENCY.USD, msg["USD"].price);
-            } else {
-            }
-        } catch (e) {}
-    }
-
-
-    websocketOnOpen(event) {
-        this.state.requested = {};
-        let keys = Object.keys(this.accounts);
-        this.addAddresses(keys);
-    }
-
-    checkWebsocket() {
-        if (
-            this.state.websocket !== null &&
-            this.state.websocket.readyState === WebSocket.OPEN
-        ) {
-            //do nothing, we're connected
-        } else if (
-            this.state.websocket &&
-            this.state.websocket.readyState === WebSocket.CLOSED
-        ) {
-            this.connectWebsocket();
+            message = JSON.parse(event.data);
+        } catch(ex) {
+            logger.warn('Failed to parse websocket event');
+            return logger.error(ex);
         }
-        setTimeout(this.checkWebsocket.bind(this), 5000);
-    }
 
-    addWebsocketAlert(address) {
-        if (this.state.websocket.readyState === WebSocket.OPEN) {
-            this.state.websocket.send(
-                JSON.stringify({
-                    cmd: "START_ALERT",
-                    address: address,
-                    userid: this.state.userid
-                })
+        if(message.cmd == 'ADDRESS_EVENT') {
+            //
+            // TODO: Till, when you receive an address event here
+            // do this._addresses[address] = true
+            //
+            // This means that the address has been acknowledged
+            // by the server
+            //
+
+            return logger.info('Address event:', message);
+        }
+
+        if(message.symbol == 'TRX' && message.USD && message.USD.price) {
+            logger.info(`Received new TRX price: $${message.USD.price}`);
+
+            return this._popup.broadcastPrice(
+                parseFloat(message.USD.price)
             );
-            this.state.requested[address] = 1;
         }
+
+        logger.warn('Received unknown websocket event', event);
     }
 
-    connectWebsocket() {
-        console.log("connecting websocket");
-        this.state.websocket = new WebSocket(this.url);
-        this.state.websocket.onopen = this.websocketOnOpen.bind(this);
-        this.state.websocket.onmessage = this.websocketOnMessage.bind(this);
+    onConnect(event) {
+        logger.info('Connection established');
+
+        Object.keys(this._addresses).forEach(address => {
+            this._addAlert(address);
+        });
+    }
+
+    _addAlert(address) {
+        this._addresses[address] = false;
+
+        this._webSocket.send(JSON.stringify({
+            userid: this._connectionID,
+            cmd: 'START_ALERT',
+            address
+        }));
+    }
+
+    _connect() {
+        logger.info('Initiating connection');
+
+        this._webSocket = new WebSocket(this._url);
+
+        this._webSocket.onopen = event => {
+            this.onConnect(event);
+        };
+
+        this._webSocket.onclose = event => {
+            logger.info('Lost connection to websocket');
+
+            setTimeout(() => {
+                this._connect();
+            }, 5000);
+        }
+
+        this._webSocket.onmessage = event => {
+            this.onEvent(event)
+        };
+    }
+
+    addAddresses(...addresses) {
+        addresses.forEach(address => {
+            logger.info(`Creating bind for address ${address}`);
+
+            if(this._addresses[address])
+                return logger.info(`Address ${address} already bound`);
+
+            this._addAlert(address);
+        });
     }
 
     start() {
-        this.connectWebsocket();
-        setTimeout(this.checkWebsocket.bind(this), 0);
-    }
-
-    addAddresses(list) {
-        for (let i = 0; i < list.length; i++) {
-            let addr = list[i];
-            if (!this.state.requested[addr]) {
-                this.addWebsocketAlert(addr);
-            }
-        }
-    }
-
-    guid() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return (
-            s4() +
-            s4() +
-            "-" +
-            s4() +
-            "-" +
-            s4() +
-            "-" +
-            s4() +
-            "-" +
-            s4() +
-            s4() +
-            s4()
-        );
+        this._connect();
     }
 }
