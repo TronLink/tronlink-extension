@@ -90,4 +90,3 @@ export function walletReducer(state = initialState, action) {
             return state;
     }
 }
-
