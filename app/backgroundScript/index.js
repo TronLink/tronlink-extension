@@ -9,7 +9,7 @@ import TronLinkUtils from 'pageHook/lib/Utils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE } from 'lib/constants';
+import { CONFIRMATION_TYPE, WALLET_STATUS } from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -87,6 +87,14 @@ popup.on('acceptConfirmation', ({
         return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
 
     const confirmation = pendingConfirmations[confirmationID];
+    const info = confirmation.confirmation;
+
+    switch (info.type) {
+        case CONFIRMATION_TYPE.SEND_TRON:
+            break;
+        default:
+            alert("tried to confirm confirmation of unknown type: " + info.type);
+    }
 
     logger.info(`Accepting confirmation ${confirmationID}`);
     logger.info(confirmation);
@@ -156,6 +164,12 @@ popup.on('unlockWallet', ({
 popup.on('getWalletStatus', ({ data, resolve, reject }) => {
     logger.info('Requesting wallet status');
     resolve(wallet.status);
+
+    if(wallet.status === WALLET_STATUS.UNLOCKED){
+        popup.sendAccount(
+            wallet.getAccount()
+        );
+    }
 });
 
 const handleWebCall = ({
@@ -183,13 +197,13 @@ const handleWebCall = ({
             if(!TronLinkUtils.validateDescription(desc))
                 return reject('Invalid description provided');
 
-            addConfirmation({
+            return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 recipient,
                 amount,
                 desc,
                 hostname,
-            }, resolve, reject);        
+            }, resolve, reject);    
         default:
             reject('Unknown method called (' + method + ')');
     }
