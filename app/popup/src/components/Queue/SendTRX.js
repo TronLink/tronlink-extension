@@ -88,7 +88,7 @@ class Queue extends Component {
                 <div className="confirmGroup">
                     <div className="confirmGroupTop">
                         <div className="confirmGroupHeader bold">To :</div>
-                        <div className="confirmGroupAmount bold orange">{confirmation.recipient.substr(0, 8)}...{confirmation.recipient.substr(confirmation.recipient.length - 4)}</div>
+                        <div className="confirmGroupAddress bold orange">{ confirmation.recipient }</div>
                     </div>
                 </div>
                 <div className="confirmGroupTotal">
