@@ -12,6 +12,12 @@ export default class TronWebsocket {
         this._webSocket = false;
         this._connectionID = randomUUID();
         this._addresses = {};
+        this._price = 0;
+
+
+        this._popup.on('getPrice', ({ data, resolve, reject }) => {
+            resolve(this._price);
+        });
     }
 
     onEvent(event) {
@@ -24,7 +30,7 @@ export default class TronWebsocket {
             return logger.error(ex);
         }
 
-        if(message.cmd == 'ADDRESS_EVENT') {
+        if(message.cmd === 'ADDRESS_EVENT') {
             //
             // TODO: Till, when you receive an address event here
             // do this._addresses[address] = true
@@ -36,11 +42,12 @@ export default class TronWebsocket {
             return logger.info('Address event:', message);
         }
 
-        if(message.symbol == 'TRX' && message.USD && message.USD.price) {
+        if(message.symbol === 'TRX' && message.USD && message.USD.price) {
             logger.info(`Received new TRX price: $${message.USD.price}`);
 
+            this._price = parseFloat(message.USD.price);
             return this._popup.broadcastPrice(
-                parseFloat(message.USD.price)
+                this._price
             );
         }
 
@@ -80,11 +87,15 @@ export default class TronWebsocket {
             setTimeout(() => {
                 this._connect();
             }, 5000);
-        }
+        };
 
         this._webSocket.onmessage = event => {
             this.onEvent(event)
         };
+    }
+
+    getPrice(){
+        return this._price;
     }
 
     addAddresses(...addresses) {
