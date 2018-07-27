@@ -44,9 +44,10 @@ const utils = {
 
     convertAccountObject(address, { balance }) {
         return {
+            name: 'Default account',
             tokens: {},
             address,
-            balance
+            balance            
         };
     }
 };
