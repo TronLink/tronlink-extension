@@ -15,12 +15,13 @@
     height: 55px;
     width: 50%;
     line-height: 55px;
-    flex-grow: 1;
+    flex: 1;
     background: #D8D8D8;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     font-size: 14px;
     text-align: center;
+    transition: background 200ms ease;
 }
 
 .tab.active  {

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { connect } from "react-redux";
-import './Welcome.css';
+import { connect } from 'react-redux';
 
+import { WALLET_STATUS } from '../../extension/constants';
 import { popup } from '../../index.js';
 import { updateStatus } from '../../reducers/wallet';
+
+import './Welcome.css';
 
 class Welcome extends Component {
     constructor(props) {
@@ -16,91 +18,119 @@ class Welcome extends Component {
         };
     }
 
-    goToWallet(){
+    _checkWalletStatus() {
+        if(this.props.wallet.status == WALLET_STATUS.UNLOCKED)
+            return this.goToWallet();
+    }
+
+    componentDidUpdate() {
+        this._checkWalletStatus();
+    }
+
+    componentDidMount() {
+        this._checkWalletStatus();
+    }
+
+    goToWallet() {
         this.props.history.push('/main/transactions');
     }
 
-    handlePasswordChange = (e) => this.setState({ [e.target.name]: e.target.value });
-
-    createPasswordCheck() {
-        console.log(this.state.password, this.state.passwordRepeat);
-        let { password, passwordRepeat } = this.state;
-        if (password.length > 0) {
-            if (password === passwordRepeat) {
-                return ' ';
-            }
-            return 'Passwords do not match.';
-        }
-        return ' ';
+    handlePasswordChange({ target: { name, value } }) {
+        this.setState({ 
+            [name]: value 
+        });
     }
 
-    async onCreatePassword(){
-        if(this.state.password === this.state.passwordRepeat){
-            console.log("setting password...");
-            let response = popup.setPassword(this.state.password);
-            this.goToWallet();
+    validatePassword() {
+        const { password, passwordRepeat } = this.state;
+
+        if (!password.length)
+            return true;
+
+        if (password === passwordRepeat)
+            return true;
+
+        return false;
+    }
+
+    async createWallet() {
+        if(this.state.password !== this.state.passwordRepeat)
+            return;
+
+        await popup.setPassword(this.state.password);
+
+        updateStatus();
+        this.goToWallet();
+    }
+
+    async login() {
+        const correct = await popup.unlockWallets(this.state.password);
+        
+        if(correct) {
             updateStatus();
-        }else{
-            console.log("password !== passwordRepeat");
-        }
-    }
-
-    async onEnterPassword(){
-        let response = await popup.unlockWallets(this.state.password);
-        console.log("on enter password response:" + response);
-        if(response === true){
-            updateStatus();
             this.goToWallet();
         }
     }
 
-    renderInputs() {
-        if (this.props.wallet.status === 'LOCKED') {
-            return (
-                <div>
-                    <div className="decryptContainer">
-                        <input 
-                            placeholder="Enter Password to Decrypt Wallet..."
-                            className="textInput"
-                            type="password"
-                            name="password"
-                            value={this.state.password}
-                            onChange={this.handlePasswordChange}
-                        />
-                        <div onClick={this.onEnterPassword.bind(this)} className="loginBtn button black">Decrypt</div>
-                    </div>
-                    <div className="restoreWallet">Restore from seed phrase</div>
-                </div>
-            );
-        } else if (this.props.wallet.status === 'UNINITIALIZED') {
-            return (
+    renderLogin() {
+        return (
+            <div>
                 <div className="decryptContainer">
                     <input 
-                        placeholder="Enter Password to Encrypt Extension..."
+                        placeholder="Enter Password to Decrypt Wallet..."
                         className="textInput"
                         type="password"
                         name="password"
-                        value={this.state.password}
-                        onChange={this.handlePasswordChange}
+                        value={ this.state.password }
+                        onChange={ event => this.handlePasswordChange(event) }
+                        onKeyPress={ ({ key }) => key == 'Enter' && this.login() }
                     />
-                    <input 
-                        placeholder="Enter Password Again to Encrypt Extension..."
-                        className="textInput"
-                        type="password"
-                        name="passwordRepeat"
-                        value={this.state.passwordRepeat}
-                        onChange={this.handlePasswordChange}
-                    />
-                    <span>{ this.createPasswordCheck() }</span>
-                    <div onClick={this.onCreatePassword.bind(this)} className="loginBtn button black">Continue</div>
+                    <div onClick={ () => this.login() } className="loginBtn button black">Decrypt</div>
                 </div>
-            );
-        }else{
-            this.goToWallet();
-        }
+                <div className="restoreWallet">Restore from seed phrase</div>
+            </div>
+        );
+    }
+
+    renderRegister() {
+        return (
+            <div className="decryptContainer">
+                <input 
+                    placeholder="Enter Password to Encrypt Extension..."
+                    className="textInput"
+                    type="password"
+                    name="password"
+                    value={ this.state.password }
+                    onChange={ event => this.handlePasswordChange(event) }
+                />
+                <input 
+                    placeholder="Enter Password Again to Encrypt Extension..."
+                    className="textInput"
+                    type="password"
+                    name="passwordRepeat"
+                    value={ this.state.passwordRepeat }
+                    onChange={ event => this.handlePasswordChange(event) }
+                />
+                <span>{ this.validatePassword() ? '' : 'Passwords do not match' }</span>
+                <div onClick={ () => this.createWallet() } className="loginBtn button black">Continue</div>
+            </div>
+        );
     }
 
     render() {
+        let walletView;
+
+        switch(this.props.wallet.status) {
+            case WALLET_STATUS.LOCKED:
+                walletView = this.renderLogin();
+            break;
+            case WALLET_STATUS.UNINITIALIZED:
+                walletView = this.renderRegister();
+            break;
+            default:
+                return null;
+        }
+
         return (
             <div className="welcome">
                 <svg viewBox="0 0 197 134" className="welcomeLogo">
@@ -124,7 +154,7 @@ class Welcome extends Component {
                         </g>
                     </g>
                 </svg>
-                { this.renderInputs() }
+                { walletView }
             </div>
         );
     }
@@ -132,6 +162,6 @@ class Welcome extends Component {
 
 export default withRouter(
     connect(
-        state => ({wallet : state.wallet}),
+        state => ({ wallet: state.wallet }),
     )(Welcome)
 );

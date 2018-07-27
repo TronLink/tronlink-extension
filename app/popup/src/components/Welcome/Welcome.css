@@ -14,14 +14,18 @@
 }
 
 .decryptContainer {
-
+    position: relative;
 }
 
 .decryptContainer > span {
     display: block;
-    height: 12px;
-    font-size: 12px;
+    font-size: 13px;
     color: #ef3636;
+    position: absolute;
+    top: -21px;
+    margin-top: -10px;
+    width: 100%;
+    text-align: center;
 }
 
 .textInput {

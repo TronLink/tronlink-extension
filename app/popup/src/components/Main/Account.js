@@ -14,11 +14,11 @@ class Account extends Component {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle="ACCOUNT 1"
-                    navbarLabel={this.props.account.address}
-                    leftIcon={false}
-                    rightIcon={true}
-                    rightIconImg={<SettingsIcon />}
+                    navbarTitle="Default account"
+                    navbarLabel={ this.props.account.address }
+                    leftIcon={ false }
+                    rightIcon={ true }
+                    rightIconImg={ <SettingsIcon /> }
                     rightIconRoute="/main/settings"
                 >
                     <AccountViewHeader />
@@ -30,8 +30,6 @@ class Account extends Component {
         );
     }
 }
-
-
 
 export default connect(state => ({
     account: state.wallet.account,

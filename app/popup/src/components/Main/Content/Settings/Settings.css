@@ -35,15 +35,23 @@
 
 .textInput {
     display: block;
-    height: 32px;
-    width: 306px;
+    height: 45px;
+    width: 310px;
     text-indent: 20px;
     font-size: 12px;
     padding: 0;
     border-radius: 3px;
     border: 2px solid #bfbfbf;
     font-weight: 500;
-    margin: 10px 0px;
+    margin: 0;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 150ms ease;
+}
+
+.textInput:last-of-type {
+    margin-bottom: 0;
 }
 
 .textInput::placeholder {

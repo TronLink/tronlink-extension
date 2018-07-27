@@ -8,7 +8,7 @@ import PortChild from './extension/communication/PortChild';
 import PopupHost from './extension/communication/popup/PopupHost';
 
 import { addConfirmation, updateConfirmations } from './reducers/confirmations';
-import { setAccount } from "./reducers/wallet";
+import { setAccount, setTrxPrice } from "./reducers/wallet";
 
 import reducers from './reducers';
 import { updateStatus } from './reducers/wallet';
@@ -42,6 +42,11 @@ popup.on('addConfirmation', ({ data, resolve, reject }) => {
 popup.on('sendAccount', ({ data, resolve, reject }) => {
     console.log('received account');
     store.dispatch(setAccount(data));
+});
+
+popup.on('broadcastPrice', ({ data, resolve, reject }) => {
+    console.log('received price');
+    store.dispatch(setTrxPrice(data));
 });
 
 updateConfirmations();
