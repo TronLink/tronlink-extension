@@ -50,6 +50,10 @@
     transition: border 150ms ease;
 }
 
+.textInput:last-of-type {
+    margin-bottom: 0;
+}
+
 .textInput::placeholder {
     color: #a7a7a7;
     font-size: 13px;

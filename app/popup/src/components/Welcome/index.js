@@ -18,9 +18,17 @@ class Welcome extends Component {
         };
     }
 
-    componentDidMount() {
+    _checkWalletStatus() {
         if(this.props.wallet.status == WALLET_STATUS.UNLOCKED)
             return this.goToWallet();
+    }
+
+    componentDidUpdate() {
+        this._checkWalletStatus();
+    }
+
+    componentDidMount() {
+        this._checkWalletStatus();
     }
 
     goToWallet() {
