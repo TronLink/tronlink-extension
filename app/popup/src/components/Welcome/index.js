@@ -85,7 +85,7 @@ class Welcome extends Component {
                         onChange={ event => this.handlePasswordChange(event) }
                         onKeyPress={ ({ key }) => key == 'Enter' && this.login() }
                     />
-                    <div onClick={ this.login() } className="loginBtn button black">Decrypt</div>
+                    <div onClick={ () => this.login() } className="loginBtn button black">Decrypt</div>
                 </div>
                 <div className="restoreWallet">Restore from seed phrase</div>
             </div>
