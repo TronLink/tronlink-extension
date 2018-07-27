@@ -11,7 +11,7 @@ import { addConfirmation, updateConfirmations } from './reducers/confirmations';
 import { setAccount, setTrxPrice } from "./reducers/wallet";
 
 import reducers from './reducers';
-import { updateStatus } from './reducers/wallet';
+import { updateStatus, updatePrice } from './reducers/wallet';
 
 import './index.css';
 
@@ -51,3 +51,4 @@ popup.on('broadcastPrice', ({ data, resolve, reject }) => {
 
 updateConfirmations();
 updateStatus();
+updatePrice();
