@@ -9,7 +9,7 @@ import TronLinkUtils from 'pageHook/lib/Utils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE } from 'lib/constants';
+import { CONFIRMATION_TYPE, WALLET_STATUS } from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -164,6 +164,12 @@ popup.on('unlockWallet', ({
 popup.on('getWalletStatus', ({ data, resolve, reject }) => {
     logger.info('Requesting wallet status');
     resolve(wallet.status);
+
+    if(wallet.status === WALLET_STATUS.UNLOCKED){
+        popup.sendAccount(
+            wallet.getAccount()
+        );
+    }
 });
 
 const handleWebCall = ({
