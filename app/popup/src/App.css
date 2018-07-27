@@ -58,6 +58,10 @@
     transition: 0ms;
 }
 
+.button.outline:active {
+    border: 2px solid #bfbfbf;
+}
+
 .button.black {
     color: #fff;
     background: #000;

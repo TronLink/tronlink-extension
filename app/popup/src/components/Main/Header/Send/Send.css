@@ -78,5 +78,16 @@
 
 .txToDataHeader {
     color: #939394;
-    margin-bottom: 4px;
+}
+
+.txToDataAddress {
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    width: 100%;
+    font-size: 12px;
+}
+
+.txToDataAddress::placeholder {
+    color: #cacaca;
 }

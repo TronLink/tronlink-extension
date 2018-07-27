@@ -12,7 +12,7 @@ class Send extends Component {
 
         this.state = {
             mode: 'TRX',
-            amount: '',
+            amount: 0,
             label: 'TRX'
         };
     }
@@ -34,13 +34,48 @@ class Send extends Component {
                 arr.push({ label: curToken.tokenName, id: token });
             }
         })
+        return arr;
     }
 
-    renderLabel() {
+    renderInput() {
         if (this.state.mode === 'TOKEN') {
-            return;
+            console.log(this.props.account.tokens)
+            if (Object.keys(this.props.account.tokens).length > 0) {
+                return (
+                    <div className="sendInputGroup">
+                        <input 
+                            placeholder="Enter Amount to Send..."
+                            className="textInput"
+                            type="text"
+                            value={this.state.amount}
+                            onChange={this.handleAmount}
+                            onFocus={e => e.target.select()}
+                        />
+                        <select>
+                            {
+                                this.loadTokens().forEach((token, i) => {
+                                    <option value={token.id}>{token.label}</option>
+                                })
+                            }
+                        </select>
+                    </div>
+                );
+            }
+            return <div className="sendInputGroup">No token balance to send.</div>
         }
-        return <div className="sendLabel">TRX</div>;
+        return (
+            <div className="sendInputGroup">
+                <input 
+                    placeholder="Enter Amount to Send..."
+                    className="textInput"
+                    type="text"
+                    value={this.state.amount}
+                    onChange={this.handleAmount}
+                    onFocus={e => e.target.select()}
+                />
+                <div className="sendLabel">TRX</div>
+            </div>
+        );
     }
 
     cancelTransaction() {
@@ -67,32 +102,24 @@ class Send extends Component {
                         /><span>TRX</span>
                     </div>
                     <div className="sendRadioButton">
+                        { /*temp disabled*/ }
                         <input 
                             type="radio"
                             value={'TOKEN'}
                             onChange={this.handleRadioToggle}
                             checked={this.state.mode === 'TOKEN'}
-                        /><span>TOKEN</span>
+                            disabled
+                        /><span className="disabled">TOKEN</span>
                     </div>
                 </div>
-                <div className="sendInputGroup">
-                    <input 
-                        placeholder="Enter Amount to Send..."
-                        className="textInput"
-                        type="text"
-                        value={this.state.amount}
-                        onChange={this.handleAmount}
-                    />
-                    { this.renderLabel() }
-                </div>
+                { this.renderInput() }
                 <div className="sendGroup">
                     <div className="sendGroupTop">
                         <div className="sendGroupHeader bold">Total</div>
                         <div className="sendGroupAmount bold orange">{ this.state.amount } { this.state.label }</div>
                     </div>
-                    <div className="sendGroupBottom">11.28 <span>USD</span></div>
                 </div>
-                <div className="sendGroupDetail">Data Included: 36 bytes</div>
+                <div className="sendGroupDetail">11.28 <span>USD</span></div>
                 <div className="sendGroup sendButtonContainer">
                     <div className="sendButton button outline" onClick={this.cancelTransaction()}>Cancel</div>
                     <div className="sendButton button gradient" onClick={this.sendTransaction()}>Confirm</div>

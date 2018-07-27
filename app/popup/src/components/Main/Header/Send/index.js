@@ -35,7 +35,15 @@ class Send extends Component {
                     </div>
                     <div className="txToData">
                         <div className="txToDataHeader">Sending to :</div>
-                        <div className="txToDataAddress">PLacEh0Ld3RPLacEh0Ld3R</div>
+                        <input 
+                            placeholder="Enter Address to Send to..."
+                            className="txToDataAddress"
+                            type="text"
+                            spellcheck="false"
+                            value={this.state.amount}
+                            onChange={this.handleAmount}
+                            onFocus={e => e.target.select()}
+                        />
                     </div>
                 </div>
             </div>

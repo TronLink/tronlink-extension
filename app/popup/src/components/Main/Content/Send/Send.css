@@ -33,6 +33,10 @@
     margin-left: 5px;
 }
 
+.sendRadioButton span.disabled {
+    color: #bdbdbd;
+}
+
 .sendInputGroup {
     display: flex;
     align-items: center;
@@ -42,10 +46,14 @@
 }
 
 .sendInputGroup > input {
-    height: 50px;
+    height: 40px;
     width: 245px;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 14px;
+    text-align: right;
+    padding-right: 20px;
+    box-sizing: border-box;
+    font-family: 'Source Code Pro', monospace;
 }
 
 .sendGroup {
@@ -71,19 +79,14 @@
     font-family: 'Source Code Pro', monospace;
 }
 
-.sendGroupBottom {
-    font-family: 'Source Code Pro', monospace;
-    text-align: right;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
 .sendGroupDetail {
     margin-top: 10px;
     padding-top: 10px;
-    font-size: 12px;
     border-top: 1px solid #ccc;
-    text-indent: 20px;
+    font-family: 'Source Code Pro', monospace;
+    text-align: right;
+    padding-right: 20px;
+    font-size: 12px;
 }
 
 .bold {
