@@ -183,13 +183,13 @@ const handleWebCall = ({
             if(!TronLinkUtils.validateDescription(desc))
                 return reject('Invalid description provided');
 
-            addConfirmation({
+            return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 recipient,
                 amount,
                 desc,
                 hostname,
-            }, resolve, reject);        
+            }, resolve, reject);    
         default:
             reject('Unknown method called (' + method + ')');
     }
