@@ -119,10 +119,13 @@ popup.on('setPassword', ({
 }) => {
     logger.info('Setting password for wallet', { wallet });
 
-    if (wallet.isSetup())
-        return logger.warn('Attempted to set password post initialisation');
+    if (wallet.isSetup()) {
+        logger.warn('Attempted to set password post initialisation');
+        return reject();
+    }
 
     wallet.setupWallet(data.password);
+    resolve();
 });
 
 async function updateAccount() {
