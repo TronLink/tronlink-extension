@@ -5,10 +5,10 @@ import { SettingsIcon } from '../../Icons.js';
 import Header from './Header';
 import Content from './Content';
 
-import ConfirmSendHeader from './Header/ConfirmSend';
-import ConfirmSendContent from './Content/ConfirmSend';
+import SendHeader from './Header/Send';
+import SendContent from './Content/Send';
 
-class Confirm extends Component {
+class Send extends Component {
     constructor(props) {
         super(props);
 
@@ -36,14 +36,14 @@ class Confirm extends Component {
                         leftIcon={false}
                         rightIcon={false}
                     >
-                        <ConfirmSendHeader 
+                        <SendHeader 
                             sendAmount={this.state.sendAmount}
                             sendLabel="TronWatch"
                             toAddress={this.state.toAddress}
                         />
                     </Header>
                     <Content>
-                        <ConfirmSendContent />
+                        <SendContent />
                     </Content>
                 </div>
             );
@@ -56,14 +56,14 @@ class Confirm extends Component {
                     leftIcon={false}
                     rightIcon={false}
                 >
-                    <ConfirmSendHeader 
+                    <SendHeader 
                         sendAmount={this.state.sendAmount}
                         sendLabel="TRX"
                         toAddress={this.state.toAddress}
                     />
                 </Header>
                 <Content>
-                    <ConfirmSendContent />
+                    <SendContent />
                 </Content>
             </div>
         );
@@ -74,4 +74,4 @@ class Confirm extends Component {
     }
 }
 
-export default Confirm;
+export default Send;

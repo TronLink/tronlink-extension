@@ -1,42 +1,41 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import './ConfirmSend.css';
+import { connect } from 'react-redux';
+import './Send.css';
 
-class ConfirmSend extends Component {
+class Send extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            account: {
-                name: 'ACCOUNT 1',
-                address: 'T377BEIEUHGIJHBE9873093BGLKJBD5LG'
-            }
+
         };
     }
 
     renderTrimmedAddress() {
-        let addr = this.state.account.address;
+        let addr = this.props.account.address;
         return `${addr.substr(0, 8)}...${addr.substr(addr.length - 4)}`;
     }
 
     render() {
+        console.log('acc', this.props.account)
         return (
-            <div className="confirmSend container">
+            <div className="send container">
                 <div className="flowLine"></div>
                 <div className="txDataContainer">
                     <div className="txAccountData">
                         <div className="txAccountDataLeft">
-                            <div className="txAccountDataLabel"><span>From : </span>{ this.state.account.name }</div>
+                            <div className="txAccountDataLabel"><span>From : </span>PLacEh0Ld3RPLacEh0Ld3R</div>
                             <div className="txAccountDataLabel">{ this.renderTrimmedAddress() }</div>
                         </div>
                         <div className="txAccountDataRight">
-                            <div className="txAccountDataLabel">{ this.props.sendAmount } <span>{ this.props.sendLabel }</span></div>
+                            <div className="txAccountDataLabel">4500.123 <span> PHDR</span></div>
                             <div className="txAccountDataLabel">356.41 <span>USD</span></div>
                         </div>
                     </div>
                     <div className="txToData">
                         <div className="txToDataHeader">Sending to :</div>
-                        <div className="txToDataAddress">{ this.props.toAddress }</div>
+                        <div className="txToDataAddress">PLacEh0Ld3RPLacEh0Ld3R</div>
                     </div>
                 </div>
             </div>
@@ -44,4 +43,6 @@ class ConfirmSend extends Component {
     }
 }
 
-export default ConfirmSend;
+export default connect(state => ({
+    account: state.wallet.account
+}))(Send);;

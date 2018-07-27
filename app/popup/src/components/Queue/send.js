@@ -46,10 +46,26 @@ class Queue extends Component {
 
     render() {
         // return most recent confirmation from queue
-        const confirmation = this.props.confirmations[0];
+        //const confirmation = this.props.confirmations[0];
+        const confirmation = {
+            id: 1,
+            type: 'send',
+            amount: '50000',
+            to: 'TNGHIgeegdGBS475896394',
+            from: 'TJEIBNVuoheOHGOEh38yGHOUEOD',
+            domain: 'google.com',
+            note: 'Hello world from google.com. This is a test note that is very long at max 250char. This is actually the maximum length, so this is why im testing this massive note cause i think it may be too big so we will see. we are almost full uh oh, got only a s'
+        }
 
         return (
             <div className="confirmSend">
+                <div className=""></div>
+                
+                <div className="confirmSubContainer">
+                    <div className="noteTitle">Note from: { confirmation.domain }</div>
+                    <div className="noteBody">{ confirmation.note }</div>
+                </div>
+
                 <div className="confirmGroup">
                     <div className="confirmGroupTop">
                         <div className="confirmGroupHeader bold">Total</div>
@@ -57,7 +73,8 @@ class Queue extends Component {
                     </div>
                     <div className="confirmGroupBottom">11.28 <span>USD</span></div>
                 </div>
-                <div className="confirmGroupDetail">Data Included: 36 bytes</div>
+                <div className="confirmWarningHeader">⚠ WARNING! </div>
+                <div className="confirmWarningBody">Only send funds to services and people that you trust. TronLink is not responsible for your own mis-spending. Never send funds to websites that will promise you free returns.</div>
                 <div className="confirmGroup confirmButtonContainer">
                     <div className="confirmButton button outline" onClick={this.rejectSend.bind(this)}>Reject</div>
                     <div className="confirmButton button gradient" onClick={this.confirmSend.bind(this)}>Confirm</div>
