@@ -87,6 +87,14 @@ popup.on('acceptConfirmation', ({
         return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
 
     const confirmation = pendingConfirmations[confirmationID];
+    const info = confirmation.confirmation;
+
+    switch (info.type) {
+        case CONFIRMATION_TYPE.SEND_TRON:
+            break;
+        default:
+            alert("tried to confirm confirmation of unknown type: " + info.type);
+    }
 
     logger.info(`Accepting confirmation ${confirmationID}`);
     logger.info(confirmation);
