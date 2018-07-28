@@ -6,10 +6,11 @@ import Wallet from './wallet';
 import TronWebsocket from './websocket'
 import Logger from 'lib/logger';
 import TronLinkUtils from 'pageHook/lib/Utils';
+import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE, WALLET_STATUS } from 'lib/constants';
+import { CONFIRMATION_TYPE, CONFIRMATION_RESULT, WALLET_STATUS } from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -18,6 +19,7 @@ const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 const webSocket = new TronWebsocket(popup);
+const rpc = new TronUtils.rpc();
 
 logger.info('Script loaded');
 
@@ -84,7 +86,7 @@ popup.on('declineConfirmation', ({
     resolve();
 });
 
-popup.on('acceptConfirmation', ({
+popup.on('acceptConfirmation', async ({
     data,
     resolve,
     reject
@@ -97,8 +99,12 @@ popup.on('acceptConfirmation', ({
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
 
+    let output = {
+        result: CONFIRMATION_RESULT.ACCEPTED
+    };
     switch (info.type) {
         case CONFIRMATION_TYPE.SEND_TRON:
+            output.rpcResponse = await wallet.send(info.recipient, info.amount);
             break;
         default:
             alert("tried to confirm confirmation of unknown type: " + info.type);
@@ -107,7 +113,7 @@ popup.on('acceptConfirmation', ({
     logger.info(`Accepting confirmation ${confirmationID}`);
     logger.info(confirmation);
 
-    confirmation.resolve(`accepted ${JSON.stringify(confirmation.confirmation)}`);
+    confirmation.resolve(JSON.stringify(output));
     delete pendingConfirmations[data.id];
     
     closeDialog();
@@ -180,7 +186,7 @@ popup.on('getWalletStatus', ({ data, resolve, reject }) => {
     }
 });
 
-const handleWebCall = ({
+const handleWebCall = async ({
     request: {
         method,
         args = {}
@@ -192,6 +198,9 @@ const handleWebCall = ({
     reject
 }) => {
     switch (method) {
+        /********************************
+        ************ WALLET *************
+        ********************************/
         case 'sendTron':
             const {
                 recipient,
@@ -208,10 +217,35 @@ const handleWebCall = ({
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 recipient,
-                amount,
+                amount : parseInt(amount),
                 desc,
                 hostname,
-            }, resolve, reject);    
+            }, resolve, reject);
+        case 'getAccount':
+            const account = wallet.getAccount();
+            if(account)
+                resolve(account.address);
+            else
+                reject("wallet not unlocked.");
+            break;
+
+
+        /********************************
+        ************ NODE ***************
+        ********************************/
+        case 'nodeGetAccount':
+            const {
+                address
+            } = args;
+
+            let response = await rpc.getAccount(address);
+            resolve(response);
+            break;
+
+        /********************************
+        *********** UTILS ***************
+        ********************************/
+
         default:
             reject('Unknown method called (' + method + ')');
     }

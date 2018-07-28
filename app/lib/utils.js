@@ -5,6 +5,23 @@ import {
     LOCALSTORAGE_KEY 
 } from './constants';
 
+function convertTransactions(transactions){
+    let output = [];
+
+    for(let i in transactions){
+        let transaction = transactions[i];
+        output.push({
+            txType : transaction.type,
+            ownerAddress : transaction.parameter.value.ownerAddress,
+            toAddress : transaction.parameter.value.to_address,
+            amount : transaction.parameter.value.amount,
+            timestamp : transaction.amount,
+            txID : transaction.txID
+        });
+    }
+    return output;
+}
+
 const utils = {
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {
         const cipher = crypto.createCipher(algorithm, password);
@@ -42,12 +59,14 @@ const utils = {
         window.localStorage.setItem(key, JSON.stringify(data));
     },
 
-    convertAccountObject(address, { balance }) {
+
+    convertAccountObject(address, { balance }, transactions) {
         return {
             name: 'Default account',
             tokens: {},
             address,
-            balance            
+            balance,
+            transactions : convertTransactions(transactions)
         };
     }
 };

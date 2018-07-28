@@ -15,7 +15,7 @@ export default class Wallet {
         this._password = false;
         this._currentAccount = false;
 
-        this._loadWallet();        
+        this._loadWallet();
     }
 
     _loadWallet() {
@@ -23,6 +23,12 @@ export default class Wallet {
 
         if(this._storage.hasOwnProperty('encrypted'))
             this._walletStatus = WALLET_STATUS.LOCKED;
+    }
+
+    async send(recipient, amount){
+        let account = this._storage.decrypted.accounts[this._currentAccount];
+        console.log("SENDING FROM " + account.address + " TO " + recipient + " AMOUNT: " + amount);
+        return await rpc.sendTrx(account.privateKey, recipient, amount);
     }
 
     saveStorage(password = false) {
@@ -51,9 +57,10 @@ export default class Wallet {
         logger.info(`Account update requested for ${address}`);
 
         const account = await rpc.getAccount(address);
+        const transactions = await rpc.getTransactions(address);
         logger.info('Account updated', { account });
 
-        this._accounts[address] = Utils.convertAccountObject(address, account);
+        this._accounts[address] = Utils.convertAccountObject(address, account, transactions);
     }
 
     async updateAccounts(){

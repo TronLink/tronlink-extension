@@ -4,7 +4,7 @@
 
 "TronUtils@https://github.com/Flott-org/TronUtils":
   version "1.0.0"
-  resolved "https://github.com/Flott-org/TronUtils#1236e67909a13df8b64369df256bf82390a4a2eb"
+  resolved "https://github.com/Flott-org/TronUtils#21d2899142963b0a05edefc9838cca8e8d7578f2"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"
@@ -7166,8 +7166,8 @@ ua-parser-js@^0.7.18:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.18.tgz#a7bfd92f56edfb117083b69e31d2aa8882d4b1ed"
 
 uglify-js@3.4.x, uglify-js@^3.0.13:
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.4.5.tgz#650889c0766cf0f6fd5346cea09cd212f544be69"
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.4.6.tgz#bc546d53f3e02b05d97d0ca5a7abfe0fb0384ddb"
   dependencies:
     commander "~2.16.0"
     source-map "~0.6.1"
