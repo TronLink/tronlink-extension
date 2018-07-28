@@ -64,8 +64,12 @@
 
 }
 
-.confirmGroupAmount {
+.confirmGroupAmount, .confirmGroupAddress {
     font-family: 'Source Code Pro', monospace;
+}
+
+.confirmGroupAddress {
+    font-size: 12px;
 }
 
 .confirmGroupBottom {

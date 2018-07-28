@@ -38,9 +38,17 @@ function addConfirmation(confirmation, resolve, reject) {
 
     popup.sendNewConfirmation(confirmation);
 
+    if(dialog && dialog.closed)
+        dialog = false;
+
     if (dialog)
-        dialog.focus();
-    else dialog = window.open('app/popup/build/index.html', 'extension_popup', 'width=436,height=634,status=no,scrollbars=no,centerscreen=yes');
+        return dialog.focus();
+
+    dialog = window.open(
+        'app/popup/build/index.html', 
+        'extension_popup', 
+        'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
+    );
 }
 
 function closeDialog() {
