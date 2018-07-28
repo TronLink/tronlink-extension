@@ -215,7 +215,14 @@ const handleWebCall = ({
                 amount : parseInt(amount),
                 desc,
                 hostname,
-            }, resolve, reject);    
+            }, resolve, reject);
+        case 'getAccount':
+            const account = wallet.getAccount();
+            if(account)
+                resolve(account.address);
+            else
+                reject("wallet not unlocked.");
+            break;
         default:
             reject('Unknown method called (' + method + ')');
     }
