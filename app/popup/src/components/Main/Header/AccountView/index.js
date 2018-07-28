@@ -4,13 +4,32 @@ import { connect } from 'react-redux';
 import './AccountView.css';
 
 class AccountView extends Component {
+    state = {
+        balance: 0
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.account == prevProps.account)
+            return;
+
+        if(this.props.account) {
+            this.setState({ 
+                balance: (this.props.account.balance || 0) / 1000000
+            });
+        } else this.setState({ balance: 0 });
+    };
+
     render() {
+        const usdValue = Number(
+            this.state.balance * this.props.price
+        ).toFixed(2).toLocaleString();
+
         return (
             <div className="accountView container">
                 <div className="accountBalance">
-                    <span className="accountBalanceAmount">5,300,314.504</span>
+                    <span className="accountBalanceAmount">{ this.state.balance.toLocaleString() }</span>
                     <span className="accountBalanceTicker">TRX</span>
-                    <div className="accountBalanceUSD">3.55 USD</div>
+                    <div className="accountBalanceUSD">${ usdValue } USD</div>
                 </div>
 
                 <div className="buttonContainer">
@@ -23,6 +42,7 @@ class AccountView extends Component {
 }
 
 export default connect(state => ({
-    accounts: state.accounts,
+    price: state.wallet.price,
+    account: state.wallet.account,
     selectedAccountId: state.selectedAccountId
 }))(AccountView);

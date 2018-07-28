@@ -9,22 +9,40 @@ const ByteArray = {
         )).join('');
     },
 
-    fromHexString(string) {
-        if(string == null)
-            return new Uint8Array(0);
+    charToByte(c) {
+        if (c >= 'A' && c <= 'F')
+            return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+        
+        if (c >= 'a' && c <= 'f')
+            return c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
+        
+        else if (c >= '0' && c <= '9')
+            return c.charCodeAt(0) - '0'.charCodeAt(0);
 
-        if(string.startsWith('0x'))
-            string = string.substr(2);
+        return 0;
+    },
 
-        if(string.length % 2 != 0)
-            string = '0' + string;
+    fromHexString(str) {
+        const byteArray = [];
 
-        const buffer = new Uint8Array((string.length / 2) | 0);
+        let d = 0;
+        let j = 0;
+        let k = 0;
+      
+        for (let i = 0; i < str.length; i++) {
+            const c = str.charAt(i);
+          
+            d <<= 4;
+            d += this.charToByte(c);
+            j++;
 
-        for(let i = 0; i < string.length; i+= 2)
-            buffer[i / 2] = parseInt(string.substr(i, i + 2), 16);
+            if (0 === (j % 2)) {
+              byteArray[k++] = d;
+              d = 0;
+            }
+        }
 
-        return buffer;
+        return byteArray;
     }
 };
 

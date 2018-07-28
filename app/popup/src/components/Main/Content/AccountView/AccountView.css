@@ -13,6 +13,7 @@
 
 .tab {
     height: 55px;
+    width: 50%;
     line-height: 55px;
     flex: 1;
     background: #D8D8D8;
@@ -35,4 +36,5 @@
     flex: 1;
     padding: 10px;
     box-sizing: border-box;
+    cursor: default;
 }

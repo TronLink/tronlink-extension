@@ -1,3 +1,8 @@
+import Sha from 'jssha';
+import ByteArray from './ByteArray';
+
+const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
 const Utils = {
     base64ToHex(string) {
         const bin = atob(string.replace(/[ \r\n]+$/, ''));
@@ -14,17 +19,21 @@ const Utils = {
 
         return hex.join('');
     },
+    sha256(string) {
+        const shaObj = new Sha('SHA-256', 'HEX');
+        shaObj.update(string);
+        return shaObj.getHash('HEX');
+    },
     base58ToHex(string) {
-        const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-        const bytes = [ 0 ];
+        const bytes = [0];
 
         for (let i = 0; i < string.length; i++) {
             const char = string[i];
 
-            if (!ALPHABET.includes(char)) 
+            if (!ALPHABET.includes(char))
                 throw new Error('Non-base58 character');
 
-            for (let j = 0; j < bytes.length; j++) 
+            for (let j = 0; j < bytes.length; j++)
                 bytes[j] *= 58;
 
             bytes[0] += ALPHABET.indexOf(char);
@@ -43,17 +52,49 @@ const Utils = {
             }
         }
 
-        for (let i = 0; string[i] === '1' && i < string.length - 1; i++) 
+        for (let i = 0; string[i] === '1' && i < string.length - 1; i++)
             bytes.push(0);
 
         return bytes.reverse().slice(0, 21).map(byte => {
             let temp = byte.toString(16);
 
-            if(temp.length == 1)
+            if (temp.length == 1)
                 temp = '0' + temp;
 
             return temp;
         }).join('');
+    },    
+    hexToBase58(string) {
+        const primary = this.sha256(string);
+        const secondary = this.sha256(primary);
+
+        const buffer = ByteArray.fromHexString(string + secondary.slice(0, 8));
+        const digits = [ 0 ];
+
+        for (let i = 0; i < buffer.length; i++) {
+            for (let j = 0; j < digits.length; j++) 
+                digits[j] <<= 8;
+
+            digits[0] += buffer[i]
+
+            let carry = 0;
+
+            for (let j = 0; j < digits.length; ++j) {
+                digits[j] += carry;
+                carry = (digits[j] / 58) | 0;
+                digits[j] %= 58;
+            }
+
+            while (carry) {
+                digits.push(carry % 58);
+                carry = (carry / 58) | 0;
+            }
+        }
+
+        for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++) 
+            digits.push(0);
+
+        return digits.reverse().map(digit => ALPHABET[digit]).join('');
     },
     isString(string) {
         return Object.prototype.toString.call(string) === '[object String]';
@@ -62,13 +103,13 @@ const Utils = {
         return !isNaN(parseFloat(number)) && isFinite(number);
     },
     validateDescription(desc) {
-        if(desc && !this.isString(desc))
+        if (desc && !this.isString(desc))
             return false;
 
-        if(desc && desc.length > 240)
+        if (desc && desc.length > 240)
             return false;
 
-        if(desc && !desc.length)
+        if (desc && !desc.length)
             return false;
 
         return true;

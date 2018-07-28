@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Send from './send';
+import './Queue.css';
+
 import { CONFIRMATION_TYPE } from '../../extension/constants';
 
-import './Queue.css';
+import Send from './SendTRX.js';
 
 class Queue extends React.Component {
     renderConfirmationType() {
@@ -23,7 +24,7 @@ class Queue extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="queue">
                 { this.renderConfirmationType() }
             </div>
         );

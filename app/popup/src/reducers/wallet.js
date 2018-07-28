@@ -55,7 +55,9 @@ export const wallet_status = {
 
 const initialState = {
     status: wallet_status.uninitialized,
-    account : {},
+    account : {
+        transactions : []
+    },
     selectedAccountId: 0,
     price : 0.0
 };
@@ -80,8 +82,13 @@ export function walletReducer(state = initialState, action) {
                 status: action.status
             }
         }
+        case SET_TRX_PRICE:{
+            return {
+                ...state,
+                price : action.price
+            }
+        }
         default:
             return state;
     }
 }
-

@@ -33,6 +33,23 @@ class Header extends Component {
         );
     }
 
+    renderSubLabel() {
+        if (this.props.navbarLabel && this.props.navbarLabel.length > 33) {
+            let addr = this.props.navbarLabel;
+            return (
+                <div className="navbarHeaderSub address">
+                    <span>{addr.substr(0, 8)}...{addr.substr(addr.length - 4)}</span>
+                    <span>{this.props.navbarLabel}</span>
+                </div>
+            )
+        }
+        return (
+            <div className="navbarHeaderSub">
+                <span>{this.props.navbarLabel}</span>
+            </div>
+        );
+    }
+
     render() {
         return (
             <div className="header">
@@ -43,9 +60,7 @@ class Header extends Component {
                         <div className="navbarHeaderMain">
                             <span>{this.props.navbarTitle}</span>
                         </div>
-                        <div className="navbarHeaderSub">
-                            <span>{this.props.navbarLabel}</span>
-                        </div>
+                        { this.renderSubLabel() }
                         <TronIcon />
                     </div>
 

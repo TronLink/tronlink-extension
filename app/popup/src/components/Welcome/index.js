@@ -104,7 +104,7 @@ class Welcome extends Component {
                     onChange={ event => this.handlePasswordChange(event) }
                 />
                 <input 
-                    placeholder="Enter Password Again to Encrypt Extension..."
+                    placeholder="Repeat Password to Encrypt Extension..."
                     className="textInput"
                     type="password"
                     name="passwordRepeat"
