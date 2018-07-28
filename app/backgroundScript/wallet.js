@@ -25,6 +25,12 @@ export default class Wallet {
             this._walletStatus = WALLET_STATUS.LOCKED;
     }
 
+    async send(recipient, amount){
+        let account = this._storage.decrypted.accounts[this._currentAccount];
+        console.log("SENDING FROM " + account.address + " TO " + recipient + " AMOUNT: " + amount);
+        return await rpc.sendTrx(account.privateKey, recipient, amount);
+    }
+
     saveStorage(password = false) {
         if (!this._password && !password)
             throw 'Storage requires a password for encryption';

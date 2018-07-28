@@ -9,7 +9,7 @@ import TronLinkUtils from 'pageHook/lib/Utils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE, WALLET_STATUS } from 'lib/constants';
+import { CONFIRMATION_TYPE, CONFIRMATION_RESULT, WALLET_STATUS } from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -84,7 +84,7 @@ popup.on('declineConfirmation', ({
     resolve();
 });
 
-popup.on('acceptConfirmation', ({
+popup.on('acceptConfirmation', async ({
     data,
     resolve,
     reject
@@ -97,8 +97,12 @@ popup.on('acceptConfirmation', ({
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
 
+    let output = {
+        result: CONFIRMATION_RESULT.ACCEPTED
+    };
     switch (info.type) {
         case CONFIRMATION_TYPE.SEND_TRON:
+            output.rpcResponse = await wallet.send(info.recipient, info.amount);
             break;
         default:
             alert("tried to confirm confirmation of unknown type: " + info.type);
@@ -107,7 +111,7 @@ popup.on('acceptConfirmation', ({
     logger.info(`Accepting confirmation ${confirmationID}`);
     logger.info(confirmation);
 
-    confirmation.resolve(`accepted ${JSON.stringify(confirmation.confirmation)}`);
+    confirmation.resolve(JSON.stringify(output));
     delete pendingConfirmations[data.id];
     
     closeDialog();
@@ -208,7 +212,7 @@ const handleWebCall = ({
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 recipient,
-                amount,
+                amount : parseInt(amount),
                 desc,
                 hostname,
             }, resolve, reject);    
