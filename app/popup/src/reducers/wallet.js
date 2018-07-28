@@ -55,7 +55,9 @@ export const wallet_status = {
 
 const initialState = {
     status: wallet_status.uninitialized,
-    account : {},
+    account : {
+        transactions : []
+    },
     selectedAccountId: 0,
     price : 0.0
 };

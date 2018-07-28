@@ -15,7 +15,7 @@ export default class Wallet {
         this._password = false;
         this._currentAccount = false;
 
-        this._loadWallet();        
+        this._loadWallet();
     }
 
     _loadWallet() {
@@ -51,9 +51,10 @@ export default class Wallet {
         logger.info(`Account update requested for ${address}`);
 
         const account = await rpc.getAccount(address);
+        const transactions = await rpc.getTransactions(address);
         logger.info('Account updated', { account });
 
-        this._accounts[address] = Utils.convertAccountObject(address, account);
+        this._accounts[address] = Utils.convertAccountObject(address, account, transactions);
     }
 
     async updateAccounts(){
