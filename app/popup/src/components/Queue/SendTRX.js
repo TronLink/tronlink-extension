@@ -43,7 +43,7 @@ class Queue extends Component {
     render() {
         const confirmation = this.props.confirmations[0];
         const trxPrice = Number(
-            this.state.balance * this.props.price
+            confirmation.amount * this.props.trxPrice
         ).toFixed(2).toLocaleString();
 
         return (
