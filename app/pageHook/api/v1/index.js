@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js';
 
-import Logger from '../../../lib/logger';
-import ByteArray from '../../lib/ByteArray';
-import Utils from '../../lib/Utils';
+import Logger from 'lib/logger';
+import ByteArray from 'lib/ByteArray';
+import Utils from 'lib/utils';
 
 const logger = new Logger('TronLink');
 

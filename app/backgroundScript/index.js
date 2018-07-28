@@ -2,15 +2,19 @@
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
+import Logger from 'lib/logger';
+import Utils from 'lib/utils';
 import Wallet from './wallet';
 import TronWebsocket from './websocket'
-import Logger from 'lib/logger';
-import TronLinkUtils from 'pageHook/lib/Utils';
 import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE, CONFIRMATION_RESULT, WALLET_STATUS } from 'lib/constants';
+import { 
+    CONFIRMATION_TYPE, 
+    CONFIRMATION_RESULT, 
+    WALLET_STATUS 
+} from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -208,10 +212,10 @@ const handleWebCall = async ({
                 desc
             } = args;
 
-            if(!TronLinkUtils.validateAmount(amount))
+            if(!Utils.validateAmount(amount))
                 return reject('Invalid amount provided');
 
-            if(!TronLinkUtils.validateDescription(desc))
+            if(!Utils.validateDescription(desc))
                 return reject('Invalid description provided');
 
             return addConfirmation({
