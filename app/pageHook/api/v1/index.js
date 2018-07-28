@@ -113,7 +113,7 @@ class TronLink {
                 if(!this.utils.validateAddress(address))
                     throw new Error('Invalid address provided');
 
-                return this._dispatch('getLatestBlock', { address });
+                return this._dispatch('nodeGetAccount', { address });
             }
         };
     }

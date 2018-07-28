@@ -6,6 +6,7 @@ import Wallet from './wallet';
 import TronWebsocket from './websocket'
 import Logger from 'lib/logger';
 import TronLinkUtils from 'pageHook/lib/Utils';
+import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
@@ -18,6 +19,7 @@ const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 const webSocket = new TronWebsocket(popup);
+const rpc = new TronUtils.rpc();
 
 logger.info('Script loaded');
 
@@ -184,7 +186,7 @@ popup.on('getWalletStatus', ({ data, resolve, reject }) => {
     }
 });
 
-const handleWebCall = ({
+const handleWebCall = async ({
     request: {
         method,
         args = {}
@@ -196,6 +198,9 @@ const handleWebCall = ({
     reject
 }) => {
     switch (method) {
+        /********************************
+        ************ WALLET *************
+        ********************************/
         case 'sendTron':
             const {
                 recipient,
@@ -223,6 +228,24 @@ const handleWebCall = ({
             else
                 reject("wallet not unlocked.");
             break;
+
+
+        /********************************
+        ************ NODE ***************
+        ********************************/
+        case 'nodeGetAccount':
+            const {
+                address
+            } = args;
+
+            let response = await rpc.getAccount(address);
+            resolve(response);
+            break;
+
+        /********************************
+        *********** UTILS ***************
+        ********************************/
+
         default:
             reject('Unknown method called (' + method + ')');
     }
