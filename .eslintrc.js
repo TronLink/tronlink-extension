@@ -56,7 +56,8 @@ module.exports = {
         "object-shorthand": [ "error" ],
         "quote-props": [ "error", "as-needed" ],
         "no-array-constructor": [ "error" ],
-        "array-callback-return": [ "error" ]
+        "array-callback-return": [ "error" ],
+        "prefer-destructuring": [ "error", { "array": false } ]
     },
     "globals": {
         "EXTENSION_ID": false,
