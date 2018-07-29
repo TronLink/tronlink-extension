@@ -61,7 +61,7 @@ const utils = {
                 toAddress,
                 isMine,
                 amount: transaction.parameter.value.amount,
-                timestamp: transaction.amount,
+                date: transaction.timestamp,
                 txID: transaction.txID
             };
         });
