@@ -53,7 +53,8 @@ module.exports = {
         "block-spacing": [ "error" ],
         "no-var": [ "error" ],
         "no-new-object": [ "error" ],
-        "object-shorthand": [ "error" ]
+        "object-shorthand": [ "error" ],
+        "quote-props": [ "error", "as-needed" ]
     },
     "globals": {
         "EXTENSION_ID": false,
