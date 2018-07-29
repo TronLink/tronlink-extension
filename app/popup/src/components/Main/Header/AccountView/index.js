@@ -8,16 +8,24 @@ class AccountView extends Component {
         balance: 0
     }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.account == prevProps.account)
-            return;
-
+    _updateBalance() {
         if(this.props.account) {
             this.setState({ 
                 balance: (this.props.account.balance || 0) / 1000000
             });
         } else this.setState({ balance: 0 });
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.account == prevProps.account)
+            return;
+
+        this._updateBalance();
     };
+
+    componentDidMount() {
+        this._updateBalance();
+    }
 
     render() {
         const usdValue = Number(
