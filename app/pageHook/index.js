@@ -16,7 +16,7 @@ window.TRON_LINK_ENABLED = true;
 
 // Set any configuration options
 const scriptUrl = document.getElementById('tronLinkAPI').src;
-const queryString = scriptUrl.replace(/^[^?]+\??/,'');
+const queryString = scriptUrl.replace(/^[^?]+\??/, '');
 const qsMatch = /(?:\?|&|)([\w\d]*)=([^&]+)*&*/g;
 const config = {};
 

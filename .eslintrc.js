@@ -71,7 +71,8 @@ module.exports = {
         "no-multi-assign": [ "error" ],
         "no-mixed-operators": [ "error" ],
         "no-else-return": [ "error" ],
-        "padded-blocks": [ "error", "never" ]
+        "padded-blocks": [ "error", "never" ],
+        "comma-spacing": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
