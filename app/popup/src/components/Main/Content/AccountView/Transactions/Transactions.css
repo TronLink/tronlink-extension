@@ -1,7 +1,4 @@
 .transactions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex: 1 1;
     padding-right: 10px;
     box-sizing: border-box;
@@ -9,6 +6,7 @@
 }
 
 .infoMessageContainer > span {
+    margin-top: 150px;
     display: block;
     color: #808080;
     text-align: center;
