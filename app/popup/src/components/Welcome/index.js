@@ -14,7 +14,8 @@ class Welcome extends Component {
 
         this.state = {
             password: '',
-            passwordRepeat: ''
+            passwordRepeat: '',
+            wrongPassword: false
         };
     }
 
@@ -37,7 +38,8 @@ class Welcome extends Component {
 
     handlePasswordChange({ target: { name, value } }) {
         this.setState({ 
-            [name]: value 
+            [name]: value,
+            wrongPassword: false
         });
     }
 
@@ -66,9 +68,11 @@ class Welcome extends Component {
     async login() {
         const correct = await popup.unlockWallets(this.state.password);
         
-        if(correct) {
+        if (correct) {
             updateStatus();
             this.goToWallet();
+        } else {
+            this.setState({ wrongPassword: true });
         }
     }
 
@@ -85,6 +89,7 @@ class Welcome extends Component {
                         onChange={ event => this.handlePasswordChange(event) }
                         onKeyPress={ ({ key }) => key == 'Enter' && this.login() }
                     />
+                    <span>{ this.state.wrongPassword ? 'Incorrect Password' : '' }</span>
                     <div onClick={ () => this.login() } className="loginBtn button black">Decrypt</div>
                 </div>
                 <div className="restoreWallet">Restore from seed phrase</div>

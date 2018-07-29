@@ -1,8 +1,18 @@
 .transactions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex: 1 1;
     padding-right: 10px;
     box-sizing: border-box;
     overflow-y: scroll;
+}
+
+.infoMessageContainer > span {
+    display: block;
+    color: #808080;
+    text-align: center;
+    font-size: 12px;
 }
 
 .transactions::-webkit-scrollbar {
