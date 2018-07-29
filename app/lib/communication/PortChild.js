@@ -11,7 +11,6 @@ export default class PortChild extends EventEmitter {
         if(!channelKey)
             throw 'No communication channel provided';
 
-
         this._channelKey = channelKey;
         this._connected = false;
 
@@ -26,7 +25,7 @@ export default class PortChild extends EventEmitter {
             this.emit(action, data);
         });
 
-        this._port.onDisconnect.addListener(port => {
+        this._port.onDisconnect.addListener(() => {
             logger.warn(`Lost connection to backgroundScript: ${chrome.runtime.lastError || 'No reason provided'}`);
             this._connected = false;
         });

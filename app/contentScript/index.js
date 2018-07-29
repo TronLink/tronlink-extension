@@ -6,7 +6,7 @@ const logger = new Logger('contentScript');
 const pageHook = new EventDispatcher('contentScript', 'pageHook');
 const backgroundScript = new PortChild('contentScript');
 
-pageHook.on('tunnel', ({ data, source }) => {
+pageHook.on('tunnel', ({ data }) => {
     backgroundScript.send('tunnel', data);
 });
 
@@ -16,7 +16,7 @@ backgroundScript.on('tunnel', data => {
 
 logger.info('Script loaded. Waiting for DOM load event');
 
-document.addEventListener('DOMContentLoaded', event => {
+document.addEventListener('DOMContentLoaded', () => {
     logger.info('DOM loaded, injecting pageHook');
 
     const node = document.getElementsByTagName('head')[0];

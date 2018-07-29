@@ -5,7 +5,7 @@ import LinkedResponse from 'lib/messages/LinkedResponse';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import Wallet from './wallet';
-import TronWebsocket from './websocket'
+import TronWebsocket from './websocket';
 import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
@@ -70,8 +70,7 @@ function closeDialog() {
 
 popup.on('declineConfirmation', ({
     data,
-    resolve,
-    reject
+    resolve
 }) => {
     const { id: confirmationID } = data;
 
@@ -92,8 +91,7 @@ popup.on('declineConfirmation', ({
 
 popup.on('acceptConfirmation', async ({
     data,
-    resolve,
-    reject
+    resolve
 }) => {
     const { id: confirmationID } = data;
 
@@ -103,15 +101,16 @@ popup.on('acceptConfirmation', async ({
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
 
-    let output = {
+    const output = {
         result: CONFIRMATION_RESULT.ACCEPTED
     };
+
     switch (info.type) {
         case CONFIRMATION_TYPE.SEND_TRON:
             output.rpcResponse = await wallet.send(info.recipient, info.amount);
             break;
         default:
-            alert("tried to confirm confirmation of unknown type: " + info.type);
+            logger.warn('tried to confirm confirmation of unknown type:', info.type);
     }
 
     logger.info(`Accepting confirmation ${confirmationID}`);
@@ -125,14 +124,12 @@ popup.on('acceptConfirmation', async ({
 });
 
 popup.on('getConfirmations', ({
-    data,
-    resolve,
-    reject
+    resolve
 }) => {
     logger.info('Requesting confirmation list');
 
     const confirmations = Object.values(pendingConfirmations).map(({ confirmation }) => {
-        return confirmation
+        return confirmation;
     });
 
     resolve(confirmations);
@@ -166,8 +163,7 @@ async function updateAccount() {
 
 popup.on('unlockWallet', ({
     data,
-    resolve,
-    reject
+    resolve
 }) => {
     logger.info('Requesting to unlock wallet');
 
@@ -179,11 +175,11 @@ popup.on('unlockWallet', ({
     resolve(success);
 });
 
-popup.on('getWalletStatus', ({ data, resolve, reject }) => {
+popup.on('getWalletStatus', ({ resolve }) => {
     logger.info('Requesting wallet status');
     resolve(wallet.status);
 
-    if(wallet.status === WALLET_STATUS.UNLOCKED){
+    if(wallet.status === WALLET_STATUS.UNLOCKED) {
         popup.sendAccount(
             wallet.getAccount()
         );
@@ -205,7 +201,7 @@ const handleWebCall = async ({
         /********************************
         ************ WALLET *************
         ********************************/
-        case 'sendTron':
+        case 'sendTron': {
             const {
                 recipient,
                 amount,
@@ -220,38 +216,39 @@ const handleWebCall = async ({
 
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
+                amount: parseInt(amount),
                 recipient,
-                amount : parseInt(amount),
                 desc,
                 hostname,
             }, resolve, reject);
-        case 'getAccount':
+        } case 'getAccount': {
             const account = wallet.getAccount();
+
             if(account)
                 resolve(account.address);
-            else
-                reject("wallet not unlocked.");
-            break;
+            else reject('Wallet not unlocked.');
 
+            break;
+        }
 
         /********************************
         ************ NODE ***************
         ********************************/
-        case 'nodeGetAccount':
+
+        case 'nodeGetAccount': {
             const {
                 address
             } = args;
 
-            let response = await rpc.getAccount(address);
-            resolve(response);
-            break;
+            return resolve(await rpc.getAccount(address));
+        }
 
         /********************************
         *********** UTILS ***************
         ********************************/
 
         default:
-            reject('Unknown method called (' + method + ')');
+            reject(`Unknown method called (${ method })`);
     }
 };
 

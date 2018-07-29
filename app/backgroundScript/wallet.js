@@ -25,9 +25,9 @@ export default class Wallet {
             this._walletStatus = WALLET_STATUS.LOCKED;
     }
 
-    async send(recipient, amount){
-        let account = this._storage.decrypted.accounts[this._currentAccount];
-        console.log("SENDING FROM " + account.address + " TO " + recipient + " AMOUNT: " + amount);
+    async send(recipient, amount) {
+        const account = this._storage.decrypted.accounts[this._currentAccount];
+        logger.info(`Sending from ${account.address} to ${recipient}, amount: ${amount}`);
         return await rpc.sendTrx(account.privateKey, recipient, amount);
     }
 
@@ -53,7 +53,7 @@ export default class Wallet {
         return {};
     }
 
-    async updateAccount(address){
+    async updateAccount(address) {
         logger.info(`Account update requested for ${address}`);
 
         const account = await rpc.getAccount(address);
@@ -63,10 +63,10 @@ export default class Wallet {
         this._accounts[address] = Utils.convertAccountObject(address, account, transactions);
     }
 
-    async updateAccounts(){
+    async updateAccounts() {
         logger.info('Requesting batch account update');
 
-        for(let address in this.getAccounts())
+        for(const address in this.getAccounts())
             await this.updateAccount(address);
 
         logger.info('Batch account update complete');
