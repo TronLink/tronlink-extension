@@ -68,7 +68,8 @@ module.exports = {
         "import/prefer-default-export": [ "error" ],
         "dot-notation": [ "error" ],
         "one-var": [ "error", "never" ],
-        "no-multi-assign": [ "error" ]
+        "no-multi-assign": [ "error" ],
+        "no-mixed-operators": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
