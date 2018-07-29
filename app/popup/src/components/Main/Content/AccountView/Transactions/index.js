@@ -10,13 +10,13 @@ class Transactions extends Component {
     }
 
     renderTransactions() {
-        if(!this.props.account)
+        if (!this.props.account || this.props.account.transactions.length === 0) {
             return (
                 <div className="infoMessageContainer">
-                    
                     <span>No Transactions Found</span>
                 </div>
             );
+        }
 
         return (
             this.props.account.transactions.map((tx, i) => (
