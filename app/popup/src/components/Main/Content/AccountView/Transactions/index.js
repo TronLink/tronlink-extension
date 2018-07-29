@@ -22,11 +22,12 @@ class Transactions extends Component {
             this.props.account.transactions.map((tx, i) => (
                 <Transaction 
                     txType={tx.txType}
-                    txStatus={tx.txStatus}
-                    address={tx.address}
+                    outgoing={tx.isMine}
+                    toAddress={tx.toAddress}
+                    ownerAddress={tx.ownerAddress}
                     amount={tx.amount}
-                    label={tx.label}
                     date={tx.date}
+                    txID={tx.txID}
                 />
             ))
         );
