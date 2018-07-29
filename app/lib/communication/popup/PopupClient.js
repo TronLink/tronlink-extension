@@ -9,13 +9,13 @@ export default class PopupClient extends EventEmitter {
             throw 'Expected PortHost object';
 
         this._portHost = portHost;
-        this._pendingRequests = {}
+        this._pendingRequests = {};
 
         this._registerListener();
     }
 
     _registerListener() {
-        this._portHost.on('popupCommunication', ({ source, data: { action, data: { uuid, data, expectsResponse } } }) => {
+        this._portHost.on('popupCommunication', ({ data: { action, data: { uuid, data, expectsResponse } } }) => {
             if(action == 'internalResponse')
                 return this._handleResponse(uuid, data.success, data.data);
                 
@@ -107,15 +107,15 @@ export default class PopupClient extends EventEmitter {
         return this.raw('requestVote', { address });
     }
 
-    sendNewConfirmation(confirmation){
+    sendNewConfirmation(confirmation) {
         return this.raw('addConfirmation', confirmation);
     }
 
-    sendAccount(account){
+    sendAccount(account) {
         return this.raw('sendAccount', account);
     }
 
-    broadcastPrice(price){
+    broadcastPrice(price) {
         return this.raw('broadcastPrice', price);
     }
 

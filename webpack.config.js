@@ -22,7 +22,7 @@ module.exports = function(env) {
                     exclude: /node_modules/,
                     loader: 'babel-loader',
                     query: {
-                        presets: [ 
+                        presets: [
                             'es2015', 
                             'stage-3' 
                         ],
