@@ -1,6 +1,6 @@
 const ByteArray = {
-    toHexString(bytes) {
-        if(bytes == null)
+    toHexString(bytes = false) {
+        if(!bytes)
             return '';
 
         return Array.from(bytes, byte => (
