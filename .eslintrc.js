@@ -51,7 +51,8 @@ module.exports = {
         "space-infix-ops": [ "error" ],
         "no-multi-spaces": [ "error" ],
         "block-spacing": [ "error" ],
-        "no-var": [ "error" ]
+        "no-var": [ "error" ],
+        "no-new-object": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
