@@ -12,7 +12,8 @@ module.exports = {
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "no-null"
     ],
     "rules": {
         "indent": [
@@ -49,7 +50,8 @@ module.exports = {
         "no-tabs": [ "error" ],
         "prefer-arrow-callback": [ "error" ],
         "prefer-template": [ "error" ],
-        "space-before-blocks": [ "error", "always" ]
+        "space-before-blocks": [ "error", "always" ],
+        "no-null/no-null": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
