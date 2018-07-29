@@ -60,7 +60,8 @@ module.exports = {
         "prefer-destructuring": [ "error", { "array": false } ],
         "func-style": [ "error", "expression" ],
         "no-param-reassign": [ "error" ],
-        "arrow-spacing": [ "error", ]
+        "arrow-spacing": [ "error" ],
+        "no-useless-constructor": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
