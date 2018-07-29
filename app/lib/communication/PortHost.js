@@ -26,7 +26,7 @@ export default class PortHost extends EventEmitter {
             this._ports[source] = port;
             logger.info(`Port ${source} connected`);
 
-            port.onMessage.addListener(({ action, data }, sendingPort) => {
+            port.onMessage.addListener(({ action, data }) => {
                 this.emit(action, { 
                     meta: {
                         hostname
@@ -51,7 +51,7 @@ export default class PortHost extends EventEmitter {
             return { success: false, error: 'Function requires action {string} parameter' };
 
         if(!this._ports.hasOwnProperty(source))
-            return { success: false, error: 'Specified port does not exist' };;
+            return { success: false, error: 'Specified port does not exist' };
 
         this._ports[source].postMessage({ action, data });
         return { success: true };

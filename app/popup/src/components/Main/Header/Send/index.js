@@ -8,7 +8,7 @@ class Send extends Component {
         super(props);
 
         this.state = {
-
+            balance: 0
         };
     }
 
@@ -17,20 +17,36 @@ class Send extends Component {
         return `${addr.substr(0, 8)}...${addr.substr(addr.length - 4)}`;
     }
 
+    componentDidUpdate(prevProps) {
+        if(this.props.account == prevProps.account)
+            return;
+
+        if(this.props.account) {
+            this.setState({ 
+                balance: (this.props.account.balance || 0) / 1000000
+            });
+        } else this.setState({ balance: 0 });
+    };
+
     render() {
+        const usdValue = Number(
+            this.state.balance * this.props.price
+        ).toFixed(2).toLocaleString();
+
         console.log('acc', this.props.account)
+
         return (
             <div className="send container">
                 <div className="flowLine"></div>
                 <div className="txDataContainer">
                     <div className="txAccountData">
                         <div className="txAccountDataLeft">
-                            <div className="txAccountDataLabel"><span>From : </span>PLacEh0Ld3RPLacEh0Ld3R</div>
+                            <div className="txAccountDataLabel"><span>From : </span>{ this.props.account.name }</div>
                             <div className="txAccountDataLabel">{ this.renderTrimmedAddress() }</div>
                         </div>
                         <div className="txAccountDataRight">
-                            <div className="txAccountDataLabel">4500.123 <span> PHDR</span></div>
-                            <div className="txAccountDataLabel">356.41 <span>USD</span></div>
+                            <div className="txAccountDataLabel">{ this.state.balance.toLocaleString() } <span> TRX</span></div>
+                            <div className="txAccountDataLabel">${ usdValue } <span>USD</span></div>
                         </div>
                     </div>
                     <div className="txToData">
@@ -52,5 +68,6 @@ class Send extends Component {
 }
 
 export default connect(state => ({
-    account: state.wallet.account
+    account: state.wallet.account,
+    price: state.wallet.price
 }))(Send);;

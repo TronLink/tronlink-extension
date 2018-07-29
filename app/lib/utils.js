@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 import Sha from 'jssha';
 import ByteArray from './ByteArray';
+import Logger from './logger';
 
+const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 import { 
@@ -37,7 +39,8 @@ const utils = {
             
             return {};
         } catch(exception) {
-            console.log({ exception });
+            logger.warn('Failed to load storage');
+            logger.error({ exception });
             return {};
         }
     },
@@ -46,21 +49,28 @@ const utils = {
         window.localStorage.setItem(key, JSON.stringify(data));
     },
 
-    convertTransactions(transactions) {
-        return transactions.map(transaction => ({
-            txType: transaction.type,
-            ownerAddress: transaction.parameter.value.ownerAddress,
-            toAddress: transaction.parameter.value.to_address,
-            amount: transaction.parameter.value.amount,
-            timestamp: transaction.amount,
-            txID: transaction.txID
-        }));
+    convertTransactions(transactions, address) {
+        return transactions.map((transaction) =>{
+            const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
+            const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
+            const isMine = address === ownerAddress;
+
+            return {
+                txType: transaction.type,
+                ownerAddress,
+                toAddress,
+                isMine,
+                amount: transaction.parameter.value.amount,
+                timestamp: transaction.amount,
+                txID: transaction.txID
+            };
+        });
     },
 
     convertAccountObject(address, { balance }, transactions) {
         return {
             name: 'Default account',
-            transactions: this.convertTransactions(transactions),
+            transactions: this.convertTransactions(transactions, address),
             tokens: {},
             address,
             balance            
@@ -75,14 +85,14 @@ const utils = {
             let temp = bin.charCodeAt(i).toString(16);
 
             if (temp.length == 1)
-                temp = '0' + temp;
+                temp = `0${temp}`;
 
             hex.push(temp);
         }
 
         return hex.join('');
     },
-    
+
     sha256(string) {
         const shaObj = new Sha('SHA-256', 'HEX');
         shaObj.update(string);
@@ -90,7 +100,7 @@ const utils = {
     },
 
     base58ToHex(string) {
-        const bytes = [0];
+        const bytes = [ 0 ];
 
         for (let i = 0; i < string.length; i++) {
             const char = string[i];
@@ -124,7 +134,7 @@ const utils = {
             let temp = byte.toString(16);
 
             if (temp.length == 1)
-                temp = '0' + temp;
+                temp = `0${temp}`;
 
             return temp;
         }).join('');
@@ -141,7 +151,7 @@ const utils = {
             for (let j = 0; j < digits.length; j++) 
                 digits[j] <<= 8;
 
-            digits[0] += buffer[i]
+            digits[0] += buffer[i];
 
             let carry = 0;
 

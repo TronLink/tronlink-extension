@@ -16,12 +16,12 @@ const TRON_CONSTANTS_BASE = {
 const TRON_CONSTANTS_MAINNET = {
     ADD_PRE_FIX_BYTE: 0x41,
     ADD_PRE_FIX_STRING: '41',
-}
+};
 
 const TRON_CONSTANTS_TESTNET = {
     ADD_PRE_FIX_BYTE: 0xa0,
     ADD_PRE_FIX_STRING: 'a0',
-}
+};
 
 class TronLink {    
     constructor(linkedRequest, network = 'mainnet') {
@@ -29,7 +29,7 @@ class TronLink {
             throw new Error('Invalid network supplied. Expected mainnet or testnet');
 
         this._linkedRequest = linkedRequest;
-        this._extensionUrl = `chrome-extension://${EXTENSION_ID}`;
+        this._extensionUrl = `chrome-extension://${ EXTENSION_ID }`;
         this._network = network;
 
         if(this._network == 'mainnet')
@@ -183,7 +183,7 @@ class TronLink {
             }
         };
     }
-};
+}
 
 export default TronLink;
 

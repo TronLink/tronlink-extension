@@ -2,14 +2,14 @@ import dateFormat from 'dateformat';
 
 export default class Logger {
     constructor(source) {
-        this._source = source
+        this._source = source;
 
         return new Proxy(this, {
             get(target, name) {
                 return target._handleInput.bind(target, name);
             }
         });
-    };
+    }
 
     _handleInput(logType, ...data) {
         const formatted = this._formatMessage(logType, data);

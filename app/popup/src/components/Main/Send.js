@@ -9,45 +9,7 @@ import SendHeader from './Header/Send';
 import SendContent from './Content/Send';
 
 class Send extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            sendAmount: '89.2877',
-            toAddress: '17UNYEGIUN763NBGIHENKIGE76'
-        };
-    }
-
-    renderCheck() {
-        if (true) return this.renderSend();
-        if (true) return this.renderSend();
-        if (true) return this.renderSend();
-        if (true) return this.renderSend();
-    }
-
-    renderSend() {
-        let token = false;
-        if (token) {
-            return (
-                <div class="mainContainer">
-                    <Header 
-                        navbarTitle="CONFIRM TOKEN SEND"
-                        navbarLabel=""
-                        leftIcon={false}
-                        rightIcon={false}
-                    >
-                        <SendHeader 
-                            sendAmount={this.state.sendAmount}
-                            sendLabel="TronWatch"
-                            toAddress={this.state.toAddress}
-                        />
-                    </Header>
-                    <Content>
-                        <SendContent />
-                    </Content>
-                </div>
-            );
-        }
+    render() {
         return (
             <div class="mainContainer">
                 <Header 
@@ -56,21 +18,13 @@ class Send extends Component {
                     leftIcon={false}
                     rightIcon={false}
                 >
-                    <SendHeader 
-                        sendAmount={this.state.sendAmount}
-                        sendLabel="TRX"
-                        toAddress={this.state.toAddress}
-                    />
+                    <SendHeader />
                 </Header>
                 <Content>
                     <SendContent />
                 </Content>
             </div>
         );
-    }
-
-    render() {
-        return this.renderCheck();
     }
 }
 
