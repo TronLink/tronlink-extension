@@ -104,10 +104,10 @@ class TronLink {
                 return this._dispatch('getTokens');
             },
             getBlock: blockID => {
-                return this._dispatch('getLatestBlock', { blockID });
+                return this._dispatch('getBlock', { blockID });
             },
             getTransaction: transactionID => {
-                return this._dispatch('getLatestBlock', { transactionID });
+                return this._dispatch('getTransaction', { transactionID });
             },
             getAccount: address => {
                 if(!this.utils.validateAddress(address))
@@ -143,6 +143,18 @@ class TronLink {
                     throw new Error('Invalid description provided');
 
                 return this._dispatch('sendAsset', { recipient, amount, assetID, desc });
+            },
+            freeze:(amount, duration)=>{
+                if(!Number.isInteger(amount) || amount <= 0)
+                    throw new Error('Invalid amount provided');
+
+                if(!Number.isInteger(duration) || duration<= 0)
+                    throw new Error('Invalid duration provided');
+
+                return this._dispatch('freezeTrx', {amount, duration});
+            },
+            unfreeze:()=>{
+                return this._dispatch('unfreezeTrx', {});
             },
             sendTransaction: transaction => {
                 return this._dispatch('sendTransaction', { transaction });

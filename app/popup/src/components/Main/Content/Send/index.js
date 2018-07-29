@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import './Send.css';
 
-import { store } from '../../../../index.js';
-
+import { store, popup } from '../../../../index.js';
 
 class Send extends Component {
     constructor(props) {
@@ -16,7 +16,6 @@ class Send extends Component {
             label: 'TRX'
         };
     }
-    
 
     handleRadioToggle = (e) => this.setState({ mode: e.target.value });
 
@@ -33,7 +32,7 @@ class Send extends Component {
             } else {
                 arr.push({ label: curToken.tokenName, id: token });
             }
-        })
+        });
         return arr;
     }
 
@@ -80,11 +79,13 @@ class Send extends Component {
 
     cancelTransaction() {
         console.log('Canceled.')
+        this.props.history.push('/main');
         // store.dispatch();
     }
 
     sendTransaction() {
-        console.log('Confirmed.')
+        popup.requestSend(this.props.txToDataAddress, this.state.amount);
+        this.props.history.push('/main/transactions');
         // store.dispatch();
     }
 
@@ -121,14 +122,16 @@ class Send extends Component {
                 </div>
                 <div className="sendGroupDetail">11.28 <span>USD</span></div>
                 <div className="sendGroup sendButtonContainer">
-                    <div className="sendButton button outline" onClick={this.cancelTransaction()}>Cancel</div>
-                    <div className="sendButton button gradient" onClick={this.sendTransaction()}>Confirm</div>
+                    <div className="sendButton button outline" onClick={this.cancelTransaction.bind(this)}>Cancel</div>
+                    <div className="sendButton button gradient" onClick={this.sendTransaction.bind(this)}>Confirm</div>
                 </div>
             </div>
         );
     }
 }
 
-export default connect(state => ({
-    account: state.wallet.account
-}))(Send);
+export default withRouter(
+    connect(
+        state => ({ account: state.wallet.account }),
+    )(Send)
+);

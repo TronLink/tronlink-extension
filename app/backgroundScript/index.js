@@ -175,7 +175,7 @@ popup.on('unlockWallet', ({
     resolve(success);
 });
 
-popup.on('getWalletStatus', ({ resolve }) => {
+popup.on('getWalletStatus', async ({ resolve }) => {
     logger.info('Requesting wallet status');
     resolve(wallet.status);
 
@@ -183,7 +183,26 @@ popup.on('getWalletStatus', ({ resolve }) => {
         popup.sendAccount(
             wallet.getAccount()
         );
+
+        await wallet.updateAccounts();
+        popup.sendAccount(
+            wallet.getAccount()
+        );
     }
+});
+
+popup.on('sendTron', ({data, resolve, reject})=>{
+    if(!Utils.validateAmount(data.amount))
+        reject("invalid amount.");
+
+    return addConfirmation({
+        type: CONFIRMATION_TYPE.SEND_TRON,
+        amount: parseInt(data.amount),
+        recipient: data.recipient,
+        desc : false,
+        hostname : "TronLink",
+    }, resolve, reject);
+
 });
 
 const handleWebCall = async ({
@@ -241,6 +260,27 @@ const handleWebCall = async ({
             } = args;
 
             return resolve(await rpc.getAccount(address));
+        }
+        case 'getLatestBlock' : {
+            return resolve(await rpc.getNowBlock());
+        }
+        case 'getWitnesses' : {
+            return resolve(await rpc.getWitnesses());
+        }
+        case 'getTokens' : {
+            return resolve(await rpc.getTokens());
+        }
+        case 'getBlock' : {
+            const {
+                blockID
+            } = args;
+            return resolve(await rpc.getBlock(blockID));
+        }
+        case 'getTransaction' : {
+            const {
+                transactionID
+            } = args;
+            return resolve(await rpc.getTransactionById(transactionID));
         }
 
         /********************************

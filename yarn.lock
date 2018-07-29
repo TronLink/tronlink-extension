@@ -10,7 +10,7 @@
 
 "TronUtils@https://github.com/Flott-org/TronUtils":
   version "1.0.0"
-  resolved "https://github.com/Flott-org/TronUtils#21d2899142963b0a05edefc9838cca8e8d7578f2"
+  resolved "https://github.com/Flott-org/TronUtils#ec0b035b94bb3610d1b89769ecab792dbe178372"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"

@@ -1,7 +1,4 @@
 .tokens {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex: 1 1;
     padding-right: 10px;
     box-sizing: border-box;
@@ -9,7 +6,10 @@
 }
 
 .tokenPlaceholder {
+    margin-top: 150px;
+    display: block;
     color: #808080;
+    text-align: center;
     font-size: 12px;
 }
 
