@@ -1,9 +1,12 @@
 {
     "manifest_version": 2,
-    "name": "Tron Chrome",
+    "name": "TronLink",
     "version": "0.0.1",
     "description": "An interactive chrome extension for signing, receiving and broadcasting Tron transactions",
     "author": "https://github.com/TronWatch",
+	"icons": {
+		"128": "static/icon128.png"
+	},
     "background": {
         "scripts": [
             "dist/backgroundScript.js"
