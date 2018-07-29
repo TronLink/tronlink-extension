@@ -15,7 +15,9 @@
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "eventemitter3": "^3.1.0",
+    "husky": "^1.0.0-rc.13",
     "jssha": "^2.3.1",
+    "lint-staged": "^7.2.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
@@ -28,11 +30,28 @@
     "webpack": "3"
   },
   "scripts": {
+    "lint-staged": "lint-staged",
     "clean": "rimraf dist",
     "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
     "build:react": "cd app/popup && npm run build && cd ../../",
     "build:all": "npm run build && npm run build:react",
     "test:react": "cd app/popup && npm run test && cd ../../",
     "zip": "npm run build:all && bestzip chrome-extension.zip dist key.pem manifest.json app/popup/build"
+  },
+  "lint-staged": {
+    "linters": {
+      "*.js": "eslint"
+    },
+    "ignore": [
+      "/node_modules",
+      "/app/popup",
+      "/dist",
+      "/static"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint-staged"
+    }
   }
 }
