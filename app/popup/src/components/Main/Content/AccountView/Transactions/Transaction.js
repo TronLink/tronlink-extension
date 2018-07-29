@@ -3,6 +3,8 @@ import './Transaction.css';
 
 import { TopRightArrow, TokensIcon, SnowIcon, PencilIcon, VoteIcon } from "../../../../../Icons";
 
+import Utils from '../../../../../extension/utils.js';
+
 class Transaction extends Component {
 
     formattedDate() {
@@ -16,7 +18,7 @@ class Transaction extends Component {
 
     chooseIcon() {
         if (this.props.txType === "TransferContract" || this.props.txType === "TransferAssetContract") {
-            if (this.props.type === 2) {
+            if (this.props.outgoing === false) {
                 return (
                     <TopRightArrow className="iconReceived" />
                 );
@@ -49,13 +51,13 @@ class Transaction extends Component {
 
     chooseLabel() {
         if (this.props.txType === "TransferContract" || this.props.txType === "TransferAssetContract") {
-            if (this.props.type === 2) {
+            if (this.props.outgoing === false) {
                 return (
-                    <div className="txLabel">Received</div>
+                    <div className="txLabel green">Received</div>
                 );
             }
             return (
-                <div className="txLabel">Sent</div>
+                <div className="txLabel red">Sent</div>
             );
         }
         if (this.props.txType === "ParticipateAssetIssueContract") {
@@ -80,6 +82,20 @@ class Transaction extends Component {
         }
     }
 
+    chooseAddress() {
+        if (this.props.outgoing === false) {
+            return <div className="txAddress">{ this.props.ownerAddress }</div>;
+        }
+        return <div className="txAddress">{ this.props.toAddress }</div>;
+    }
+
+    chooseAmount() {
+        if (this.props.outgoing === false) {
+            return <div className="txAmount green">+ { Utils.sunToTron(this.props.amount).toString() }<span>TRX</span></div>;
+        }
+        return <div className="txAmount red">- { Utils.sunToTron(this.props.amount).toString() }<span>TRX</span></div>;
+    }
+
     successCheck() {
         // Failed, Success, Rejected
         if (true) return;
@@ -91,16 +107,18 @@ class Transaction extends Component {
         }
     }
 
+    openLink = () => window.open('https://tronscan.org/#/transaction/' + this.props.txID);
+
     render() {
         return (
             <div className="transaction">
                 { this.chooseIcon() }
                 <div className="txInfoLeft">
                     { this.chooseLabel() }
-                    <div className="txAddress">{ this.props.address }</div>
+                    { this.chooseAddress() }
                 </div>
                 <div className="txInfoRight">
-                    <div className="txAmount">{ this.props.amount }<span>{ this.props.label }</span></div>
+                    { this.chooseAmount() }
                     <div className="txDate">{ this.formattedDate() }</div>
                 </div>
                 { this.copyButton() }
