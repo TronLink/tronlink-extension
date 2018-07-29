@@ -79,7 +79,7 @@ class Send extends Component {
 
     cancelTransaction() {
         console.log('Canceled.')
-        this.props.history.push('/main');
+        this.props.history.push('/main/transactions');
         // store.dispatch();
     }
 

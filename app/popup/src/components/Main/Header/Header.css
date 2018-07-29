@@ -51,14 +51,7 @@
     font-size: 11px;
     margin-top: 2px;
     z-index: 2;
-}
-
-.navbarHeaderSub.address span:last-child, .navbarHeaderSub.address:hover span:first-child {
-    display: none;
-}
-
-.navbarHeaderSub.address:hover span:last-child, .navbarHeaderSub.address span:first-child {
-    display: inline-block;
+    user-select: all;
 }
 
 .navbarHeader > svg {

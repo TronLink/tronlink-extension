@@ -8,7 +8,7 @@ class Send extends Component {
         super(props);
 
         this.state = {
-            balance: 0
+            balance: (this.props.account.balance || 0) / 1000000
         };
     }
 

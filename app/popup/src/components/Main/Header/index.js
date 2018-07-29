@@ -38,7 +38,6 @@ class Header extends Component {
             let addr = this.props.navbarLabel;
             return (
                 <div className="navbarHeaderSub address">
-                    <span>{addr.substr(0, 8)}...{addr.substr(addr.length - 4)}</span>
                     <span>{this.props.navbarLabel}</span>
                 </div>
             )
