@@ -52,7 +52,8 @@ module.exports = {
         "no-multi-spaces": [ "error" ],
         "block-spacing": [ "error" ],
         "no-var": [ "error" ],
-        "no-new-object": [ "error" ]
+        "no-new-object": [ "error" ],
+        "object-shorthand": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
