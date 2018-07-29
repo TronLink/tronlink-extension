@@ -65,7 +65,8 @@ module.exports = {
         "no-useless-constructor": [ "error" ],
         "no-duplicate-imports": [ "error" ],
         "import/first": [ "error" ],
-        "import/prefer-default-export": [ "error" ]
+        "import/prefer-default-export": [ "error" ],
+        "dot-notation": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
