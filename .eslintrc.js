@@ -61,7 +61,8 @@ module.exports = {
         "func-style": [ "error", "expression" ],
         "no-param-reassign": [ "error" ],
         "arrow-spacing": [ "error" ],
-        "no-useless-constructor": [ "error" ]
+        "no-useless-constructor": [ "error" ],
+        "no-duplicate-imports": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
