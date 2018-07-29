@@ -73,7 +73,9 @@ module.exports = {
         "no-else-return": [ "error" ],
         "padded-blocks": [ "error", "never" ],
         "comma-spacing": [ "error" ],
-        "func-call-spacing": [ "error" ]
+        "func-call-spacing": [ "error" ],
+        "no-trailing-spaces": [ "error" ],
+        "no-multiple-empty-lines": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,

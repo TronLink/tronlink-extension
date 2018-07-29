@@ -10,10 +10,10 @@ import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { 
-    CONFIRMATION_TYPE, 
-    CONFIRMATION_RESULT, 
-    WALLET_STATUS 
+import {
+    CONFIRMATION_TYPE,
+    CONFIRMATION_RESULT,
+    WALLET_STATUS
 } from 'lib/constants';
 
 // Initialise utilities
@@ -51,8 +51,8 @@ const addConfirmation = (confirmation, resolve, reject) => {
         return dialog.focus();
 
     dialog = window.open(
-        'app/popup/build/index.html', 
-        'extension_popup', 
+        'app/popup/build/index.html',
+        'extension_popup',
         'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
     );
 };
@@ -84,7 +84,7 @@ popup.on('declineConfirmation', ({
 
     confirmation.reject('denied');
     delete pendingConfirmations[data.id];
-    
+
     closeDialog();
     resolve();
 });
@@ -118,7 +118,7 @@ popup.on('acceptConfirmation', async ({
 
     confirmation.resolve(JSON.stringify(output));
     delete pendingConfirmations[data.id];
-    
+
     closeDialog();
     resolve();
 });

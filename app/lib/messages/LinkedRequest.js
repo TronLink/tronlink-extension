@@ -10,13 +10,13 @@ export default class LinkedRequest {
 
         if(outputMap && {}.toString.call(outputMap) !== '[object Function]')
             throw 'Invalid output map passed. Expected type function';
-            
-        this._outputMap = outputMap;     
+
+        this._outputMap = outputMap;
         this._eventHandler = eventHandler;
 
         this._pendingRequests = {};
-        this._defaultTimeout = 30;        
-        
+        this._defaultTimeout = 30;
+
         this._registerListener();
     }
 
@@ -35,8 +35,8 @@ export default class LinkedRequest {
         if(this._outputMap)
             input = this._outputMap(output);
 
-        const { 
-            uuid, 
+        const {
+            uuid,
             data,
             error,
             success
@@ -61,7 +61,7 @@ export default class LinkedRequest {
 
         const uuid = randomUUID();
 
-        this._eventHandler.send('tunnel', { 
+        this._eventHandler.send('tunnel', {
             data: input,
             uuid
         });
@@ -69,7 +69,7 @@ export default class LinkedRequest {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');    
+                    reject('Request timed out');
                     delete this._pendingRequests[uuid];
                 }, expiration * 1000),
                 resolve,

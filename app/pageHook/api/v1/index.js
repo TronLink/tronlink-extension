@@ -23,7 +23,7 @@ const TRON_CONSTANTS_TESTNET = {
     ADD_PRE_FIX_STRING: 'a0',
 };
 
-class TronLink {    
+class TronLink {
     constructor(linkedRequest, network = 'mainnet') {
         if(network !== 'mainnet' && network !== 'testnet')
             throw new Error('Invalid network supplied. Expected mainnet or testnet');
@@ -68,7 +68,7 @@ class TronLink {
             case this._constants.ADDRESS_SIZE:
                 // Hex
                 return this._validateAddress(
-                    ByteArray.fromHexString(address), 
+                    ByteArray.fromHexString(address),
                     'hex'
                 );
             case 34:
@@ -76,7 +76,7 @@ class TronLink {
                 return this._validateAddress(
                     ByteArray.fromHexString(
                         Utils.base58ToHex(address)
-                    ), 
+                    ),
                     'base58'
                 );
             case 28:
@@ -84,7 +84,7 @@ class TronLink {
                 return this._validateAddress(
                     ByteArray.fromHexString(
                         Utils.base64ToHex(address)
-                    ), 
+                    ),
                     'base64'
                 );
         }
@@ -129,7 +129,7 @@ class TronLink {
 
                 if(!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
-                
+
                 return this._dispatch('sendTron', { recipient, amount, desc });
             },
             sendAsset: (recipient, amount, assetID, desc) => {
@@ -208,7 +208,7 @@ export default TronLink;
 //            'gettransactionbyid', 'gettransactioninfobyid', 'gettransactionsfromthis',
 //            'gettransactionstothis',
 //        ];
-//    
+//
 //        const walletUrls = [
 //            'createtransaction', 'gettransactionsign', 'broadcasttransaction',
 //            'updateaccount', 'votewitnessaccount', 'createassetissue',
@@ -223,7 +223,7 @@ export default TronLink;
 //            'getassetissuelist', 'getpaginatedassetissuelist', 'totaltransaction',
 //            'getnextmaintenancetime', 'validateaddress',
 //        ];
-//    
+//
 //        return {
 //            walletsolidity: solidityUrls.reduce((obj, method) => {
 //                obj[method] = `${this._extensionUrl}/proxy/${method}`;

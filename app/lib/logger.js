@@ -31,7 +31,7 @@ export default class Logger {
         const colour = colours[level];
         const timestamp = dateFormat(Date.now(), 'mmm d, hh:MM:ss tt');
 
-        return [ 
+        return [
             `[${ timestamp }] %c[${ this._source }]: %c[${ level.toUpperCase() }]:`,
             'font-weight: bold;',
             `color: #${ colour };`,
