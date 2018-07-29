@@ -46,21 +46,28 @@ const utils = {
         window.localStorage.setItem(key, JSON.stringify(data));
     },
 
-    convertTransactions(transactions) {
-        return transactions.map(transaction => ({
-            txType: transaction.type,
-            ownerAddress: transaction.parameter.value.ownerAddress,
-            toAddress: transaction.parameter.value.to_address,
-            amount: transaction.parameter.value.amount,
-            timestamp: transaction.amount,
-            txID: transaction.txID
-        }));
+    convertTransactions(transactions, address) {
+        return transactions.map((transaction) =>{
+            let ownerAddress = utils.hexToBase58(transaction.parameter.value.owner_address);
+            let toAddress = transaction.parameter.value.to_address ? utils.hexToBase58(transaction.parameter.value.to_address) : null;
+            let isMine = address === ownerAddress;
+
+            return {
+                txType: transaction.type,
+                ownerAddress,
+                toAddress,
+                isMine,
+                amount: transaction.parameter.value.amount,
+                timestamp: transaction.amount,
+                txID: transaction.txID
+            };
+        });
     },
 
     convertAccountObject(address, { balance }, transactions) {
         return {
             name: 'Default account',
-            transactions: this.convertTransactions(transactions),
+            transactions: this.convertTransactions(transactions, address),
             tokens: {},
             address,
             balance            
