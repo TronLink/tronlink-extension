@@ -65,7 +65,7 @@ const utils = {
                 date: transaction.timestamp,
                 txID: transaction.txID
             };
-        });
+        }).reverse();
     },
 
     convertAccountObject(address, { balance }, transactions) {
