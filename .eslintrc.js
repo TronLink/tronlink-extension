@@ -58,7 +58,8 @@ module.exports = {
         "no-array-constructor": [ "error" ],
         "array-callback-return": [ "error" ],
         "prefer-destructuring": [ "error", { "array": false } ],
-        "func-style": [ "error", "expression" ]
+        "func-style": [ "error", "expression" ],
+        "no-param-reassign": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,

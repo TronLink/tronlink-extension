@@ -29,16 +29,18 @@ export default class LinkedRequest {
         });
     }
 
-    _dataStream(output) {        
+    _dataStream(output) {
+        let input = output;
+
         if(this._outputMap)
-            output = this._outputMap(output);
+            input = this._outputMap(output);
 
         const { 
             uuid, 
             data,
             error,
             success
-        } = output;
+        } = input;
 
         if(!this._pendingRequests.hasOwnProperty(uuid))
             return false;
