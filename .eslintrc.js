@@ -64,7 +64,8 @@ module.exports = {
         "arrow-spacing": [ "error" ],
         "no-useless-constructor": [ "error" ],
         "no-duplicate-imports": [ "error" ],
-        "import/first": [ "error" ]
+        "import/first": [ "error" ],
+        "import/prefer-default-export": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
