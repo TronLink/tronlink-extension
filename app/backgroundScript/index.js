@@ -191,7 +191,7 @@ popup.on('getWalletStatus', async ({ resolve }) => {
     }
 });
 
-popup.on('sendTron', ({ data, resolve, reject })=>{
+popup.on('sendTron', ({ data, resolve, reject }) => {
     if(!Utils.validateAmount(data.amount))
         reject('Invalid amount.');
 

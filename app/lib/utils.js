@@ -50,7 +50,7 @@ const utils = {
     },
 
     convertTransactions(transactions, address) {
-        return transactions.map((transaction) =>{
+        return transactions.map((transaction) => {
             const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
             const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
             const isMine = address === ownerAddress;
