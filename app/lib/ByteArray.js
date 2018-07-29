@@ -5,7 +5,7 @@ const ByteArray = {
 
         return Array.from(bytes, byte => (
             // Pad for exactly two digits
-            ('0' + (byte & 0xFF).toString(16)).slice(-2)
+            (`0${(byte & 0xFF).toString(16)}`).slice(-2)
         )).join('');
     },
 
@@ -37,8 +37,8 @@ const ByteArray = {
             j++;
 
             if (0 === (j % 2)) {
-              byteArray[k++] = d;
-              d = 0;
+                byteArray[k++] = d;
+                d = 0;
             }
         }
 

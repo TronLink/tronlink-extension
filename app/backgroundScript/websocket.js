@@ -1,5 +1,4 @@
 import randomUUID from 'uuid/v4';
-import { CURRENCY } from 'lib/constants';
 import Logger from 'lib/logger';
 
 const logger = new Logger('WebSocket');
@@ -14,8 +13,7 @@ export default class TronWebsocket {
         this._addresses = {};
         this._price = 0;
 
-
-        this._popup.on('getPrice', ({ data, resolve, reject }) => {
+        this._popup.on('getPrice', ({ resolve }) => {
             resolve(this._price);
         });
     }
@@ -54,7 +52,7 @@ export default class TronWebsocket {
         logger.warn('Received unknown websocket event', event);
     }
 
-    onConnect(event) {
+    onConnect() {
         logger.info('Connection established');
 
         Object.keys(this._addresses).forEach(address => {
@@ -81,7 +79,7 @@ export default class TronWebsocket {
             this.onConnect(event);
         };
 
-        this._webSocket.onclose = event => {
+        this._webSocket.onclose = () => {
             logger.info('Lost connection to websocket');
 
             setTimeout(() => {
@@ -90,11 +88,11 @@ export default class TronWebsocket {
         };
 
         this._webSocket.onmessage = event => {
-            this.onEvent(event)
+            this.onEvent(event);
         };
     }
 
-    getPrice(){
+    getPrice() {
         return this._price;
     }
 

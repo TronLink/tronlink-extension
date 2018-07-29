@@ -9,7 +9,7 @@ export default class PopupHost extends EventEmitter {
             throw 'Expected PortChild object';
 
         this._portChild = portChild;
-        this._pendingRequests = {}
+        this._pendingRequests = {};
 
         this._registerListener();
     }
@@ -123,23 +123,23 @@ export default class PopupHost extends EventEmitter {
         return this.raw('setPassword', { password });
     }
 
-    getWalletStatus(){
+    getWalletStatus() {
         return this.raw('getWalletStatus');
     }
 
-    getPrice(){
+    getPrice() {
         return this.raw('getPrice');
     }
 
-    getConfirmations(){
+    getConfirmations() {
         return this.raw('getConfirmations');
     }
 
-    declineConfirmation(id){
+    declineConfirmation(id) {
         return this.raw('declineConfirmation', { id });
     }
 
-    acceptConfirmation(id){
+    acceptConfirmation(id) {
         return this.raw('acceptConfirmation', { id });
     }
 }
