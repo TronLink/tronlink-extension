@@ -1,12 +1,12 @@
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import LinkedRequest from 'lib/messages/LinkedRequest';
-import TronLink  from 'pageHook/api/v1';
+import TronLink from 'pageHook/api/v1';
 import Logger from 'lib/logger';
 
 const logger = new Logger('pageHook');
 const contentScript = new EventDispatcher('pageHook', 'contentScript');
 const linkedRequest = new LinkedRequest(contentScript, ({ data }) => ({ ...data }));
-const scriptVariable = (window.TRON_LINK_VARIABLE  || 'TronLink').toString();
+const scriptVariable = (window.TRON_LINK_VARIABLE || 'TronLink').toString();
 
 window[scriptVariable] = {
     v1: (network = 'mainnet') => new TronLink(linkedRequest, network)

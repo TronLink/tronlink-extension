@@ -47,7 +47,10 @@ module.exports = {
         "prefer-arrow-callback": [ "error" ],
         "prefer-template": [ "error" ],
         "space-before-blocks": [ "error", "always" ],
-        "no-null/no-null": [ "error" ]
+        "no-null/no-null": [ "error" ],
+        "space-infix-ops": [ "error" ],
+        "no-multi-spaces": [ "error" ],
+        "block-spacing": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
