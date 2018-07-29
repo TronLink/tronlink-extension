@@ -50,7 +50,8 @@ module.exports = {
         "no-null/no-null": [ "error" ],
         "space-infix-ops": [ "error" ],
         "no-multi-spaces": [ "error" ],
-        "block-spacing": [ "error" ]
+        "block-spacing": [ "error" ],
+        "no-var": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
