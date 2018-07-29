@@ -5,6 +5,14 @@
     overflow-y: scroll;
 }
 
+.infoMessageContainer > span {
+    display: block;
+    color: #808080;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
 .transactions::-webkit-scrollbar {
     width: 7px;
 }
