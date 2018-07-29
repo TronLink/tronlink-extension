@@ -2,14 +2,19 @@
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
+import Logger from 'lib/logger';
+import Utils from 'lib/utils';
 import Wallet from './wallet';
 import TronWebsocket from './websocket'
-import Logger from 'lib/logger';
-import TronLinkUtils from 'pageHook/lib/Utils';
+import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { CONFIRMATION_TYPE, CONFIRMATION_RESULT, WALLET_STATUS } from 'lib/constants';
+import { 
+    CONFIRMATION_TYPE, 
+    CONFIRMATION_RESULT, 
+    WALLET_STATUS 
+} from 'lib/constants';
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');
@@ -18,6 +23,7 @@ const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
 const webSocket = new TronWebsocket(popup);
+const rpc = new TronUtils.rpc();
 
 logger.info('Script loaded');
 
@@ -184,7 +190,7 @@ popup.on('getWalletStatus', ({ data, resolve, reject }) => {
     }
 });
 
-const handleWebCall = ({
+const handleWebCall = async ({
     request: {
         method,
         args = {}
@@ -196,6 +202,9 @@ const handleWebCall = ({
     reject
 }) => {
     switch (method) {
+        /********************************
+        ************ WALLET *************
+        ********************************/
         case 'sendTron':
             const {
                 recipient,
@@ -203,10 +212,10 @@ const handleWebCall = ({
                 desc
             } = args;
 
-            if(!TronLinkUtils.validateAmount(amount))
+            if(!Utils.validateAmount(amount))
                 return reject('Invalid amount provided');
 
-            if(!TronLinkUtils.validateDescription(desc))
+            if(!Utils.validateDescription(desc))
                 return reject('Invalid description provided');
 
             return addConfirmation({
@@ -215,7 +224,32 @@ const handleWebCall = ({
                 amount : parseInt(amount),
                 desc,
                 hostname,
-            }, resolve, reject);    
+            }, resolve, reject);
+        case 'getAccount':
+            const account = wallet.getAccount();
+            if(account)
+                resolve(account.address);
+            else
+                reject("wallet not unlocked.");
+            break;
+
+
+        /********************************
+        ************ NODE ***************
+        ********************************/
+        case 'nodeGetAccount':
+            const {
+                address
+            } = args;
+
+            let response = await rpc.getAccount(address);
+            resolve(response);
+            break;
+
+        /********************************
+        *********** UTILS ***************
+        ********************************/
+
         default:
             reject('Unknown method called (' + method + ')');
     }

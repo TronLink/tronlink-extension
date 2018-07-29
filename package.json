@@ -15,6 +15,7 @@
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "eventemitter3": "^3.1.0",
+    "jssha": "^2.3.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.7",
