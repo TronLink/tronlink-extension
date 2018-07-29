@@ -57,7 +57,8 @@ module.exports = {
         "quote-props": [ "error", "as-needed" ],
         "no-array-constructor": [ "error" ],
         "array-callback-return": [ "error" ],
-        "prefer-destructuring": [ "error", { "array": false } ]
+        "prefer-destructuring": [ "error", { "array": false } ],
+        "func-style": [ "error", "expression" ]
     },
     "globals": {
         "EXTENSION_ID": false,

@@ -32,7 +32,7 @@ webSocket.start();
 const pendingConfirmations = {};
 let dialog = false;
 
-function addConfirmation(confirmation, resolve, reject) {
+const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
     logger.info(`Adding confirmation from site ${confirmation.hostname}:`, confirmation);
 
@@ -55,9 +55,9 @@ function addConfirmation(confirmation, resolve, reject) {
         'extension_popup', 
         'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
     );
-}
+};
 
-function closeDialog() {
+const closeDialog = () => {
     if(Object.keys(pendingConfirmations).length)
         return;
 
@@ -66,7 +66,7 @@ function closeDialog() {
 
     dialog.close();
     dialog = false;
-}
+};
 
 popup.on('declineConfirmation', ({
     data,
@@ -151,7 +151,7 @@ popup.on('setPassword', ({
     resolve();
 });
 
-async function updateAccount() {
+const updateAccount = async () => {
     logger.info('Requesting account update');
 
     await wallet.updateAccounts();
@@ -159,7 +159,7 @@ async function updateAccount() {
     popup.sendAccount(
         wallet.getAccount()
     );
-}
+};
 
 popup.on('unlockWallet', ({
     data,
