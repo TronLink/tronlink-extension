@@ -6,7 +6,6 @@ import './Send.css';
 
 import { store, popup } from '../../../../index.js';
 
-
 class Send extends Component {
     constructor(props) {
         super(props);
@@ -17,7 +16,6 @@ class Send extends Component {
             label: 'TRX'
         };
     }
-    
 
     handleRadioToggle = (e) => this.setState({ mode: e.target.value });
 

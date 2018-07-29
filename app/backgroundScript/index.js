@@ -175,11 +175,16 @@ popup.on('unlockWallet', ({
     resolve(success);
 });
 
-popup.on('getWalletStatus', ({ resolve }) => {
+popup.on('getWalletStatus', async ({ resolve }) => {
     logger.info('Requesting wallet status');
     resolve(wallet.status);
 
     if(wallet.status === WALLET_STATUS.UNLOCKED) {
+        popup.sendAccount(
+            wallet.getAccount()
+        );
+
+        await wallet.updateAccounts();
         popup.sendAccount(
             wallet.getAccount()
         );
