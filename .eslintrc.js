@@ -69,7 +69,8 @@ module.exports = {
         "dot-notation": [ "error" ],
         "one-var": [ "error", "never" ],
         "no-multi-assign": [ "error" ],
-        "no-mixed-operators": [ "error" ]
+        "no-mixed-operators": [ "error" ],
+        "no-else-return": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
