@@ -17,19 +17,9 @@ module.exports = {
         "import"
     ],
     "rules": {
-        "indent": [
-            "error",
-            4,
-            { "SwitchCase": 1 }
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        "indent": [ "error", 4, { "SwitchCase": 1 } ],
+        "quotes": [ "error", "single" ],
+        "semi": [ "error", "always" ],
         "no-console": "off",
         "object-curly-spacing": [ "error", "always" ],
         "array-bracket-spacing": [ "error", "always" ],
@@ -75,7 +65,8 @@ module.exports = {
         "comma-spacing": [ "error" ],
         "func-call-spacing": [ "error" ],
         "no-trailing-spaces": [ "error" ],
-        "no-multiple-empty-lines": [ "error" ]
+        "no-multiple-empty-lines": [ "error" ],
+        "no-new-wrappers": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,
