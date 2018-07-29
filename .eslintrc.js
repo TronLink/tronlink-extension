@@ -13,7 +13,8 @@ module.exports = {
     },
     "plugins": [
         "react",
-        "no-null"
+        "no-null",
+        "import"
     ],
     "rules": {
         "indent": [
@@ -62,7 +63,8 @@ module.exports = {
         "no-param-reassign": [ "error" ],
         "arrow-spacing": [ "error" ],
         "no-useless-constructor": [ "error" ],
-        "no-duplicate-imports": [ "error" ]
+        "no-duplicate-imports": [ "error" ],
+        "import/first": [ "error" ]
     },
     "globals": {
         "EXTENSION_ID": false,

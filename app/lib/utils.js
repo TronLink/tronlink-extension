@@ -3,13 +3,13 @@ import Sha from 'jssha';
 import ByteArray from './ByteArray';
 import Logger from './logger';
 
-const logger = new Logger('Utils');
-const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
 import { 
     ENCRYPTION_ALGORITHM, 
     LOCALSTORAGE_KEY 
 } from './constants';
+
+const logger = new Logger('Utils');
+const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 const utils = {
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {
