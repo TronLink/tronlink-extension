@@ -191,16 +191,16 @@ popup.on('getWalletStatus', async ({ resolve }) => {
     }
 });
 
-popup.on('sendTron', ({data, resolve, reject})=>{
+popup.on('sendTron', ({ data, resolve, reject })=>{
     if(!Utils.validateAmount(data.amount))
-        reject("invalid amount.");
+        reject('Invalid amount.');
 
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,
         amount: parseInt(data.amount),
         recipient: data.recipient,
-        desc : false,
-        hostname : "TronLink",
+        desc: false,
+        hostname: 'TronLink',
     }, resolve, reject);
 
 });

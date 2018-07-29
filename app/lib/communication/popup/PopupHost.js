@@ -143,7 +143,7 @@ export default class PopupHost extends EventEmitter {
         return this.raw('acceptConfirmation', { id });
     }
 
-    requestSend(recipient, amount){
-        return this.raw('sendTron', {recipient, amount});
+    requestSend(recipient, amount) {
+        return this.raw('sendTron', { recipient, amount });
     }
 }

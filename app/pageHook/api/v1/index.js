@@ -144,16 +144,16 @@ class TronLink {
 
                 return this._dispatch('sendAsset', { recipient, amount, assetID, desc });
             },
-            freeze:(amount, duration)=>{
+            freeze: (amount, duration) => {
                 if(!Number.isInteger(amount) || amount <= 0)
                     throw new Error('Invalid amount provided');
 
-                if(!Number.isInteger(duration) || duration<= 0)
+                if(!Number.isInteger(duration) || duration <= 0)
                     throw new Error('Invalid duration provided');
 
-                return this._dispatch('freezeTrx', {amount, duration});
+                return this._dispatch('freezeTrx', { amount, duration });
             },
-            unfreeze:()=>{
+            unfreeze: () => {
                 return this._dispatch('unfreezeTrx', {});
             },
             sendTransaction: transaction => {

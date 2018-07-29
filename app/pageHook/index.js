@@ -22,7 +22,8 @@ const config = {};
 
 let match = qsMatch.exec(queryString);
 
-while(match != null) {
+// eslint-disable-next-line no-null/no-null
+while(match != null) { 
     config[match[1]] = match[2];
     match = qsMatch.exec(queryString);
 }
