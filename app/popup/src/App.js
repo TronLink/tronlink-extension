@@ -5,6 +5,7 @@ import './App.css';
 
 import { wallet_status } from './reducers/wallet.js';
 
+import Warning from './components/Warning';
 import Welcome from './components/Welcome';
 import Import from './components/Import';
 import Main from './components/Main';
@@ -18,7 +19,8 @@ class App extends Component {
         return (
             <MemoryRouter className="app">
                 <Switch>
-                    <Route exact path="/" component={Welcome} />
+                    <Route exact path="/" component={Warning} />
+                    <Route exact path="/welcome" component={Welcome} />
                     <Route exact path="/confirm" component={Queue} />
                     <Route exact path="/import" component={Import} />
                     <Route path="/main" component={Main} />

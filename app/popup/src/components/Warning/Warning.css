@@ -1,0 +1,35 @@
+.warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: #ff3c3c;
+    box-sizing: border-box;
+    padding: 50px;
+    text-align: center;
+}
+
+.warning span {
+    color: #fff;
+    text-shadow: 0px 0px 5px #000;
+    margin: 0px 5px;
+}
+
+.warningHeader {
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.warningBody {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.warningBtn {
+    width: 200px;
+    margin-top: 80px;
+}

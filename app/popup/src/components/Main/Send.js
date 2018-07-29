@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { SettingsIcon } from '../../Icons.js';
+import { ArrowLeftIcon } from '../../Icons.js';
 
 import Header from './Header';
 import Content from './Content';
@@ -15,7 +15,9 @@ class Send extends Component {
                 <Header 
                     navbarTitle="CONFIRM TRX SEND"
                     navbarLabel=""
-                    leftIcon={false}
+                    leftIcon={true}
+                    leftIconImg={<ArrowLeftIcon />}
+                    leftIconRoute="/main/transactions"
                     rightIcon={false}
                 >
                     <SendHeader />
