@@ -261,6 +261,27 @@ const handleWebCall = async ({
 
             return resolve(await rpc.getAccount(address));
         }
+        case 'getLatestBlock' : {
+            return resolve(await rpc.getNowBlock());
+        }
+        case 'getWitnesses' : {
+            return resolve(await rpc.getWitnesses());
+        }
+        case 'getTokens' : {
+            return resolve(await rpc.getTokens());
+        }
+        case 'getBlock' : {
+            const {
+                blockID
+            } = args;
+            return resolve(await rpc.getBlock(blockID));
+        }
+        case 'getTransaction' : {
+            const {
+                transactionID
+            } = args;
+            return resolve(await rpc.getTransactionById(transactionID));
+        }
 
         /********************************
         *********** UTILS ***************

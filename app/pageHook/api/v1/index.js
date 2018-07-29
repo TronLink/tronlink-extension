@@ -104,10 +104,10 @@ class TronLink {
                 return this._dispatch('getTokens');
             },
             getBlock: blockID => {
-                return this._dispatch('getLatestBlock', { blockID });
+                return this._dispatch('getBlock', { blockID });
             },
             getTransaction: transactionID => {
-                return this._dispatch('getLatestBlock', { transactionID });
+                return this._dispatch('getTransaction', { transactionID });
             },
             getAccount: address => {
                 if(!this.utils.validateAddress(address))
