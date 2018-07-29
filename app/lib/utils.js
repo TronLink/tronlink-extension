@@ -3,13 +3,13 @@ import Sha from 'jssha';
 import ByteArray from './ByteArray';
 import Logger from './logger';
 
+import {
+    ENCRYPTION_ALGORITHM,
+    LOCALSTORAGE_KEY
+} from './constants';
+
 const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
-import { 
-    ENCRYPTION_ALGORITHM, 
-    LOCALSTORAGE_KEY 
-} from './constants';
 
 const utils = {
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {
@@ -36,7 +36,7 @@ const utils = {
 
             if (data)
                 return JSON.parse(data);
-            
+
             return {};
         } catch(exception) {
             logger.warn('Failed to load storage');
@@ -50,7 +50,7 @@ const utils = {
     },
 
     convertTransactions(transactions, address) {
-        return transactions.map((transaction) =>{
+        return transactions.map((transaction) => {
             const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
             const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
             const isMine = address === ownerAddress;
@@ -73,7 +73,7 @@ const utils = {
             transactions: this.convertTransactions(transactions, address),
             tokens: {},
             address,
-            balance            
+            balance
         };
     },
 
@@ -138,7 +138,7 @@ const utils = {
 
             return temp;
         }).join('');
-    },    
+    },
 
     hexToBase58(string) {
         const primary = this.sha256(string);
@@ -148,7 +148,7 @@ const utils = {
         const digits = [ 0 ];
 
         for (let i = 0; i < buffer.length; i++) {
-            for (let j = 0; j < digits.length; j++) 
+            for (let j = 0; j < digits.length; j++)
                 digits[j] <<= 8;
 
             digits[0] += buffer[i];
@@ -167,7 +167,7 @@ const utils = {
             }
         }
 
-        for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++) 
+        for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++)
             digits.push(0);
 
         return digits.reverse().map(digit => ALPHABET[digit]).join('');

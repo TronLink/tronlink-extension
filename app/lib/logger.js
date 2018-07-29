@@ -17,6 +17,8 @@ export default class Logger {
     }
 
     _formatMessage(logType = 'info', data) {
+        let level = logType;
+
         const colours = {
             info: '7f8c8d',
             warn: 'f39c12',
@@ -24,13 +26,13 @@ export default class Logger {
         };
 
         if(!colours.hasOwnProperty(logType))
-            logType = 'info';
+            level = 'info';
 
-        const colour = colours[logType];
+        const colour = colours[level];
         const timestamp = dateFormat(Date.now(), 'mmm d, hh:MM:ss tt');
 
-        return [ 
-            `[${ timestamp }] %c[${ this._source }]: %c[${ logType.toUpperCase() }]:`,
+        return [
+            `[${ timestamp }] %c[${ this._source }]: %c[${ level.toUpperCase() }]:`,
             'font-weight: bold;',
             `color: #${ colour };`,
             ...data,

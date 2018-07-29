@@ -42,7 +42,7 @@ export default class Wallet {
 
         logger.info('Saving storage');
         logger.info('-> Storing:', this._storage.encrypted);
-        
+
         Utils.saveStorage({ encrypted: this._storage.encrypted });
     }
 
@@ -81,7 +81,7 @@ export default class Wallet {
         this._storage.decrypted.accounts[account.address] = account;
     }
 
-    setupWallet(password = false) {      
+    setupWallet(password = false) {
         if (this._walletStatus !== WALLET_STATUS.UNINITIALIZED)
             throw 'Wallet cannot be initialized multiple times';
 

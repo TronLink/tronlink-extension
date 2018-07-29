@@ -27,11 +27,11 @@ export default class PortHost extends EventEmitter {
             logger.info(`Port ${source} connected`);
 
             port.onMessage.addListener(({ action, data }) => {
-                this.emit(action, { 
+                this.emit(action, {
                     meta: {
                         hostname
                     },
-                    source, 
+                    source,
                     data
                 });
             });
@@ -42,7 +42,7 @@ export default class PortHost extends EventEmitter {
             });
         });
     }
-    
+
     send(source = false, action = false, data = {}) {
         if(!source)
             return { success: false, error: 'Function requires source {string} parameter' };

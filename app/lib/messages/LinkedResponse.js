@@ -6,8 +6,8 @@ export default class LinkedResponse extends EventEmitter {
 
         if(!eventHandler)
             throw 'No event handler specified';
-                 
-        this._eventHandler = eventHandler;   
+
+        this._eventHandler = eventHandler;
         this._registerListener();
     }
 
@@ -18,9 +18,9 @@ export default class LinkedResponse extends EventEmitter {
     }
 
     _respond(source, uuid, request, meta) {
-        const response = {            
+        const response = {
             resolve: data => {
-                this._eventHandler.send(source, 'tunnel', { 
+                this._eventHandler.send(source, 'tunnel', {
                     success: true,
                     uuid,
                     data

@@ -10,10 +10,10 @@ import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 
 // Constants
-import { 
-    CONFIRMATION_TYPE, 
-    CONFIRMATION_RESULT, 
-    WALLET_STATUS 
+import {
+    CONFIRMATION_TYPE,
+    CONFIRMATION_RESULT,
+    WALLET_STATUS
 } from 'lib/constants';
 
 // Initialise utilities
@@ -32,7 +32,7 @@ webSocket.start();
 const pendingConfirmations = {};
 let dialog = false;
 
-function addConfirmation(confirmation, resolve, reject) {
+const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
     logger.info(`Adding confirmation from site ${confirmation.hostname}:`, confirmation);
 
@@ -51,13 +51,13 @@ function addConfirmation(confirmation, resolve, reject) {
         return dialog.focus();
 
     dialog = window.open(
-        'app/popup/build/index.html', 
-        'extension_popup', 
+        'app/popup/build/index.html',
+        'extension_popup',
         'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
     );
-}
+};
 
-function closeDialog() {
+const closeDialog = () => {
     if(Object.keys(pendingConfirmations).length)
         return;
 
@@ -66,7 +66,7 @@ function closeDialog() {
 
     dialog.close();
     dialog = false;
-}
+};
 
 popup.on('declineConfirmation', ({
     data,
@@ -84,7 +84,7 @@ popup.on('declineConfirmation', ({
 
     confirmation.reject('denied');
     delete pendingConfirmations[data.id];
-    
+
     closeDialog();
     resolve();
 });
@@ -118,7 +118,7 @@ popup.on('acceptConfirmation', async ({
 
     confirmation.resolve(JSON.stringify(output));
     delete pendingConfirmations[data.id];
-    
+
     closeDialog();
     resolve();
 });
@@ -151,7 +151,7 @@ popup.on('setPassword', ({
     resolve();
 });
 
-async function updateAccount() {
+const updateAccount = async () => {
     logger.info('Requesting account update');
 
     await wallet.updateAccounts();
@@ -159,7 +159,7 @@ async function updateAccount() {
     popup.sendAccount(
         wallet.getAccount()
     );
-}
+};
 
 popup.on('unlockWallet', ({
     data,
@@ -191,18 +191,17 @@ popup.on('getWalletStatus', async ({ resolve }) => {
     }
 });
 
-popup.on('sendTron', ({data, resolve, reject})=>{
+popup.on('sendTron', ({ data, resolve, reject }) => {
     if(!Utils.validateAmount(data.amount))
-        reject("invalid amount.");
+        reject('Invalid amount.');
 
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,
         amount: parseInt(data.amount),
         recipient: data.recipient,
-        desc : false,
-        hostname : "TronLink",
+        desc: false,
+        hostname: 'TronLink',
     }, resolve, reject);
-
 });
 
 const handleWebCall = async ({
