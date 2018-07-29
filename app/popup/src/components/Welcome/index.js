@@ -90,6 +90,7 @@ class Welcome extends Component {
                         onKeyPress={ ({ key }) => key == 'Enter' && this.login() }
                     />
                     <span>{ this.state.wrongPassword ? 'Incorrect Password' : '' }</span>
+                    { this.renderWarning() }
                     <div onClick={ () => this.login() } className="loginBtn button black">Decrypt</div>
                 </div>
                 <div className="restoreWallet">Restore from seed phrase</div>
@@ -117,7 +118,16 @@ class Welcome extends Component {
                     onChange={ event => this.handlePasswordChange(event) }
                 />
                 <span>{ this.validatePassword() ? '' : 'Passwords do not match' }</span>
+                { this.renderWarning() }
                 <div onClick={ () => this.createWallet() } className="loginBtn button black">Continue</div>
+            </div>
+        );
+    }
+
+    renderWarning() {
+        return (
+            <div className="welcomeWarning">
+                <div>TronLink is currently running on the testnet. Please do not send any of your funds to this account, they will be lost.</div>
             </div>
         );
     }

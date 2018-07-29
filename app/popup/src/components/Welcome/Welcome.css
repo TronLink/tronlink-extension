@@ -65,3 +65,17 @@
 .restoreWallet:hover {
     color: #bfbfbf;
 }
+
+.welcomeWarning {
+    width: 280px;
+    border: 2px solid red;
+    border-radius: 5px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    color: #000;
+    margin-top: 7px;
+}
