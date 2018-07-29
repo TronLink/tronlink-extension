@@ -118,5 +118,4 @@ export default class PopupClient extends EventEmitter {
     broadcastPrice(price) {
         return this.raw('broadcastPrice', price);
     }
-
 }

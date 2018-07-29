@@ -70,7 +70,8 @@ module.exports = {
         "one-var": [ "error", "never" ],
         "no-multi-assign": [ "error" ],
         "no-mixed-operators": [ "error" ],
-        "no-else-return": [ "error" ]
+        "no-else-return": [ "error" ],
+        "padded-blocks": [ "error", "never" ]
     },
     "globals": {
         "EXTENSION_ID": false,

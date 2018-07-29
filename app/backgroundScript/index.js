@@ -202,7 +202,6 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
         desc: false,
         hostname: 'TronLink',
     }, resolve, reject);
-
 });
 
 const handleWebCall = async ({
