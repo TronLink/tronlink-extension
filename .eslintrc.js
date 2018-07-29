@@ -66,7 +66,8 @@ module.exports = {
         "func-call-spacing": [ "error" ],
         "no-trailing-spaces": [ "error" ],
         "no-multiple-empty-lines": [ "error" ],
-        "no-new-wrappers": [ "error" ]
+        "no-new-wrappers": [ "error" ],
+        "new-cap": [ "error", { "properties": false } ]
     },
     "globals": {
         "EXTENSION_ID": false,
