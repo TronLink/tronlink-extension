@@ -186,6 +186,20 @@ popup.on('getWalletStatus', ({ resolve }) => {
     }
 });
 
+popup.on('sendTron', ({data, resolve, reject})=>{
+    if(!Utils.validateAmount(data.amount))
+        reject("invalid amount.");
+
+    return addConfirmation({
+        type: CONFIRMATION_TYPE.SEND_TRON,
+        amount: parseInt(data.amount),
+        recipient: data.recipient,
+        desc : false,
+        hostname : "TronLink",
+    }, resolve, reject);
+
+});
+
 const handleWebCall = async ({
     request: {
         method,

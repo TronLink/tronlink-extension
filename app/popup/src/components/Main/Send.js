@@ -9,6 +9,22 @@ import SendHeader from './Header/Send';
 import SendContent from './Content/Send';
 
 class Send extends Component {
+
+    constructor(props){
+        super(props);
+
+        this.state = {
+            txToDataAddress : ""
+        }
+    }
+
+    onSetAddress(e){
+        this.setState({
+            txToDataAddress : e.target.value
+        })
+
+    }
+
     render() {
         return (
             <div class="mainContainer">
@@ -20,10 +36,10 @@ class Send extends Component {
                     leftIconRoute="/main/transactions"
                     rightIcon={false}
                 >
-                    <SendHeader />
+                    <SendHeader onSetAddress={this.onSetAddress.bind(this)} />
                 </Header>
                 <Content>
-                    <SendContent />
+                    <SendContent txToDataAddress={this.state.txToDataAddress}/>
                 </Content>
             </div>
         );

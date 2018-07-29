@@ -56,8 +56,7 @@ class Send extends Component {
                             className="txToDataAddress"
                             type="text"
                             spellcheck="false"
-                            value={this.state.amount}
-                            onChange={this.handleAmount}
+                            onChange={this.props.onSetAddress}
                             onFocus={e => e.target.select()}
                         />
                     </div>
