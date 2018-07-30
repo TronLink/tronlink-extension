@@ -8,7 +8,15 @@ const contentScript = new EventDispatcher('pageHook', 'contentScript');
 const linkedRequest = new LinkedRequest(contentScript, ({ data }) => ({ ...data }));
 const scriptVariable = (window.TRON_LINK_VARIABLE || 'TronLink').toString();
 
+/**
+ * Exposes the versioned TronLink API to the browser
+ * @type {object}
+ */
 window[scriptVariable] = {
+    /**
+     * TronLink API v1
+     * @param {string} [network='mainnet'] Network type to configure the API with for address validation
+     */
     v1: (network = 'mainnet') => new TronLink(linkedRequest, network)
 };
 

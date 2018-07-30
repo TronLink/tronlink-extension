@@ -32,6 +32,7 @@
   },
   "scripts": {
     "lint-staged": "lint-staged",
+    "lint": "./node_modules/.bin/eslint .",
     "clean": "rimraf dist",
     "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
     "build:react": "cd app/popup && npm run build && cd ../../",
