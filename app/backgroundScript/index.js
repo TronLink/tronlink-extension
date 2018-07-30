@@ -252,7 +252,7 @@ const handleWebCall = async ({
                 type: CONFIRMATION_TYPE.CREATE_SMARTCONTRACT,
                 abi,
                 bytecode
-            });
+            }, resolve, reject);
         } case 'getAccount': {
             const account = wallet.getAccount();
 

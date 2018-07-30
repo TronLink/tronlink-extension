@@ -5,6 +5,7 @@ import './Queue.css';
 import { CONFIRMATION_TYPE } from '../../extension/constants';
 
 import Send from './SendTRX.js';
+import CreateSmartContract from './CreateSmartContract.js';
 
 class Queue extends React.Component {
     renderConfirmationType() {
@@ -13,6 +14,8 @@ class Queue extends React.Component {
         switch(confirmation.type) {
             case CONFIRMATION_TYPE.SEND_TRON:
                 return <Send />;
+            case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
+                return <CreateSmartContract/>;
             default:
                 return (
                     <span>

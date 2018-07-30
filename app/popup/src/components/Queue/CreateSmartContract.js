@@ -6,18 +6,37 @@ import { popup} from '../../index.js';
 import { updateConfirmations } from '../../reducers/confirmations';
 
 class CreateSmartContract extends Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            disabled : false
+        };
+    }
     async rejectSend() {
         console.log('Rejected.');
         await popup.declineConfirmation(this.props.confirmations[0].id);
         return updateConfirmations();
+
     }
 
     async confirmSend() {
+        this.setState({
+            disabled:true
+        });
         console.log('Confirmed.');
         await popup.acceptConfirmation(this.props.confirmations[0].id);
         return updateConfirmations();
     }
 
+    renderButtons(){
+        return (
+            <div hidden={this.state.hidden} className="confirmButtonContainer">
+                <div className="confirmButton button outline" onClick={ () => this.rejectSend() }>Reject</div>
+                <div className="confirmButton button gradient" onClick={ () => this.confirmSend() }>Confirm</div>
+            </div>
+        )
+    }
 
     render() {
         const confirmation = this.props.confirmations[0];
@@ -32,12 +51,9 @@ class CreateSmartContract extends Component {
                 </div>
                 <div className="confirmSmartContract bold">Create Smart Contract</div>
                 <div className="confirmGroup">
-                    <textarea className="confirmTextArea"></textarea>
+                    <textarea value={JSON.stringify(confirmation.abi)} className="confirmTextArea"></textarea>
                 </div>
-                <div className="confirmButtonContainer">
-                    <div className="confirmButton button outline" onClick={ () => this.rejectSend() }>Reject</div>
-                    <div className="confirmButton button gradient" onClick={ () => this.confirmSend() }>Confirm</div>
-                </div>
+                { (!this.state.disabled) ? this.renderButtons() : 'Processing...' }
             </div>
         );
     }
