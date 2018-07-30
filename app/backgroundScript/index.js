@@ -109,6 +109,9 @@ popup.on('acceptConfirmation', async ({
         case CONFIRMATION_TYPE.SEND_TRON:
             output.rpcResponse = await wallet.send(info.recipient, info.amount);
             break;
+        case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
+            output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode);
+            break;
         default:
             logger.warn('tried to confirm confirmation of unknown type:', info.type);
     }
@@ -226,10 +229,10 @@ const handleWebCall = async ({
                 desc
             } = args;
 
-            if(!Utils.validateAmount(amount))
+            if (!Utils.validateAmount(amount))
                 return reject('Invalid amount provided');
 
-            if(!Utils.validateDescription(desc))
+            if (!Utils.validateDescription(desc))
                 return reject('Invalid description provided');
 
             return addConfirmation({
@@ -239,6 +242,17 @@ const handleWebCall = async ({
                 desc,
                 hostname,
             }, resolve, reject);
+        } case 'createSmartContract': {
+            const {
+                abi,
+                bytecode
+            } = args;
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.CREATE_SMARTCONTRACT,
+                abi,
+                bytecode
+            });
         } case 'getAccount': {
             const account = wallet.getAccount();
 
