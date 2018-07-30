@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import './Send.css';
+import './SendTRX.css';
 
 import { popup} from '../../index.js';
 import { updateConfirmations } from '../../reducers/confirmations';
 
-class Queue extends Component {
+class SendTRX extends Component {
     async rejectSend() {
         console.log('Rejected.');
         await popup.declineConfirmation(this.props.confirmations[0].id);
@@ -79,4 +79,4 @@ class Queue extends Component {
 export default connect(state => ({
     confirmations: state.confirmations.confirmations,
     trxPrice: state.wallet.price
-}))(Queue);
+}))(SendTRX);
