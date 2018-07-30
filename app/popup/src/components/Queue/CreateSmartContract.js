@@ -51,7 +51,7 @@ class CreateSmartContract extends Component {
                 </div>
                 <div className="confirmSmartContract bold">Create Smart Contract</div>
                 <div className="confirmGroup">
-                    <textarea value={JSON.stringify(confirmation.abi)} className="confirmTextArea"></textarea>
+                    <textarea value={JSON.stringify(confirmation.abi)} className="confirmTextArea" disabled></textarea>
                 </div>
                 { (!this.state.disabled) ? this.renderButtons() : 'Processing...' }
             </div>
