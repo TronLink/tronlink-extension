@@ -1,9 +1,9 @@
 {
-  "name": "tron-chrome",
-  "version": "0.1.0",
-  "private": true,
+  "name": "tronlink",
+  "version": "1.0.0-beta",
+  "private": false,
   "dependencies": {
-    "TronUtils": "https://github.com/Flott-org/TronUtils",
+    "TronUtils": "https://github.com/TronWatch/TronLink",
     "babel-loader": "^7.1.5",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -32,14 +32,15 @@
   },
   "scripts": {
     "lint-staged": "lint-staged",
+    "lint": "./node_modules/.bin/eslint .",
     "clean": "rimraf dist",
     "build": "npm run clean && webpack --config webpack.config.js --progress --colors",
     "build:react": "cd app/popup && npm run build && cd ../../",
     "build:all": "npm run build && npm run build:react",
     "test:react": "cd app/popup && npm run test && cd ../../",
-    "zip": "npm run build:all && bestzip chrome-extension.zip dist key.pem manifest.json app/popup/build",
-	"symlink:win": "mklink /D app\\popup\\src\\extension ..\\..\\lib",
-	"symlink" : "cd app/popup/src && ln -s ../../lib extension"
+    "zip": "npm run build:all && bestzip chrome-extension.zip dist manifest.json app/popup/build static",
+	  "symlink:win": "mklink /D app\\popup\\src\\extension ..\\..\\lib",
+	  "symlink": "cd app/popup/src && ln -s ../../lib extension && cd ../../../"
   },
   "lint-staged": {
     "linters": {
