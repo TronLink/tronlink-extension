@@ -1,4 +1,7 @@
 import randomUUID from 'uuid/v4';
+import Logger from '../logger';
+
+const logger = new Logger('LinkedRequest');
 
 export default class LinkedRequest {
     constructor(eventHandler = false, outputMap = false) {
@@ -7,13 +10,13 @@ export default class LinkedRequest {
 
         if(outputMap && {}.toString.call(outputMap) !== '[object Function]')
             throw 'Invalid output map passed. Expected type function';
-            
-        this._outputMap = outputMap;     
+
+        this._outputMap = outputMap;
         this._eventHandler = eventHandler;
 
         this._pendingRequests = {};
-        this._defaultTimeout = 30;        
-        
+        this._defaultTimeout = 30;
+
         this._registerListener();
     }
 
@@ -22,20 +25,22 @@ export default class LinkedRequest {
             const responseSent = this._dataStream(data);
 
             if(!responseSent)
-                return console.log(`Promise timed out for linked request ${data.uuid}`);
+                return logger.error(`Promise timed out for linked request ${data.uuid}`);
         });
     }
 
-    _dataStream(output) {        
-        if(this._outputMap)
-            output = this._outputMap(output);
+    _dataStream(output) {
+        let input = output;
 
-        const { 
-            uuid, 
+        if(this._outputMap)
+            input = this._outputMap(output);
+
+        const {
+            uuid,
             data,
             error,
             success
-        } = output;
+        } = input;
 
         if(!this._pendingRequests.hasOwnProperty(uuid))
             return false;
@@ -56,7 +61,7 @@ export default class LinkedRequest {
 
         const uuid = randomUUID();
 
-        this._eventHandler.send('tunnel', { 
+        this._eventHandler.send('tunnel', {
             data: input,
             uuid
         });
@@ -64,7 +69,7 @@ export default class LinkedRequest {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');    
+                    reject('Request timed out');
                     delete this._pendingRequests[uuid];
                 }, expiration * 1000),
                 resolve,

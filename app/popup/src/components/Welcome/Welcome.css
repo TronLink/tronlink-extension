@@ -1,0 +1,81 @@
+.welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.welcomeLogo {
+    height: 140px;
+    width: 210px;
+    margin-bottom: 50px;
+}
+
+.decryptContainer {
+    position: relative;
+}
+
+.decryptContainer > span {
+    display: block;
+    font-size: 13px;
+    color: #ef3636;
+    margin-top: 5px;
+    width: 100%;
+    text-align: center;
+    height: 12px;
+}
+
+.decryptContainer .textInput {
+    display: block;
+    height: 40px;
+    width: 100%;
+    text-indent: 20px;
+    font-size: 14px;
+    padding: 0;
+    border-radius: 3px;
+    border: 2px solid #bfbfbf;
+    font-weight: 500;
+    margin: 10px 0px;
+}
+
+.textInput::placeholder {
+    color: #bfbfbf;
+}
+
+.textInput:focus {
+    border: 2px solid #ef3636;
+}
+
+.loginBtn {
+    height: 45px;
+    width: 310px;
+    margin-top: 20px;
+}
+
+.restoreWallet {
+    font-size: 12px;
+    text-align: center;
+    text-decoration: underline;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.restoreWallet:hover {
+    color: #bfbfbf;
+}
+
+.welcomeWarning {
+    width: 310px;
+    border: 2px solid red;
+    border-radius: 5px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    color: #000;
+    margin-top: 7px;
+}

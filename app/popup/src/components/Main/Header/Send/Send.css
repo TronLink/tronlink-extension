@@ -1,0 +1,93 @@
+.send.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 500;
+    padding: 0px 35px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.flowLine {
+    position: relative;
+    width: 3px;
+    height: 45px;
+    background: #dc2c73;
+}
+
+.flowLine::before {
+    content: '';
+    position: absolute;
+    top: -11px;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 10px;
+    border: 2px solid #DC2C73;
+}
+
+.flowLine::after {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 10px;
+    background-color: #ED3F21;
+    border: 2px solid #ED3F21;
+}
+
+.txAccountData, .txToData {
+    height: 50px;
+    width: 330px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+.txAccountData {
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    background: linear-gradient(to right, #DC2C73, #ED3F21);
+}
+
+.txAccountDataLeft {
+    text-align: left;
+}
+
+.txAccountDataRight {
+    text-align: right;
+    font-family: 'Source Code Pro', monospace;
+}
+
+.txAccountDataLabel span {
+    font-size: 11px;
+}
+
+.txAccountDataLabel:first-child {
+    margin-bottom: 7px;
+}
+
+.txToData {
+    border: 2px solid #ED3F21;
+}
+
+.txToDataHeader {
+    color: #939394;
+}
+
+.txToDataAddress {
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    width: 100%;
+    font-size: 12px;
+}
+
+.txToDataAddress::placeholder {
+    color: #cacaca;
+}

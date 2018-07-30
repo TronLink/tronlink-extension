@@ -1,5 +1,8 @@
 /*global chrome*/
 import EventEmitter from 'eventemitter3';
+import Logger from '../logger';
+
+const logger = new Logger('PortHost');
 
 export default class PortHost extends EventEmitter {
     constructor() {
@@ -12,24 +15,34 @@ export default class PortHost extends EventEmitter {
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
             let source = port.name;
-        
-            if(port.sender.tab)
+            let hostname = false;
+
+            if(port.sender.tab && source !== 'popup')
                 source += `-${port.sender.tab.id}`;
 
-            this._ports[source] = port;
-            console.log(`Port ${source} connected`);
+            if(port.sender.url)
+                hostname = new URL(port.sender.url).hostname;
 
-            port.onMessage.addListener(({ action, data }, sendingPort) => {
-                this.emit(action, { source, data });
+            this._ports[source] = port;
+            logger.info(`Port ${source} connected`);
+
+            port.onMessage.addListener(({ action, data }) => {
+                this.emit(action, {
+                    meta: {
+                        hostname
+                    },
+                    source,
+                    data
+                });
             });
 
             port.onDisconnect.addListener(() => {
-                console.log(`Port ${source} disconnected: ${chrome.runtime.lastError}`);
+                logger.info(`Port ${source} disconnected: ${chrome.runtime.lastError || 'No reason provided'}`);
                 delete this._ports[source];
             });
         });
     }
-    
+
     send(source = false, action = false, data = {}) {
         if(!source)
             return { success: false, error: 'Function requires source {string} parameter' };
@@ -38,7 +51,7 @@ export default class PortHost extends EventEmitter {
             return { success: false, error: 'Function requires action {string} parameter' };
 
         if(!this._ports.hasOwnProperty(source))
-            return { success: false, error: 'Specified port does not exist' };;
+            return { success: false, error: 'Specified port does not exist' };
 
         this._ports[source].postMessage({ action, data });
         return { success: true };

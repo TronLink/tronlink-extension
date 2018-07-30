@@ -9,16 +9,16 @@ export default class PopupHost extends EventEmitter {
             throw 'Expected PortChild object';
 
         this._portChild = portChild;
-        this._pendingRequests = {}
+        this._pendingRequests = {};
 
         this._registerListener();
     }
 
     _registerListener() {
         this._portChild.on('popupCommunication', ({ action, data: { uuid, data, expectsResponse } }) => {
-            if(action == 'internalResponse')
+            if(action === 'internalResponse')
                 return this._handleResponse(uuid, data.success, data.data);
-                
+
             this._handleEvent(action, uuid, data, expectsResponse);
         });
     }
@@ -41,8 +41,8 @@ export default class PopupHost extends EventEmitter {
 
         return this.emit(action, {
             resolve: data => {
-                this._portChild.send('popupCommunication', { 
-                    action: 'internalResponse', 
+                this._portChild.send('popupCommunication', {
+                    action: 'internalResponse',
                     data: {
                         data: {
                             success: true,
@@ -53,8 +53,8 @@ export default class PopupHost extends EventEmitter {
                 });
             },
             reject: data => {
-                this._portChild.send('popupCommunication', { 
-                    action: 'internalResponse', 
+                this._portChild.send('popupCommunication', {
+                    action: 'internalResponse',
                     data: {
                         data: {
                             success: false,
@@ -86,7 +86,7 @@ export default class PopupHost extends EventEmitter {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');    
+                    reject('Request timed out');
                     delete this._pendingRequests[uuid];
                 }, 30 * 1000),
                 resolve,
@@ -121,5 +121,29 @@ export default class PopupHost extends EventEmitter {
 
     setPassword(password) {
         return this.raw('setPassword', { password });
+    }
+
+    getWalletStatus() {
+        return this.raw('getWalletStatus');
+    }
+
+    getPrice() {
+        return this.raw('getPrice');
+    }
+
+    getConfirmations() {
+        return this.raw('getConfirmations');
+    }
+
+    declineConfirmation(id) {
+        return this.raw('declineConfirmation', { id });
+    }
+
+    acceptConfirmation(id) {
+        return this.raw('acceptConfirmation', { id });
+    }
+
+    requestSend(recipient, amount) {
+        return this.raw('sendTron', { recipient, amount });
     }
 }

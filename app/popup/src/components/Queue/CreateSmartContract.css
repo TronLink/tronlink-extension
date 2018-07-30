@@ -1,0 +1,65 @@
+.queue .confirmSend {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+    padding: 35px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.confirmSmartContract {
+    text-align: center;
+}
+
+.confirmTextArea {
+    width: 100%;
+    height: 300px;
+    resize: none;
+}
+
+.confirmQueueCountCont {
+    position: absolute;
+    color: #afafaf;
+    top: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.confirmQueueLabel {
+    color: #c1c1c1;
+    font-size: 10px;
+}
+
+.confirmGroup {
+    padding: 0px 20px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.confirmGroup:first-child {
+    margin-top: 0px;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.orange {
+    color: #ED3F23;
+}
+
+.confirmButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+    margin-top: 35px;
+    box-sizing: border-box;
+}
+
+.confirmButton {
+    width: 150px;
+}

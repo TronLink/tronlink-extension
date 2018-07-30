@@ -1,0 +1,30 @@
+.accountBalance {
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'Source Code Pro', monospace;
+    text-align: center;
+}
+
+.accountBalanceAmount {
+    color: #ED3F23;
+    font-weight: 600;
+}
+
+.accountBalanceTicker {
+    margin-left: 25px;
+}
+
+.accountBalanceUSD {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.accountView .buttonContainer {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.accBtn {
+    width: 140px;
+    margin: 0px 10px;
+}
