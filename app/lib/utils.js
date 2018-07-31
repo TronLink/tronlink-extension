@@ -104,22 +104,22 @@ const utils = {
         const bytes = [ 0 ];
 
         for (let i = 0; i < string.length; i++) {
-            const char = string[ i ];
+            const char = string[i];
 
             if (!ALPHABET.includes(char))
                 throw new Error('Non-base58 character');
 
             for (let j = 0; j < bytes.length; j++)
-                bytes[ j ] *= 58;
+                bytes[j] *= 58;
 
-            bytes[ 0 ] += ALPHABET.indexOf(char);
+            bytes[0] += ALPHABET.indexOf(char);
 
             let carry = 0;
 
             for (let j = 0; j < bytes.length; ++j) {
-                bytes[ j ] += carry;
-                carry = bytes[ j ] >> 8;
-                bytes[ j ] &= 0xff;
+                bytes[j] += carry;
+                carry = bytes[j] >> 8;
+                bytes[j] &= 0xff;
             }
 
             while (carry) {
@@ -128,7 +128,7 @@ const utils = {
             }
         }
 
-        for (let i = 0; string[ i ] === '1' && i < string.length - 1; i++)
+        for (let i = 0; string[i] === '1' && i < string.length - 1; i++)
             bytes.push(0);
 
         return bytes.reverse().slice(0, 21).map(byte => {
@@ -150,16 +150,16 @@ const utils = {
 
         for (let i = 0; i < buffer.length; i++) {
             for (let j = 0; j < digits.length; j++)
-                digits[ j ] <<= 8;
+                digits[j] <<= 8;
 
-            digits[ 0 ] += buffer[ i ];
+            digits[0] += buffer[i];
 
             let carry = 0;
 
             for (let j = 0; j < digits.length; ++j) {
-                digits[ j ] += carry;
-                carry = (digits[ j ] / 58) | 0;
-                digits[ j ] %= 58;
+                digits[j] += carry;
+                carry = (digits[j] / 58) | 0;
+                digits[j] %= 58;
             }
 
             while (carry) {
@@ -168,10 +168,10 @@ const utils = {
             }
         }
 
-        for (let i = 0; buffer[ i ] === 0 && i < buffer.length - 1; i++)
+        for (let i = 0; buffer[i] === 0 && i < buffer.length - 1; i++)
             digits.push(0);
 
-        return digits.reverse().map(digit => ALPHABET[ digit ]).join('');
+        return digits.reverse().map(digit => ALPHABET[digit]).join('');
     },
 
     isString(string) {
