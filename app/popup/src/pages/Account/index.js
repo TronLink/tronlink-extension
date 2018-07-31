@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { SettingsIcon, MoneyIcon } from '../../Icons.js';
+import { SettingsIcon, MoneyIcon } from 'components/Icons';
 
-import Header from './Header';
-import Content from './Content';
+import Header from 'components/Header';
 
-import AccountViewHeader from './Header/AccountView';
-import AccountViewContent from './Content/AccountView';
+import AccountViewHeader from 'components/Header/AccountView';
+import AccountViewContent from './AccountView';
 
 class Account extends Component {
     render() {
@@ -26,9 +25,9 @@ class Account extends Component {
                 >
                     <AccountViewHeader />
                 </Header>
-                <Content>
+                <div className="mainContent">
                     <AccountViewContent />
-                </Content>
+                </div>
             </div>
         );
     }

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
-import { WALLET_STATUS } from '../../extension/constants';
-import { popup } from '../../index.js';
-import { updateStatus } from '../../reducers/wallet';
+import { WALLET_STATUS } from 'extension/constants';
+import { popup } from 'index';
+import { updateStatus } from 'reducers/wallet';
 
 import './Welcome.css';
 
@@ -89,10 +89,18 @@ class Welcome extends Component {
                         onChange={ event => this.handlePasswordChange(event) }
                         onKeyPress={ ({ key }) => key == 'Enter' && this.login() }
                     />
-                    <span>{ this.state.wrongPassword ? 'Incorrect Password' : '' }</span>
+
+                    <span>
+                        { this.state.wrongPassword ? 'Incorrect Password' : '' }
+                    </span>
+                    
                     { this.renderWarning() }
-                    <div onClick={ () => this.login() } className="loginBtn button black">Decrypt</div>
+
+                    <div onClick={ () => this.login() } className="loginBtn button black">
+                        Decrypt
+                    </div>
                 </div>
+
                 <div className="restoreWallet">Restore from seed phrase</div>
             </div>
         );
@@ -109,6 +117,7 @@ class Welcome extends Component {
                     value={ this.state.password }
                     onChange={ event => this.handlePasswordChange(event) }
                 />
+
                 <input 
                     placeholder="Repeat Password to Encrypt Extension..."
                     className="textInput"
@@ -117,9 +126,16 @@ class Welcome extends Component {
                     value={ this.state.passwordRepeat }
                     onChange={ event => this.handlePasswordChange(event) }
                 />
-                <span>{ this.validatePassword() ? '' : 'Passwords do not match' }</span>
+
+                <span>
+                    { this.validatePassword() ? '' : 'Passwords do not match' }
+                </span>
+
                 { this.renderWarning() }
-                <div onClick={ () => this.createWallet() } className="loginBtn button black">Continue</div>
+
+                <div onClick={ () => this.createWallet() } className="loginBtn button black">
+                    Continue
+                </div>
             </div>
         );
     }

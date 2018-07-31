@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
-import { ArrowLeftIcon } from '../../Icons.js';
+import { ArrowLeftIcon } from 'components/Icons';
 
-import Header from './Header';
-import Content from './Content';
+import Header from 'components/Header';
 
-import SettingsContent from './Content/Settings';
+import SettingsContent from './SettingsView';
 
 class Settings extends Component {
     render() {
@@ -14,14 +13,14 @@ class Settings extends Component {
                 <Header 
                     navbarTitle="SETTINGS"
                     navbarLabel=""
-                    leftIcon={true}
-                    leftIconImg={<ArrowLeftIcon />}
+                    leftIcon={ true }
+                    leftIconImg={ <ArrowLeftIcon /> }
                     leftIconRoute="/main/transactions"
-                    rightIcon={false}
+                    rightIcon={ false }
                 />
-                <Content>
+                <div className="mainContent">
                     <SettingsContent />
-                </Content>
+                </div>
             </div>
         );
     }

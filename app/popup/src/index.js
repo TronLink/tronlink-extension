@@ -13,9 +13,10 @@ import { setAccount, setTrxPrice } from "./reducers/wallet";
 import reducers from './reducers';
 import { updateStatus, updatePrice } from './reducers/wallet';
 
-import './index.css';
+import App from 'components/App';
 
-import App from './App';
+import Logger from 'extension/logger';
+const logger = new Logger('index');
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
 export const store = createStoreWithMiddleware(reducers);
@@ -34,19 +35,28 @@ ReactDOM.render(
  ********** LISTENERS *************
  **********************************/
 popup.on('addConfirmation', ({ data, resolve, reject }) => {
-    console.log('ADD CONFIRMATION', { data });
-    store.dispatch(addConfirmation(data));
+    logger.info('Adding confirmation', data);
+
+    store.dispatch(
+        addConfirmation(data)
+    );
     resolve();
 });
 
 popup.on('sendAccount', ({ data, resolve, reject }) => {
-    console.log('received account');
-    store.dispatch(setAccount(data));
+    logger.info('Received account', data);
+
+    store.dispatch(
+        setAccount(data)
+    );
 });
 
 popup.on('broadcastPrice', ({ data, resolve, reject }) => {
-    console.log('received price');
-    store.dispatch(setTrxPrice(data));
+    logger.info('Received price', data);
+
+    store.dispatch(
+        setTrxPrice(data)
+    );
 });
 
 updateConfirmations();

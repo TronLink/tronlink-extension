@@ -1,12 +1,16 @@
-import {store, popup} from "../index";
+import { store, popup } from 'index';
+import { WALLET_STATUS } from 'extension/constants';
+import Logger from 'extension/logger';
+
+const logger = new Logger('Wallet Reducer');
 
 /**********************************
  *********** ACTIONS **************
  **********************************/
-export const INITIALIZE = "INITIALIZE";
-export const SET_STATUS = "SET_STATUS";
-export const SET_ACCOUNT = "SET_ACCOUNT";
-export const SET_TRX_PRICE = "SET_PRICE";
+export const INITIALIZE = 'INITIALIZE';
+export const SET_STATUS = 'SET_STATUS';
+export const SET_ACCOUNT = 'SET_ACCOUNT';
+export const SET_TRX_PRICE = 'SET_PRICE';
 
 export const unlockWallet = pass => ({
     type: INITIALIZE,
@@ -19,12 +23,12 @@ export const setWalletStatus = status => ({
 });
 
 export const setAccount  = account => ({
-    type : SET_ACCOUNT,
+    type: SET_ACCOUNT,
     account
 });
 
 export const setTrxPrice = price => ({
-    type : SET_TRX_PRICE,
+    type: SET_TRX_PRICE,
     price
 });
 
@@ -33,32 +37,37 @@ export const setTrxPrice = price => ({
  **********************************/
 
 export const updateStatus = async () => {
-    let status = await popup.getWalletStatus();
-    console.log("update status, dispatching new status: " + status);
-    store.dispatch(setWalletStatus(status));
+    const status = await popup.getWalletStatus();
+    
+    logger.info('Update wallet status required');
+    logger.info('New wallet status:', status);
+
+    store.dispatch(
+        setWalletStatus(status)
+    );
 };
 
 export const updatePrice = async () => {
-    let price = await popup.getPrice();
-    store.dispatch(setTrxPrice(price));
+    const price = await popup.getPrice();
+
+    logger.info('Update price required');
+    logger.info('New price:', price);
+
+    store.dispatch(
+        setTrxPrice(price)
+    );
 };
 
 /**********************************
  *********** REDUCER **************
  **********************************/
-export const wallet_status = {
-    none: 'NONE', //only before loading
-    uninitialized: 'UNINITIALIZED',
-    locked: 'LOCKED',
-    unlocked: 'UNLOCKED'
-};
 
 const initialState = {
-    status: wallet_status.uninitialized,
-    account : {
-        transactions : []
+    status: WALLET_STATUS.UNINITIALIZED,
+    account: {
+        transactions: []
     },
-    selectedAccountId: 0,
+    selectedAccountId: false,
     price : 0.0
 };
 
@@ -67,7 +76,7 @@ export function walletReducer(state = initialState, action) {
         case INITIALIZE: {
             return {
                 ...state,
-                status: wallet_status.uninitialized
+                status: WALLET_STATUS.UNINITIALIZED
             };
         }
         case SET_ACCOUNT:{

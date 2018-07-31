@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Transactions.css';
 import { connect } from 'react-redux';
 
-import Transaction from './Transaction.js';
+import Transaction from './Transaction';
 
 class Transactions extends Component {
     constructor(props) {

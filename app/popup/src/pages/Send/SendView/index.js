@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './Send.css';
 
-import { store, popup } from '../../../../index.js';
+import { store, popup } from 'index';
 
 class Send extends Component {
     constructor(props) {
