@@ -32,7 +32,7 @@ export default class Wallet {
     }
 
     getFullAccount() {
-        return this._storage.decrypted.accounts[ this._currentAccount ];
+        return this._storage.decrypted.accounts[this._currentAccount];
     }
 
     async send(recipient, amount) {
@@ -86,7 +86,7 @@ export default class Wallet {
         const transactions = await rpc.getTransactions(address);
         logger.info('Account updated', { account });
 
-        this._accounts[ address ] = Utils.convertAccountObject(address, account, transactions);
+        this._accounts[address] = Utils.convertAccountObject(address, account, transactions);
     }
 
     async updateAccounts() {
@@ -104,7 +104,7 @@ export default class Wallet {
         if (!this._storage.decrypted)
             this._storage.decrypted = { accounts: {} };
 
-        this._storage.decrypted.accounts[ account.address ] = account;
+        this._storage.decrypted.accounts[account.address] = account;
     }
 
     setupWallet(password = false) {
@@ -130,7 +130,7 @@ export default class Wallet {
 
         try {
             this._storage.decrypted = JSON.parse(Utils.decrypt(this._storage.encrypted, password));
-            this._currentAccount = Object.keys(this._storage.decrypted.accounts)[ 0 ];
+            this._currentAccount = Object.keys(this._storage.decrypted.accounts)[0];
             this._walletStatus = WALLET_STATUS.UNLOCKED;
 
             logger.info('Wallet unlocked successfully');
@@ -147,6 +147,6 @@ export default class Wallet {
         if (this._walletStatus !== WALLET_STATUS.UNLOCKED)
             return false;
 
-        return this._accounts[ address ];
+        return this._accounts[address];
     }
 }

@@ -52,7 +52,7 @@ class TronLink {
                 if (name.startsWith('_'))
                     throw new Error('Failed to access private property');
 
-                return target[ name ];
+                return target[name];
             }
         });
     }
@@ -302,7 +302,7 @@ class TronLink {
         if (((address.length * 2) | 0) !== this._constants.ADDRESS_SIZE)
             return false;
 
-        if (address[ 0 ] !== this._constants.ADD_PRE_FIX_BYTE)
+        if (address[0] !== this._constants.ADD_PRE_FIX_BYTE)
             return false;
 
         return type;
