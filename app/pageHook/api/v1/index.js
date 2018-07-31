@@ -1,27 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 
 import Logger from 'lib/logger';
-import ByteArray from 'lib/ByteArray';
 import Utils from 'lib/utils';
 
 const logger = new Logger('TronLink');
-
-const TRON_CONSTANTS_BASE = {
-    ADDRESS_SIZE: 42,
-    TRANSACTION_MAX_BYTE_SIZE: 500 * 1024,
-    MAXIMUM_TIME_UNTIL_EXPIRATION: 24 * 60 * 60 * 1000,
-    TRANSACTION_DEFAULT_EXPIRATION_TIME: 60 * 1000
-};
-
-const TRON_CONSTANTS_MAINNET = {
-    ADD_PRE_FIX_BYTE: 0x41,
-    ADD_PRE_FIX_STRING: '41',
-};
-
-const TRON_CONSTANTS_TESTNET = {
-    ADD_PRE_FIX_BYTE: 0xa0,
-    ADD_PRE_FIX_STRING: 'a0',
-};
 
 /**
  * TronLink API v1
@@ -42,10 +24,6 @@ class TronLink {
         this._linkedRequest = linkedRequest;
         this._extensionUrl = `chrome-extension://${ EXTENSION_ID }`;
         this._network = network;
-
-        if (this._network === 'mainnet')
-            this._constants = { ...TRON_CONSTANTS_BASE, ...TRON_CONSTANTS_MAINNET };
-        else this._constants = { ...TRON_CONSTANTS_BASE, ...TRON_CONSTANTS_TESTNET };
 
         return new Proxy(this, {
             get(target, name) {
@@ -137,7 +115,9 @@ class TronLink {
              * @memberof TronLink
              */
             sendTron: (recipient, amount, desc = false) => {
-                if (!this.utils.validateAddress(recipient))
+                const address = this.utils.validateAddress(recipient);
+
+                if (!address)
                     throw new Error('Invalid recipient provided');
 
                 if (!Utils.validateAmount(amount))
@@ -146,7 +126,11 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendTron', { recipient, amount, desc });
+                return this._dispatch('sendTron', {
+                    recipient: address,
+                    amount,
+                    desc
+                });
             },
             /**
              * Requests confirmation from the end user to send an asset to the specified address. Will broadcast the transaction if accepted
@@ -158,7 +142,9 @@ class TronLink {
              * @memberof TronLink
              */
             sendAsset: (recipient, amount, assetID, desc) => {
-                if (!this.utils.validateAddress(recipient))
+                const address = this.utils.validateAddress(recipient);
+
+                if (!address)
                     throw new Error('Invalid recipient provided');
 
                 if (!Utils.validateAmount(amount))
@@ -167,7 +153,12 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendAsset', { recipient, amount, assetID, desc });
+                return this._dispatch('sendAsset', {
+                    recipient: address,
+                    amount,
+                    assetID,
+                    desc
+                });
             },
             /**
              * Requests confirmation from the end user to freeze tron for the specified duration. Will broadcast the transaction if accepted
@@ -248,22 +239,22 @@ class TronLink {
     get utils() {
         return {
             /**
-             * Validates an address, depending on the selected network
+             * Validates an address
              * @param {string} address The address to validate
-             * @returns {(string|boolean)} The encoding type on success or false on failure
+             * @returns {(string|boolean)} The base58 transformed address on success, or false on failure
              * @readonly
              * @memberof TronLink
              */
             validateAddress: input => {
                 logger.info(`Validating address ${input}`);
 
-                const type = this._transformAddress(input);
+                const address = Utils.transformAddress(input);
 
-                if (!type)
+                if (!address)
                     logger.warn(`Address ${input} is invalid`);
-                else logger.info(`Address ${input} is valid, type ${type}`);
+                else logger.info(`Address ${input} is valid, base58 transformation: ${address}`);
 
-                return type;
+                return address;
             },
             /**
              * Converts SUN to TRX
@@ -293,54 +284,6 @@ class TronLink {
      */
     _dispatch(method, args = {}) {
         return this._linkedRequest.build({ method, args });
-    }
-
-    /**
-     * @private
-     */
-    _validateAddress(address, type) {
-        if (((address.length * 2) | 0) !== this._constants.ADDRESS_SIZE)
-            return false;
-
-        if (address[0] !== this._constants.ADD_PRE_FIX_BYTE)
-            return false;
-
-        return type;
-    }
-
-    /**
-     * @private
-     */
-    _transformAddress(address) {
-        if (!Utils.isString(address))
-            return false;
-
-        switch (address.length) {
-            case this._constants.ADDRESS_SIZE:
-                // Hex
-                return this._validateAddress(
-                    ByteArray.fromHexString(address),
-                    'hex'
-                );
-            case 34:
-                // Base58
-                return this._validateAddress(
-                    ByteArray.fromHexString(
-                        Utils.base58ToHex(address)
-                    ),
-                    'base58'
-                );
-            case 28:
-                // Base64
-                return this._validateAddress(
-                    ByteArray.fromHexString(
-                        Utils.base64ToHex(address)
-                    ),
-                    'base64'
-                );
-        }
-
-        return false;
     }
 }
 
