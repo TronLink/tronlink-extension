@@ -6,7 +6,9 @@ import Logger from './logger';
 
 import {
     ENCRYPTION_ALGORITHM,
-    LOCALSTORAGE_KEY
+    LOCALSTORAGE_KEY,
+    TRON_CONSTANTS_MAINNET,
+    TRON_CONSTANTS_TESTNET
 } from './constants';
 
 const logger = new Logger('Utils');
@@ -205,6 +207,49 @@ const utils = {
 
     tronToSun: tron => {
         return (new BigNumber(tron)).multipliedBy(1000000);
+    },
+
+    validateAddress(address) {
+        if (address.length !== 34)
+            return false;
+
+        const prefix = this.base58ToHex(address).substr(0, 2);
+
+        if (prefix === TRON_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING)
+            return true;
+
+        if (prefix === TRON_CONSTANTS_TESTNET.ADD_PRE_FIX_STRING)
+            return true;
+
+        return false;
+    },
+
+    transformAddress(address) {
+        if(!this.isString(address))
+            return false;
+
+        switch(address.length) {
+            case 42: {
+                // hex -> base58
+                return this.transformAddress(
+                    this.hexToBase58(address)
+                );
+            } case 28: {
+                // base64 -> base58
+                const hex = this.base64ToHex(address);
+                const base58 = this.hexToBase58(hex);
+
+                return this.transformAddress(base58);
+            } case 34: {
+                // base58
+                const isAddressValid = this.validateAddress(address);
+
+                if(isAddressValid)
+                    return address;
+
+                return false;
+            }
+        }
     }
 };
 
