@@ -22,7 +22,6 @@ module.exports = {
         "semi": [ "error", "always" ],
         "no-console": "off",
         "object-curly-spacing": [ "error", "always" ],
-        "array-bracket-spacing": [ "error", "always" ],
         "computed-property-spacing": [ "error", "never" ],
         "key-spacing": [ "error", { "beforeColon": false, "afterColon": true } ],
         "prefer-const": [ "error" ],
