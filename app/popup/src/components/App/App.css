@@ -1,3 +1,27 @@
+@import "./reset.css";
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500,700');
+
+html {
+    height: 595px;
+    width: 420px;
+}
+
+body, #root {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(180deg, #fff, #efefef);
+    cursor: default;
+    user-select: none;
+}
+
+:focus {
+    outline: none;
+}
+
 .app {
     height: 100%;
     width: 100%;
@@ -80,4 +104,20 @@
 a {
     text-decoration: none;
     color: #000;
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    background: linear-gradient(to bottom, #d8d8d8, #efefef);
 }

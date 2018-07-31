@@ -1,8 +1,0 @@
-.mainContent {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    background: linear-gradient(to bottom, #d8d8d8, #efefef);
-}

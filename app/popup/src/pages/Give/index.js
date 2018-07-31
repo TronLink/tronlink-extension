@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 
-import { ArrowLeftIcon } from '../../Icons.js';
+import { ArrowLeftIcon } from 'components/Icons';
 
-import Header from './Header';
-import Content from './Content';
+import Header from 'components/Header';
 
-import GiveContent from './Content/Give';
+import GiveContent from './GiveView';
 
 class Give extends Component {
     render() {
@@ -14,14 +13,14 @@ class Give extends Component {
                 <Header 
                     navbarTitle="GRANT FUNDS"
                     navbarLabel=""
-                    leftIcon={true}
-                    leftIconImg={<ArrowLeftIcon />}
+                    leftIcon={ true }
+                    leftIconImg={ <ArrowLeftIcon /> }
                     leftIconRoute="/main/transactions"
-                    rightIcon={false}
+                    rightIcon={ false }
                 />
-                <Content>
+                <div className="mainContent">
                     <GiveContent />
-                </Content>
+                </div>
             </div>
         );
     }

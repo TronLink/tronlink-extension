@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SendTRX.css';
 
-import { popup} from '../../index.js';
-import { updateConfirmations } from '../../reducers/confirmations';
+import { popup } from 'index';
+import { updateConfirmations } from 'reducers/confirmations';
 
 class SendTRX extends Component {
     async rejectSend() {
