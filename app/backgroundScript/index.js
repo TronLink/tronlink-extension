@@ -195,13 +195,18 @@ popup.on('getWalletStatus', async ({ resolve }) => {
 });
 
 popup.on('sendTron', ({ data, resolve, reject }) => {
+    const address = Utils.transformAddress(data.recipient);
+
+    if(!address)
+        reject('Invalid recipient');
+
     if(!Utils.validateAmount(data.amount))
-        reject('Invalid amount.');
+        reject('Invalid amount');
 
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,
         amount: parseInt(data.amount),
-        recipient: data.recipient,
+        recipient: address,
         desc: false,
         hostname: 'TronLink',
     }, resolve, reject);
@@ -229,6 +234,11 @@ const handleWebCall = async ({
                 desc
             } = args;
 
+            const address = Utils.transformAddress(recipient);
+
+            if(!address)
+                return reject('Invalid recipient provided');
+
             if (!Utils.validateAmount(amount))
                 return reject('Invalid amount provided');
 
@@ -238,7 +248,7 @@ const handleWebCall = async ({
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 amount: parseInt(amount),
-                recipient,
+                recipient: address,
                 desc,
                 hostname,
             }, resolve, reject);

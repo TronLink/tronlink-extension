@@ -115,7 +115,9 @@ class TronLink {
              * @memberof TronLink
              */
             sendTron: (recipient, amount, desc = false) => {
-                if (!this.utils.validateAddress(recipient))
+                const address = this.utils.validateAddress(recipient);
+
+                if (!address)
                     throw new Error('Invalid recipient provided');
 
                 if (!Utils.validateAmount(amount))
@@ -124,7 +126,11 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendTron', { recipient, amount, desc });
+                return this._dispatch('sendTron', {
+                    recipient: address,
+                    amount,
+                    desc
+                });
             },
             /**
              * Requests confirmation from the end user to send an asset to the specified address. Will broadcast the transaction if accepted
@@ -136,7 +142,9 @@ class TronLink {
              * @memberof TronLink
              */
             sendAsset: (recipient, amount, assetID, desc) => {
-                if (!this.utils.validateAddress(recipient))
+                const address = this.utils.validateAddress(recipient);
+
+                if (!address)
                     throw new Error('Invalid recipient provided');
 
                 if (!Utils.validateAmount(amount))
@@ -145,7 +153,12 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendAsset', { recipient, amount, assetID, desc });
+                return this._dispatch('sendAsset', {
+                    recipient: address,
+                    amount,
+                    assetID,
+                    desc
+                });
             },
             /**
              * Requests confirmation from the end user to freeze tron for the specified duration. Will broadcast the transaction if accepted
