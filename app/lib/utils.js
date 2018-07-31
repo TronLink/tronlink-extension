@@ -101,7 +101,7 @@ const utils = {
     },
 
     base58ToHex(string) {
-        const bytes = [ 0 ];
+        const bytes = [0];
 
         for (let i = 0; i < string.length; i++) {
             const char = string[ i ];
@@ -146,7 +146,7 @@ const utils = {
         const secondary = this.sha256(primary);
 
         const buffer = ByteArray.fromHexString(string + secondary.slice(0, 8));
-        const digits = [ 0 ];
+        const digits = [0];
 
         for (let i = 0; i < buffer.length; i++) {
             for (let j = 0; j < digits.length; j++)
