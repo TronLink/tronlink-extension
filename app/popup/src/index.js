@@ -8,7 +8,7 @@ import PortChild from './extension/communication/PortChild';
 import PopupHost from './extension/communication/popup/PopupHost';
 
 import { addConfirmation, updateConfirmations } from './reducers/confirmations';
-import { setAccount, setTrxPrice } from "./reducers/wallet";
+import { setAccount, setTrxPrice } from './reducers/wallet';
 
 import reducers from './reducers';
 import { updateStatus, updatePrice } from './reducers/wallet';
@@ -34,16 +34,19 @@ ReactDOM.render(
 /**********************************
  ********** LISTENERS *************
  **********************************/
-popup.on('addConfirmation', ({ data, resolve, reject }) => {
+popup.on('isOpen', ({ resolve }) => {
+    resolve();
+});
+
+popup.on('addConfirmation', data => {
     logger.info('Adding confirmation', data);
 
     store.dispatch(
         addConfirmation(data)
     );
-    resolve();
 });
 
-popup.on('sendAccount', ({ data, resolve, reject }) => {
+popup.on('sendAccount', data => {
     logger.info('Received account', data);
 
     store.dispatch(
@@ -51,7 +54,7 @@ popup.on('sendAccount', ({ data, resolve, reject }) => {
     );
 });
 
-popup.on('broadcastPrice', ({ data, resolve, reject }) => {
+popup.on('broadcastPrice', data => {
     logger.info('Received price', data);
 
     store.dispatch(

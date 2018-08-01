@@ -5,5 +5,5 @@ import { confirmationsReducer } from './confirmations'
 
 export default combineReducers({
     wallet: walletReducer,
-    confirmations : confirmationsReducer
+    confirmations: confirmationsReducer
 });

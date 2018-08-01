@@ -14,7 +14,7 @@ class Send extends Component {
 
     renderTrimmedAddress() {
         let addr = this.props.account.address;
-        return `${addr.substr(0, 8)}...${addr.substr(addr.length - 4)}`;
+        return `${addr.substr(0, 8)}...${addr.substr(addr.length - 8)}`;
     }
 
     componentDidUpdate(prevProps) {
@@ -32,8 +32,6 @@ class Send extends Component {
         const usdValue = Number(
             this.state.balance * this.props.price
         ).toFixed(2).toLocaleString();
-
-        console.log('acc', this.props.account)
 
         return (
             <div className="send container">
@@ -56,8 +54,8 @@ class Send extends Component {
                             className="txToDataAddress"
                             type="text"
                             spellcheck="false"
-                            onChange={this.props.onSetAddress}
-                            onFocus={e => e.target.select()}
+                            onChange={ event => this.props.onSetAddress(event) }
+                            onFocus={ e => e.target.select() }
                         />
                     </div>
                 </div>

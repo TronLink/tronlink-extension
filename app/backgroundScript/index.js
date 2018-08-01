@@ -34,6 +34,7 @@ let dialog = false;
 
 const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
+
     logger.info(`Adding confirmation from site ${confirmation.hostname}:`, confirmation);
 
     pendingConfirmations[confirmation.id] = {
@@ -50,11 +51,15 @@ const addConfirmation = (confirmation, resolve, reject) => {
     if (dialog)
         return dialog.focus();
 
-    dialog = window.open(
-        'app/popup/build/index.html',
-        'extension_popup',
-        'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
-    );
+    popup.isOpen().catch(() => {
+        logger.info('Popup is not open, opening dialog');
+
+        dialog = window.open(
+            'app/popup/build/index.html',
+            'extension_popup',
+            'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
+        );
+    });
 };
 
 const closeDialog = () => {
@@ -91,12 +96,15 @@ popup.on('declineConfirmation', ({
 
 popup.on('acceptConfirmation', async ({
     data,
-    resolve
+    resolve,
+    reject
 }) => {
     const { id: confirmationID } = data;
 
     if (!pendingConfirmations.hasOwnProperty(confirmationID))
         return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
+
+    logger.info(`Confirmation ${confirmationID} has been accepted by the user`);
 
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
@@ -109,17 +117,26 @@ popup.on('acceptConfirmation', async ({
         case CONFIRMATION_TYPE.SEND_TRON:
             output.rpcResponse = await wallet.send(info.recipient, info.amount);
             break;
+
         case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
             output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode);
             break;
+
         default:
-            logger.warn('tried to confirm confirmation of unknown type:', info.type);
+            confirmation.reject('Unknown transaction type');
+            delete pendingConfirmations[data.id];
+
+            reject();
+
+            return logger.warn('Tried to confirm confirmation of unknown type:', info.type);
     }
 
-    logger.info(`Accepting confirmation ${confirmationID}`);
+    logger.info(`Broadcasted transaction for confirmation ${confirmationID}`);
     logger.info(confirmation);
 
-    confirmation.resolve(JSON.stringify(output));
+    logger.info('Transaction output', output);
+
+    confirmation.resolve(output);
     delete pendingConfirmations[data.id];
 
     closeDialog();
@@ -180,28 +197,37 @@ popup.on('unlockWallet', ({
 
 popup.on('getWalletStatus', async ({ resolve }) => {
     logger.info('Requesting wallet status');
+
     resolve(wallet.status);
 
     if(wallet.status === WALLET_STATUS.UNLOCKED) {
-        popup.sendAccount(
-            wallet.getAccount()
-        );
-
         await wallet.updateAccounts();
-        popup.sendAccount(
+
+        return popup.sendAccount(
             wallet.getAccount()
         );
     }
+});
+
+popup.on('updateAccount', async data => {
+    logger.info(`Popup requested account update for ${data}`);
+
+    const { publicKey } = data;
+
+    await wallet.updateAccount(publicKey);
+    return popup.sendAccount(
+        wallet.getAccount(publicKey)
+    );
 });
 
 popup.on('sendTron', ({ data, resolve, reject }) => {
     const address = Utils.transformAddress(data.recipient);
 
     if(!address)
-        reject('Invalid recipient');
+        return reject('Invalid recipient');
 
     if(!Utils.validateAmount(data.amount))
-        reject('Invalid amount');
+        return reject('Invalid amount');
 
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,
@@ -252,7 +278,8 @@ const handleWebCall = async ({
                 desc,
                 hostname,
             }, resolve, reject);
-        } case 'createSmartContract': {
+        }
+        case 'createSmartContract': {
             const {
                 abi,
                 bytecode
@@ -263,14 +290,14 @@ const handleWebCall = async ({
                 abi,
                 bytecode
             }, resolve, reject);
-        } case 'getAccount': {
+        }
+        case 'getAccount': {
             const account = wallet.getAccount();
 
             if(account)
-                resolve(account.address);
-            else reject('Wallet not unlocked.');
-
-            break;
+                return resolve(account.address);
+            
+            return reject('Wallet not unlocked');
         }
 
         /********************************
@@ -282,28 +309,38 @@ const handleWebCall = async ({
                 address
             } = args;
 
-            return resolve(await rpc.getAccount(address));
+            return resolve(
+                await rpc.getAccount(address)
+            );
         }
         case 'getLatestBlock' : {
-            return resolve(await rpc.getNowBlock());
+            return resolve(
+                await rpc.getNowBlock()
+            );
         }
         case 'getWitnesses' : {
-            return resolve(await rpc.getWitnesses());
+            return resolve(
+                await rpc.getWitnesses()
+            );
         }
         case 'getTokens' : {
-            return resolve(await rpc.getTokens());
+            return resolve(
+                await rpc.getTokens()
+            );
         }
         case 'getBlock' : {
-            const {
-                blockID
-            } = args;
-            return resolve(await rpc.getBlock(blockID));
+            const { blockID } = args;
+
+            return resolve(
+                await rpc.getBlock(blockID)
+            );
         }
         case 'getTransaction' : {
-            const {
-                transactionID
-            } = args;
-            return resolve(await rpc.getTransactionById(transactionID));
+            const { transactionID } = args;
+
+            return resolve(
+                await rpc.getTransactionById(transactionID)
+            );
         }
 
         /********************************

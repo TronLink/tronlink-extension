@@ -68,7 +68,7 @@ const initialState = {
         transactions: []
     },
     selectedAccountId: false,
-    price : 0.0
+    price: 0.0
 };
 
 export function walletReducer(state = initialState, action) {

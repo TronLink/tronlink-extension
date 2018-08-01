@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './CreateSmartContract.css';
+import Logger from 'extension/logger';
 
 import { popup } from 'index.js';
 import { updateConfirmations } from 'reducers/confirmations';
+
+const logger = new Logger('CreateSmartContract');
 
 class CreateSmartContract extends Component {
     constructor(props){
@@ -13,25 +16,34 @@ class CreateSmartContract extends Component {
             disabled : false
         };
     }
+    
     async rejectSend() {
-        console.log('Rejected.');
-        await popup.declineConfirmation(this.props.confirmations[0].id);
-        return updateConfirmations();
-
+        logger.info('Rejecting confirmation')
+        
+        popup.declineConfirmation(this.props.confirmations[0].id).catch(err => {
+            logger.error('Declining confirmation failed', err);
+        }).then(() => {
+            updateConfirmations();
+        });
     }
 
     async confirmSend() {
+        logger.info('Accepting confirmation');
+
         this.setState({
-            disabled:true
+            disabled: true
         });
-        console.log('Confirmed.');
-        await popup.acceptConfirmation(this.props.confirmations[0].id);
-        return updateConfirmations();
+
+        popup.acceptConfirmation(this.props.confirmations[0].id).catch(err => {
+            logger.error('Accepting confirmation failed', err);
+        }).then(() => {
+            updateConfirmations();
+        });
     }
 
     renderButtons(){
         return (
-            <div hidden={this.state.hidden} className="confirmButtonContainer">
+            <div hidden={ this.state.hidden } className="confirmButtonContainer">
                 <div className="confirmButton button outline" onClick={ () => this.rejectSend() }>Reject</div>
                 <div className="confirmButton button gradient" onClick={ () => this.confirmSend() }>Confirm</div>
             </div>

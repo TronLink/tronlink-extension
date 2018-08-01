@@ -128,7 +128,7 @@ class TronLink {
 
                 return this._dispatch('sendTron', {
                     recipient: address,
-                    amount,
+                    amount: amount * 1000000,
                     desc
                 });
             },
@@ -155,7 +155,7 @@ class TronLink {
 
                 return this._dispatch('sendAsset', {
                     recipient: address,
-                    amount,
+                    amount: amount * 1000000,
                     assetID,
                     desc
                 });

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { SettingsIcon, MoneyIcon } from 'components/Icons';
+import { popup } from 'index';
 
 import Header from 'components/Header';
 
@@ -9,8 +10,17 @@ import AccountViewHeader from 'components/Header/AccountView';
 import AccountViewContent from './AccountView';
 
 class Account extends Component {
+    componentDidMount() {
+        if(!this.props.account)
+            return;
+
+        if(this.props.account == undefined)
+            return;
+
+        popup.updateAccount(this.props.account.address);
+    }
+
     render() {
-        console.log(this.props.account)
         return (
             <div class="mainContainer">
                 <Header 
