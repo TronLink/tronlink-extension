@@ -5,6 +5,8 @@ import { withRouter } from 'react-router';
 import Logger from 'extension/logger';
 import './Send.css';
 
+import { CircleLoadingIcon } from 'components/Icons.js';
+
 import { popup } from 'index';
 
 const logger = new Logger('SendView');
@@ -106,6 +108,17 @@ class Send extends Component {
                 loading: false
             });
         })
+
+    }
+
+    checkLoading() {
+        if (this.state.loading)
+            return <div className="queueLoading"><CircleLoadingIcon /></div>;
+    }
+
+    checkError() {
+        if (this.state.error)
+            return <div className="queueError">{ this.state.error }</div>;
     }
 
     render() {
@@ -115,6 +128,8 @@ class Send extends Component {
 
         return (
             <div className="send">
+                { this.checkLoading() }
+                { this.checkError() }
                 <div className="sendRadioGroup">
                     <div className="sendRadioButton">
                         <input 

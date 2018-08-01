@@ -17,6 +17,9 @@ class Account extends Component {
         if(this.props.account == undefined)
             return;
 
+        if(!this.props.account.address)
+            return;
+
         popup.updateAccount(this.props.account.address);
     }
 
