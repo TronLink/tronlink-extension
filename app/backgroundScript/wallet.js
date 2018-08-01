@@ -71,8 +71,8 @@ export default class Wallet {
         logger.info({ signed });
 
         return await axios.post(
-            urlBroadcast, 
-            JSON.stringify(signed), 
+            urlBroadcast,
+            JSON.stringify(signed),
             { headers: { 'Content-Type': 'text/plain' } }
         ).then(x => x.data);
     }
