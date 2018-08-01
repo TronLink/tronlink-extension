@@ -210,11 +210,12 @@ popup.on('getWalletStatus', async ({ resolve }) => {
 });
 
 popup.on('updateAccount', async data => {
-    logger.info(`Popup requested account update for ${data}`);
+    logger.info('Popup requested account update for', data);
 
     const { publicKey } = data;
 
     await wallet.updateAccount(publicKey);
+
     return popup.sendAccount(
         wallet.getAccount(publicKey)
     );
@@ -224,10 +225,13 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     const address = Utils.transformAddress(data.recipient);
 
     if(!address)
-        return reject('Invalid recipient');
+        return reject('The recipient address is invalid');
 
     if(!Utils.validateAmount(data.amount))
-        return reject('Invalid amount');
+        return reject('The amount specified is invalid');
+
+    if(data.amount > wallet.getAccount().balance)
+        return reject('You don\'t have the funds required');
 
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,

@@ -42,19 +42,39 @@ export default class Wallet {
     }
 
     async createSmartContract(abi, bytecode) {
+        logger.info('Creating smart contract', { abi, bytecode });
+
         const account = this.getFullAccount();
 
         /* THIS SHOULD USE NODE HTTP ENDPOINT WHEN THEY'RE AVAILABLE. THIS IS ONLY TEMPORARY*/
         const url = 'https://us-central1-flottpay.cloudfunctions.net/unsignedCreateSmartContract';
         const urlBroadcast = 'https://us-central1-flottpay.cloudfunctions.net/broadcastTransaction';
+
         const request = {
             abi,
             bytecode,
             address: this._currentAccount
         };
-        const contract = await axios.post(url, JSON.stringify(request), { headers: { 'Content-Type': 'text/plain' } }).then(x => x.data);
+
+        logger.info({ request });
+
+        const contract = await axios.post(
+            url,
+            JSON.stringify(request),
+            { headers: { 'Content-Type': 'text/plain' } }
+        ).then(x => x.data);
+
+        logger.info({ contract });
+
         const signed = rpc.signTransaction(account.privateKey, contract);
-        return await axios.post(urlBroadcast, JSON.stringify(signed), { headers: { 'Content-Type': 'text/plain' } }).then(x => x.data);
+
+        logger.info({ signed });
+
+        return await axios.post(
+            urlBroadcast, 
+            JSON.stringify(signed), 
+            { headers: { 'Content-Type': 'text/plain' } }
+        ).then(x => x.data);
     }
 
     saveStorage(password = false) {
