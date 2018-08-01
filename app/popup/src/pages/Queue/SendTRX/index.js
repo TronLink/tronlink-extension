@@ -1,21 +1,36 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Logger from 'extension/logger';
 import './SendTRX.css';
 
 import { popup } from 'index';
 import { updateConfirmations } from 'reducers/confirmations';
 
+const logger = new Logger('SendTRX');
+
 class SendTRX extends Component {
     async rejectSend() {
-        console.log('Rejected.');
-        await popup.declineConfirmation(this.props.confirmations[0].id);
-        return updateConfirmations();
+        logger.info('Rejecting confirmation')
+        
+        popup.declineConfirmation(this.props.confirmations[0].id).catch(err => {
+            logger.error('Declining confirmation failed', err);
+        }).then(() => {
+            updateConfirmations();
+        });
     }
 
     async confirmSend() {
-        console.log('Confirmed.');
-        await popup.acceptConfirmation(this.props.confirmations[0].id);
-        return updateConfirmations();
+        logger.info('Accepting confirmation');
+
+        this.setState({
+            disabled: true
+        });
+
+        popup.acceptConfirmation(this.props.confirmations[0].id).catch(err => {
+            logger.error('Accepting confirmation failed', err);
+        }).then(() => {
+            updateConfirmations();
+        });
     }
 
     renderNote() {
@@ -42,8 +57,9 @@ class SendTRX extends Component {
 
     render() {
         const confirmation = this.props.confirmations[0];
+        const amount = confirmation.amount / 1000000;
         const trxPrice = Number(
-            confirmation.amount * this.props.trxPrice
+            amount * this.props.trxPrice
         ).toFixed(2).toLocaleString();
 
         return (
@@ -61,7 +77,7 @@ class SendTRX extends Component {
                 <div className="confirmGroupTotal">
                     <div className="confirmGroupTop">
                         <div className="confirmGroupHeader bold">Total</div>
-                        <div className="confirmGroupAmount bold orange">{ confirmation.amount } TRX</div>
+                        <div className="confirmGroupAmount bold orange">{ amount.toLocaleString() } TRX</div>
                     </div>
                     <div className="confirmGroupBottom">${ trxPrice } <span>USD</span></div>
                 </div>

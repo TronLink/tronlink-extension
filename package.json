@@ -3,7 +3,7 @@
   "version": "1.0.0-beta",
   "private": false,
   "dependencies": {
-    "TronUtils": "https://github.com/TronWatch/TronLink",
+    "TronUtils": "git+https://github.com/TronWatch/TronUtils.git",
     "babel-loader": "^7.1.5",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -39,8 +39,8 @@
     "build:all": "npm run build && npm run build:react",
     "test:react": "cd app/popup && npm run test && cd ../../",
     "zip": "npm run build:all && bestzip chrome-extension.zip dist manifest.json app/popup/build",
-	  "symlink:win": "mklink /D app\\popup\\src\\extension ..\\..\\lib",
-	  "symlink": "cd app/popup/src && ln -s ../../lib extension && cd ../../../"
+    "symlink:win": "mklink /D app\\popup\\src\\extension ..\\..\\lib",
+    "symlink": "cd app/popup/src && ln -s ../../lib extension && cd ../../../"
   },
   "lint-staged": {
     "linters": {

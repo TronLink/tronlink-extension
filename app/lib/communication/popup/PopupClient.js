@@ -68,7 +68,7 @@ export default class PopupClient extends EventEmitter {
         });
     }
 
-    raw(action = false, data = false, expectsResponse = true) {
+    raw(action = false, data = false, expectsResponse = true, timeout = 30000) {
         const uuid = randomUUID();
 
         this._portHost.send('popup', 'popupCommunication', {
@@ -86,9 +86,9 @@ export default class PopupClient extends EventEmitter {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');
+                    reject(`Request ${action} timed out`);
                     delete this._pendingRequests[uuid];
-                }, 30 * 1000),
+                }, timeout),
                 resolve,
                 reject
             };
@@ -96,6 +96,7 @@ export default class PopupClient extends EventEmitter {
     }
 
     requestSendTron(address, amount) {
+        console.log('Request send', address, amount);
         return this.raw('requestSendTron', { address, amount });
     }
 
@@ -108,14 +109,18 @@ export default class PopupClient extends EventEmitter {
     }
 
     sendNewConfirmation(confirmation) {
-        return this.raw('addConfirmation', confirmation);
+        return this.raw('addConfirmation', confirmation, false);
     }
 
     sendAccount(account) {
-        return this.raw('sendAccount', account);
+        return this.raw('sendAccount', account, false);
     }
 
     broadcastPrice(price) {
-        return this.raw('broadcastPrice', price);
+        return this.raw('broadcastPrice', price, false);
+    }
+
+    isOpen() {
+        return this.raw('isOpen', false, true, 1000);
     }
 }

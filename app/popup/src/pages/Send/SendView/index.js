@@ -2,95 +2,117 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import Logger from 'extension/logger';
 import './Send.css';
 
-import { store, popup } from 'index';
+import { popup } from 'index';
+
+const logger = new Logger('SendView');
 
 class Send extends Component {
-    constructor(props) {
-        super(props);
+    state = {
+        mode: 'TRX',
+        label: 'TRX',
+        amount: 0,
+        error: false
+    };
 
-        this.state = {
-            mode: 'TRX',
-            amount: 0,
-            label: 'TRX'
-        };
+    onRadioToggle({ target: { value } }) {
+        this.setState({ mode: value });
     }
 
-    handleRadioToggle = (e) => this.setState({ mode: e.target.value });
+    onAmountChange({ target: { value }}) {
+        this.setState({ amount: value });
+    }
 
-    handleAmount = (e) => this.setState({ amount: e.target.value });
+    renderTokens() {
+        return Object.entries(this.props.account.tokens).map(([ tokenID, token ], index) => {
+            const label = token.tokenAbbr || token.tokenName;
 
-    loadTokens() {
-        let arr = [];
-        let tokens = Object.keys(this.props.account.tokens);
-
-        tokens.forEach((token, i) => {
-            let curToken = this.props.account.tokens[token];
-            if (curToken.tokenAbbr) {
-                arr.push({ label: curToken.tokenAbbr, id: token });
-            } else {
-                arr.push({ label: curToken.tokenName, id: token });
-            }
+            return (
+                <option value={ tokenID }>
+                    { label }
+                </option>
+            );
         });
-        return arr;
     }
 
     renderInput() {
+        let token = (
+            <div className="sendLabel">
+                TRX
+            </div>
+        );
+
         if (this.state.mode === 'TOKEN') {
-            console.log(this.props.account.tokens)
             if (Object.keys(this.props.account.tokens).length > 0) {
-                return (
-                    <div className="sendInputGroup">
-                        <input 
-                            placeholder="Enter Amount to Send..."
-                            className="textInput"
-                            type="text"
-                            value={this.state.amount}
-                            onChange={this.handleAmount}
-                            onFocus={e => e.target.select()}
-                        />
-                        <select>
-                            {
-                                this.loadTokens().forEach((token, i) => {
-                                    <option value={token.id}>{token.label}</option>
-                                })
-                            }
-                        </select>
-                    </div>
+                token = (
+                    <select>
+                        { this.renderTokens() }
+                    </select>
                 );
-            }
-            return <div className="sendInputGroup">No token balance to send.</div>
+            } else return (
+                <div className="sendInputGroup">
+                    No token balance to send.
+                </div>
+            );
         }
+
         return (
             <div className="sendInputGroup">
-                <input 
+                <input
                     placeholder="Enter Amount to Send..."
                     className="textInput"
-                    type="text"
-                    value={this.state.amount}
-                    onChange={this.handleAmount}
-                    onFocus={e => e.target.select()}
+                    type="number"
+                    value={ this.state.amount }
+                    onChange={ event => this.onAmountChange(event) }
+                    onFocus={ ({ target }) => target.select() }
                 />
-                <div className="sendLabel">TRX</div>
+                { token }
             </div>
         );
     }
 
     cancelTransaction() {
-        console.log('Canceled.')
+        logger.info('User has cancelled transaction');
         this.props.history.push('/main/transactions');
-        // store.dispatch();
     }
 
     sendTransaction() {
-        popup.requestSend(this.props.txToDataAddress, this.state.amount);
-        this.props.history.push('/main/transactions');
-        // store.dispatch();
+        logger.info(`User is requesting to send ${this.state.amount.toLocaleString()} TRX to ${this.props.txToDataAddress}`);
+
+        this.setState({
+            error: false,
+            loading: true
+        });
+
+        // Todo @Tommy: Show loading screen when this.state.loading is true
+        // Todo @Tommy: Show send error on popup (this.state.error)
+
+        popup.requestSend(
+            this.props.txToDataAddress, 
+            this.state.amount * 1000000
+        ).then(res => {
+            logger.info('Send response', res);
+            this.props.history.push('/main/transactions');
+        }).catch(err => {
+            logger.error('Sending failed', err);
+
+            this.setState({
+                error: err
+            });
+        }).then(() => {
+            this.setState({
+                loading: false
+            });
+        })
     }
 
-
     render() {
+        const totalUSD = (Math.floor(
+            (this.props.price * (this.state.amount || 0)) * 100
+        ) / 100).toLocaleString();
+
         return (
             <div className="send">
                 <div className="sendRadioGroup">
@@ -98,8 +120,8 @@ class Send extends Component {
                         <input 
                             type="radio"
                             value={'TRX'}
-                            onChange={this.handleRadioToggle}
-                            checked={this.state.mode === 'TRX'}
+                            onChange={ event => this.onRadioToggle(event) }
+                            checked={ this.state.mode === 'TRX' }
                         /><span>TRX</span>
                     </div>
                     <div className="sendRadioButton">
@@ -107,8 +129,8 @@ class Send extends Component {
                         <input 
                             type="radio"
                             value={'TOKEN'}
-                            onChange={this.handleRadioToggle}
-                            checked={this.state.mode === 'TOKEN'}
+                            onChange={ event => this.onRadioToggle(event) }
+                            checked={ this.state.mode === 'TOKEN' }
                             disabled
                         /><span className="disabled">TOKEN</span>
                     </div>
@@ -117,13 +139,20 @@ class Send extends Component {
                 <div className="sendGroup">
                     <div className="sendGroupTop">
                         <div className="sendGroupHeader bold">Total</div>
-                        <div className="sendGroupAmount bold orange">{ this.state.amount } { this.state.label }</div>
+                        <div className="sendGroupAmount bold orange">{ this.state.amount.toLocaleString() } { this.state.label }</div>
                     </div>
                 </div>
-                <div className="sendGroupDetail">11.28 <span>USD</span></div>
+                <div className="sendGroupDetail">
+                    { totalUSD }
+                    <span> USD</span>
+                </div>
                 <div className="sendGroup sendButtonContainer">
-                    <div className="sendButton button outline" onClick={this.cancelTransaction.bind(this)}>Cancel</div>
-                    <div className="sendButton button gradient" onClick={this.sendTransaction.bind(this)}>Confirm</div>
+                    <div className="sendButton button outline" onClick={ () => this.cancelTransaction() }>
+                        Cancel
+                    </div>
+                    <div className="sendButton button gradient" onClick={ () => this.sendTransaction() }>
+                        Confirm
+                    </div>
                 </div>
             </div>
         );
@@ -131,7 +160,8 @@ class Send extends Component {
 }
 
 export default withRouter(
-    connect(
-        state => ({ account: state.wallet.account }),
-    )(Send)
+    connect(state => ({ 
+        account: state.wallet.account,
+        price: state.wallet.price 
+    }))(Send)
 );

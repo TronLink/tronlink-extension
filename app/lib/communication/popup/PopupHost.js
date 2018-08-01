@@ -86,7 +86,7 @@ export default class PopupHost extends EventEmitter {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');
+                    reject(`Request ${action} timed out`);
                     delete this._pendingRequests[uuid];
                 }, 30 * 1000),
                 resolve,
@@ -145,5 +145,9 @@ export default class PopupHost extends EventEmitter {
 
     requestSend(recipient, amount) {
         return this.raw('sendTron', { recipient, amount });
+    }
+
+    updateAccount(publicKey) {
+        return this.raw('updateAccount', { publicKey }, false);
     }
 }
