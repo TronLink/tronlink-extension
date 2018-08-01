@@ -448,6 +448,64 @@ export class PersonIcon extends Component {
     }
 }
 
+export class CircleLoadingIcon extends Component {
+    render() {
+        return (
+            <svg viewBox="0 0 100 100">
+              <g transform="translate(80 50)">
+                <circle r="10" fill="#a0a0a0" transform="scale(1.0575)">
+                  <animateTransform attributeName="transform" begin="-0.875s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.875s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(45 -50.3553 121.5685)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".875" transform="scale(1.07)">
+                  <animateTransform attributeName="transform" begin="-0.75s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.75s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(90 -15 65)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".75" transform="scale(1.0825)">
+                  <animateTransform attributeName="transform" begin="-0.625s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.625s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(135 -.3553 41.5685)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".625" transform="scale(1.095)">
+                  <animateTransform attributeName="transform" begin="-0.5s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.5s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(180 10 25)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".5" transform="scale(1.0075)">
+                  <animateTransform attributeName="transform" begin="-0.375s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.375s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(-135 20.3553 8.4315)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".375" transform="scale(1.02)">
+                  <animateTransform attributeName="transform" begin="-0.25s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.25s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(-90 35 -15)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".25" transform="scale(1.0325)">
+                  <animateTransform attributeName="transform" begin="-0.125s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="-0.125s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+              <g transform="rotate(-45 70.3553 -71.5685)">
+                <circle r="10" fill="#a0a0a0" fill-opacity=".125" transform="scale(1.045)">
+                  <animateTransform attributeName="transform" begin="0s" dur="1s" keyTimes="0;1" repeatCount="indefinite" type="scale" values="1.1 1.1;1 1"/>
+                  <animate attributeName="fill-opacity" begin="0s" dur="1s" keyTimes="0;1" repeatCount="indefinite" values="1;0"/>
+                </circle>
+              </g>
+            </svg>
+
+        );
+    }
+}
+
 export class SquareLoadingIcon extends Component {
     render() {
         return (

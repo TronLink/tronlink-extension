@@ -57,6 +57,7 @@
 
 .txAddress {
     font-size: 10px;
+    user-select: all;
 }
 
 .txInfoRight {
