@@ -296,7 +296,7 @@ const handleWebCall = async ({
 
             if(account)
                 return resolve(account.address);
-            
+        
             return reject('Wallet not unlocked');
         }
 
