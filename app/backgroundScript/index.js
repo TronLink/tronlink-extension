@@ -178,7 +178,7 @@ const updateAccount = async () => {
     await wallet.updateAccounts();
 
     if(!addedWebsocketAlert) {
-        webSocket._addAlert(wallet.getAccount().address);
+        webSocket.addAddress(wallet.getAccount().address);
         addedWebsocketAlert = true;
     }
 
