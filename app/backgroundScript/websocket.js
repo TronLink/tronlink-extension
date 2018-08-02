@@ -29,6 +29,8 @@ export default class TronWebsocket {
         }
 
         if(message.cmd === 'ADDRESS_EVENT') {
+            this._addresses[message.address] = true;
+
             if(this.callback)
                 this.callback(message.address);
 
