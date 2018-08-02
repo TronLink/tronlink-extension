@@ -111,5 +111,12 @@ export default class TronWebsocket {
 
     start() {
         this._connect();
+
+        setInterval(() => {
+            this._webSocket.send(JSON.stringify({
+                userid: this._connectionID,
+                cmd: 'PING'
+            }));
+        }, 2500);
     }
 }
