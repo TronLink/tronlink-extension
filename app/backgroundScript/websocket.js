@@ -4,7 +4,7 @@ import Logger from 'lib/logger';
 const logger = new Logger('WebSocket');
 
 export default class TronWebsocket {
-    constructor(popup, url = 'ws://ws.tron.watch:8089') {
+    constructor(popup, url = 'ws://rpc.tron.watch:8080') {
         this._popup = popup;
         this._url = url;
 
@@ -29,14 +29,8 @@ export default class TronWebsocket {
         }
 
         if(message.cmd === 'ADDRESS_EVENT') {
-            //
-            // TODO: Till, when you receive an address event here
-            // do this._addresses[address] = true
-            //
-            // This means that the address has been acknowledged
-            // by the server
-            //
-
+            if(this.callback)
+                this.callback(message.address);
             return logger.info('Address event:', message);
         }
 

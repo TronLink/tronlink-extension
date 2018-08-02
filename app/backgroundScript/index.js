@@ -28,9 +28,11 @@ const rpc = new TronUtils.rpc();
 logger.info('Script loaded');
 
 webSocket.start();
+webSocket.callback = onWebsocketAlert;
 
 const pendingConfirmations = {};
 let dialog = false;
+let addedWebsocketAlert = false;
 
 const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
@@ -171,10 +173,19 @@ popup.on('setPassword', ({
     resolve();
 });
 
+const onWebsocketAlert = function(address) {
+    updateAccount(address);
+};
+
 const updateAccount = async () => {
     logger.info('Requesting account update');
 
     await wallet.updateAccounts();
+
+    if(!addedWebsocketAlert) {
+        webSocket._addAlert(wallet.getAccount().address);
+        addedWebsocketAlert = true;
+    }
 
     popup.sendAccount(
         wallet.getAccount()
