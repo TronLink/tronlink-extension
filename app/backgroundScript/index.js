@@ -31,6 +31,7 @@ webSocket.start();
 
 const pendingConfirmations = {};
 let dialog = false;
+let addedWebsocketAlert = false;
 
 const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
@@ -176,10 +177,21 @@ const updateAccount = async () => {
 
     await wallet.updateAccounts();
 
+    if(!addedWebsocketAlert) {
+        webSocket.addAddress(wallet.getAccount().address);
+        addedWebsocketAlert = true;
+    }
+
     popup.sendAccount(
         wallet.getAccount()
     );
 };
+
+const onWebsocketAlert = function(address) {
+    updateAccount(address);
+};
+
+webSocket.callback = onWebsocketAlert;
 
 popup.on('unlockWallet', ({
     data,

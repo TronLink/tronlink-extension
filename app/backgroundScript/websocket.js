@@ -4,13 +4,13 @@ import Logger from 'lib/logger';
 const logger = new Logger('WebSocket');
 
 export default class TronWebsocket {
-    constructor(popup, url = 'ws://ws.tron.watch:8089') {
+    constructor(popup, url = 'ws://rpc.tron.watch:8080') {
         this._popup = popup;
         this._url = url;
 
         this._webSocket = false;
         this._connectionID = randomUUID();
-        this._addresses = {};
+        this._addresses = [];
         this._price = 0;
 
         this._popup.on('getPrice', ({ resolve }) => {
@@ -29,13 +29,8 @@ export default class TronWebsocket {
         }
 
         if(message.cmd === 'ADDRESS_EVENT') {
-            //
-            // TODO: Till, when you receive an address event here
-            // do this._addresses[address] = true
-            //
-            // This means that the address has been acknowledged
-            // by the server
-            //
+            if(this.callback)
+                this.callback(message.address);
 
             return logger.info('Address event:', message);
         }
@@ -55,13 +50,16 @@ export default class TronWebsocket {
     onConnect() {
         logger.info('Connection established');
 
-        Object.keys(this._addresses).forEach(address => {
+        this._addresses.forEach(address => {
             this._addAlert(address);
         });
     }
 
     _addAlert(address) {
-        this._addresses[address] = false;
+        if(this._addresses.includes(address))
+            return logger.warn('Attempted to add duplicate alert for', address);
+
+        this._addresses.push(address);
 
         this._webSocket.send(JSON.stringify({
             userid: this._connectionID,
@@ -96,18 +94,29 @@ export default class TronWebsocket {
         return this._price;
     }
 
+    addAddress(address) {
+        logger.info(`Creating bind for address ${address}`);
+
+        if(this._addresses.includes(address))
+            return logger.info(`Address ${address} already bound`);
+
+        this._addAlert(address);
+    }
+
     addAddresses(...addresses) {
         addresses.forEach(address => {
-            logger.info(`Creating bind for address ${address}`);
-
-            if(this._addresses[address])
-                return logger.info(`Address ${address} already bound`);
-
-            this._addAlert(address);
+            this.addAddress(address);
         });
     }
 
     start() {
         this._connect();
+
+        setInterval(() => {
+            this._webSocket.send(JSON.stringify({
+                userid: this._connectionID,
+                cmd: 'PING'
+            }));
+        }, 2500);
     }
 }
