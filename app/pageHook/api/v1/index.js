@@ -226,7 +226,7 @@ class TronLink {
              * Requests confirmation from the end user to create and deploy a smart contract. Will deploy the contract if accepted
              * @param {string} abi The ABI configuration for the smart contract
              * @param {string} bytecode The compiled bytecode for the smart contract
-             * @param {object} [options=false] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
              * @readonly
              * @memberof TronLink
              */
