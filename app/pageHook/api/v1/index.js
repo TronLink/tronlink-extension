@@ -205,25 +205,54 @@ class TronLink {
             /**
              * Requests confirmation from the end user to simulate a smart contract call
              * @param {string} address The address that hosts the smart contract
-             * @param {object} data Any data that should be passed to the smart contract call
+             * @param {object} functionSelector The function to be triggered
+             * @param {array} [parameters=[]] Any parameters that the function takes
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
              * @readonly
              * @memberof TronLink
              */
-            simulateSmartContract: (address, data) => {
+            simulateSmartContract: (address, functionSelector, parameters = [], options = {}) => {
                 if (!this.utils.validateAddress(address))
                     throw new Error('Invalid smart contract address provided');
 
-                return this._dispatch('simulateSmartContract', { address, data });
+                return this._dispatch('simulateSmartContract', {
+                    address,
+                    functionSelector,
+                    parameters,
+                    options
+                });
             },
             /**
              * Requests confirmation from the end user to create and deploy a smart contract. Will deploy the contract if accepted
              * @param {string} abi The ABI configuration for the smart contract
              * @param {string} bytecode The compiled bytecode for the smart contract
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
              * @readonly
              * @memberof TronLink
              */
-            createSmartContract: (abi, bytecode) => {
-                return this._dispatch('createSmartContract', { abi, bytecode });
+            createSmartContract: (abi, bytecode, options = {}) => {
+                return this._dispatch('createSmartContract', {
+                    abi,
+                    bytecode,
+                    options
+                });
+            },
+            /**
+             * Requests confirmation from the end user to trigger a smart contract call
+             * @param {string} address The address that hosts the smart contract
+             * @param {object} functionSelector The function to be triggered
+             * @param {array} [parameters=[]] Any parameters that the function takes
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
+             * @readonly
+             * @memberof TronLink
+             */
+            triggerSmartContract: (address, functionSelector, parameters = [], options = {}) => {
+                return this._dispatch('triggerSmartContract', {
+                    address,
+                    functionSelector,
+                    parameters,
+                    options
+                });
             },
             /**
              * Returns the current active account used in the extension by the end user
