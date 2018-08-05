@@ -8,9 +8,9 @@
   dependencies:
     any-observable "^0.3.0"
 
-"TronUtils@https://github.com/Flott-org/TronUtils":
+"TronUtils@git+https://github.com/TronWatch/TronUtils.git":
   version "1.0.0"
-  resolved "https://github.com/Flott-org/TronUtils#ec0b035b94bb3610d1b89769ecab792dbe178372"
+  resolved "git+https://github.com/TronWatch/TronUtils.git#ec0b035b94bb3610d1b89769ecab792dbe178372"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"
@@ -7331,6 +7331,10 @@ sw-toolbox@^3.4.0:
   dependencies:
     path-to-regexp "^1.0.1"
     serviceworker-cache-polyfill "^4.0.0"
+
+sweetalert2@^7.26.10:
+  version "7.26.10"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-7.26.10.tgz#51e4cbe84b0775e3333536530196849f8d58d3c0"
 
 symbol-observable@^1.1.0, symbol-observable@^1.2.0:
   version "1.2.0"

@@ -27,6 +27,7 @@
     "react-scripts": "1.1.4",
     "redux": "^4.0.0",
     "rimraf": "^2.6.2",
+    "sweetalert2": "^7.26.10",
     "uuid": "^3.3.2",
     "webpack": "3"
   },

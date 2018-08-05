@@ -3,15 +3,13 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,500,700');
 
-html {
-    height: 595px;
-    width: 420px;
+html, body, #root {
+    height: 600px !important;
+    width: 420px !important;
+    overflow: hidden;
 }
 
 body, #root {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(180deg, #fff, #efefef);
     cursor: default;
@@ -120,4 +118,88 @@ a {
     min-height: 0;
     width: 100%;
     background: linear-gradient(to bottom, #d8d8d8, #efefef);
+}
+
+body.swal2-height-auto {
+    height: 100% !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+}
+
+.swal2-container {
+    overflow: hidden !important;
+    padding: 30px !important;
+}
+
+.swal2-container.swal2-shown {
+    background-color: rgba(161, 161, 161, 0.46) !important;
+}
+
+.swal2-popup {
+    width: 100% !important;
+    padding: 30px !important;
+    border-radius: 4px !important;
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.08);
+}
+
+.swal2-icon {
+    margin: 0 !important;
+}
+
+.swal-actions {
+    margin-top: 20px !important;
+}
+
+.swal2-popup .swal2-title {
+    margin: 0 !important;
+    margin-top: 20px !important;
+    font-size: 20px !important;
+    font-weight: normal !important;
+}
+
+.swal2-popup .swal2-styled.swal2-confirm {
+    height: 45px !important;
+    width: 100% !important;
+    border-radius: 10px !important;
+    line-height: 45px !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    -webkit-transition: .3s !important;
+    -o-transition: .3s !important;
+    transition: .3s !important;
+    padding: 0 50px !important;
+    font-weight: normal !important;
+    background: -webkit-gradient(linear,left top,right top,from(#dc2c73),to(#ed3f21)) !important;
+    background: -webkit-linear-gradient(left,#dc2c73,#ed3f21) !important;
+    background: -o-linear-gradient(left,#dc2c73,#ed3f21) !important;
+    background: linear-gradient(90deg,#dc2c73,#ed3f21) !important;
+    color: #fff;
+    border: none !important;
+}
+
+.swal2-popup .swal2-styled.swal2-confirm:hover {
+    background: -webkit-gradient(linear,left top,right top,from(#ff3888),to(#ff4a2b)) !important;
+    background: -webkit-linear-gradient(left,#ff3888,#ff4a2b) !important;
+    background: -o-linear-gradient(left,#ff3888,#ff4a2b) !important;
+    background: linear-gradient(90deg,#ff3888,#ff4a2b) !important;
+    -webkit-transition: 0ms;
+    -o-transition: 0ms;
+    transition: 0ms;
+    -webkit-box-shadow: inset 0 0 100px #ff9d9d !important;
+    box-shadow: inset 0 0 100px #ff9d9d !important;
+}
+
+.swal2-popup .swal2-styled.swal2-confirm:active {
+    background: -webkit-gradient(linear,left top,right top,from(#dc2c73),to(#ed3f21)) !important;
+    background: -webkit-linear-gradient(left,#dc2c73,#ed3f21) !important;
+    background: -o-linear-gradient(left,#dc2c73,#ed3f21) !important;
+    background: linear-gradient(90deg,#dc2c73,#ed3f21) !important;
+    -webkit-box-shadow: inset 0 0 0 #ff9d9d !important;
+    box-shadow: inset 0 0 0 #ff9d9d !important;
+}
+
+.swal2-popup #swal2-content {
+    margin-top: 10px !important;
+    font-size: 16px !important;
 }
