@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { NavLink, Route } from 'react-router-dom';
+
+import Button from 'components/Button';
+
 import './Import.css';
 
 class Import extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            privateKey: ''
-        };
+    state = {
+        privateKey: ''
     }
 
-    handlePrivateKeyChange = (e) => this.setState({ privateKey: e.target.value });
+    handlePrivateKeyChange({ target: { value: privateKey }}) {
+        this.setState({ privateKey });
+    }
 
     render() {
         return (
@@ -23,10 +24,12 @@ class Import extends Component {
                     className="textInput"
                     type="text"
                     value={this.state.privateKey}
-                    onChange={this.handlePrivateKeyChange}
+                    onChange={ event => this.handlePrivateKeyChange(event) }
                 />
                 <NavLink to="/main/transactions">
-                    <div className="loginBtn">Import</div>
+                    <Button type={ 'black' } style={{ marginTop: '20px' }}>
+                        Import
+                    </Button>
                 </NavLink>
             </div>
         );

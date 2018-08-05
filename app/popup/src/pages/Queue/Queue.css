@@ -1,3 +1,145 @@
 .queue {
     height: 100%;
 }
+
+.queue .confirmSend {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 14px;
+    padding: 35px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.confirmSmartContract {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.confirmTextArea {
+    width: 100%;
+    height: 300px;
+    resize: none;
+    border-radius: 4px;
+    border: none;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto;
+    box-shadow: 0 0 11px #00000017;
+}
+
+.confirmQueueCountCont {
+    position: absolute;
+    color: #afafaf;
+    top: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.confirmQueueLabel {
+    color: #c1c1c1;
+    font-size: 10px;
+}
+
+.confirmSubContainer {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 11px #00000017;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 20px;
+}
+
+.confirmSubContainer > .noteTitle {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.confirmSubContainer > .noteBody {
+    margin-top: 10px;
+}
+
+.confirmGroup {
+    padding: 0px 20px;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.confirmGroup:first-child {
+    margin-top: 0px;
+}
+
+.confirmGroupTotal {
+    margin-top: 10px;
+    padding: 0px 20px;
+    box-sizing: border-box;
+}
+
+.confirmGroupTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirmGroupAmount, .confirmGroupAddress {
+    font-family: 'Source Code Pro', monospace;
+}
+
+.confirmGroupAddress {
+    font-size: 12px;
+}
+
+.confirmGroupBottom {
+    font-family: 'Source Code Pro', monospace;
+    text-align: right;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.confirmWarningHeader {
+    background: #ef3636;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    margin: 20px;
+    margin-bottom: 0;
+    color: #fff;
+    font-weight: bold;
+    padding-bottom: 0;
+}
+
+.confirmWarningBody {
+    text-align: center;
+    color: #fff;
+    font-size: 13px;
+    padding: 20px;
+    background: #ef3636;
+    margin: 0 20px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding-top: 10px;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.orange {
+    color: #ED3F23;
+}
+
+.confirmButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 20px;
+    margin-top: 20px;
+    box-sizing: border-box;
+}

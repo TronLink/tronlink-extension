@@ -44,29 +44,6 @@
     border: 2px solid #ef3636;
 }
 
-.loginBtn {
-    height: 45px;
-    width: 310px;
-    font-size: 14px;
-    color: #fff;
-    background: #000;
-    text-align: center;
-    line-height: 45px;
-    margin-top: 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 250ms;
-}
-
-.loginBtn:hover {
-    background: #333;
-    transition: 0s;
-}
-
-.loginBtn:active {
-    background: #616161;
-}
-
 .restoreWallet {
     font-size: 12px;
     text-align: center;
