@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './CreateSmartContract.css';
 
 export default class CreateSmartContract extends Component {
     render() {
@@ -11,7 +10,9 @@ export default class CreateSmartContract extends Component {
 
                 <div className="confirmSmartContract bold">Create Smart Contract</div>
                 <div className="confirmGroup">
-                    <textarea value={ JSON.stringify(confirmation.abi) } className="confirmTextArea" disabled></textarea>
+                    <textarea value={ 
+                        JSON.stringify(confirmation.abi, null, 2) 
+                    } className="confirmTextArea" readonly></textarea>
                 </div>
 
                 { this.props.buttons }

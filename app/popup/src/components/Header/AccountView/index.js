@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+
+import Button from 'components/Button';
+
 import './AccountView.css';
 
 class AccountView extends Component {
@@ -41,8 +44,10 @@ class AccountView extends Component {
                 </div>
 
                 <div className="buttonContainer">
-                    <NavLink to="/main/confirm"><div className="accBtn button gradient">Send</div></NavLink>
-                    <div className="accBtn button gradient">Buy</div>
+                    <NavLink to="/main/confirm" style={{ 'padding-right': '5px', flex: 1 }}>
+                        <Button>Send</Button>
+                    </NavLink>
+                    <Button disabled style={{ margin: '0 10px 0 5px', flex: 1 }}>Buy</Button>
                 </div>
             </div>
         );

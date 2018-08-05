@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-
 import { WALLET_STATUS } from 'extension/constants';
 import { popup } from 'index';
 import { updateStatus } from 'reducers/wallet';
+
+import Button from 'components/Button';
 
 import './Welcome.css';
 
@@ -96,9 +97,9 @@ class Welcome extends Component {
                     
                     { this.renderWarning() }
 
-                    <div onClick={ () => this.login() } className="loginBtn button black">
+                    <Button onClick={ () => this.login() } type={ 'black' } style={{ marginTop: '20px' }}>
                         Decrypt
-                    </div>
+                    </Button>
                 </div>
 
                 <div className="restoreWallet">Restore from seed phrase</div>
@@ -133,9 +134,9 @@ class Welcome extends Component {
 
                 { this.renderWarning() }
 
-                <div onClick={ () => this.createWallet() } className="loginBtn button black">
+                <Button onClick={ () => this.createWallet() } type={ 'black' } style={{ marginTop: '20px' }}>
                     Continue
-                </div>
+                </Button>
             </div>
         );
     }

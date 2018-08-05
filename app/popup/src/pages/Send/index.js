@@ -7,6 +7,7 @@ import { popup } from 'index';
 import Header from 'components/Header';
 import AddressView from './AddressView';
 import Logger from 'extension/logger';
+import Button from 'components/Button';
 
 import './Send.css';
 
@@ -92,7 +93,7 @@ class Send extends Component {
         this.setState({
             error: false,
             loading: true
-        });        
+        });
 
         popup.requestSend(
             this.state.address, 
@@ -109,11 +110,6 @@ class Send extends Component {
         });
     }
 
-    checkLoading() {
-        if (this.state.loading)
-            return <div className="queueLoading"><CircleLoadingIcon /></div>;
-    }
-
     checkError() {
         if (this.state.error)
             return <div className="queueError">{ this.state.error }</div>;
@@ -126,7 +122,6 @@ class Send extends Component {
 
         return (
             <div className="send">
-                { this.checkLoading() }
                 { this.checkError() }
                 <div className="sendRadioGroup">
                     <div className="sendRadioButton">
@@ -135,6 +130,7 @@ class Send extends Component {
                             value={'TRX'}
                             onChange={ event => this.onRadioToggle(event) }
                             checked={ this.state.mode === 'TRX' }
+                            readOnly={ this.state.loading }
                         /><span>TRX</span>
                     </div>
                     <div className="sendRadioButton">
@@ -160,12 +156,12 @@ class Send extends Component {
                     <span> USD</span>
                 </div>
                 <div className="sendGroup sendButtonContainer">
-                    <div className="sendButton button outline" onClick={ () => this.cancelTransaction() }>
+                    <Button onClick={ () => this.cancelTransaction() } width={ '150px' } type={ 'secondary' } disabled={ this.state.loading }>
                         Cancel
-                    </div>
-                    <div className="sendButton button gradient" onClick={ () => this.sendTransaction() }>
+                    </Button>
+                    <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading }>
                         Confirm
-                    </div>
+                    </Button>
                 </div>
             </div>
         );

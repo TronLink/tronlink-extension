@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './SendTron.css';
 
 export default class SendTron extends Component {
     renderNote() {

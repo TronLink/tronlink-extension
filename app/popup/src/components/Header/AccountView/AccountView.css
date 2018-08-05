@@ -22,9 +22,7 @@
 .accountView .buttonContainer {
     margin-top: 30px;
     margin-bottom: 15px;
-}
-
-.accBtn {
-    width: 140px;
-    margin: 0px 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+    box-sizing: border-box;
 }

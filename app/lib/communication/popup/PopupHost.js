@@ -68,7 +68,7 @@ export default class PopupHost extends EventEmitter {
         });
     }
 
-    raw(action = false, data = false, expectsResponse = true) {
+    raw(action = false, data = false, expectsResponse = true, timeout = 30000) {
         const uuid = randomUUID();
 
         this._portChild.send('popupCommunication', {
@@ -85,10 +85,10 @@ export default class PopupHost extends EventEmitter {
 
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
-                timeout: setTimeout(() => {
+                timeout: (timeout ? setTimeout(() => {
                     reject(`Request ${action} timed out`);
                     delete this._pendingRequests[uuid];
-                }, 30 * 1000),
+                }, timeout) : false),
                 resolve,
                 reject
             };

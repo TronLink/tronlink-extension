@@ -85,10 +85,10 @@ export default class PopupClient extends EventEmitter {
 
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
-                timeout: setTimeout(() => {
+                timeout: (timeout ? setTimeout(() => {
                     reject(`Request ${action} timed out`);
                     delete this._pendingRequests[uuid];
-                }, timeout),
+                }, timeout) : false),
                 resolve,
                 reject
             };
@@ -96,16 +96,15 @@ export default class PopupClient extends EventEmitter {
     }
 
     requestSendTron(address, amount) {
-        console.log('Request send', address, amount);
-        return this.raw('requestSendTron', { address, amount });
+        return this.raw('requestSendTron', { address, amount }, true, false);
     }
 
     requestSendToken(address, amount) {
-        return this.raw('requestSendToken', { address, amount });
+        return this.raw('requestSendToken', { address, amount }, true, false);
     }
 
     requestVote(address) {
-        return this.raw('requestVote', { address });
+        return this.raw('requestVote', { address }, true, false);
     }
 
     sendNewConfirmation(confirmation) {

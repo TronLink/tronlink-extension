@@ -6,8 +6,9 @@ import { popup } from 'index';
 
 import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
-import SendTron from './SendTron';
-import CreateSmartContract from './CreateSmartContract';
+import SendTron from './Renderers/SendTron';
+import CreateSmartContract from './Renderers/CreateSmartContract';
+import Button from 'components/Button';
 
 import './Queue.css';
 
@@ -50,7 +51,7 @@ class Queue extends React.Component {
         logger.info('Accepting confirmation', id);
 
         this.setState({
-            loading: true,
+            loading: 'accept',
             error: false
         });
 
@@ -66,10 +67,10 @@ class Queue extends React.Component {
         logger.info('Rejecting confirmation', id);
         
         this.setState({
-            loading: true,
+            loading: 'reject',
             error: false
         });
-        
+
         return popup.declineConfirmation(id).then(() => 'Transaction declined').catch(error => {
             logger.error('Declining confirmation failed', error);
             return error;
@@ -82,12 +83,25 @@ class Queue extends React.Component {
     renderers(confirmation) {
         return { 
             buttons: (
-                /*this.state.loading ? 'Processing' : */(
-                    <div className="confirmButtonContainer">
-                        <div className="confirmButton button outline" onClick={ () => this.rejectConfirmation(confirmation) }>Reject</div>
-                        <div className="confirmButton button gradient" onClick={ () => this.acceptConfirmation(confirmation) }>Confirm</div>
-                    </div>
-                )
+                <div className="confirmButtonContainer">
+                    <Button 
+                        onClick={ () => this.rejectConfirmation(confirmation) } 
+                        type={ 'secondary' }
+                        loading={ this.state.loading == 'reject' } 
+                        disabled={ this.state.loading == 'accept' }
+                        style={{ 'margin-right': '10px' }}
+                    >
+                        Reject
+                    </Button>
+                    <Button 
+                        onClick={ () => this.acceptConfirmation(confirmation) } 
+                        loading={ this.state.loading == 'accept' } 
+                        disabled={ this.state.loading == 'reject' }
+                        style={{ 'margin-left': '10px' }}
+                    >
+                        Confirm
+                    </Button>
+                </div>
             ),
             queueLength: (
                 <div className="confirmQueueCountCont">
