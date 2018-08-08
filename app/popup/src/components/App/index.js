@@ -9,6 +9,7 @@ import Welcome from 'pages/Welcome';
 import Import from 'pages/Import';
 import Queue from 'pages/Queue';
 
+import Buy from 'pages/Buy';
 import Send from 'pages/Send';
 import Give from 'pages/Give';
 import Settings from 'pages/Settings';
@@ -34,6 +35,7 @@ class App extends Component {
                         <div className="mainContainer">
                             <Switch>
                                 <Route path="/main/confirm" component={ Send } />
+                                <Route path="/main/buy/:address" component={ Buy } />
                                 <Route path="/main/give" component={ Give } />
                                 <Route path="/main/settings" component={ Settings } />
                                 <Route path="/main" component={ Account } />

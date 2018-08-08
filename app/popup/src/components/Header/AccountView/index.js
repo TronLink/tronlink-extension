@@ -35,6 +35,8 @@ class AccountView extends Component {
             this.state.balance * this.props.price
         ).toFixed(2).toLocaleString();
 
+        const address = this.props.account.address || false;
+
         return (
             <div className="accountView container">
                 <div className="accountBalance">
@@ -47,7 +49,9 @@ class AccountView extends Component {
                     <NavLink to="/main/confirm" style={{ 'padding-right': '5px', flex: 1 }}>
                         <Button>Send</Button>
                     </NavLink>
-                    <Button disabled style={{ margin: '0 10px 0 5px', flex: 1 }}>Buy</Button>
+                    <NavLink to={ '/main/buy/' + address } style={{ margin: '0 10px 0 5px', flex: 1 }}>
+                        <Button>Buy</Button>
+                    </NavLink>
                 </div>
             </div>
         );
@@ -57,5 +61,5 @@ class AccountView extends Component {
 export default connect(state => ({
     price: state.wallet.price,
     account: state.wallet.account,
-    selectedAccountId: state.selectedAccountId
+    address: state.wallet.selectedAccountId
 }))(AccountView);
