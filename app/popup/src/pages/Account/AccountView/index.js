@@ -15,8 +15,8 @@ class AccountView extends Component {
                 </div>
 
                 <div className="contentContainer">
-                    <Route exact path="/main/transactions" component={Transactions} />
-                    <Route exact path="/main/tokens" component={Tokens} />
+                    <Route exact path="/main/transactions" component={ Transactions } />
+                    <Route exact path="/main/tokens" component={ Tokens } />
                 </div>
             </div>
         );

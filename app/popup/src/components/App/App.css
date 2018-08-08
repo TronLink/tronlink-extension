@@ -9,6 +9,10 @@ html, body, #root {
     overflow: hidden;
 }
 
+html.extended, html.extended body, html.extended #root {
+    width: 600px !important;
+}
+
 body, #root {
     font-family: 'Roboto', sans-serif;
     background: linear-gradient(180deg, #fff, #efefef);

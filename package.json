@@ -3,7 +3,7 @@
   "version": "1.0.0-beta",
   "private": false,
   "dependencies": {
-    "TronUtils": "git+https://github.com/TronWatch/TronUtils.git",
+    "TronUtils": "https://github.com/TronWatch/TronUtils",
     "babel-loader": "^7.1.5",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-runtime": "^6.23.0",
