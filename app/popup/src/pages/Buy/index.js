@@ -4,6 +4,8 @@ import Utils from 'extension/utils';
 
 import { ArrowLeftIcon } from 'components/Icons';
 
+import './Buy.css';
+
 const MERCHANT_ID = 'c4d8a4854c93';
 const REF_ID = 'c4d8a4854c93';
 
@@ -43,14 +45,20 @@ export default class BuyPage extends React.Component {
                     leftIconRoute="/main/transactions"
                     rightIcon={ false }
                 />
-                <div className="mainContent">
+                <div className="mainContent buy">
+                    <div className="mockup">
+                        <div className="mockup-header"></div>
+                        <div className="mockup-navigation"></div>
+                        <div className="mockup-body">
+                            Loading purchase options
+                        </div>
+                    </div>
                     <iframe 
                         src={ url }
                         width="600" 
                         height="520" 
                         class="changelly" 
-                        scrolling="no" 
-                        style={{ overflowY: 'hidden', border: 'none' }}
+                        scrolling="no"
                     >Failed to load purchase page</iframe>
                 </div>
             </div>
