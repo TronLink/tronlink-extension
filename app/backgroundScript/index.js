@@ -120,7 +120,11 @@ popup.on('acceptConfirmation', async ({
             break;
 
         case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-            output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode);
+            output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
+            break;
+
+        case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
+            output.rpcResponse = await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options);
             break;
 
         default:
@@ -298,13 +302,17 @@ const handleWebCall = async ({
         case 'createSmartContract': {
             const {
                 abi,
-                bytecode
+                bytecode,
+                name,
+                options
             } = args;
 
             return addConfirmation({
                 type: CONFIRMATION_TYPE.CREATE_SMARTCONTRACT,
                 abi,
-                bytecode
+                bytecode,
+                name,
+                options
             }, resolve, reject);
         }
         case 'getAccount': {

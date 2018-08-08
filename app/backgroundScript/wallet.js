@@ -1,7 +1,6 @@
 import TronUtils from 'TronUtils';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
-import axios from 'axios';
 
 import { WALLET_STATUS } from 'lib/constants';
 
@@ -41,41 +40,18 @@ export default class Wallet {
         return await rpc.sendTrx(account.privateKey, recipient, amount);
     }
 
-    async createSmartContract(abi, bytecode) {
-        logger.info('Creating smart contract', { abi, bytecode });
+    async triggerSmartContract(address, functionSelector, parameters, options) {
+        console.log('triggering smart contract', { address, functionSelector, parameters, options });
+        return 'not implemented';
+    }
+
+    async createSmartContract(abi, bytecode, name, options) {
+        logger.info('Creating smart contract', { abi, bytecode, name, options });
 
         const account = this.getFullAccount();
-
-        /* THIS SHOULD USE NODE HTTP ENDPOINT WHEN THEY'RE AVAILABLE. THIS IS ONLY TEMPORARY*/
-        const url = 'https://us-central1-flottpay.cloudfunctions.net/unsignedCreateSmartContract';
-        const urlBroadcast = 'https://us-central1-flottpay.cloudfunctions.net/broadcastTransaction';
-
-        const request = {
-            abi,
-            bytecode,
-            address: this._currentAccount
-        };
-
-        logger.info({ request });
-
-        const contract = await axios.post(
-            url,
-            JSON.stringify(request),
-            { headers: { 'Content-Type': 'text/plain' } }
-        ).then(x => x.data);
-
-        logger.info({ contract });
-
-        const signed = rpc.signTransaction(account.privateKey, contract);
-
-        logger.info({ signed });
-
-        return await axios.post(
-            urlBroadcast,
-            JSON.stringify(signed),
-            { headers: { 'Content-Type': 'text/plain' } }
-        ).then(x => x.data);
+        return await rpc.deployContract(account.privateKey, abi, bytecode, name, options);
     }
+
 
     saveStorage(password = false) {
         if (!this._password && !password)
