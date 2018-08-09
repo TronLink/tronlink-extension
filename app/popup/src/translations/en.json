@@ -1,0 +1,24 @@
+{
+    "words.confirm": "Confirm",
+    "words.reject": "Reject",
+    "words.token": "Token",
+    "words.total": "Total",
+    "words.cancel": "Cancel",
+
+    "queue.transaction.failed": "Transaction failed",
+    "queue.transaction.sent": "Transaction sent",
+    "queue.length": "Confirmation Queue Length: {length, number}",
+    "queue.smartContract.create": "Create Smart Contract",
+    "queue.send.note": "Note from: {hostname}",
+    "queue.send.site": "Site:",
+    "queue.send.warning.header": "WARNING!",
+    "queue.send.warning.body": "Only send funds to services and people that you trust.",
+    "queue.send.to": "To:",
+    "queue.send.total": "Total",
+    "queue.unknownConfirmation": "Failed to identify confirmation",
+
+    "send.from": "<span>From:</span> {accountName}",
+    "send.to": "Sending to:",
+    "send.total": "{amount, number} {token}",
+    "send.noTokens": "No token balance to send"
+}
