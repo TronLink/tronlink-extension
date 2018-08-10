@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FormattedHTMLMessage, FormattedMessage, FormattedNumber } from 'react-intl';
 
 import './AddressView.css';
 
 class AddressView extends Component {
     render() {
         const address = this.props.account.address;
-        const balance = this.props.account.balance || 0;
+        const balance = (this.props.account.balance || 0) / 1000000;
         const trimmed = `${address.substr(0, 8)}...${address.substr(address.length - 8)}`;
 
         const usdValue = Number(
@@ -19,16 +20,30 @@ class AddressView extends Component {
                 <div className="txDataContainer">
                     <div className="txAccountData">
                         <div className="txAccountDataLeft">
-                            <div className="txAccountDataLabel"><span>From: </span>{ this.props.account.name }</div>
+                            <div className="txAccountDataLabel">
+                                <FormattedHTMLMessage tagName='div' id='send.from' values={{ accountName: this.props.account.name }} />
+                            </div>
                             <div className="txAccountDataLabel">{ trimmed }</div>
                         </div>
                         <div className="txAccountDataRight">
-                            <div className="txAccountDataLabel">{ balance.toLocaleString() } <span>TRX</span></div>
-                            <div className="txAccountDataLabel">${ usdValue } <span>USD</span></div>
+                            <div className="txAccountDataLabel">
+                                <FormattedNumber value={ balance } minimumFractionDigits={ 0 } maximumFractionDigits={ 6 } />
+                                <span>
+                                    &nbsp;TRX
+                                </span>
+                            </div>
+                            <div className="txAccountDataLabel">
+                                <FormattedNumber value={ usdValue } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
+                                <span>
+                                    &nbsp;USD
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div className="txToData">
-                        <div className="txToDataHeader">Sending to:</div>
+                        <div className="txToDataHeader">
+                            <FormattedMessage id='send.to' />
+                        </div>
                         <input 
                             placeholder="Enter Address to Send to..."
                             className="txToDataAddress"

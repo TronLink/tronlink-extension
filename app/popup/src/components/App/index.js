@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import './App.css';
 
 import { WALLET_STATUS } from 'extension/constants';

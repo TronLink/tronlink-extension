@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 export default class SendTron extends Component {
     renderNote() {
@@ -9,13 +10,18 @@ export default class SendTron extends Component {
 
         return desc ? (
             <div className="confirmSubContainer">
-                <div className="noteTitle">Note from: { hostname }</div>
+                <div className="noteTitle">
+                    <FormattedMessage id="queue.send.note" values={{ hostname }} />
+                </div>
                 <div className="noteBody">{ desc }</div>
             </div>
         ) : (
             <div className="confirmGroup">
                 <div className="confirmGroupTop">
-                    <div className="confirmGroupHeader bold">Site:</div>
+                    <div className="confirmGroupHeader bold">
+                        <FormattedMessage id="queue.send.site"
+                         />
+                    </div>
                     <div className="confirmGroupAmount bold orange">{ hostname }</div>
                 </div>
             </div>
@@ -28,7 +34,7 @@ export default class SendTron extends Component {
 
         const trxPrice = Number(
             amount * this.props.price
-        ).toFixed(2).toLocaleString();
+        ) || 0;
 
         return (
             <div className="confirmSend">
@@ -37,22 +43,40 @@ export default class SendTron extends Component {
 
                 <div className="confirmGroup">
                     <div className="confirmGroupTop">
-                        <div className="confirmGroupHeader bold">To:</div>
+                        <div className="confirmGroupHeader bold">
+                            <FormattedMessage id='queue.send.to' />
+                        </div>
                         <div className="confirmGroupAddress bold orange">{ confirmation.recipient }</div>
                     </div>
                 </div>
 
                 <div className="confirmGroupTotal">
                     <div className="confirmGroupTop">
-                        <div className="confirmGroupHeader bold">Total</div>
-                        <div className="confirmGroupAmount bold orange">{ amount.toLocaleString() } TRX</div>
+                        <div className="confirmGroupHeader bold">
+                            <FormattedMessage id='words.total' />
+                        </div>
+                        <div className="confirmGroupAmount bold orange">
+                            <FormattedNumber value={ amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 6 } />
+                            <span>
+                                &nbsp;TRX
+                            </span>
+                        </div>
                     </div>
-                    <div className="confirmGroupBottom">${ trxPrice } <span>USD</span></div>
+                    <div className="confirmGroupBottom">
+                        <FormattedNumber value={ trxPrice } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
+                        <span>
+                            &nbsp;USD
+                        </span>
+                    </div>
                 </div>
 
-                <div className="confirmWarningHeader">&#9888; WARNING!</div>
+                <div className="confirmWarningHeader">
+                    &#9888; 
+                    <FormattedMessage id='queue.send.warning.header' />
+                </div>
+
                 <div className="confirmWarningBody">
-                    Only send funds to services and people that you trust.
+                    <FormattedMessage id='queue.send.warning.body' />
                 </div>
 
                 { this.props.buttons }
