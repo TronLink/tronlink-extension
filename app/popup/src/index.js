@@ -18,14 +18,14 @@ import App from 'components/App';
 import Logger from 'extension/logger';
 
 import enLocaleData from 'react-intl/locale-data/en';
-import frLocaleDate from 'react-intl/locale-data/fr';
+import frLocaleData from 'react-intl/locale-data/fr';
 
 import messages_en from 'translations/en.json';
 import messages_fr from 'translations/fr.json';
 
 addLocaleData([
     ...enLocaleData,
-    ...frLocaleDate
+    ...frLocaleData
 ]);
 
 const messages = {
