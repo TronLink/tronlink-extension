@@ -13,3 +13,29 @@ Documentation regarding communicating with the blockchain will be published soon
 If you would like to follow the development progress of the extension we invite you to view our [**task board on waffle.io**](https://waffle.io/TronWatch/TronLink).
 
 TronLink will be published on the Chrome Web Store once we believe the extension is mature enough to be used by the public on the official Tron testnet.
+
+Build Instructions (Unix):
+```
+git clone https://github.com/TronWatch/TronLink/
+yarn install
+yarn symlink
+yarn build:all
+```
+
+Build Instructions (Windows):
+```
+git clone https://github.com/TronWatch/TronLink/
+yarn install
+yarn symlink:win
+yarn build:all
+```
+
+Load the root folder as an unpacked Chrome Extension in Chrome.
+
+The symlink is required due to sharing a small communication and utility library between the backend and the popup (react).
+
+If you would only like to build the backend of the extension run `yarn build`. If you would like to build just the popup (react) run `yarn build:react`. If you wish to build both at the same time run `yarn build:all`.
+
+Linting is automated and is required to submit changes to the project. ESLint will automatically run when you create a commit and also during a PR. You can find the ESLint configuration in the root directory at `.eslintrc.js`. At the moment there is no linting enforced for the popup (`app/popup/src`).
+
+When building for react a production output will be created due to limitations by `create-react-app`. It will include the source map for debugging.

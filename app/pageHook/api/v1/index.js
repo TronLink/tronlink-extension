@@ -230,10 +230,17 @@ class TronLink {
              * @readonly
              * @memberof TronLink
              */
-            createSmartContract: (abi, bytecode, options = {}) => {
+            createSmartContract: (abi, bytecode, name, options = {
+                bandwidthLimit: 10000000,
+                cpuLimit: 10000000,
+                dropLimit: 10000000,
+                callValue: 0,
+                storageLimit: 50000000,
+            }) => {
                 return this._dispatch('createSmartContract', {
                     abi,
                     bytecode,
+                    name,
                     options
                 });
             },
@@ -246,7 +253,13 @@ class TronLink {
              * @readonly
              * @memberof TronLink
              */
-            triggerSmartContract: (address, functionSelector, parameters = [], options = {}) => {
+            triggerSmartContract: (address, functionSelector, parameters = [], options = {
+                bandwidthLimit: 10000000,
+                cpuLimit: 10000000,
+                dropLimit: 10000000,
+                callValue: 0,
+                storageLimit: 50000000,
+            }) => {
                 return this._dispatch('triggerSmartContract', {
                     address,
                     functionSelector,
