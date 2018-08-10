@@ -68,7 +68,15 @@ const initialState = {
         transactions: []
     },
     selectedAccountId: false,
-    price: 0.0
+    price: 0.0,
+    lastPriceUpdate: Date.now(),
+    networks: {
+        '34BD2B5CEBB1FB295117F7CD29056525': { // MD5 of the host
+            name: 'TronWatch Private TestNet',
+            host: 'http://rpc.tron.watch'
+        }
+    },
+    selectedNetwork: '34BD2B5CEBB1FB295117F7CD29056525'
 };
 
 export function walletReducer(state = initialState, action) {
@@ -79,13 +87,13 @@ export function walletReducer(state = initialState, action) {
                 status: WALLET_STATUS.UNINITIALIZED
             };
         }
-        case SET_ACCOUNT:{
+        case SET_ACCOUNT: {
             return {
                 ...state,
                 account : action.account
             }
         }
-        case SET_STATUS : {
+        case SET_STATUS: {
             return {
                 ...state,
                 status: action.status
@@ -94,7 +102,8 @@ export function walletReducer(state = initialState, action) {
         case SET_TRX_PRICE:{
             return {
                 ...state,
-                price : action.price
+                price: action.price,
+                lastPriceUpdate: Date.now()
             }
         }
         default:

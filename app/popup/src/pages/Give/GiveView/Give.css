@@ -14,8 +14,6 @@
 .giveContainer {
     box-sizing: border-box;
     width: 100%;
-    border-bottom: 1px solid #b1b1b1;
-    padding-bottom: 20px;
     margin-top: 25px;
 }
 
