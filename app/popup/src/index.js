@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
@@ -14,8 +15,27 @@ import reducers from './reducers';
 import { updateStatus, updatePrice } from './reducers/wallet';
 
 import App from 'components/App';
-
 import Logger from 'extension/logger';
+
+import enLocaleData from 'react-intl/locale-data/en';
+import frLocaleData from 'react-intl/locale-data/fr';
+
+import messages_en from 'translations/en.json';
+import messages_fr from 'translations/fr.json';
+
+addLocaleData([
+    ...enLocaleData,
+    ...frLocaleData
+]);
+
+const messages = {
+    en: messages_en,
+    fr: messages_fr
+};
+
+const languageKey = navigator.language.split(/[-_]/)[0];
+const language = messages.hasOwnProperty(languageKey) ? languageKey : 'en';
+
 const logger = new Logger('index');
 
 const createStoreWithMiddleware = applyMiddleware()(createStore);
@@ -25,8 +45,10 @@ const portChild = new PortChild('popup');
 export const popup = new PopupHost(portChild);
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App/>
+    <Provider store={ store }>
+        <IntlProvider key={ language } locale={ language } messages={ messages[language] }>
+            <App/>
+        </IntlProvider>
     </Provider>,
     document.getElementById('root')
 );

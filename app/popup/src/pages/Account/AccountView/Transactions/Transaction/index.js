@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Transaction.css';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 import {
 	TopRightArrow,
@@ -10,6 +10,8 @@ import {
 } from 'components/Icons';
 
 import Utils from 'extension/utils.js';
+
+import './Transaction.css';
 
 class Transaction extends Component {
 	formattedDate() {
@@ -53,23 +55,24 @@ class Transaction extends Component {
             case 'TransferContract':
             case 'TransferAssetContract':
                 if(!!this.props.outgoing)
-                    return <div className="txLabel red">Sent</div>;
-                return <div className="txLabel green">Received</div>;
+                    return <div className="txLabel red"><FormattedMessage id='words.sent' /></div>;
+
+                return <div className="txLabel green"><FormattedMessage id='words.received' /></div>;
 
             case 'ParticipateAssetIssueContract':
-                return <div className="txLabel">Token</div>;
+                return <div className="txLabel"><FormattedMessage id='words.token' /></div>;
 
             case 'VoteWitnessContract':
-                return <div className="txLabel">Vote</div>;
+                return <div className="txLabel"><FormattedMessage id='words.vote' /></div>;
 
             case 'AssetIssueContract':
-                return <div className="txLabel">Token Creation</div>;
+                return <div className="txLabel"><FormattedMessage id='account.transactions.tokenCreation' /></div>;
 
             case 'FreezeBalanceContract':
-                return <div className="txLabel red">Frozen</div>;
+                return <div className="txLabel red"><FormattedMessage id='words.frozen' /></div>;
 
             case 'UnfreezeBalanceContract':
-                return <div className="txLabel green">Unfrozen</div>;
+                return <div className="txLabel green"><FormattedMessage id='words.unfrozen' /></div>;
 
             default:
                 return null;
@@ -86,11 +89,13 @@ class Transaction extends Component {
 
 	renderAmount() {
         const outgoing = !!this.props.outgoing;
+        const amount = Utils.sunToTron(this.props.amount).toString();
 
         return (
             <div className={ 'txAmount ' + (outgoing ? 'red' : 'green') }>
-                { outgoing ? '-' : '+' } { Utils.sunToTron(this.props.amount).toString() }
-                <span>TRX</span>
+                { outgoing ? '- ' : '+ ' }
+                <FormattedNumber value={ amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 8 } /> 
+                <span class='margin-left'>TRX</span>
             </div>
         );
 	}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 export default class CreateSmartContract extends Component {
     render() {
@@ -8,7 +9,10 @@ export default class CreateSmartContract extends Component {
             <div className="confirmSend">
                 { this.props.queueLength }
 
-                <div className="confirmSmartContract bold">Create Smart Contract</div>
+                <div className="confirmSmartContract bold">
+                    <FormattedMessage id='queue.smartContract.create' />
+                </div>
+                
                 <div className="confirmGroup">
                     <textarea value={ 
                         JSON.stringify(confirmation.abi, null, 2) 

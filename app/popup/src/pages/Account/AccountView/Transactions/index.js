@@ -1,33 +1,31 @@
 import React, { Component } from 'react';
-import './Transactions.css';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 import Transaction from './Transaction';
 
-class Transactions extends Component {
-    constructor(props) {
-        super(props);
-    }
+import './Transactions.css';
 
+class Transactions extends Component {
     renderTransactions() {
         if (!this.props.account || this.props.account.transactions.length === 0) {
             return (
                 <div className="infoMessageContainer">
-                    <span>No Transactions Found</span>
+                    <FormattedMessage id='account.transactions.noneFound' />
                 </div>
             );
         }
 
         return (
-            this.props.account.transactions.map((tx, i) => (
+            this.props.account.transactions.map(tx => (
                 <Transaction 
-                    txType={tx.txType}
-                    outgoing={tx.isMine}
-                    toAddress={tx.toAddress}
-                    ownerAddress={tx.ownerAddress}
-                    amount={tx.amount}
-                    date={tx.date}
-                    txID={tx.txID}
+                    txType={ tx.txType }
+                    outgoing={ tx.isMine }
+                    toAddress={ tx.toAddress }
+                    ownerAddress={ tx.ownerAddress }
+                    amount={ tx.amount }
+                    date={ tx.date }
+                    txID={ tx.txID }
                 />
             ))
         );

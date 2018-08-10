@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { CONFIRMATION_TYPE } from 'extension/constants';
 import { updateConfirmations } from 'reducers/confirmations';
 import { popup } from 'index';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
@@ -21,6 +22,11 @@ class Queue extends React.Component {
         error: false
     }
 
+    constructor(props) {
+        super(props);
+        this.translate = props.intl.formatMessage;
+    }
+
     handleResult(error = false) {
         this.setState({
             error
@@ -28,12 +34,12 @@ class Queue extends React.Component {
 
         const config = {
             type: 'success',
-            title: 'Transaction sent'
+            title: this.translate({ id: 'queue.transaction.sent' })
         };
 
         if(error) {
             config.type = 'error';
-            config.title = 'Transaction failed';
+            config.title = this.translate({ id: 'queue.transaction.failed' });
             config.text = error;
         };
 
@@ -92,7 +98,7 @@ class Queue extends React.Component {
                         disabled={ this.state.loading == 'accept' }
                         style={{ 'margin-right': '10px' }}
                     >
-                        Reject
+                        <FormattedMessage id='words.reject' />
                     </Button>
                     <Button
                         onClick={ () => this.acceptConfirmation(confirmation) }
@@ -100,14 +106,16 @@ class Queue extends React.Component {
                         disabled={ this.state.loading == 'reject' }
                         style={{ 'margin-left': '10px' }}
                     >
-                        Confirm
+                        <FormattedMessage id='words.confirm' />
                     </Button>
                 </div>
             ),
             queueLength: (
                 <div className="confirmQueueCountCont">
                     <div className="confirmQueueLabel">
-                        Confirmation Queue Length: { this.props.confirmations.length }
+                        <FormattedMessage 
+                            id='queue.length'
+                            values={{ length: this.props.confirmations.length }} />
                     </div>
                 </div>
             )
@@ -120,7 +128,7 @@ class Queue extends React.Component {
 
         let Component = (
             <span>
-                Failed to identify confirmation
+                <FormattedMessage id='queue.unknownConfirmation' />
             </span>
         );
 
@@ -138,7 +146,7 @@ class Queue extends React.Component {
                 break;
             }
             default:{
-                logger.error("TRIED TO DISPLAY UNKNOWN CONFIRMATION TYPE: " + confirmation.type);
+                logger.error("Attempted to render unknown confirmation type", confirmation);
                 break;
             }
         }
@@ -156,7 +164,9 @@ class Queue extends React.Component {
     }
 }
 
-export default connect(state => ({
-    confirmations: state.confirmations.confirmations,
-    price: state.wallet.price
-}))(Queue);
+export default injectIntl(
+    connect(state => ({
+        confirmations: state.confirmations.confirmations,
+        price: state.wallet.price
+    }))(Queue)
+);

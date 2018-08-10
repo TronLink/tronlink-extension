@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Button from 'components/Button';
 import axios from 'axios';
@@ -9,18 +10,23 @@ import Swal from 'sweetalert2';
 import './Give.css';
 
 class Give extends Component {
+    constructor(props) {
+        super(props);
+        this.translate = props.intl.formatMessage;
+    }
+
     async fund(){
         axios.get(
             'https://us-central1-flottpay.cloudfunctions.net/testCoins?address=' + this.props.account.address
         ).then(() => {
             return Swal({
-                title: 'Funds sent',
+                title: this.translate({ id: 'give.sent.header' }),
                 type: 'success',
-                text: 'You have been sent 20k testnet TRX'
+                text: this.translate({ id: 'give.sent.body' })
             });
         }).catch(() => {
             return Swal({
-                title: 'Failed to send funds',
+                title: this.translate({ id: 'give.failed.header' }),
                 type: 'error'
             });
         }).then(() => {
@@ -32,13 +38,19 @@ class Give extends Component {
         return (
             <div className="give">
                 <div className="giveContainer">
-                    <div className="giveHeader">TestNet Funding :</div>
-                    <div className="giveSubHeader">Sends 20,000 Testnet TRX to your currently selected wallet address.</div>
-                    <div className="giveSubHeader">Address: { this.props.account.address }</div>
+                    <div className="giveHeader">
+                        <FormattedMessage id='give.fund.header' />
+                    </div>
+                    <div className="giveSubHeader">
+                        <FormattedMessage id='give.fund.body' />
+                    </div>
+                    <div className="giveSubHeader">
+                        <FormattedMessage id='give.fund.address' values={{ address: this.props.account.address }} />
+                    </div>
                 </div>
                 
                 <Button onClick={ () => this.fund() } type={ 'black' } style={{ margin: '30px 0' }}>
-                    Fund Account
+                    <FormattedMessage id='give.fund.button' />
                 </Button>
             </div>
         );
@@ -47,8 +59,10 @@ class Give extends Component {
 
 
 export default withRouter(
-    connect(state => ({ 
-        account: 
-        state.wallet.account 
-    }))(Give)
+    injectIntl(
+        connect(state => ({ 
+            account: 
+            state.wallet.account 
+        }))(Give)
+    )
 );

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { CircleLoadingIcon, ArrowLeftIcon } from 'components/Icons';
+import { ArrowLeftIcon } from 'components/Icons';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { popup } from 'index';
 
 import Header from 'components/Header';
@@ -62,7 +63,7 @@ class Send extends Component {
                 );
             } else return (
                 <div className="sendInputGroup">
-                    No token balance to send.
+                    <FormattedMessage id='send.noTokens' />
                 </div>
             );
         }
@@ -116,9 +117,7 @@ class Send extends Component {
     }
 
     renderBody() {
-        const totalUSD = (Math.floor(
-            (this.props.price * (this.state.amount || 0)) * 100
-        ) / 100).toLocaleString();
+        const totalUSD = this.props.price * (this.state.amount || 0);
 
         return (
             <div className="send">
@@ -127,40 +126,52 @@ class Send extends Component {
                     <div className="sendRadioButton">
                         <input 
                             type="radio"
-                            value={'TRX'}
+                            value={ 'TRX' }
                             onChange={ event => this.onRadioToggle(event) }
                             checked={ this.state.mode === 'TRX' }
                             readOnly={ this.state.loading }
-                        /><span>TRX</span>
+                        />
+                        <span>
+                            TRX
+                        </span>
                     </div>
                     <div className="sendRadioButton">
                         { /*temp disabled*/ }
                         <input 
                             type="radio"
-                            value={'TOKEN'}
+                            value={ 'TOKEN' }
                             onChange={ event => this.onRadioToggle(event) }
                             checked={ this.state.mode === 'TOKEN' }
                             disabled
-                        /><span className="disabled">TOKEN</span>
+                        />
+                        <span className="disabled">
+                            <FormattedMessage id='words.token' />
+                        </span>
                     </div>
                 </div>
                 { this.renderInput() }
                 <div className="sendGroup">
                     <div className="sendGroupTop">
-                        <div className="sendGroupHeader bold">Total</div>
-                        <div className="sendGroupAmount bold orange">{ this.state.amount.toLocaleString() } { this.state.label }</div>
+                        <div className="sendGroupHeader bold">
+                            <FormattedMessage id='words.total' />
+                        </div>
+                        <div className="sendGroupAmount bold orange">
+                            <FormattedMessage id='send.total' values={{ amount: this.state.amount, token: this.state.label }} />
+                        </div>
                     </div>
                 </div>
                 <div className="sendGroupDetail">
-                    { totalUSD }
-                    <span> USD</span>
+                    <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
+                    <span>
+                        &nbsp;USD
+                    </span>
                 </div>
                 <div className="sendGroup sendButtonContainer">
                     <Button onClick={ () => this.cancelTransaction() } width={ '150px' } type={ 'secondary' } disabled={ this.state.loading }>
-                        Cancel
+                        <FormattedMessage id='words.cancel' />
                     </Button>
                     <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading }>
-                        Confirm
+                        <FormattedMessage id='words.confirm' />
                     </Button>
                 </div>
             </div>
