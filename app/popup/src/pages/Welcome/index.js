@@ -126,6 +126,7 @@ class Welcome extends Component {
                     name="passwordRepeat"
                     value={ this.state.passwordRepeat }
                     onChange={ event => this.handlePasswordChange(event) }
+                    onKeyPress={ ({ key }) => key == 'Enter' && this.createWallet() }
                 />
 
                 <span>

@@ -1,5 +1,6 @@
 /*global chrome*/
 import EventEmitter from 'eventemitter3';
+import randomUUID from 'uuid/v4';
 import Logger from '../logger';
 
 const logger = new Logger('PortHost');
@@ -14,6 +15,9 @@ export default class PortHost extends EventEmitter {
 
     _registerListeners() {
         chrome.extension.onConnect.addListener(port => {
+            const uuid = randomUUID();
+            port.uuid = uuid;
+
             let source = port.name;
             let hostname = false;
 
@@ -23,8 +27,11 @@ export default class PortHost extends EventEmitter {
             if(port.sender.url)
                 hostname = new URL(port.sender.url).hostname;
 
-            this._ports[source] = port;
-            logger.info(`Port ${source} connected`);
+            if(!this._ports.hasOwnProperty(source))
+                this._ports[source] = {};
+
+            this._ports[source][uuid] = port;
+            logger.info(`Port ${source}:${uuid.substr(0, 4)} connected`);
 
             port.onMessage.addListener(({ action, data }) => {
                 this.emit(action, {
@@ -37,8 +44,12 @@ export default class PortHost extends EventEmitter {
             });
 
             port.onDisconnect.addListener(() => {
-                logger.info(`Port ${source} disconnected: ${chrome.runtime.lastError || 'No reason provided'}`);
-                delete this._ports[source];
+                logger.info(`Port ${source}:${uuid.substr(0, 4)} disconnected: ${chrome.runtime.lastError || 'No reason provided'}`);
+
+                delete this._ports[source][uuid];
+
+                if(!Object.keys(this._ports[source]).length)
+                    delete this._ports[source];
             });
         });
     }
@@ -53,7 +64,10 @@ export default class PortHost extends EventEmitter {
         if(!this._ports.hasOwnProperty(source))
             return { success: false, error: 'Specified port does not exist' };
 
-        this._ports[source].postMessage({ action, data });
+        Object.values(this._ports[source]).forEach(port => {
+            port.postMessage({ action, data });
+        });
+
         return { success: true };
     }
 
@@ -66,8 +80,10 @@ export default class PortHost extends EventEmitter {
         if(!portAmount)
             return { success: false, error: 'No ports available to broadcast to' };
 
-        Object.values(this._ports).forEach(port => {
-            port.postMessage({ action, data });
+        Object.values(this._ports).forEach(portDictionary => {
+            Object.values(portDictionary).forEach(port => {
+                port.postMessage({ action, data });
+            });
         });
 
         return { success: true, data: { portAmount } };
