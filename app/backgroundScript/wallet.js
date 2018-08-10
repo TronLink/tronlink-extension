@@ -41,8 +41,9 @@ export default class Wallet {
     }
 
     async triggerSmartContract(address, functionSelector, parameters, options) {
+        const account = this.getFullAccount();
         console.log('triggering smart contract', { address, functionSelector, parameters, options });
-        return 'not implemented';
+        return await rpc.triggerContract(account.privateKey, address, functionSelector, parameters, options);
     }
 
     async createSmartContract(abi, bytecode, name, options) {
@@ -51,7 +52,6 @@ export default class Wallet {
         const account = this.getFullAccount();
         return await rpc.deployContract(account.privateKey, abi, bytecode, name, options);
     }
-
 
     saveStorage(password = false) {
         if (!this._password && !password)
