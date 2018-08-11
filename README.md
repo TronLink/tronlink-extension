@@ -1,4 +1,4 @@
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/f6d99e308cadb82b294cee8c660eaf818ecef3ffaef2fbac9bd5712d22156cdc.svg?columns=all)](https://waffle.io/TronWatch/TronLink) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b86ce0d024614b2599d2d8c731173e16)](https://www.codacy.com/app/TronWatch/TronLink?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TronWatch/TronLink&amp;utm_campaign=Badge_Grade)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/f6d99e308cadb82b294cee8c660eaf818ecef3ffaef2fbac9bd5712d22156cdc.svg?columns=all)](https://waffle.io/TronWatch/TronLink)
 
 # TronLink
 TronLink is a Chrome Extension for Website to Blockchain intercommunication on the Tron Network.  
