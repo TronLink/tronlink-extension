@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
 import SendTron from './Renderers/SendTron';
 import CreateSmartContract from './Renderers/CreateSmartContract';
+import TriggerSmartContract from './Renderers/TriggerSmartContract';
 import Button from 'components/Button';
 
 import './Queue.css';
@@ -46,7 +47,7 @@ class Queue extends React.Component {
             logger.info('Swal Res', res);
 
             this.setState({
-                loading: false 
+                loading: false
             });
 
             updateConfirmations();
@@ -71,7 +72,7 @@ class Queue extends React.Component {
 
     rejectConfirmation({ id }) {
         logger.info('Rejecting confirmation', id);
-        
+
         this.setState({
             loading: 'reject',
             error: false
@@ -87,21 +88,21 @@ class Queue extends React.Component {
     }
 
     renderers(confirmation) {
-        return { 
+        return {
             buttons: (
                 <div className="confirmButtonContainer">
-                    <Button 
-                        onClick={ () => this.rejectConfirmation(confirmation) } 
+                    <Button
+                        onClick={ () => this.rejectConfirmation(confirmation) }
                         type={ 'secondary' }
-                        loading={ this.state.loading == 'reject' } 
+                        loading={ this.state.loading == 'reject' }
                         disabled={ this.state.loading == 'accept' }
                         style={{ 'margin-right': '10px' }}
                     >
                         <FormattedMessage id='words.reject' />
                     </Button>
-                    <Button 
-                        onClick={ () => this.acceptConfirmation(confirmation) } 
-                        loading={ this.state.loading == 'accept' } 
+                    <Button
+                        onClick={ () => this.acceptConfirmation(confirmation) }
+                        loading={ this.state.loading == 'accept' }
                         disabled={ this.state.loading == 'reject' }
                         style={{ 'margin-left': '10px' }}
                     >
@@ -140,12 +141,20 @@ class Queue extends React.Component {
                 Component = CreateSmartContract;
                 break;
             }
+            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:{
+                Component = TriggerSmartContract;
+                break;
+            }
+            default:{
+                logger.error("Attempted to render unknown confirmation type", confirmation);
+                break;
+            }
         }
 
         return (
             <div className="queue">
-                <Component 
-                    confirmation={ confirmation } 
+                <Component
+                    confirmation={ confirmation }
                     price={ this.props.price }
                     { ...this.renderers(confirmation) }
                     { ...this.state }

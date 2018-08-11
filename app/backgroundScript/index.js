@@ -315,6 +315,25 @@ const handleWebCall = async ({
                 options
             }, resolve, reject);
         }
+        case 'triggerSmartContract' : {
+            const {
+                address,
+                functionSelector,
+                parameters,
+                options
+            } = args;
+
+            console.log('triggerSmartContract args:');
+            console.log(args);
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT,
+                address,
+                functionSelector,
+                parameters,
+                options
+            }, resolve, reject);
+        }
         case 'getAccount': {
             const account = wallet.getAccount();
 

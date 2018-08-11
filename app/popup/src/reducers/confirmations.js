@@ -44,10 +44,12 @@ export function confirmationsReducer(state = initialState, action) {
                 confirmations: action.confirmations
             };
         case ADD_CONFIRMATION:
+            console.log("adding confirmation...");
+            console.log(action.confirmation);
             return {
                 ...state,
                 confirmations: [
-                    action.confirmation, 
+                    action.confirmation,
                     ...state.confirmations
                 ]
             };

@@ -120,6 +120,6 @@ export default class PopupClient extends EventEmitter {
     }
 
     isOpen() {
-        return this.raw('isOpen', false, true, 1000);
+        return this.raw('isOpen', false, true, 50);
     }
 }

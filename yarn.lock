@@ -10,7 +10,7 @@
 
 "TronUtils@git+https://github.com/TronWatch/TronUtils.git":
   version "1.0.0"
-  resolved "git+https://github.com/TronWatch/TronUtils.git#6154f1d1b6646da7dcbaeeebbbd88b7cec6a5706"
+  resolved "git+https://github.com/TronWatch/TronUtils.git#7ee861acbc3c9c0d180c3a4f6cf8a783535196ef"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"
