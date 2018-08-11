@@ -4,9 +4,6 @@ import Logger from 'extension/logger';
 
 const logger = new Logger('Wallet Reducer');
 
-/**********************************
- *********** ACTIONS **************
- **********************************/
 export const INITIALIZE = 'INITIALIZE';
 export const SET_STATUS = 'SET_STATUS';
 export const SET_ACCOUNT = 'SET_ACCOUNT';
@@ -32,10 +29,6 @@ export const setTrxPrice = price => ({
     price
 });
 
-/**********************************
- *********** UPDATES **************
- **********************************/
-
 export const updateStatus = async () => {
     const status = await popup.getWalletStatus();
     
@@ -58,11 +51,7 @@ export const updatePrice = async () => {
     );
 };
 
-/**********************************
- *********** REDUCER **************
- **********************************/
-
-const initialState = {
+export function walletReducer(state = {
     status: WALLET_STATUS.UNINITIALIZED,
     account: {
         transactions: []
@@ -77,9 +66,7 @@ const initialState = {
         }
     },
     selectedNetwork: '34BD2B5CEBB1FB295117F7CD29056525'
-};
-
-export function walletReducer(state = initialState, action) {
+}, action) {
     switch (action.type) {
         case INITIALIZE: {
             return {

@@ -1,9 +1,5 @@
 import { store, popup } from "../index";
 
-/**********************************
- *********** ACTIONS **************
- **********************************/
-
 export const SET_CONFIRMATIONS = 'SET_CONFIRMATIONS';
 export const ADD_CONFIRMATION = 'ADD_CONFIRMATION';
 
@@ -17,10 +13,6 @@ export const addConfirmation = confirmation => ({
     confirmation
 });
 
-/**********************************
- *********** UPDATES **************
- **********************************/
-
 export const updateConfirmations = async () => {
     const confirmations = await popup.getConfirmations();
 
@@ -29,14 +21,9 @@ export const updateConfirmations = async () => {
     );
 };
 
-/**********************************
- *********** REDUCER **************
- **********************************/
-const initialState = {
+export function confirmationsReducer(state = {
     confirmations: []
-};
-
-export function confirmationsReducer(state = initialState, action) {
+}, action) {
     switch (action.type) {
         case SET_CONFIRMATIONS:
             return {
@@ -44,8 +31,6 @@ export function confirmationsReducer(state = initialState, action) {
                 confirmations: action.confirmations
             };
         case ADD_CONFIRMATION:
-            console.log("adding confirmation...");
-            console.log(action.confirmation);
             return {
                 ...state,
                 confirmations: [

@@ -16,6 +16,7 @@
     "queue.transaction.sent": "Transaction sent",
     "queue.length": "Confirmation Queue Length: {length, number}",
     "queue.smartContract.create": "Create Smart Contract",
+    "queue.smartContract.trigger": "Trigger Smart Contract",
     "queue.send.note": "Note from: {hostname}",
     "queue.send.site": "Site:",
     "queue.send.warning.header": "WARNING!",
