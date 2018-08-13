@@ -13,7 +13,7 @@ class Give extends Component {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle={<FormattedMessage id='give.fund.title' />}
+                    navbarTitle={ <FormattedMessage id='give.fund.title' /> }
                     navbarLabel=""
                     leftIcon={ true }
                     leftIconImg={ <ArrowLeftIcon /> }

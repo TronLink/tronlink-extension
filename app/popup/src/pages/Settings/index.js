@@ -13,7 +13,7 @@ class Settings extends Component {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle={<FormattedMessage id='words.settings' />}
+                    navbarTitle={ <FormattedMessage id='words.settings' /> }
                     navbarLabel=""
                     leftIcon={ true }
                     leftIconImg={ <ArrowLeftIcon /> }

@@ -29,7 +29,7 @@ class Account extends Component {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle={<FormattedMessage id='words.defaultAccount' />}
+                    navbarTitle="Default Account"
                     navbarLabel={ this.props.account.address }
                     leftIcon={ true }
                     leftIconImg={ <MoneyIcon /> }
