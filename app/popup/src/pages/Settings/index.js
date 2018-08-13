@@ -6,12 +6,14 @@ import Header from 'components/Header';
 
 import SettingsContent from './SettingsView';
 
+import { FormattedMessage } from 'react-intl';
+
 class Settings extends Component {
     render() {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle="SETTINGS"
+                    navbarTitle={<FormattedMessage id='words.settings' />}
                     navbarLabel=""
                     leftIcon={ true }
                     leftIconImg={ <ArrowLeftIcon /> }

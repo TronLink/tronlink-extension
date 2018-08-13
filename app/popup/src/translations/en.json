@@ -11,6 +11,10 @@
     "words.vote": "Vote",
     "words.frozen": "Frozen",
     "words.unfrozen": "Unfrozen",
+    "words.send": "Send",
+    "words.buy": "Buy",
+    "words.defaultAccount": "Default Account",
+    "words.settings": "SETTINGS",
 
     "queue.transaction.failed": "Transaction failed",
     "queue.transaction.sent": "Transaction sent",
@@ -40,6 +44,7 @@
     "give.fund.body": "Sends 20,000 TestNet TRX to your account",
     "give.fund.address": "Address: {address}",
     "give.fund.button": "Fund Account",
+    "give.fund.title": "GRANT FUNDS",
 
     "import.header": "Import Private Key",
     "import.body": "Please enter the private key of your wallet below. We will then generate the address and fetch the past transactions",

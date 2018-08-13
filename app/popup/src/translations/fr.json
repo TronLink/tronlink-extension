@@ -11,6 +11,10 @@
     "words.vote": "",
     "words.frozen": "",
     "words.unfrozen": "",
+    "words.send": "",
+    "words.buy": "",
+    "words.defaultAccount": "",
+    "words.settings": "",
 
     "queue.transaction.failed": "",
     "queue.transaction.sent": "",
@@ -40,6 +44,7 @@
     "give.fund.body": "",
     "give.fund.address": "",
     "give.fund.button": "",
+    "give.fund.title": "",
 
     "import.header": "",
     "import.body": "",
