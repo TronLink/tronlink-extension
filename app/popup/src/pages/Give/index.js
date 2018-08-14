@@ -6,12 +6,14 @@ import Header from 'components/Header';
 
 import GiveContent from './GiveView';
 
+import { FormattedMessage } from 'react-intl';
+
 class Give extends Component {
     render() {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle="GRANT FUNDS"
+                    navbarTitle={ <FormattedMessage id='give.fund.title' /> }
                     navbarLabel=""
                     leftIcon={ true }
                     leftIconImg={ <ArrowLeftIcon /> }

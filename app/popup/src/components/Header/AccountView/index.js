@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 import Button from 'components/Button';
 
@@ -45,9 +46,9 @@ class AccountView extends Component {
 
                 <div className="buttonContainer">
                     <NavLink to="/main/confirm" style={{ 'padding-right': '5px', flex: 1 }}>
-                        <Button>Send</Button>
+                        <Button><FormattedMessage id='words.send' /></Button>
                     </NavLink>
-                    <Button disabled style={{ margin: '0 10px 0 5px', flex: 1 }}>Buy</Button>
+                    <Button disabled style={{ margin: '0 10px 0 5px', flex: 1 }}><FormattedMessage id='words.buy' /></Button>
                 </div>
             </div>
         );
