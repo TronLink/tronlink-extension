@@ -9,6 +9,8 @@ import Header from 'components/Header';
 import AccountViewHeader from 'components/Header/AccountView';
 import AccountViewContent from './AccountView';
 
+import { FormattedMessage } from 'react-intl';
+
 class Account extends Component {
     componentDidMount() {
         if(!this.props.account)
