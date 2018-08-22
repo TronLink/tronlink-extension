@@ -8,6 +8,7 @@ import Wallet from './wallet';
 import TronWebsocket from './websocket';
 import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
+import nodeSelector from './nodeSelector';
 
 // Constants
 import {
@@ -15,6 +16,11 @@ import {
     CONFIRMATION_RESULT,
     WALLET_STATUS
 } from 'lib/constants';
+
+console.log({ nodeSelector });
+
+nodeSelector.addNode({ name: 'Test Node', full: 'google.com', websocket: 'yahoo.com', solidity: 'ws://bing.com:8043', mainnet: true });
+console.log({ nodeSelector });
 
 // Initialise utilities
 const logger = new Logger('backgroundScript');

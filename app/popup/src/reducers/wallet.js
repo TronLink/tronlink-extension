@@ -59,13 +59,8 @@ export function walletReducer(state = {
     selectedAccountId: false,
     price: 0.0,
     lastPriceUpdate: Date.now(),
-    networks: {
-        '34BD2B5CEBB1FB295117F7CD29056525': { // MD5 of the host
-            name: 'TronWatch Private TestNet',
-            host: 'http://rpc.tron.watch'
-        }
-    },
-    selectedNetwork: '34BD2B5CEBB1FB295117F7CD29056525'
+    networks: {},
+    selectedNetwork: false
 }, action) {
     switch (action.type) {
         case INITIALIZE: {

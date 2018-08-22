@@ -236,14 +236,12 @@ class TronLink {
                 dropLimit: 10000000,
                 callValue: 0,
                 storageLimit: 50000000,
-            }) => {
-                return this._dispatch('createSmartContract', {
-                    abi,
-                    bytecode,
-                    name,
-                    options
-                });
-            },
+            }) => this._dispatch('createSmartContract', {
+                abi,
+                bytecode,
+                name,
+                options
+            }),
             /**
              * Requests confirmation from the end user to trigger a smart contract call
              * @param {string} address The address that hosts the smart contract
@@ -253,25 +251,18 @@ class TronLink {
              * @readonly
              * @memberof TronLink
              */
-            triggerSmartContract: (address, functionSelector, parameters = [], options_ = {}) => {
-                const options = {
-                    ... {
-                        bandwidthLimit: 10000000,
-                        cpuLimit: 10000000,
-                        dropLimit: 10000000,
-                        callValue: 0,
-                        storageLimit: 50000000,
-                    },
-                    ...options_
-                };
-
-                return this._dispatch('triggerSmartContract', {
-                    address,
-                    functionSelector,
-                    parameters,
-                    options
-                });
-            },
+            triggerSmartContract: (address, functionSelector, parameters = [], options = {
+                bandwidthLimit: 10000000,
+                cpuLimit: 10000000,
+                dropLimit: 10000000,
+                callValue: 0,
+                storageLimit: 50000000,
+            }) => this._dispatch('triggerSmartContract', {
+                address,
+                functionSelector,
+                parameters,
+                options
+            }),
             /**
              * Returns the current active account used in the extension by the end user
              * @readonly

@@ -7,7 +7,6 @@ import { WALLET_STATUS } from 'lib/constants';
 const logger = new Logger('wallet');
 const rpc = new TronUtils.rpc();
 
-
 export default class Wallet {
     constructor() {
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;

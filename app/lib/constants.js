@@ -16,7 +16,8 @@ export const WALLET_STATUS = {
 };
 
 export const ENCRYPTION_ALGORITHM = 'aes-256-ctr';
-export const LOCALSTORAGE_KEY = 'TW_WALLET';
+export const LOCALSTORAGE_NAMESPACE = 'TronLink';
+export const LOCALSTORAGE_KEY = `${ LOCALSTORAGE_NAMESPACE }_WALLET`;
 
 export const CURRENCY = {
     USD: 'USD'

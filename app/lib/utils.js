@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import Sha from 'jssha';
 import ByteArray from './ByteArray';
 import Logger from './logger';
+import validator from 'validator';
 
 import {
     ENCRYPTION_ALGORITHM,
@@ -102,6 +103,28 @@ const utils = {
         return shaObj.getHash('HEX');
     },
 
+    validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+        if(!validator.isURL(full) && !validator.isIP(full))
+            return 'Invalid full node provided';
+
+        if(!validator.isURL(solidity) && !validator.isIP(solidity))
+            return 'Invalid solidity node provided';
+
+        if(this.isBoolean(websocket) && websocket !== false)
+            return 'Invalid websocket node provided';
+
+        if(websocket && !validator.isURL(websocket) && !validator.isIP(websocket))
+            return 'Invalid websocket node provided';
+
+        if(!this.isBoolean(mainnet))
+            return 'Invalid network type provided';
+
+        if(!this.isString(name) || !name.length || name.length > 256)
+            return 'Invalid node name provided';
+
+        return false;
+    },
+
     base58ToHex(string) {
         const bytes = [ 0 ];
 
@@ -182,6 +205,10 @@ const utils = {
 
     isNumber(number) {
         return !isNaN(parseFloat(number)) && isFinite(number);
+    },
+
+    isBoolean(boolean) {
+        return boolean === true || boolean === false || toString.call(boolean) === '[object Boolean]';
     },
 
     validateDescription(desc) {
