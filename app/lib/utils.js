@@ -104,6 +104,9 @@ const utils = {
     },
 
     validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+        if(websocket)
+            websocket = websocket.replace(/(wss?:\/\/)/, ''); // eslint-disable-line
+
         if(!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
 

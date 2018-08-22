@@ -6,8 +6,6 @@ import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
 const logger = new Logger('nodes');
 
-// validate node address in utils function
-
 const DEFAULT_NODE = '34BD2B5CEBB1FB295117F7CD29056525';
 
 const nodeSelector = {
@@ -21,6 +19,7 @@ const nodeSelector = {
                 full: 'http://rpc.tron.watch:8090',
                 solidity: 'http://rpc.tron.watch:8091',
                 websocket: 'ws://rpc.tron.watch:8080',
+                default: true,
                 mainnet: false
             }
         };
@@ -39,8 +38,6 @@ const nodeSelector = {
             nodes
         } = Utils.loadStorage(this._storageKey);
 
-        logger.info({ selectedNode, nodes });
-
         this._userNodes = nodes || {};
 
         this._nodes = {
@@ -50,7 +47,8 @@ const nodeSelector = {
 
         logger.info(`Found ${ Object.keys(this._userNodes).length } user nodes`);
 
-        this.setNode(selectedNode);
+        if(selectedNode)
+            this.setNode(selectedNode);
     },
 
     _saveState() {
@@ -84,8 +82,17 @@ const nodeSelector = {
 
         const nodeHash = md5([ full, solidity, websocket ].join('&'));
 
-        this._userNodes[nodeHash] = { name, full, solidity, websocket, mainnet };
-        this._nodes[nodeHash] = { name, full, solidity, websocket, mainnet };
+        const newNode = {
+            default: false,
+            name,
+            full,
+            solidity,
+            websocket,
+            mainnet
+        };
+
+        this._userNodes[nodeHash] = newNode;
+        this._nodes[nodeHash] = newNode;
 
         this._saveState();
     },
@@ -101,13 +108,17 @@ const nodeSelector = {
     },
 
     setNode(nodeHash) {
-        if(!nodeHash || !this._nodes[nodeHash])
-            return logger.warn(`Attempted to set invalid node ${ nodeHash }`);
+        if(!nodeHash || !this._nodes[nodeHash]) {
+            logger.warn(`Attempted to set invalid node ${ nodeHash }`);
+            return false;
+        }
 
         logger.info(`Setting node to ${ nodeHash }`);
 
         this._node = nodeHash;
         this._saveState();
+
+        return true;
     },
 
     get node() {

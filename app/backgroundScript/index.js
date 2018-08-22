@@ -17,19 +17,17 @@ import {
     WALLET_STATUS
 } from 'lib/constants';
 
-console.log({ nodeSelector });
-
-nodeSelector.addNode({ name: 'Test Node', full: 'google.com', websocket: 'yahoo.com', solidity: 'ws://bing.com:8043', mainnet: true });
-console.log({ nodeSelector });
-
 // Initialise utilities
 const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
-const webSocket = new TronWebsocket(popup);
-const rpc = new TronUtils.rpc();
+const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
+const rpc = new TronUtils.rpc({
+    url_full: nodeSelector.node.full, // eslint-disable-line
+    url_solidity: nodeSelector.node.solidity // eslint-disable-line
+});
 
 logger.info('Script loaded');
 
@@ -38,6 +36,18 @@ webSocket.start();
 const pendingConfirmations = {};
 let dialog = false;
 let addedWebsocketAlert = false;
+
+const setNodeURLs = () => {
+    const node = nodeSelector.node;
+
+    rpc.url_full = node.full; // eslint-disable-line
+    rpc.url_solidity = node.solidity; // eslint-disable-line
+
+    if(node.websocket) {
+        webSocket._url = node.websocket;
+        webSocket.start();
+    }
+};
 
 const addConfirmation = (confirmation, resolve, reject) => {
     confirmation.id = randomUUID();
@@ -79,6 +89,37 @@ const closeDialog = () => {
     dialog.close();
     dialog = false;
 };
+
+popup.on('addNode', ({
+    data,
+    resolve,
+    reject
+}) => {
+    const error = nodeSelector.addNode(data);
+
+    if(error)
+        reject(error);
+    else resolve();
+});
+
+popup.on('deleteNode', ({ data }) => {
+    nodeSelector.removeNode(data);
+    setNodeURLs();
+});
+
+popup.on('setNode', ({
+    data,
+    resolve,
+    reject
+}) => {
+    const success = nodeSelector.setNode(data);
+
+    if(!success)
+        return reject();
+
+    setNodeURLs();
+    resolve();
+});
 
 popup.on('declineConfirmation', ({
     data,
