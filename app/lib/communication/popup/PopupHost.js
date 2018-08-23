@@ -162,4 +162,8 @@ export default class PopupHost extends EventEmitter {
     setNode(nodeHash) {
         return this.raw('setNode', nodeHash);
     }
+
+    getNodes() {
+        return this.raw('getNodes');
+    }
 }

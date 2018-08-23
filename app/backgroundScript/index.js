@@ -90,6 +90,18 @@ const closeDialog = () => {
     dialog = false;
 };
 
+popup.on('getNodes', ({ resolve }) => {
+    const {
+        node,
+        nodes
+    } = nodeSelector;
+
+    resolve({
+        node,
+        nodes
+    });
+});
+
 popup.on('addNode', ({
     data,
     resolve,
