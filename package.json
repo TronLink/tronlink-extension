@@ -14,6 +14,8 @@
     "babel-preset-stage-3": "^6.24.1",
     "bestzip": "^1.1.4",
     "bignumber.js": "^7.2.1",
+    "bip32": "^1.0.2",
+    "buffer": "^5.2.0",
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "eslint-plugin-no-null": "^1.0.2",

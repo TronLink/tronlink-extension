@@ -2,7 +2,9 @@ import TronUtils from 'TronUtils';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 
-import { WALLET_STATUS } from 'lib/constants';
+import {
+    WALLET_STATUS
+} from 'lib/constants';
 
 const logger = new Logger('wallet');
 const rpc = new TronUtils.rpc();
@@ -12,6 +14,7 @@ export default class Wallet {
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
         this._accounts = {};
+        this._seed = false;
         this._password = false;
         this._currentAccount = false;
 
@@ -35,21 +38,42 @@ export default class Wallet {
 
     async send(recipient, amount) {
         const account = this.getFullAccount();
+
         logger.info(`Sending from ${account.address} to ${recipient}, amount: ${amount}`);
-        return await rpc.sendTrx(account.privateKey, recipient, amount);
+
+        return rpc.sendTrx(
+            account.privateKey,
+            recipient,
+            amount
+        );
     }
 
     async triggerSmartContract(address, functionSelector, parameters, options) {
+        logger.info('Triggering smart contract', { address, functionSelector, parameters, options });
+
         const account = this.getFullAccount();
-        console.log('triggering smart contract', { address, functionSelector, parameters, options });
-        return await rpc.triggerContract(account.privateKey, address, functionSelector, parameters, options);
+
+        return rpc.triggerContract(
+            account.privateKey,
+            address,
+            functionSelector,
+            parameters,
+            options
+        );
     }
 
     async createSmartContract(abi, bytecode, name, options) {
         logger.info('Creating smart contract', { abi, bytecode, name, options });
 
         const account = this.getFullAccount();
-        return await rpc.deployContract(account.privateKey, abi, bytecode, name, options);
+
+        return rpc.deployContract(
+            account.privateKey,
+            abi,
+            bytecode,
+            name,
+            options
+        );
     }
 
     saveStorage(password = false) {

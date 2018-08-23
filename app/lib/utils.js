@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+
 import crypto from 'crypto';
 import Sha from 'jssha';
 import ByteArray from './ByteArray';

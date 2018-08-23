@@ -9,6 +9,7 @@ import TronWebsocket from './websocket';
 import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 import nodeSelector from './nodeSelector';
+import AccountHandler from 'lib/AccountHandler';
 
 // Constants
 import {
@@ -28,6 +29,15 @@ const rpc = new TronUtils.rpc({
     url_full: nodeSelector.node.full, // eslint-disable-line
     url_solidity: nodeSelector.node.solidity // eslint-disable-line
 });
+
+const account = new AccountHandler('stage snap neutral pupil plastic warrior chapter apart trophy warfare arch bone draft tail ancient tired flag aisle blame include rally rocket globe long');
+
+logger.info('Account', { account });
+
+logger.info('Account at index 0', account.getAccountAtIndex(0));
+logger.info('Account at index 1', account.getAccountAtIndex(1));
+
+logger.info('new account', AccountHandler.generateAccount());
 
 logger.info('Script loaded');
 
