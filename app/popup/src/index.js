@@ -8,11 +8,20 @@ import { createStore, applyMiddleware } from 'redux';
 import PortChild from './extension/communication/PortChild';
 import PopupHost from './extension/communication/popup/PopupHost';
 
-import { addConfirmation, updateConfirmations } from './reducers/confirmations';
-import { setAccount, setTrxPrice } from './reducers/wallet';
-
 import reducers from './reducers';
-import { updateStatus, updatePrice } from './reducers/wallet';
+
+import { 
+    addConfirmation, 
+    updateConfirmations 
+} from './reducers/confirmations';
+
+import { 
+    setAccount, 
+    setTrxPrice, 
+    updateStatus, 
+    updatePrice, 
+    getNodes 
+} from './reducers/wallet';
 
 import App from 'components/App';
 import Logger from 'extension/logger';
@@ -57,9 +66,6 @@ ReactDOM.render(
     document.getElementById('root')
 );
 
-/**********************************
- ********** LISTENERS *************
- **********************************/
 popup.on('isOpen', ({ resolve }) => {
     resolve();
 });
@@ -91,3 +97,4 @@ popup.on('broadcastPrice', data => {
 updateConfirmations();
 updateStatus();
 updatePrice();
+getNodes();

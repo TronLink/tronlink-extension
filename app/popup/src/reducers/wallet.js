@@ -8,6 +8,8 @@ export const INITIALIZE = 'INITIALIZE';
 export const SET_STATUS = 'SET_STATUS';
 export const SET_ACCOUNT = 'SET_ACCOUNT';
 export const SET_TRX_PRICE = 'SET_PRICE';
+export const SET_NODES = 'SET_NODES';
+export const SELECT_NODE = 'SELECT_NODE';
 
 export const unlockWallet = pass => ({
     type: INITIALIZE,
@@ -27,6 +29,16 @@ export const setAccount  = account => ({
 export const setTrxPrice = price => ({
     type: SET_TRX_PRICE,
     price
+});
+
+export const setNodes = nodes => ({
+    type: SET_NODES,
+    nodes
+});
+
+export const selectNode = node => ({
+    type: SELECT_NODE,
+    node
 });
 
 export const updateStatus = async () => {
@@ -51,6 +63,21 @@ export const updatePrice = async () => {
     );
 };
 
+export const getNodes = async () => {
+    const { 
+        selectedNode, 
+        nodes
+    } = (await popup.getNodes()).nodes;
+
+    store.dispatch(
+        setNodes(nodes)
+    );
+
+    store.dispatch(
+        selectNode(selectedNode)
+    );
+}
+
 export function walletReducer(state = {
     status: WALLET_STATUS.UNINITIALIZED,
     account: {
@@ -59,13 +86,8 @@ export function walletReducer(state = {
     selectedAccountId: false,
     price: 0.0,
     lastPriceUpdate: Date.now(),
-    networks: {
-        '34BD2B5CEBB1FB295117F7CD29056525': { // MD5 of the host
-            name: 'TronWatch Private TestNet',
-            host: 'http://rpc.tron.watch'
-        }
-    },
-    selectedNetwork: '34BD2B5CEBB1FB295117F7CD29056525'
+    networks: {},
+    selectedNetwork: false
 }, action) {
     switch (action.type) {
         case INITIALIZE: {
@@ -86,11 +108,23 @@ export function walletReducer(state = {
                 status: action.status
             }
         }
-        case SET_TRX_PRICE:{
+        case SET_TRX_PRICE: {
             return {
                 ...state,
                 price: action.price,
                 lastPriceUpdate: Date.now()
+            }
+        }
+        case SET_NODES: {
+            return {
+                ...state,
+                networks: action.nodes
+            }
+        }
+        case SELECT_NODE: {
+            return {
+                ...state,
+                selectedNetwork: action.node
             }
         }
         default:

@@ -21,6 +21,7 @@
     "husky": "^1.0.0-rc.13",
     "jssha": "^2.3.1",
     "lint-staged": "^7.2.0",
+    "md5": "^2.2.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-intl": "^2.4.0",
@@ -32,6 +33,7 @@
     "rimraf": "^2.6.2",
     "sweetalert2": "^7.26.10",
     "uuid": "^3.3.2",
+    "validator": "^10.5.0",
     "webpack": "3"
   },
   "scripts": {
