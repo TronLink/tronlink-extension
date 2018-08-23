@@ -28,18 +28,22 @@ import Logger from 'extension/logger';
 
 import enLocaleData from 'react-intl/locale-data/en';
 import frLocaleData from 'react-intl/locale-data/fr';
+import ptLocaleData from 'react-intl/locale-data/pt';
 
 import messages_en from 'translations/en.json';
 import messages_fr from 'translations/fr.json';
+import messages_pt from 'translations/pt.json';
 
 addLocaleData([
     ...enLocaleData,
-    ...frLocaleData
+    ...frLocaleData,
+    ...ptLocaleData
 ]);
 
 const messages = {
     en: messages_en,
-    fr: messages_fr
+    fr: messages_fr,
+    pt: messages_pt
 };
 
 const languageKey = navigator.language.split(/[-_]/)[0];
