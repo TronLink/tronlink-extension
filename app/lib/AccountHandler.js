@@ -68,6 +68,7 @@ export default class AccountHandler {
             accountType: this._type,
             accountIndex: index,
             name: false,
+            internal: true,
             privateKey,
             publicKey,
         };
@@ -82,7 +83,8 @@ export default class AccountHandler {
                 privateKey: this._privateKey,
                 publicKey: this._publicKey,
                 accountType: this._type,
-                name: false
+                name: false,
+                internal: false
             };
         }
 

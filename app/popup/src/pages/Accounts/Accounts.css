@@ -1,0 +1,18 @@
+.buttons {
+    display: flex;
+    flex-direction: row;
+    margin: 0 -10px;
+}
+
+.buttons .button {
+    margin: 0 10px;
+    flex: 1;
+    background: #fff;
+    font-size: 13px;
+    color: #111;
+    box-shadow: 0px 1px 5px 0px rgb(221, 221, 221);
+}
+
+.contentContainer {
+    flex-direction: column;
+}

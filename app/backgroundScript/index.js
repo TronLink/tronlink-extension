@@ -300,6 +300,12 @@ popup.on('getWalletStatus', async ({ resolve }) => {
     }
 });
 
+popup.on('getAccounts', async ({ resolve }) => {
+    resolve(
+        wallet.getAccounts()
+    );
+});
+
 popup.on('updateAccount', async data => {
     logger.info('Popup requested account update for', data);
 

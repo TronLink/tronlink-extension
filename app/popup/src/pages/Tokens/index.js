@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import { SettingsIcon, MoneyIcon } from 'components/Icons';
+import { FormattedMessage } from 'react-intl';
+import { SettingsIcon } from 'components/Icons';
 import { popup } from 'index';
 
 import Header from 'components/Header';
 
-import AccountViewHeader from 'components/Header/AccountView';
-import AccountViewContent from './AccountView';
+import './Tokens.css';
 
-import { FormattedMessage } from 'react-intl';
-
-class Account extends Component {
+class Tokens extends Component {
     componentDidMount() {
         if(!this.props.account)
             return;
@@ -29,19 +26,20 @@ class Account extends Component {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle={ this.props.account.name || 'Account' }
-                    navbarLabel={ this.props.account.publicKey }
-                    leftIcon={ true }
-                    leftIconImg={ <MoneyIcon /> }
-                    leftIconRoute="/main/give"
-                    rightIcon={ true }
+                    navbarTitle={ 'Token Balances' }
+                    navbarLabel={ this.props.account.name || this.props.account.publicKey }
                     rightIconImg={ <SettingsIcon /> }
                     rightIconRoute="/main/settings"
-                >
-                    <AccountViewHeader />
-                </Header>
+                />
                 <div className="mainContent">
-                    <AccountViewContent />
+                    <div className="accountView container">
+                        <div className="contentContainer">
+                            Should show tokens balances here (3 columns?)
+                            Clicking on the token should show a dedicated page
+                            with token info from the API if we ever get around
+                            to doing that
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -51,4 +49,4 @@ class Account extends Component {
 export default connect(state => ({
     account: state.wallet.account,
     status: state.wallet.status
-}))(Account);
+}))(Tokens);

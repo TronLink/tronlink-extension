@@ -2,18 +2,20 @@ import React, { Component } from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import './App.css';
-
 import { WALLET_STATUS } from 'extension/constants';
 
-import Welcome from 'pages/Welcome';
-import Import from 'pages/Import';
-import Queue from 'pages/Queue';
+import Welcome from 'components/Welcome';
+import Queue from 'components/Queue';
 
+import Accounts from 'pages/Accounts';
+import Transactions from 'pages/Transactions';
+import Tokens from 'pages/Tokens';
 import Send from 'pages/Send';
-import Give from 'pages/Give';
+
+import Redeem from 'pages/Redeem';
 import Settings from 'pages/Settings';
-import Account from 'pages/Account';
+
+import './App.css';
 
 class App extends Component {
     render() {
@@ -30,14 +32,16 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/" component={ Welcome } />
                     <Route exact path="/confirm" component={ Queue } />
-                    <Route exact path="/import" component={ Import } />
                     <Route path="/main" render={ props => (
                         <div className="mainContainer">
                             <Switch>
-                                <Route path="/main/confirm" component={ Send } />
-                                <Route path="/main/give" component={ Give } />
-                                <Route path="/main/settings" component={ Settings } />
-                                <Route path="/main" component={ Account } />
+                                <Route path="/main/accounts" component={ Accounts } />
+                                <Route path="/main/transactions" component={ Transactions } />
+                                <Route path="/main/tokens" component={ Tokens } />
+                                <Route path="/main/send" component={ Send } />
+                                
+                                <Route path="/main/redeem" component={ Redeem } />
+                                <Route path="/main/settings" component={ Settings } />                                
                             </Switch>
                         </div>
                     )} />

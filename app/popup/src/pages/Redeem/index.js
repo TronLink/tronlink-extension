@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { ArrowLeftIcon } from 'components/Icons';
 
+import Header from 'components/Header';
 import Button from 'components/Button';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-import './Give.css';
+import './Redeem.css';
 
-class Give extends Component {
+class Redeem extends Component {
     constructor(props) {
         super(props);
         this.translate = props.intl.formatMessage;
@@ -34,7 +36,7 @@ class Give extends Component {
         });
     }
 
-    render() {
+    renderBox() {
         return (
             <div className="give">
                 <div className="giveContainer">
@@ -55,14 +57,31 @@ class Give extends Component {
             </div>
         );
     }
+    
+    render() {
+        return (
+            <div class="mainContainer">
+                <Header 
+                    navbarTitle={ <FormattedMessage id='give.fund.title' /> }
+                    navbarLabel=""
+                    leftIcon={ true }
+                    leftIconImg={ <ArrowLeftIcon /> }
+                    leftIconRoute="/main/transactions"
+                    rightIcon={ false }
+                />
+                <div className="mainContent">
+                    { this.renderBox() }
+                </div>
+            </div>
+        );
+    }
 }
-
 
 export default withRouter(
     injectIntl(
         connect(state => ({ 
             account: 
             state.wallet.account 
-        }))(Give)
+        }))(Redeem)
     )
 );

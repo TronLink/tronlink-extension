@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 
 import Button from 'components/Button';
 
-import './AccountView.css';
+import './AccountHeader.css';
 
-class AccountView extends Component {
+class AccountHeader extends Component {
     state = {
         balance: 0
     }
@@ -37,18 +37,19 @@ class AccountView extends Component {
         ).toFixed(2).toLocaleString();
 
         return (
-            <div className="accountView container">
+            <div className="accountHeader">
                 <div className="accountBalance">
                     <span className="accountBalanceAmount">{ this.state.balance.toLocaleString() }</span>
                     <span className="accountBalanceTicker">TRX</span>
                     <div className="accountBalanceUSD">${ usdValue } USD</div>
                 </div>
-
-                <div className="buttonContainer">
-                    <NavLink to="/main/confirm" style={{ 'padding-right': '5px', flex: 1 }}>
-                        <Button><FormattedMessage id='words.send' /></Button>
-                    </NavLink>
-                    <Button disabled style={{ margin: '0 10px 0 5px', flex: 1 }}><FormattedMessage id='words.buy' /></Button>
+                <div className='accountLabel'>
+                    <span class='amount'>
+                        36,319 Tron Power
+                    </span>
+                    <span class='label'>
+                        Expires in 3 days
+                    </span>
                 </div>
             </div>
         );
@@ -59,4 +60,4 @@ export default connect(state => ({
     price: state.wallet.price,
     account: state.wallet.account,
     selectedAccountId: state.selectedAccountId
-}))(AccountView);
+}))(AccountHeader);

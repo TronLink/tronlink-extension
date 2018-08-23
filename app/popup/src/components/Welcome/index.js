@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { WALLET_STATUS } from 'extension/constants';
 import { popup } from 'index';
-import { updateStatus } from 'reducers/wallet';
+import { updateStatus, getAccounts } from 'reducers/wallet';
 
 import Button from 'components/Button';
 
@@ -33,7 +33,8 @@ class Welcome extends Component {
         this._checkWalletStatus();
     }
 
-    goToWallet() {
+    async goToWallet() {
+        await getAccounts();
         this.props.history.push('/main/transactions');
     }
 

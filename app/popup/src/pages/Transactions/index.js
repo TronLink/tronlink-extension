@@ -1,0 +1,54 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { SettingsIcon, MoneyIcon } from 'components/Icons';
+import { popup } from 'index';
+
+import Header from 'components/Header';
+import AccountHeader from './AccountHeader';
+import TransactionList from './TransactionList';
+
+import './Transactions.css';
+
+class Transactions extends Component {
+    componentDidMount() {
+        if(!this.props.account)
+            return;
+
+        if(this.props.account == undefined)
+            return;
+
+        if(!this.props.account.publicKey)
+            return;
+
+        popup.updateAccount(this.props.account.publicKey);
+    }
+
+    render() {
+        return (
+            <div class="mainContainer">
+                <Header 
+                    navbarTitle={ 'Transaction History' }
+                    navbarLabel={ this.props.account.name || this.props.account.publicKey }
+                    leftIconImg={ <MoneyIcon /> }
+                    leftIconRoute="/main/redeem"
+                    rightIconImg={ <SettingsIcon /> }
+                    rightIconRoute="/main/settings"
+                />
+                <div className="mainContent">
+                    <AccountHeader />
+                    <div className="accountView container">
+                        <div className="contentContainer">
+                            { TransactionList }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export default connect(state => ({
+    account: state.wallet.account,
+    status: state.wallet.status
+}))(Transactions);

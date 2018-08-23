@@ -1,40 +1,30 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
-import './Header.css';
-
 import { TronIcon } from 'components/Icons';
 
-import AccountView from './AccountView';
+import './Header.css';
 
 class Header extends Component {
-	leftIconCheck() {
-		if (this.props.leftIcon) {
-			return (
-				<NavLink
-					className="navbarIconLeft"
-					to={ this.props.leftIconRoute }
-				>
-					{ this.props.leftIconImg }
-				</NavLink>
-			);
-        }
-        
-		return <div className="navbarIconLeft disabled" />;
+	leftIcon() {
+		if (!this.props.leftIconRoute)
+			return <div className="navbarIconLeft disabled" />;
+
+		return (
+			<NavLink className="navbarIconLeft" to={ this.props.leftIconRoute }>
+				{ this.props.leftIconImg }
+			</NavLink>
+		);  
 	}
 
-	rightIconCheck() {
-		if (this.props.rightIcon) {
-			return (
-				<NavLink
-					className="navbarIconRight"
-					to={ this.props.rightIconRoute }
-				>
-					{ this.props.rightIconImg }
-				</NavLink>
-			);
-        }
-        
-		return <div className="navbarIconRight disabled" />;
+	rightIcon() {
+		if (!this.props.rightIconRoute)
+			return <div className="navbarIconRight disabled" />;
+
+		return (
+			<NavLink className="navbarIconRight" to={ this.props.rightIconRoute }>
+				{ this.props.rightIconImg }
+			</NavLink>
+		);  
 	}
 
 	renderSubLabel() {
@@ -59,7 +49,7 @@ class Header extends Component {
 		return (
 			<div className="header">
 				<div className="navbarContainer">
-					{ this.leftIconCheck() }
+					{ this.leftIcon() }
 
 					<div className="navbarHeader">
 						<div className="navbarHeaderMain">
@@ -71,10 +61,22 @@ class Header extends Component {
 						<TronIcon />
 					</div>
 
-					{ this.rightIconCheck() }
+					{ this.rightIcon() }
 				</div>
-
-				{ this.props.children }
+				<div className='nav'>
+					<NavLink className="navTab" to={ '/main/accounts' }>
+						Accounts
+					</NavLink>
+					<NavLink className="navTab" to={ '/main/transactions' }>
+						Transactions
+					</NavLink>
+					<NavLink className="navTab" to={ '/main/tokens' }>
+						Tokens
+					</NavLink>
+					<NavLink className="navTab" to={ '/main/send' }>
+						Send
+					</NavLink>
+				</div>
 			</div>
 		);
 	}

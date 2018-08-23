@@ -166,4 +166,8 @@ export default class PopupHost extends EventEmitter {
     getNodes() {
         return this.raw('getNodes');
     }
+
+    getAccounts() {
+        return this.raw('getAccounts');
+    }
 }
