@@ -19,18 +19,18 @@ class Account extends Component {
         if(this.props.account == undefined)
             return;
 
-        if(!this.props.account.address)
+        if(!this.props.account.publicKey)
             return;
 
-        popup.updateAccount(this.props.account.address);
+        popup.updateAccount(this.props.account.publicKey);
     }
 
     render() {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle="Default Account"
-                    navbarLabel={ this.props.account.address }
+                    navbarTitle={ this.props.account.name || 'Account' }
+                    navbarLabel={ this.props.account.publicKey }
                     leftIcon={ true }
                     leftIconImg={ <MoneyIcon /> }
                     leftIconRoute="/main/give"

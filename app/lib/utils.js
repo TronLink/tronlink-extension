@@ -42,11 +42,11 @@ const utils = {
             if (data)
                 return JSON.parse(data);
 
-            return {};
+            return false;
         } catch (exception) {
             logger.warn('Failed to load storage');
             logger.error({ exception });
-            return {};
+            return false;
         }
     },
 
@@ -70,16 +70,6 @@ const utils = {
                 txID: transaction.txID
             };
         }).reverse();
-    },
-
-    convertAccountObject(address, { balance }, transactions) {
-        return {
-            name: 'Default account',
-            transactions: this.convertTransactions(transactions, address),
-            tokens: {},
-            address,
-            balance
-        };
     },
 
     base64ToHex(string) {

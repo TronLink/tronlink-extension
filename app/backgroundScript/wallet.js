@@ -1,6 +1,7 @@
 import TronUtils from 'TronUtils';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
+import AccountHandler from 'lib/AccountHandler';
 
 import {
     WALLET_STATUS
@@ -14,9 +15,12 @@ export default class Wallet {
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
         this._accounts = {};
-        this._seed = false;
+        this._internalAccounts = 0;
+        this._rootAccount = false;
+        this._mnemonic = false;
         this._password = false;
         this._currentAccount = false;
+        this._encryptedStorage = false;
 
         this._loadWallet();
     }
@@ -26,20 +30,28 @@ export default class Wallet {
     }
 
     _loadWallet() {
-        this._storage = Utils.loadStorage();
+        this._encryptedStorage = Utils.loadStorage();
 
-        if (this._storage.hasOwnProperty('encrypted'))
+        if(this._encryptedStorage)
             this._walletStatus = WALLET_STATUS.LOCKED;
     }
 
     getFullAccount() {
-        return this._storage.decrypted.accounts[this._currentAccount];
+        if(this._accounts[this._currentAccount])
+            return this._accounts[this._currentAccount];
+
+        const keys = Object.keys(this._accounts);
+
+        this._currentAccount = keys[0];
+        this._saveStorage();
+
+        return this._accounts[this._currentAccount];
     }
 
     async send(recipient, amount) {
         const account = this.getFullAccount();
 
-        logger.info(`Sending from ${account.address} to ${recipient}, amount: ${amount}`);
+        logger.info(`Sending from ${account.publicKey} to ${recipient}, amount: ${amount}`);
 
         return rpc.sendTrx(
             account.privateKey,
@@ -49,9 +61,9 @@ export default class Wallet {
     }
 
     async triggerSmartContract(address, functionSelector, parameters, options) {
-        logger.info('Triggering smart contract', { address, functionSelector, parameters, options });
-
         const account = this.getFullAccount();
+
+        logger.info(`Triggering smart contract from ${account.publicKey}`, { address, functionSelector, parameters, options });
 
         return rpc.triggerContract(
             account.privateKey,
@@ -63,9 +75,9 @@ export default class Wallet {
     }
 
     async createSmartContract(abi, bytecode, name, options) {
-        logger.info('Creating smart contract', { abi, bytecode, name, options });
-
         const account = this.getFullAccount();
+
+        logger.info(`Creating smart contract from account ${account.publicKey}`, { abi, bytecode, name, options });
 
         return rpc.deployContract(
             account.privateKey,
@@ -76,54 +88,66 @@ export default class Wallet {
         );
     }
 
-    saveStorage(password = false) {
+    _saveStorage(password = false) {
         if (!this._password && !password)
             throw 'Storage requires a password for encryption';
 
-        this._storage.encrypted = Utils.encrypt(JSON.stringify(this._storage.decrypted), this._password || password);
+        this._encryptedStorage = Utils.encrypt(JSON.stringify({
+            accounts: this._accounts,
+            mnemonic: this._mnemonic,
+            currentAccount: this._currentAccount,
+            internalAccounts: this._internalAccounts
+        }), this._password || password);
 
         if (!this._password)
             this._password = password;
 
         logger.info('Saving storage');
-        logger.info('-> Storing:', this._storage.encrypted);
-
-        Utils.saveStorage({ encrypted: this._storage.encrypted });
+        Utils.saveStorage(this._encryptedStorage);
     }
 
-    getAccounts() {
-        if (this._walletStatus === WALLET_STATUS.UNLOCKED)
-            return this._storage.decrypted.accounts;
-
-        return {};
-    }
-
-    async updateAccount(address) {
+    async updateAccount(address, save = false) {
         logger.info(`Account update requested for ${address}`);
 
         const account = await rpc.getAccount(address);
         const transactions = await rpc.getTransactions(address);
-        logger.info('Account updated', { account });
 
-        this._accounts[address] = Utils.convertAccountObject(address, account, transactions);
+        logger.info('Account updated', { account, transactions });
+
+        this._accounts[address] = {
+            ...this._accounts[address],
+            transactions: Utils.convertTransactions(transactions, address),
+            tokens: {},
+            balance: account.balance || 0
+        };
+
+        if(save)
+            this._saveStorage();
     }
 
     async updateAccounts() {
         logger.info('Requesting batch account update');
 
         for (const address in this.getAccounts())
-            await this.updateAccount(address);
+            await this.updateAccount(address, false);
+
+        this._saveStorage();
 
         logger.info('Batch account update complete');
     }
 
     addAccount(account) {
-        logger.info(`Adding account to wallet ${account.address}`);
+        logger.info(`Adding account to wallet ${account.publicKey}`);
 
-        if (!this._storage.decrypted)
-            this._storage.decrypted = { accounts: {} };
+        const extendedAccount = {
+            tokens: {},
+            transactions: [],
+            balance: 0,
+            ...account
+        };
 
-        this._storage.decrypted.accounts[account.address] = account;
+        this._accounts[account.publicKey] = extendedAccount;
+        this._saveStorage();
     }
 
     setupWallet(password = false) {
@@ -135,8 +159,18 @@ export default class Wallet {
 
         logger.info('Initialising wallet for first use');
 
-        this.addAccount(TronUtils.accounts.generateRandomBip39());
-        this.saveStorage(password);
+        const account = AccountHandler.generateAccount();
+        const wordList = account.export();
+        const defaultAccount = account.getAccountAtIndex(0);
+
+        defaultAccount.name = 'Default Account';
+
+        this._rootAccount = new AccountHandler(wordList);
+        this._mnemonic = wordList;
+        this._password = password;
+        this._internalAccounts = 1;
+
+        this.addAccount(defaultAccount);
         this.unlockWallet(password);
     }
 
@@ -148,8 +182,20 @@ export default class Wallet {
         logger.info('Requested wallet unlock');
 
         try {
-            this._storage.decrypted = JSON.parse(Utils.decrypt(this._storage.encrypted, password));
-            this._currentAccount = Object.keys(this._storage.decrypted.accounts)[0];
+            const {
+                accounts,
+                mnemonic,
+                currentAccount,
+                internalAccounts
+            } = JSON.parse(Utils.decrypt(this._encryptedStorage, password));
+
+            this._rootAccount = new AccountHandler(mnemonic);
+            this._accounts = accounts;
+            this._mnemonic = mnemonic;
+            this._currentAccount = currentAccount;
+            this._password = password;
+            this._internalAccounts = internalAccounts;
+
             this._walletStatus = WALLET_STATUS.UNLOCKED;
 
             logger.info('Wallet unlocked successfully');
@@ -162,10 +208,37 @@ export default class Wallet {
         }
     }
 
+    getAccounts() {
+        return this._accounts;
+    }
+
     getAccount(address = this._currentAccount) {
         if (this._walletStatus !== WALLET_STATUS.UNLOCKED)
             return false;
 
-        return this._accounts[address];
+        if(this._accounts[address])
+            return this._accounts[address];
+
+        const keys = Object.keys(this._accounts);
+
+        this._currentAccount = keys[0];
+        this._saveStorage();
+
+        return this._accounts[this._currentAccount];
+    }
+
+    createAccount(name = false) {
+        const account = this._rootAccount.getAccountAtIndex(
+            this._internalAccounts + 1
+        );
+
+        account.name = name;
+
+        this._internalAccounts += 1;
+        this.addAccount(account);
+
+        this._saveStorage();
+
+        return account;
     }
 }

@@ -17,7 +17,7 @@ class Give extends Component {
 
     async fund(){
         axios.get(
-            'https://us-central1-flottpay.cloudfunctions.net/testCoins?address=' + this.props.account.address
+            'https://us-central1-flottpay.cloudfunctions.net/testCoins?address=' + this.props.account.publicKey
         ).then(() => {
             return Swal({
                 title: this.translate({ id: 'give.sent.header' }),
@@ -45,7 +45,7 @@ class Give extends Component {
                         <FormattedMessage id='give.fund.body' />
                     </div>
                     <div className="giveSubHeader">
-                        <FormattedMessage id='give.fund.address' values={{ address: this.props.account.address }} />
+                        <FormattedMessage id='give.fund.address' values={{ address: this.props.account.publicKey }} />
                     </div>
                 </div>
                 

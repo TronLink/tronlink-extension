@@ -31,7 +31,7 @@ export default class AccountHandler {
 
         this._type = ACCOUNT_TYPE.RAW;
         this._privateKey = privateKey;
-        this._publicKey = TronUtils.account.privateKeyToAddress(privateKey);
+        this._publicKey = TronUtils.accounts.privateKeyToAddress(privateKey);
     }
 
     _importFromWordList(wordList) {
@@ -66,8 +66,10 @@ export default class AccountHandler {
         return {
             wordList: this._wordList,
             accountType: this._type,
+            accountIndex: index,
+            name: false,
             privateKey,
-            publicKey
+            publicKey,
         };
     }
 
@@ -75,8 +77,14 @@ export default class AccountHandler {
         if(this._type === ACCOUNT_TYPE.MNEMONIC)
             return this._wordList;
 
-        if(this._type === ACCOUNT_TYPE.RAW)
-            return this._privateKey;
+        if(this._type === ACCOUNT_TYPE.RAW) {
+            return {
+                privateKey: this._privateKey,
+                publicKey: this._publicKey,
+                accountType: this._type,
+                name: false
+            };
+        }
 
         return false;
     }

@@ -9,7 +9,6 @@ import TronWebsocket from './websocket';
 import TronUtils from 'TronUtils';
 import randomUUID from 'uuid/v4';
 import nodeSelector from './nodeSelector';
-import AccountHandler from 'lib/AccountHandler';
 
 // Constants
 import {
@@ -29,15 +28,6 @@ const rpc = new TronUtils.rpc({
     url_full: nodeSelector.node.full, // eslint-disable-line
     url_solidity: nodeSelector.node.solidity // eslint-disable-line
 });
-
-const account = new AccountHandler('stage snap neutral pupil plastic warrior chapter apart trophy warfare arch bone draft tail ancient tired flag aisle blame include rally rocket globe long');
-
-logger.info('Account', { account });
-
-logger.info('Account at index 0', account.getAccountAtIndex(0));
-logger.info('Account at index 1', account.getAccountAtIndex(1));
-
-logger.info('new account', AccountHandler.generateAccount());
 
 logger.info('Script loaded');
 
@@ -183,31 +173,44 @@ popup.on('acceptConfirmation', async ({
         result: CONFIRMATION_RESULT.ACCEPTED
     };
 
-    switch (info.type) {
-        case CONFIRMATION_TYPE.SEND_TRON:
-            output.rpcResponse = await wallet.send(info.recipient, info.amount);
-            break;
+    try {
+        switch (info.type) {
+            case CONFIRMATION_TYPE.SEND_TRON:
+                output.rpcResponse = await wallet.send(info.recipient, info.amount);
+                break;
 
-        case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-            output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
-            break;
+            case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
+                output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
+                break;
 
-        case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-            output.rpcResponse = await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options);
-            break;
+            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
+                output.rpcResponse = await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options);
+                break;
 
-        default:
-            confirmation.reject('Unknown transaction type');
-            delete pendingConfirmations[data.id];
+            default:
+                logger.warn('Tried to confirm confirmation of unknown type:', info.type);
 
-            reject();
+                confirmation.reject('Unknown transaction type');
+                delete pendingConfirmations[data.id];
 
-            return logger.warn('Tried to confirm confirmation of unknown type:', info.type);
+                reject();
+                return closeDialog();
+        }
+    } catch(ex) {
+        const error = 'Failed to build valid transaction';
+
+        logger.error(error, ex);
+
+        confirmation.reject(error);
+        delete pendingConfirmations[data.id];
+
+        closeDialog();
+        reject(error);
+
+        return;
     }
 
     logger.info(`Broadcasted transaction for confirmation ${confirmationID}`);
-    logger.info(confirmation);
-
     logger.info('Transaction output', output);
 
     confirmation.resolve(output);
@@ -251,7 +254,10 @@ const updateAccount = async () => {
     await wallet.updateAccounts();
 
     if(!addedWebsocketAlert) {
-        webSocket.addAddress(wallet.getAccount().address);
+        webSocket.addAddress(
+            wallet.getAccount().publicKey
+        );
+
         addedWebsocketAlert = true;
     }
 
@@ -339,9 +345,6 @@ const handleWebCall = async ({
     reject
 }) => {
     switch (method) {
-        /********************************
-        ************ WALLET *************
-        ********************************/
         case 'sendTron': {
             const {
                 recipient,
@@ -411,11 +414,6 @@ const handleWebCall = async ({
 
             return reject('Wallet not unlocked');
         }
-
-        /********************************
-        ************ NODE ***************
-        ********************************/
-
         case 'nodeGetAccount': {
             const {
                 address
@@ -454,11 +452,6 @@ const handleWebCall = async ({
                 await rpc.getTransactionById(transactionID)
             );
         }
-
-        /********************************
-        *********** UTILS ***************
-        ********************************/
-
         default:
             reject(`Unknown method called (${ method })`);
     }
