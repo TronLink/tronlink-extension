@@ -6,7 +6,7 @@ import './AddressView.css';
 
 class AddressView extends Component {
     render() {
-        const address = this.props.account.address;
+        const address = this.props.account.publicKey;
         const balance = (this.props.account.balance || 0) / 1000000;
         const trimmed = `${address.substr(0, 8)}...${address.substr(address.length - 8)}`;
 

@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { ArrowLeftIcon } from 'components/Icons';
 
+import Header from 'components/Header';
 import Button from 'components/Button';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-import './Give.css';
+import './Redeem.css';
 
-class Give extends Component {
+class Redeem extends Component {
     constructor(props) {
         super(props);
         this.translate = props.intl.formatMessage;
@@ -17,7 +19,7 @@ class Give extends Component {
 
     async fund(){
         axios.get(
-            'https://us-central1-flottpay.cloudfunctions.net/testCoins?address=' + this.props.account.address
+            'https://us-central1-flottpay.cloudfunctions.net/testCoins?address=' + this.props.account.publicKey
         ).then(() => {
             return Swal({
                 title: this.translate({ id: 'give.sent.header' }),
@@ -34,7 +36,7 @@ class Give extends Component {
         });
     }
 
-    render() {
+    renderBox() {
         return (
             <div className="give">
                 <div className="giveContainer">
@@ -45,7 +47,7 @@ class Give extends Component {
                         <FormattedMessage id='give.fund.body' />
                     </div>
                     <div className="giveSubHeader">
-                        <FormattedMessage id='give.fund.address' values={{ address: this.props.account.address }} />
+                        <FormattedMessage id='give.fund.address' values={{ address: this.props.account.publicKey }} />
                     </div>
                 </div>
                 
@@ -55,14 +57,31 @@ class Give extends Component {
             </div>
         );
     }
+    
+    render() {
+        return (
+            <div class="mainContainer">
+                <Header 
+                    navbarTitle={ <FormattedMessage id='give.fund.title' /> }
+                    navbarLabel=""
+                    leftIcon={ true }
+                    leftIconImg={ <ArrowLeftIcon /> }
+                    leftIconRoute="/main/transactions"
+                    rightIcon={ false }
+                />
+                <div className="mainContent">
+                    { this.renderBox() }
+                </div>
+            </div>
+        );
+    }
 }
-
 
 export default withRouter(
     injectIntl(
         connect(state => ({ 
             account: 
             state.wallet.account 
-        }))(Give)
+        }))(Redeem)
     )
 );

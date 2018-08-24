@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { ArrowLeftIcon } from 'components/Icons';
+import { SettingsIcon, ArrowLeftIcon } from 'components/Icons';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { popup } from 'index';
 
@@ -182,12 +182,10 @@ class Send extends Component {
         return (
             <div class="mainContainer">
 				<Header
-					navbarTitle="CONFIRM TRX SEND"
-					navbarLabel=""
-					leftIcon={ true }
-					leftIconImg={ <ArrowLeftIcon /> }
-					leftIconRoute="/main/transactions"
-					rightIcon={ false }
+					navbarTitle="Send Funds"
+					navbarLabel={ this.props.account.name || this.props.account.publicKey }
+					rightIconImg={ <SettingsIcon /> }
+                    rightIconRoute="/main/settings"
 				>
 					<AddressView onSetAddress={ address => this.onSetAddress(address) } />
 				</Header>

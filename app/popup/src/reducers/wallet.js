@@ -10,6 +10,7 @@ export const SET_ACCOUNT = 'SET_ACCOUNT';
 export const SET_TRX_PRICE = 'SET_PRICE';
 export const SET_NODES = 'SET_NODES';
 export const SELECT_NODE = 'SELECT_NODE';
+export const SET_ACCOUNTS = 'SET_ACCOUNTS';
 
 export const unlockWallet = pass => ({
     type: INITIALIZE,
@@ -39,6 +40,11 @@ export const setNodes = nodes => ({
 export const selectNode = node => ({
     type: SELECT_NODE,
     node
+});
+
+export const setAccounts = accounts => ({
+    type: SET_ACCOUNTS,
+    accounts
 });
 
 export const updateStatus = async () => {
@@ -78,18 +84,31 @@ export const getNodes = async () => {
     );
 }
 
+export const getAccounts = async () => {
+    const accounts = await popup.getAccounts();
+
+    return store.dispatch(
+        setAccounts(accounts)
+    );
+}
+
 export function walletReducer(state = {
     status: WALLET_STATUS.UNINITIALIZED,
-    account: {
-        transactions: []
-    },
-    selectedAccountId: false,
-    price: 0.0,
-    lastPriceUpdate: Date.now(),
+    account: {},
+    accounts: {},
     networks: {},
-    selectedNetwork: false
+    selectedAccountId: false,
+    selectedNetwork: false,
+    price: 0,
+    lastPriceUpdate: Date.now()
 }, action) {
     switch (action.type) {
+        case SET_ACCOUNTS: {
+            return {
+                ...state,
+                accounts: action.accounts
+            }
+        }
         case INITIALIZE: {
             return {
                 ...state,
@@ -99,7 +118,7 @@ export function walletReducer(state = {
         case SET_ACCOUNT: {
             return {
                 ...state,
-                account : action.account
+                account: action.account
             }
         }
         case SET_STATUS: {

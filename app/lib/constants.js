@@ -15,6 +15,16 @@ export const WALLET_STATUS = {
     UNLOCKED: 'UNLOCKED'
 };
 
+export const ACCOUNT_TYPE = {
+    RAW: 0,
+    MNEMONIC: 1
+};
+
+export const BIP44 = {
+    INDEX: 195,
+    HEXA: 0x800000c3
+};
+
 export const ENCRYPTION_ALGORITHM = 'aes-256-ctr';
 export const LOCALSTORAGE_NAMESPACE = 'TronLink';
 export const LOCALSTORAGE_KEY = `${ LOCALSTORAGE_NAMESPACE }_WALLET`;

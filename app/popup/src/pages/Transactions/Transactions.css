@@ -1,0 +1,15 @@
+.mainContent .accountView {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+.contentContainer {
+    display: flex;
+    background: #f3f3f3;
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    cursor: default;
+}

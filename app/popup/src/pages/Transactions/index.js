@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { FormattedMessage } from 'react-intl';
 import { SettingsIcon, MoneyIcon } from 'components/Icons';
 import { popup } from 'index';
 
 import Header from 'components/Header';
+import AccountHeader from './AccountHeader';
+import TransactionList from './TransactionList';
 
-import AccountViewHeader from 'components/Header/AccountView';
-import AccountViewContent from './AccountView';
+import './Transactions.css';
 
-import { FormattedMessage } from 'react-intl';
-
-class Account extends Component {
+class Transactions extends Component {
     componentDidMount() {
         if(!this.props.account)
             return;
@@ -19,29 +18,30 @@ class Account extends Component {
         if(this.props.account == undefined)
             return;
 
-        if(!this.props.account.address)
+        if(!this.props.account.publicKey)
             return;
 
-        popup.updateAccount(this.props.account.address);
+        popup.updateAccount(this.props.account.publicKey);
     }
 
     render() {
         return (
             <div class="mainContainer">
                 <Header 
-                    navbarTitle="Default Account"
-                    navbarLabel={ this.props.account.address }
-                    leftIcon={ true }
+                    navbarTitle={ 'Transaction History' }
+                    navbarLabel={ this.props.account.name || this.props.account.publicKey }
                     leftIconImg={ <MoneyIcon /> }
-                    leftIconRoute="/main/give"
-                    rightIcon={ true }
+                    leftIconRoute="/main/redeem"
                     rightIconImg={ <SettingsIcon /> }
                     rightIconRoute="/main/settings"
-                >
-                    <AccountViewHeader />
-                </Header>
+                />
                 <div className="mainContent">
-                    <AccountViewContent />
+                    <AccountHeader />
+                    <div className="accountView container">
+                        <div className="contentContainer">
+                            { TransactionList }
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -51,4 +51,4 @@ class Account extends Component {
 export default connect(state => ({
     account: state.wallet.account,
     status: state.wallet.status
-}))(Account);
+}))(Transactions);

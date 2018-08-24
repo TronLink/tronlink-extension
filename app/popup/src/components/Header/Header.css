@@ -12,6 +12,8 @@
     width: 100%;
     padding: 40px 20px;
     box-sizing: border-box;
+    background: #ffffff;
+    border-bottom: 1px solid #eee;
 }
 
 .navbarIconLeft, .navbarIconRight {
@@ -65,4 +67,36 @@
     margin: auto;
     fill: #f1f1f1;
     z-index: 0;
+}
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    padding: 0 10px;
+    justify-content: space-between;
+    border-bottom: 2px solid #ddd;
+}
+
+.navTab {
+    text-align: center;
+    line-height: 50px;
+    font-size: 14px;
+    color: #333;
+    position: relative;
+    padding: 0 20px;
+}
+
+.navTab.active {
+    color: #ed3f23;
+}
+
+.navTab.active::after {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: -2px;
+    height: 2px;
+    background: #ed3f23;
+    content: "";
 }
