@@ -114,8 +114,8 @@ popup.on('addNode', ({
     else resolve();
 });
 
-popup.on('deleteNode', ({ data }) => {
-    nodeSelector.removeNode(data);
+popup.on('deleteNode', nodeHash => {
+    nodeSelector.removeNode(nodeHash);
     setNodeURLs();
 });
 
@@ -152,6 +152,31 @@ popup.on('declineConfirmation', ({
 
     closeDialog();
     resolve();
+});
+
+popup.on('selectAccount', publicKey => {
+    wallet.selectAccount(publicKey);
+
+    popup.sendAccount(
+        wallet.getAccount()
+    );
+});
+
+popup.on('createAccount', name => {
+    if(name && name.length > 32)
+        return;
+
+    const { publicKey } = wallet.createAccount(name);
+
+    wallet.selectAccount(publicKey);
+});
+
+popup.on('deleteAccount', publicKey => {
+    wallet.deleteAccount(publicKey);
+
+    popup.sendAccount(
+        wallet.getAccount()
+    );
 });
 
 popup.on('acceptConfirmation', async ({
@@ -400,9 +425,6 @@ const handleWebCall = async ({
                 parameters,
                 options
             } = args;
-
-            console.log('triggerSmartContract args:');
-            console.log(args);
 
             return addConfirmation({
                 type: CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT,

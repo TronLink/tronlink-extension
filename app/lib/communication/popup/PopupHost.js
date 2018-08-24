@@ -170,4 +170,16 @@ export default class PopupHost extends EventEmitter {
     getAccounts() {
         return this.raw('getAccounts');
     }
+
+    selectAccount(publicKey) {
+        return this.raw('selectAccount', publicKey, false);
+    }
+
+    createAccount(name) {
+        return this.raw('createAccount', name, false);
+    }
+
+    deleteAccount(publicKey) {
+        return this.raw('deleteAccount', publicKey, false);
+    }
 }

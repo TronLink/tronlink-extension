@@ -46,6 +46,8 @@ class Header extends Component {
 	}
 
 	render() {
+		const hideNav = this.props.hideNav || false;
+
 		return (
 			<div className="header">
 				<div className="navbarContainer">
@@ -63,7 +65,7 @@ class Header extends Component {
 
 					{ this.rightIcon() }
 				</div>
-				<div className='nav'>
+				{ !hideNav && <div className='nav'>
 					<NavLink className="navTab" to={ '/main/accounts' }>
 						Accounts
 					</NavLink>
@@ -76,7 +78,7 @@ class Header extends Component {
 					<NavLink className="navTab" to={ '/main/send' }>
 						Send
 					</NavLink>
-				</div>
+				</div> }
 			</div>
 		);
 	}

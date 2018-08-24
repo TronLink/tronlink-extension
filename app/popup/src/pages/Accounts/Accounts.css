@@ -13,6 +13,141 @@
     box-shadow: 0px 1px 5px 0px rgb(221, 221, 221);
 }
 
+.button.disabled {
+    background: #ddd;
+}
+
 .contentContainer {
     flex-direction: column;
+}
+
+.account {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+    border-radius: 4px;
+    border-bottom: 3px solid transparent;
+    box-sizing: border-box;
+    margin-top: 20px;
+    background: #ffffff;
+    color: #333;
+    align-items: center;
+    transition: all 200ms ease;
+}
+
+.account:not(.active) {
+    cursor: pointer;
+}
+
+.account:not(.active):hover {
+    transform: translate3d(0, -2px, 0);
+    box-shadow: 0px 2px 4px 0px rgb(172, 172, 172);
+}
+
+.account.active {
+    border-bottom-color: #ed3f23;
+}
+
+.accountDetails {
+    flex: 1;
+    max-width: 100%;
+}
+
+.accountSelector {
+    position: relative;
+    background: #f6f6f6;
+    box-shadow: 0 0px 3px 0px #bcbcbc;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.accountSelector::after {
+    content: '';
+    border-radius: 100%;
+    left: 0;
+    top: 0;
+    margin-left: 5px;
+    margin-top: 5px;
+    width: 20px;
+    height: 20px;
+    opacity: 0;
+    background: #ed3f23;
+    transition: opacity 150ms ease;
+    display: block;
+}
+
+.accountSelector.active::after {
+    opacity: 1;
+}
+
+.accountDetailsHeader {
+    padding-bottom: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.accountName {
+    font-weight: 500;
+    padding-bottom: 3px;
+    display: block;
+    font-size: 14px;
+}
+
+.accountAddress {
+    display: block;
+    font-size: 13px;
+}
+
+.accountBalances {    
+    padding-bottom: 7px;
+    padding-top: 2px;
+}
+
+.accountTrx {
+    display: block;
+    font-size: 13px;
+    line-height: 17px;
+}
+
+.accountTokens {
+    display: block;
+    font-size: 13px;
+    line-height: 17px;
+}
+
+.meta {
+    display: block;
+    font-size: 13px;
+    line-height: 17px;
+}
+
+.meta::before {
+    content: "X";
+    font-size: 13px;
+    color: #f44336;
+    font-weight: 700;
+    width: 18px;
+    display: inline-block;
+}
+
+.meta.has-meta::before {
+    content: "\2714";
+    color: #8bc34a;
+}
+
+.accountList {
+    padding: 20px;
+    overflow: auto;
+}
+
+.swal2-input {
+    margin-bottom: 0 !important;
+    margin-top: 20px !important;
+    font-size: 14px !important;
+    box-shadow: none !important;
+    border-radius: 4px !important;
 }
