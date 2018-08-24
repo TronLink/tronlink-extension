@@ -8,11 +8,21 @@
     margin-bottom: 20px;
 }
 
-.flowLine {
+.addressContainer {
+    padding: 30px;
     position: relative;
+    background: #e9e9e9;
+}
+
+.flowLine {
+    position: absolute;
+    top: 50%;
+    margin-top: -22.5px;
+    left: 27.5px;
     width: 3px;
     height: 45px;
     background: #dc2c73;
+    display: none;
 }
 
 .flowLine::before {
@@ -40,12 +50,18 @@
 
 .txAccountData, .txToData {
     height: 50px;
-    width: 330px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    padding: 10px 20px;
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 9px 13px;
     box-sizing: border-box;
     font-size: 12px;
+}
+
+.txToData {
+    margin-bottom: 0;
+    background: #f9f9f9;
+    border: 2px solid #ED3F21;
 }
 
 .txAccountData {
@@ -72,10 +88,6 @@
     margin-bottom: 7px;
 }
 
-.txToData {
-    border: 2px solid #ED3F21;
-}
-
 .txToDataHeader {
     color: #939394;
 }
@@ -83,9 +95,11 @@
 .txToDataAddress {
     border: none;
     background: transparent;
-    font-weight: 700;
+    font-weight: 600;
     width: 100%;
     font-size: 12px;
+    margin-top: 1;
+    outline: none;
 }
 
 .txToDataAddress::placeholder {

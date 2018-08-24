@@ -30,7 +30,7 @@
 
     "send.from": "<span>From:</span> {accountName}",
     "send.to": "Sending to:",
-    "send.total": "{amount, number} {token}",
+    "send.total": "Send {amount, number} {token}",
     "send.noTokens": "No token balance to send",
 
     "account.transactions.noneFound": "No transactions found",

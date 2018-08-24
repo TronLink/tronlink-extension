@@ -15,7 +15,7 @@ class AddressView extends Component {
         ).toFixed(2).toLocaleString();
 
         return (
-            <div className="send container">
+            <div className="addressContainer">
                 <div className="flowLine"></div>
                 <div className="txDataContainer">
                     <div className="txAccountData">

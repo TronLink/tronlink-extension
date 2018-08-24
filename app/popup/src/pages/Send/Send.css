@@ -2,9 +2,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     font-size: 14px;
-    padding: 35px;
+    padding: 30px;
     box-sizing: border-box;
     height: 100%;
     background: #f3f3f3;
@@ -26,17 +25,17 @@
 
 .queueError {
     text-align: center;
-    color: red;
-    position: absolute;
-    top: 30px;
-    left: 0;
-    right: 0;
+    color: #F44336;
+    font-weight: 500;
+    padding-bottom: 20px;
+    margin-top: 0;
 }
 
 .sendRadioGroup {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    display: none;
 }
 
 .sendRadioButton {
@@ -67,24 +66,34 @@
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    padding: 0px 20px;
+    padding: 0px;
+    position: relative;
 }
 
 .sendInputGroup > input {
     height: 40px;
-    width: 245px;
-    border-radius: 5px;
+    width: 100%;
+    border-radius: 4px;
     font-size: 14px;
     text-align: right;
-    padding-right: 20px;
+    padding-right: 47px;
     box-sizing: border-box;
     font-family: 'Source Code Pro', monospace;
 }
 
+.sendLabel {
+    position: absolute;
+    right: 16px;
+    font-weight: 600;
+    font-family: Source Code Pro,monospace;
+    font-size: 14px;
+}
+
 .sendGroup {
-    padding: 0px 20px;
+    padding: 0px;
     box-sizing: border-box;
-    margin-top: 35px;
+    margin-top: 20px;
+    display: none;
 }
 
 .sendGroup:first-child {
@@ -96,10 +105,6 @@
     justify-content: space-between;
 }
 
-.sendGroupHeader {
-
-}
-
 .sendGroupAmount {
     font-family: 'Source Code Pro', monospace;
 }
@@ -107,11 +112,9 @@
 .sendGroupDetail {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid #ccc;
-    font-family: 'Source Code Pro', monospace;
     text-align: right;
-    padding-right: 20px;
-    font-size: 12px;
+    padding-right: 0;
+    font-size: 13px;
 }
 
 .bold {
@@ -130,4 +133,16 @@
 
 .sendButton {
     width: 150px;
+}
+
+.sendGroup .button {
+    flex: 1;
+}
+
+.sendGroup .button.secondary {
+    margin-right: 10px;
+}
+
+.sendGroup .button.primary {
+    margin-left: 10px;
 }

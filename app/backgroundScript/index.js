@@ -329,6 +329,10 @@ popup.on('getAccounts', async ({ resolve }) => {
     resolve(
         wallet.getAccounts()
     );
+
+    popup.sendAccount(
+        wallet.getAccount()
+    );
 });
 
 popup.on('updateAccount', async data => {
