@@ -159,10 +159,11 @@ class Send extends Component {
                     </div>
                 </div>
                 <div className="sendGroupDetail">
-                    Transaction Value: <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
+                    Transaction Value: 
                     <span>
                         &nbsp;USD
                     </span>
+                    <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />                    
                 </div>
                 <div className="sendGroup sendButtonContainer">
                     <Button onClick={ () => this.cancelTransaction() } width={ '150px' } type={ 'secondary' } disabled={ this.state.loading }>
