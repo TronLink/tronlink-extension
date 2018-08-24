@@ -232,7 +232,14 @@ export default class Wallet {
             this._internalAccounts + 1
         );
 
-        account.name = name;
+        if(name) {
+            let accountName = name.toString().substring(0, 32).trim();
+
+            if(Object.values(this._accounts).some(account => account.name === accountName))
+                accountName = false;
+
+            account.name = accountName;
+        }
 
         this._internalAccounts += 1;
         this.addAccount(account);
@@ -240,5 +247,27 @@ export default class Wallet {
         this._saveStorage();
 
         return account;
+    }
+
+    selectAccount(publicKey) {
+        if(!this._accounts.hasOwnProperty(publicKey))
+            return;
+
+        this._currentAccount = publicKey;
+        this._saveStorage();
+    }
+
+    deleteAccount(publicKey) {
+        if(!this._accounts.hasOwnProperty(publicKey))
+            return;
+
+        if(Object.keys(this._accounts).length === 1)
+            return;
+
+        delete this._accounts[publicKey];
+
+        if(this._currentAccount === publicKey)
+            this.selectAccount(Object.keys(this._accounts)[0]); // this calls saveStorage()
+        else this._saveStorage();
     }
 }

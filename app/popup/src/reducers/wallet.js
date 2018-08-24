@@ -97,7 +97,6 @@ export function walletReducer(state = {
     account: {},
     accounts: {},
     networks: {},
-    selectedAccountId: false,
     selectedNetwork: false,
     price: 0,
     lastPriceUpdate: Date.now()

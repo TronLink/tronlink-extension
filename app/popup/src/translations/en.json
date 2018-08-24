@@ -55,5 +55,22 @@
     "settings.logs.header": "Download most recent logs",
     "settings.logs.button": "Download Logs",
     "settings.wipe.header": "Wipe all wallet data",
-    "settings.wipe.button": "Reset Wallet"
+    "settings.wipe.button": "Reset Wallet",
+
+    "accounts.button.create": "Create",
+    "accounts.button.delete": "Delete",
+    "accounts.button.import": "Import",
+    "accounts.balance.trx": "{amount, number} TRX",
+    "accounts.balance.tokens": "{amount, number} Tokens",
+    "accounts.meta.superRepresentative": "Super Representative",
+    "accounts.meta.smartContract": "Deployed Smart Contract",
+    "accounts.create.tooMany": "You cannot create any more accounts",
+    "accounts.create.title": "Create Account",
+    "accounts.create.placeholder": "Account name",
+    "accounts.create.requiresName": "Please enter an account name",
+    "accounts.create.nameTooLong": "Names cannot be longer than 32 characters",
+    "accounts.create.nameTaken": "Account name is already in use",
+    "accounts.delete.title": "Delete Account",
+    "accounts.delete.text": "Are you sure you want to delete this account?",
+    "accounts.delete.button": "Delete"
 }

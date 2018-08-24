@@ -58,6 +58,5 @@ class AccountHeader extends Component {
 
 export default connect(state => ({
     price: state.wallet.price,
-    account: state.wallet.account,
-    selectedAccountId: state.selectedAccountId
+    account: state.wallet.account
 }))(AccountHeader);
