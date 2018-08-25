@@ -46,10 +46,6 @@
     color: #1FBE9A;
 }
 
-.txInfoLeft {
-
-}
-
 .txLabel {
     font-size: 11px;
     margin-bottom: 4px;
@@ -58,12 +54,23 @@
 .txAddress {
     font-size: 10px;
     user-select: all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.txInfoLeft {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .txInfoRight {
     flex-grow: 1;
     text-align: right;
     margin-right: 10px;
+    white-space: nowrap;
 }
 
 .txAmount {

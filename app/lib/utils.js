@@ -61,14 +61,15 @@ const utils = {
             const isMine = address === ownerAddress;
 
             return {
+                raw: transaction,
                 txType: transaction.type,
-                ownerAddress,
-                toAddress,
-                isMine,
                 amount: transaction.parameter.value.amount,
                 date: transaction.timestamp,
                 txID: transaction.txID,
-                contractAddress: transaction.contract_address
+                contractAddress: transaction.contract_address,
+                ownerAddress,
+                toAddress,
+                isMine
             };
         }).reverse();
     },

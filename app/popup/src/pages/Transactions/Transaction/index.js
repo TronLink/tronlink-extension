@@ -87,7 +87,7 @@ class Transaction extends Component {
                 return this.props.ownerAddress;
 
             case 'CreateSmartContract':
-                return null;
+                return this.props.contractAddress;
 
             default:
                 return 'Unknown address';
