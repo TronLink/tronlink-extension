@@ -67,7 +67,8 @@ const utils = {
                 isMine,
                 amount: transaction.parameter.value.amount,
                 date: transaction.timestamp,
-                txID: transaction.txID
+                txID: transaction.txID,
+                contractAddress: transaction.contract_address
             };
         }).reverse();
     },
