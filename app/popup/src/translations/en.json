@@ -35,6 +35,7 @@
 
     "account.transactions.noneFound": "No transactions found",
     "account.transactions.tokenCreation": "Token Creation",
+    "account.transactions.deployContract": "Deployed Smart Contract",
 
     "give.sent.header": "Funds sent",
     "give.sent.body": "You have been sent 20,000 TestNet TRX",
