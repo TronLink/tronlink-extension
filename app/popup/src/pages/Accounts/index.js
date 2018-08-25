@@ -8,13 +8,14 @@ import { getAccounts } from 'reducers/wallet';
 import Swal from 'sweetalert2';
 import Header from 'components/Header';
 import CreateSuccess from 'components/CreateSuccess';
+import ExportAccount from 'components/ExportAccount';
 
 import './Accounts.css';
 
 class Accounts extends Component {
     state = {
-        //showCreateSuccess: false
-        showCreateSuccess: false
+        showCreateSuccess: false,
+        showExport: false
     }
 
     constructor(props) {
@@ -83,7 +84,20 @@ class Accounts extends Component {
     }
 
     exportAccount() {
-        // TODO: Show export screen
+        const {
+            wordList: mnemonic,
+            name: accountName,            
+            privateKey
+        } = this.props.account;
+
+        this.setState({
+            showExport: {
+                onAcknowledged: () => this.setState({ showExport: false }),
+                accountName,
+                privateKey,
+                mnemonic
+            }
+        });
     }
 
     async deleteAccount() {
@@ -176,6 +190,9 @@ class Accounts extends Component {
     render() {
         if(this.state.showCreateSuccess)
             return <CreateSuccess { ...this.state.showCreateSuccess } />;
+
+        if(this.state.showExport)
+            return <ExportAccount { ...this.state.showExport } />;
 
         return (
             <div class="mainContainer">
