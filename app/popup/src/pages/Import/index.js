@@ -18,22 +18,32 @@ class Import extends Component {
     render() {
         return (
             <div className="import">
-                <div className="importHeader">
-                    <FormattedMessage id='import.header' />
+                <div className="importHeader">Import Wallet</div>
+                <div className="importText">Click your preferred import method below.</div>
+                <div className="importOptions">
+                    <div className="importOptionGroupHeader">Site-Specific :</div>
+                    <div className="importOptionGroup">
+                        <div className="importOption">
+                            <div className="importOptionHeader">TronWatch</div>
+                            <div className="importOptionBody">24 word backup phrase generated from TronWatch</div>
+                        </div>
+                        <div className="importOption">
+                            <div className="importOptionHeader">TronScan</div>
+                            <div className="importOptionBody">KeyStore file contents generated from tronscan.org</div>
+                        </div>
+                    </div>
+                    <div className="importOptionGroupHeader">Generic :</div>
+                    <div className="importOptionGroup">
+                        <div className="importOption">
+                            <div className="importOptionHeader">Word List</div>
+                            <div className="importOptionBody">24 word backup phrase</div>
+                        </div>
+                        <div className="importOption">
+                            <div className="importOptionHeader">Private Key</div>
+                            <div className="importOptionBody">Generic private key</div>
+                        </div>
+                    </div>
                 </div>
-                <div className="importText">
-                    <FormattedMessage id='import.body' />
-                </div>
-                <input 
-                    placeholder="Enter Private Key to Import a Wallet..."
-                    className="textInput"
-                    type="text"
-                    value={ this.state.privateKey }
-                    onChange={ event => this.handlePrivateKeyChange(event) }
-                />
-                <Button type={ 'black' } style={{ marginTop: '20px' }}>
-                    <FormattedMessage id='import.button' />
-                </Button>
             </div>
         );
     }
