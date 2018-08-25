@@ -335,6 +335,8 @@ popup.on('getWalletStatus', async ({ resolve }) => {
 });
 
 popup.on('getAccounts', async ({ resolve }) => {
+    await wallet.updateAccounts();
+
     resolve(
         wallet.getAccounts()
     );
