@@ -15,7 +15,7 @@ class AddressView extends Component {
         ).toFixed(2).toLocaleString();
 
         return (
-            <div className="send container">
+            <div className="addressContainer">
                 <div className="flowLine"></div>
                 <div className="txDataContainer">
                     <div className="txAccountData">
@@ -23,7 +23,7 @@ class AddressView extends Component {
                             <div className="txAccountDataLabel">
                                 <FormattedHTMLMessage tagName='div' id='send.from' values={{ accountName: this.props.account.name }} />
                             </div>
-                            <div className="txAccountDataLabel">{ trimmed }</div>
+                            <div className="txAccountDataLabel">{ address }</div>
                         </div>
                         <div className="txAccountDataRight">
                             <div className="txAccountDataLabel">

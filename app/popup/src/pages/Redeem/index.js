@@ -63,11 +63,10 @@ class Redeem extends Component {
             <div class="mainContainer">
                 <Header 
                     navbarTitle={ <FormattedMessage id='give.fund.title' /> }
-                    navbarLabel=""
-                    leftIcon={ true }
+                    navbarLabel={ this.props.account.name || this.props.account.publicKey }
+                    hideNav={ true }
                     leftIconImg={ <ArrowLeftIcon /> }
                     leftIconRoute="/main/transactions"
-                    rightIcon={ false }
                 />
                 <div className="mainContent">
                     { this.renderBox() }

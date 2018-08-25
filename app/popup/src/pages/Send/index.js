@@ -71,9 +71,8 @@ class Send extends Component {
         return (
             <div className="sendInputGroup">
                 <input
-                    placeholder="Enter Amount to Send..."
                     className="textInput"
-                    type="number"
+                    type="text"
                     value={ this.state.amount }
                     onChange={ event => this.onAmountChange(event) }
                     onFocus={ ({ target }) => target.select() }
@@ -136,7 +135,6 @@ class Send extends Component {
                         </span>
                     </div>
                     <div className="sendRadioButton">
-                        { /*temp disabled*/ }
                         <input 
                             type="radio"
                             value={ 'TOKEN' }
@@ -161,17 +159,18 @@ class Send extends Component {
                     </div>
                 </div>
                 <div className="sendGroupDetail">
-                    <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
+                    Transaction Value: 
                     <span>
                         &nbsp;USD
                     </span>
+                    <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />                    
                 </div>
                 <div className="sendGroup sendButtonContainer">
                     <Button onClick={ () => this.cancelTransaction() } width={ '150px' } type={ 'secondary' } disabled={ this.state.loading }>
                         <FormattedMessage id='words.cancel' />
                     </Button>
                     <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading }>
-                        <FormattedMessage id='words.confirm' />
+                        <FormattedMessage id='send.total' values={{ amount: this.state.amount, token: this.state.label }} />
                     </Button>
                 </div>
             </div>
@@ -186,10 +185,9 @@ class Send extends Component {
 					navbarLabel={ this.props.account.name || this.props.account.publicKey }
 					rightIconImg={ <SettingsIcon /> }
                     rightIconRoute="/main/settings"
-				>
-					<AddressView onSetAddress={ address => this.onSetAddress(address) } />
-				</Header>
+				/>
 				<div className="mainContent">
+                    <AddressView onSetAddress={ address => this.onSetAddress(address) } />
 					{ this.renderBody() }
                 </div>
 			</div>

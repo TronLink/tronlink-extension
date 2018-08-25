@@ -30,11 +30,12 @@
 
     "send.from": "<span>From:</span> {accountName}",
     "send.to": "Sending to:",
-    "send.total": "{amount, number} {token}",
+    "send.total": "Send {amount, number} {token}",
     "send.noTokens": "No token balance to send",
 
     "account.transactions.noneFound": "No transactions found",
     "account.transactions.tokenCreation": "Token Creation",
+    "account.transactions.deployContract": "Deployed Smart Contract",
 
     "give.sent.header": "Funds sent",
     "give.sent.body": "You have been sent 20,000 TestNet TRX",
@@ -60,6 +61,7 @@
     "accounts.button.create": "Create",
     "accounts.button.delete": "Delete",
     "accounts.button.import": "Import",
+    "accounts.button.export": "Export",
     "accounts.balance.trx": "{amount, number} TRX",
     "accounts.balance.tokens": "{amount, number} Tokens",
     "accounts.meta.superRepresentative": "Super Representative",

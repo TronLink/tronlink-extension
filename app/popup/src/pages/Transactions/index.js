@@ -6,7 +6,7 @@ import { popup } from 'index';
 
 import Header from 'components/Header';
 import AccountHeader from './AccountHeader';
-import TransactionList from './TransactionList';
+import Transaction from './Transaction';
 
 import './Transactions.css';
 
@@ -24,6 +24,22 @@ class Transactions extends Component {
         popup.updateAccount(this.props.account.publicKey);
     }
 
+    renderTransactions() {
+        const { account } = this.props;
+
+        if(!account || !account.transactions || !account.transactions.length) {
+            return (
+                <div className="infoMessageContainer">
+                    <FormattedMessage id='account.transactions.noneFound' />
+                </div>
+            );
+        }
+        
+        return account.transactions.map(transaction => (
+            <Transaction { ...transaction } />
+        ));
+    }
+
     render() {
         return (
             <div class="mainContainer">
@@ -38,8 +54,8 @@ class Transactions extends Component {
                 <div className="mainContent">
                     <AccountHeader />
                     <div className="accountView container">
-                        <div className="contentContainer">
-                            { TransactionList }
+                        <div className="transactionList">
+                            { this.renderTransactions() }
                         </div>
                     </div>
                 </div>

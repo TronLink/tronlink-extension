@@ -12,10 +12,10 @@
     transition: 100ms;
 }
 
-.transaction:hover {
+/*.transaction:hover {
     transform: translateX(2px);
     transition: 0ms;
-}
+} why?????? */
 
 .transaction > svg {
     margin: 0px 10px;
@@ -46,30 +46,37 @@
     color: #1FBE9A;
 }
 
-.txInfoLeft {
-
-}
-
 .txLabel {
-    font-size: 11px;
+    font-size: 12px;
     margin-bottom: 4px;
+    font-weight: 500;
 }
 
 .txAddress {
     font-size: 10px;
     user-select: all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.txInfoLeft {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .txInfoRight {
     flex-grow: 1;
     text-align: right;
     margin-right: 10px;
+    white-space: nowrap;
 }
 
 .txAmount {
     font-size: 12px;
     margin-bottom: 4px;
-    font-family: 'Source Code Pro', monospace;
 }
 
 .txAmount > span.margin-left {
@@ -77,7 +84,7 @@
 }
 
 .txDate {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .copyButton {
@@ -91,4 +98,9 @@
     background: linear-gradient(to right, #DC2C73, #ED3F21);
     cursor: pointer;
     margin-right: 10px;
+}
+
+.smartContract {
+    color: #f39100;
+    fill: #f39100;
 }
