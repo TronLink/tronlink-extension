@@ -12,10 +12,10 @@
     transition: 100ms;
 }
 
-.transaction:hover {
+/*.transaction:hover {
     transform: translateX(2px);
     transition: 0ms;
-}
+} why?????? */
 
 .transaction > svg {
     margin: 0px 10px;
