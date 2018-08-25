@@ -227,6 +227,9 @@ popup.on('acceptConfirmation', async ({
                 reject();
                 return closeDialog();
         }
+
+        if(!output.rpcResponse.result)
+            throw new Error(`Node returned ${ output.rpcResponse.code }`);
     } catch(ex) {
         const error = 'Failed to build valid transaction';
 
