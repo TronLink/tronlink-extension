@@ -40,7 +40,7 @@ class Transaction extends Component {
                 return <Icons.SnowIcon className="iconFreeze" />;
 
             case 'CreateSmartContract':
-                return <Icons.SmartContractIcon className='iconSmartContract' />;
+                return <Icons.SmartContractIcon className='smartContract' />;
 
             default:
                 return null;
@@ -71,7 +71,7 @@ class Transaction extends Component {
                 return <div className="txLabel green"><FormattedMessage id='words.unfrozen' /></div>;
 
             case 'CreateSmartContract':
-                return <div className='txLabel' style={{ marginBottom: 0 }}><FormattedMessage id='account.transactions.deployContract' /></div>;
+                return <div className='txLabel smartContract'><FormattedMessage id='account.transactions.deployContract' /></div>;
 
             default:
                 return null;

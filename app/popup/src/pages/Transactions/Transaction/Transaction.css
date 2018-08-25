@@ -47,8 +47,9 @@
 }
 
 .txLabel {
-    font-size: 11px;
+    font-size: 12px;
     margin-bottom: 4px;
+    font-weight: 500;
 }
 
 .txAddress {
@@ -76,7 +77,6 @@
 .txAmount {
     font-size: 12px;
     margin-bottom: 4px;
-    font-family: 'Source Code Pro', monospace;
 }
 
 .txAmount > span.margin-left {
@@ -84,7 +84,7 @@
 }
 
 .txDate {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .copyButton {
@@ -98,4 +98,9 @@
     background: linear-gradient(to right, #DC2C73, #ED3F21);
     cursor: pointer;
     margin-right: 10px;
+}
+
+.smartContract {
+    color: #f39100;
+    fill: #f39100;
 }
