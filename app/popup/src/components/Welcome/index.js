@@ -6,6 +6,7 @@ import { popup } from 'index';
 import { updateStatus, getAccounts } from 'reducers/wallet';
 
 import Button from 'components/Button';
+import CreateSuccess from 'components/CreateSuccess';
 
 import './Welcome.css';
 
@@ -16,7 +17,8 @@ class Welcome extends Component {
         this.state = {
             password: '',
             passwordRepeat: '',
-            wrongPassword: false
+            wrongPassword: false,
+            showCreateSuccess: false
         };
     }
 
@@ -61,21 +63,32 @@ class Welcome extends Component {
         if(this.state.password !== this.state.passwordRepeat)
             return;
 
-        await popup.setPassword(this.state.password);
+        const { 
+            wordList: mnemonic,
+            name
+        } = await popup.setPassword(this.state.password);
 
-        updateStatus();
-        this.goToWallet();
+        this.setState({
+            showCreateSuccess: {
+                onAcknowledged: () => {
+                    updateStatus();
+                    this.goToWallet();
+                },
+                accountName: name,
+                imported: false,
+                mnemonic
+            }
+        });
     }
 
     async login() {
         const correct = await popup.unlockWallets(this.state.password);
         
-        if (correct) {
-            updateStatus();
-            this.goToWallet();
-        } else {
-            this.setState({ wrongPassword: true });
-        }
+        if (!correct)
+            return this.setState({ wrongPassword: true });
+
+        updateStatus();
+        this.goToWallet();
     }
 
     renderLogin() {
@@ -83,7 +96,7 @@ class Welcome extends Component {
             <div>
                 <div className="decryptContainer">
                     <input 
-                        placeholder="Enter Password to Decrypt Wallet..."
+                        placeholder="Enter password to decrypt wallet"
                         className="textInput"
                         type="password"
                         name="password"
@@ -93,7 +106,7 @@ class Welcome extends Component {
                     />
 
                     <span>
-                        { this.state.wrongPassword ? 'Incorrect Password' : '' }
+                        { this.state.wrongPassword ? 'Incorrect password provided' : '' }
                     </span>
                     
                     { this.renderWarning() }
@@ -112,7 +125,7 @@ class Welcome extends Component {
         return (
             <div className="decryptContainer">
                 <input 
-                    placeholder="Enter Password to Encrypt Extension..."
+                    placeholder="Enter password to encrypt wallet"
                     className="textInput"
                     type="password"
                     name="password"
@@ -121,7 +134,7 @@ class Welcome extends Component {
                 />
 
                 <input 
-                    placeholder="Repeat Password to Encrypt Extension..."
+                    placeholder="Repeat password"
                     className="textInput"
                     type="password"
                     name="passwordRepeat"
@@ -152,6 +165,9 @@ class Welcome extends Component {
     }
 
     render() {
+        if(this.state.showCreateSuccess)
+            return <CreateSuccess { ...this.state.showCreateSuccess } />;
+
         let walletView;
 
         switch(this.props.wallet.status) {

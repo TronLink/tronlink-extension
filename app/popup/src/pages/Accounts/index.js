@@ -7,10 +7,16 @@ import { getAccounts } from 'reducers/wallet';
 
 import Swal from 'sweetalert2';
 import Header from 'components/Header';
+import CreateSuccess from 'components/CreateSuccess';
 
 import './Accounts.css';
 
 class Accounts extends Component {
+    state = {
+        //showCreateSuccess: false
+        showCreateSuccess: false
+    }
+
     constructor(props) {
         super(props);
         this.translate = props.intl.formatMessage;
@@ -56,12 +62,28 @@ class Accounts extends Component {
         if(!name)
             return;
             
-        popup.createAccount(name);
+        const {
+            wordList: mnemonic
+        } = await popup.createAccount(name);
+
+        this.setState({
+            showCreateSuccess: {
+                onAcknowledged: () => this.setState({ showCreateSuccess: false }),
+                accountName: name,
+                imported: false,
+                mnemonic
+            }
+        });
+
         getAccounts();
     }
 
     importAccount() {
         // TODO: Go to import page (full screen with header hideNav={ true })
+    }
+
+    exportAccount() {
+        // TODO: Show export screen
     }
 
     async deleteAccount() {
@@ -91,6 +113,9 @@ class Accounts extends Component {
                 </div>
                 <div className='button disabled' onClick={ () => this.importAccount() }>
                     <FormattedMessage id='accounts.button.import' />
+                </div>
+                <div className={ 'button' } onClick={ () => this.exportAccount() }>
+                    <FormattedMessage id='accounts.button.export' />
                 </div>
                 <div className={ 'button ' + ( accounts === 1 ? 'disabled' : '' ) } onClick={ () => ( accounts > 1 ) && this.deleteAccount() }>
                     <FormattedMessage id='accounts.button.delete' />
@@ -149,6 +174,9 @@ class Accounts extends Component {
     }
 
     render() {
+        if(this.state.showCreateSuccess)
+            return <CreateSuccess { ...this.state.showCreateSuccess } />;
+
         return (
             <div class="mainContainer">
                 <Header 

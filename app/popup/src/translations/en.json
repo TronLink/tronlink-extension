@@ -60,6 +60,7 @@
     "accounts.button.create": "Create",
     "accounts.button.delete": "Delete",
     "accounts.button.import": "Import",
+    "accounts.button.export": "Export",
     "accounts.balance.trx": "{amount, number} TRX",
     "accounts.balance.tokens": "{amount, number} Tokens",
     "accounts.meta.superRepresentative": "Super Representative",

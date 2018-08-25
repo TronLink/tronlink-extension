@@ -172,6 +172,8 @@ export default class Wallet {
 
         this.addAccount(defaultAccount);
         this.unlockWallet(password);
+
+        return defaultAccount;
     }
 
     isSetup() {

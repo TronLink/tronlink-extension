@@ -162,13 +162,19 @@ popup.on('selectAccount', publicKey => {
     );
 });
 
-popup.on('createAccount', name => {
+popup.on('createAccount', ({
+    data: name,
+    resolve
+}) => {
     if(name && name.length > 32)
         return;
 
-    const { publicKey } = wallet.createAccount(name);
+    const account = wallet.createAccount(name);
+    const { publicKey } = account;
 
     wallet.selectAccount(publicKey);
+
+    resolve(account);
 });
 
 popup.on('deleteAccount', publicKey => {
@@ -266,11 +272,14 @@ popup.on('setPassword', ({
 
     if (wallet.isSetup()) {
         logger.warn('Attempted to set password post initialisation');
-        return reject();
+        return reject('Wallet has already been created');
     }
 
-    wallet.setupWallet(data.password);
-    resolve();
+    const account = wallet.setupWallet(data.password);
+
+    resolve(
+        account
+    );
 });
 
 const updateAccount = async () => {
