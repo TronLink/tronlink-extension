@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { WALLET_STATUS } from 'extension/constants';
 import { popup } from 'index';
@@ -116,7 +117,7 @@ class Welcome extends Component {
                     </Button>
                 </div>
 
-                <div className="restoreWallet">Restore from seed phrase</div>
+                <NavLink to="/import"><div className="restoreWallet">Restore from seed phrase</div></NavLink>
             </div>
         );
     }
