@@ -247,7 +247,7 @@ class TronLink {
              * @param {string} address The address that hosts the smart contract
              * @param {object} functionSelector The function to be triggered
              * @param {array} [parameters=[]] Any parameters that the function takes
-             * @param {object} [options_={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
              * @readonly
              * @memberof TronLink
              */
@@ -258,6 +258,27 @@ class TronLink {
                 callValue: 0,
                 storageLimit: 50000000,
             }) => this._dispatch('triggerSmartContract', {
+                address,
+                functionSelector,
+                parameters,
+                options
+            }),
+            /**
+             * Requests confirmation from the end user to trigger a smart contract call
+             * @param {string} address The address that hosts the smart contract
+             * @param {object} functionSelector The function to be triggered
+             * @param {array} [parameters=[]] Any parameters that the function takes
+             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
+             * @readonly
+             * @memberof TronLink
+             */
+            callSmartContract: (address, functionSelector, parameters = [], options = {
+                bandwidthLimit: 10000000,
+                cpuLimit: 10000000,
+                dropLimit: 10000000,
+                callValue: 0,
+                storageLimit: 50000000,
+            }) => this._dispatch('callSmartContract', {
                 address,
                 functionSelector,
                 parameters,

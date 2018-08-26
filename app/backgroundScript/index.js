@@ -452,6 +452,24 @@ const handleWebCall = async ({
                 options
             }, resolve, reject);
         }
+        case 'callSmartContract' : {
+            const {
+                address,
+                functionSelector,
+                parameters,
+                options
+            } = args;
+
+            const account = wallet.getFullAccount();
+
+            if(account) {
+                return resolve(
+                    await rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
+                );
+            }
+
+            return reject('Wallet not unlocked');
+        }
         case 'getAccount': {
             const account = wallet.getAccount();
 
