@@ -8,59 +8,35 @@
     width: 100%;
     padding: 30px;
     box-sizing: border-box;
-}
-
-.importHeader {
-    font-weight: 600;
-    color: #b3b3b3;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
+    background: #f3f3f3;
+    overflow: auto;
 }
 
 .importText {
     text-align: center;
-    font-size: 13px;
-    width: 320px;
-    margin-bottom: 30px;
-    line-height: 20px;
-    letter-spacing: 0.2px;
-}
-
-.importOptions {
-    width: 100%;
-}
-
-.importOptionGroupHeader {
-    font-size: 15px;
-}
-
-.importOptionGroup {
-    margin: 10px 0px 20px 0px;
-    border-radius: 5px;
-    overflow: hidden;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
 }
 
 .importOption {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 75px;
-    background: #0d1115;
-    color: #fff;
-    padding: 0px 20px;
+    padding: 20px;
     box-sizing: border-box;
-    border-bottom: 1px solid #1f1f1f;
     cursor: pointer;
     transition: 200ms;
+    border-radius: 4px;
+    background: #ffffff;
+    margin-top: 10px;
+    box-shadow: 0 1px 5px 0 #f5f5f5;
+    width: 100%;
 }
 
 .importOption:hover {
-    background: #191e23;
-    transition: 0s;
-}
-
-.importOption:last-child {
-    border: none;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px 0 #cacaca;
 }
 
 .importOptionHeader {
@@ -72,17 +48,36 @@
 .importOptionBody {
     font-size: 12px;
     margin-top: 5px;
+    line-height: 15px;
 }
 
-.importBackButton {
-    position: absolute;
-    top: 0;
-    left: 0;
+.importOption:first-of-type {
+    margin-top: 0;
+}
+
+.textAreaImport {
+    background: #ffffff;
     padding: 20px;
-    cursor: pointer;
-    transition: 200ms;
+    text-align: justify;
+    font-size: 15px;
+    line-height: 20px;
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px 0px rgb(217, 217, 217);
+    user-select: all;
+    word-break: break-word;
+    border: none;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
 }
 
-.importBackButton:hover {
-    transform: scale(0.9);
+.import .textInput {
+    width: 100%;
+    text-indent: unset;
+    padding: 0 17px;
+    margin: 0;
+}
+
+.importOptionBody strong {
+    font-weight: 600;
 }

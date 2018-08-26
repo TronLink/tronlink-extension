@@ -5,13 +5,13 @@ import { ArrowLeftIcon } from 'components/Icons';
 import Header from 'components/Header';
 import Button from 'components/Button';
 
-class TronScan extends Component {
+class MnemonicPhrase extends Component {
     state = {
-        keyStore: ''
+        wordList: ''
     }
 
-    handleChange({ target: { value: keyStore }}) {
-        this.setState({ keyStore });
+    handleChange({ target: { value: wordList }}) {
+        this.setState({ wordList });
     }
 
     render() {
@@ -19,17 +19,17 @@ class TronScan extends Component {
             <React.Fragment>
                 <Header 
                     navbarTitle={ 'Import Account' }
-                    navbarLabel={ 'Import account from TronScan' }
+                    navbarLabel={ 'Import account from Mnemonic Phrase' }
                     leftIconImg={ <ArrowLeftIcon /> }
                     leftIconRoute='/main/import'
                     hideNav={ true }
                 />
                 <div className='import'>
-                    <div className="importText">Paste the contents from your KeyStore file below</div>
+                    <div className="importText">Enter your list of 24 words below</div>
                     <textarea
-                        placeholder="Keystore file"
+                        placeholder="Mnemonic phrase"
                         className="textAreaImport"
-                        rows={ 13 }
+                        rows={ 5 }
                         value={ this.state.privateKey }
                         onChange={ event => this.handleChange(event) }
                     />
@@ -42,4 +42,4 @@ class TronScan extends Component {
     }
 }
 
-export default TronScan;
+export default MnemonicPhrase;

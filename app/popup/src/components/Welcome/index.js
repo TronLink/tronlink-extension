@@ -117,7 +117,9 @@ class Welcome extends Component {
                     </Button>
                 </div>
 
-                <NavLink to="/import"><div className="restoreWallet">Restore from seed phrase</div></NavLink>
+                { /* <NavLink to="/import">
+                    <div className="restoreWallet">Restore from seed phrase</div>
+                </NavLink> */ }
             </div>
         );
     }

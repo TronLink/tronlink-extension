@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-
-import Button from 'components/Button';
 import { ArrowLeftIcon } from 'components/Icons';
+
+import Header from 'components/Header';
+import Button from 'components/Button';
+
 import './PrivateKey.css';
 
 class PrivateKey extends Component {
@@ -17,25 +18,30 @@ class PrivateKey extends Component {
 
     render() {
         return (
-            <div className="import">
-                <NavLink to="/main/import" className="importBackButton"><ArrowLeftIcon /></NavLink>
-                <div className="importHeader">
-                    <FormattedMessage id='import.header' />
-                </div>
-                <div className="importText">
-                    <FormattedMessage id='import.body' />
-                </div>
-                <input 
-                    placeholder="Enter Private Key to Import a Wallet..."
-                    className="textInput"
-                    type="text"
-                    value={ this.state.privateKey }
-                    onChange={ event => this.handlePrivateKeyChange(event) }
+            <React.Fragment>
+                <Header 
+                    navbarTitle={ 'Import Account' }
+                    navbarLabel={ 'Import account from Private Key' }
+                    leftIconImg={ <ArrowLeftIcon /> }
+                    leftIconRoute='/main/import'
+                    hideNav={ true }
                 />
-                <Button type={ 'black' } style={{ marginTop: '20px' }}>
-                    <FormattedMessage id='import.button' />
-                </Button>
-            </div>
+                <div className='import'>
+                    <div className="importText">
+                        Enter your private key below
+                    </div>
+                    <input 
+                        placeholder="Private key"
+                        className="textInput"
+                        type="text"
+                        value={ this.state.privateKey }
+                        onChange={ event => this.handlePrivateKeyChange(event) }
+                    />
+                    <Button type={ 'black' } style={{ marginTop: '20px' }}>
+                        <FormattedMessage id='import.button' />
+                    </Button>
+                </div>
+            </React.Fragment>
         );
     }
 }

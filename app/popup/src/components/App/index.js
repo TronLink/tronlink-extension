@@ -10,7 +10,7 @@ import Queue from 'components/Queue';
 import Import from 'pages/Import';
 import ImportTronWatch from 'pages/Import/TronWatch';
 import ImportTronScan from 'pages/Import/TronScan';
-import ImportWordList from 'pages/Import/WordList';
+import ImportMnemonicPhrase from 'pages/Import/MnemonicPhrase';
 import ImportPrivateKey from 'pages/Import/PrivateKey';
 
 import Accounts from 'pages/Accounts';
@@ -49,7 +49,7 @@ class App extends Component {
                                 <Route exact path="/main/import" component={ Import } />
                                 <Route exact path="/main/import/tronwatch" component={ ImportTronWatch } />
                                 <Route exact path="/main/import/tronscan" component={ ImportTronScan } />
-                                <Route exact path="/main/import/wordlist" component={ ImportWordList } />
+                                <Route exact path="/main/import/mnemonic" component={ ImportMnemonicPhrase } />
                                 <Route exact path="/main/import/privatekey" component={ ImportPrivateKey } />
                                 
                                 <Route path="/main/redeem" component={ Redeem } />
