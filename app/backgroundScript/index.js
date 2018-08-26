@@ -516,6 +516,13 @@ const handleWebCall = async ({
                 await rpc.getTransactionById(transactionID)
             );
         }
+        case 'getTransactionInfo' : {
+            const { transactionID } = args;
+
+            return resolve(
+                await rpc.getTransactionInfoById(transactionID)
+            );
+        }
         default:
             reject(`Unknown method called (${ method })`);
     }

@@ -85,6 +85,15 @@ class TronLink {
                 return this._dispatch('getTransaction', { transactionID });
             },
             /**
+             * Returns the transaction info given a valid transactionID
+             * @param {string} transactionID A valid transactionID for a tracked block on the blockchain
+             * @readonly
+             * @memberof TronLink
+             */
+            getTransactionInfo: transactionID => {
+                return this._dispatch('getTransactionInfo', { transactionID });
+            },
+            /**
              * Returns an account given a valid hex, base58 or base64 address
              * @param {string} address A valid hex, base58 or base64 address belonging to an account that has received TRX in the past
              * @readonly
@@ -231,11 +240,8 @@ class TronLink {
              * @memberof TronLink
              */
             createSmartContract: (abi, bytecode, name, options = {
-                bandwidthLimit: 10000000,
-                cpuLimit: 10000000,
-                dropLimit: 10000000,
-                callValue: 0,
-                storageLimit: 50000000,
+                feeLimit: 10000000,
+                callValue: 0
             }) => this._dispatch('createSmartContract', {
                 abi,
                 bytecode,
@@ -252,11 +258,8 @@ class TronLink {
              * @memberof TronLink
              */
             triggerSmartContract: (address, functionSelector, parameters = [], options = {
-                bandwidthLimit: 10000000,
-                cpuLimit: 10000000,
-                dropLimit: 10000000,
-                callValue: 0,
-                storageLimit: 50000000,
+                feeLimit: 10000000,
+                callValue: 0
             }) => this._dispatch('triggerSmartContract', {
                 address,
                 functionSelector,
@@ -273,11 +276,8 @@ class TronLink {
              * @memberof TronLink
              */
             callSmartContract: (address, functionSelector, parameters = [], options = {
-                bandwidthLimit: 10000000,
-                cpuLimit: 10000000,
-                dropLimit: 10000000,
-                callValue: 0,
-                storageLimit: 50000000,
+                feeLimit: 10000000,
+                callValue: 0
             }) => this._dispatch('callSmartContract', {
                 address,
                 functionSelector,
