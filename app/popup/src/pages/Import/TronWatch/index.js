@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import Button from 'components/Button';
-
+import { ArrowLeftIcon } from 'components/Icons';
 import './TronWatch.css';
 
 class TronWatch extends Component {
@@ -15,15 +15,20 @@ class TronWatch extends Component {
         };
     }
 
+    handleWordChange(word, index) {
+
+    }
+
     renderInputs() {
-        // Ill let you handle this tayler, forgot the site you made
+
     }
 
     render() {
         return (
             <div className="import">
+                <NavLink to="/main/import" className="importBackButton"><ArrowLeftIcon /></NavLink>
                 <div className="importHeader">Import TronWatch Wallet</div>
-                <div className="importSubText">Enter your 24 word backup phrase from TronWatch below.</div>
+                <div className="importText">Enter your 24 word backup phrase from TronWatch below.</div>
                 <div className="inputContainer">
                     { this.renderInputs() }
                 </div>

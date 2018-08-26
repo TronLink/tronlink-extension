@@ -1,10 +1,13 @@
 .import {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 .importHeader {
@@ -23,35 +26,63 @@
     letter-spacing: 0.2px;
 }
 
-.textInput {
-    display: block;
-    height: 32px;
-    width: 306px;
-    text-indent: 20px;
-    font-size: 12px;
-    padding: 0;
-    border-radius: 3px;
-    border: 2px solid #bfbfbf;
-    font-weight: 500;
-    margin: 10px 0px;
+.importOptions {
+    width: 100%;
 }
 
-.textInput::placeholder {
-    color: #bfbfbf;
+.importOptionGroupHeader {
+    font-size: 15px;
 }
 
-.textInput:focus {
-    border: 2px solid #ef3636;
+.importOptionGroup {
+    margin: 10px 0px 20px 0px;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.restoreWallet {
-    font-size: 12px;
-    text-align: center;
-    text-decoration: underline;
-    margin-top: 30px;
+.importOption {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 75px;
+    background: #0d1115;
+    color: #fff;
+    padding: 0px 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #1f1f1f;
     cursor: pointer;
+    transition: 200ms;
 }
 
-.restoreWallet:hover {
-    color: #bfbfbf;
+.importOption:hover {
+    background: #191e23;
+    transition: 0s;
+}
+
+.importOption:last-child {
+    border: none;
+}
+
+.importOptionHeader {
+    color: #ed3f23;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.importOptionBody {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.importBackButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    cursor: pointer;
+    transition: 200ms;
+}
+
+.importBackButton:hover {
+    transform: scale(0.9);
 }

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import Button from 'components/Button';
-
+import { ArrowLeftIcon } from 'components/Icons';
 import './PrivateKey.css';
 
 class PrivateKey extends Component {
@@ -18,6 +18,7 @@ class PrivateKey extends Component {
     render() {
         return (
             <div className="import">
+                <NavLink to="/main/import" className="importBackButton"><ArrowLeftIcon /></NavLink>
                 <div className="importHeader">
                     <FormattedMessage id='import.header' />
                 </div>
