@@ -30,7 +30,7 @@ class MnemonicPhrase extends Component {
                         placeholder="Mnemonic phrase"
                         className="textAreaImport"
                         rows={ 5 }
-                        value={ this.state.privateKey }
+                        value={ this.state.wordList }
                         onChange={ event => this.handleChange(event) }
                     />
                     <Button type={ 'black' } style={{ marginTop: '20px' }}>

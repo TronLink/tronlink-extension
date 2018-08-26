@@ -30,7 +30,7 @@ class TronScan extends Component {
                         placeholder="Keystore file"
                         className="textAreaImport"
                         rows={ 13 }
-                        value={ this.state.privateKey }
+                        value={ this.state.keyStore }
                         onChange={ event => this.handleChange(event) }
                     />
                     <Button type={ 'black' } style={{ marginTop: '20px' }}>

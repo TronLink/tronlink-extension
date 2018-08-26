@@ -25,7 +25,7 @@ export const IMPORT_TYPE = {
     TRON_WATCH: 1,
     TRON_SCAN: 2,
     MNEMONIC: 3
-}
+};
 
 export const BIP44 = {
     INDEX: 195,

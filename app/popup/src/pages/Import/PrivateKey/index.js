@@ -12,7 +12,7 @@ class PrivateKey extends Component {
         privateKey: ''
     }
 
-    handlePrivateKeyChange({ target: { value: privateKey }}) {
+    handleChange({ target: { value: privateKey }}) {
         this.setState({ privateKey });
     }
 
@@ -30,12 +30,12 @@ class PrivateKey extends Component {
                     <div className="importText">
                         Enter your private key below
                     </div>
-                    <input 
+                    <textarea
                         placeholder="Private key"
-                        className="textInput"
-                        type="text"
+                        className="textAreaImport"
+                        rows={ 2 }
                         value={ this.state.privateKey }
-                        onChange={ event => this.handlePrivateKeyChange(event) }
+                        onChange={ event => this.handleChange(event) }
                     />
                     <Button type={ 'black' } style={{ marginTop: '20px' }}>
                         <FormattedMessage id='import.button' />
