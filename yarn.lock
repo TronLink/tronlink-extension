@@ -9,8 +9,8 @@
     any-observable "^0.3.0"
 
 "TronUtils@git+https://github.com/TronWatch/TronUtils.git":
-  version "1.0.3"
-  resolved "git+https://github.com/TronWatch/TronUtils.git#4902faf4b6e570150757ea30e3800baa119e6169"
+  version "1.0.4"
+  resolved "git+https://github.com/TronWatch/TronUtils.git#c689a9229719bae3dd62a5bd5feb427e660db048"
   dependencies:
     assert "^1.4.1"
     axios "^0.18.0"
