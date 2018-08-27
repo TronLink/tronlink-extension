@@ -4,7 +4,8 @@ import Utils from 'lib/utils';
 import AccountHandler from 'lib/AccountHandler';
 
 import {
-    WALLET_STATUS
+    WALLET_STATUS,
+    ACCOUNT_TYPE
 } from 'lib/constants';
 
 const logger = new Logger('wallet');
@@ -34,6 +35,81 @@ export default class Wallet {
 
         if (this._encryptedStorage)
             this._walletStatus = WALLET_STATUS.LOCKED;
+    }
+
+    _saveStorage(password = false) {
+        if (!this._password && !password)
+            throw 'Storage requires a password for encryption';
+
+        this._encryptedStorage = Utils.encrypt(JSON.stringify({
+            accounts: this._accounts,
+            mnemonic: this._mnemonic,
+            currentAccount: this._currentAccount,
+            internalAccounts: this._internalAccounts
+        }), this._password || password);
+
+        if (!this._password)
+            this._password = password;
+
+        logger.info('Saving storage');
+        Utils.saveStorage(this._encryptedStorage);
+    }
+
+    _importRaw(privateKey, name) {
+        const account = new AccountHandler(privateKey, ACCOUNT_TYPE.RAW).export();
+
+        if(name) {
+            let accountName = name.toString().substring(0, 32).trim();
+
+            if(Object.values(this._accounts).some(account => account.name === accountName))
+                accountName = false;
+
+            account.name = accountName;
+        }
+
+        this.addAccount(account);
+
+        return account;
+    }
+
+    async _importMnemonic(mnemonic, name = false) {
+        const account = new AccountHandler(mnemonic);
+        const accounts = [];
+
+        let accountIndex = 0;
+        let checked = 0;
+
+        while(checked < 20) {
+            const childAccount = account.getAccountAtIndex(accountIndex);
+            const transactions = await rpc.getTransactions(childAccount.publicKey);
+
+            accountIndex++;
+
+            if(!transactions.length) {
+                checked++;
+                continue;
+            } checked = 0;
+
+            if(Object.keys(this._accounts).includes(childAccount.publicKey))
+                continue;
+
+            if(name) {
+                let accountName = `${name.toString().trim()} ${accounts.length + 1}`.substring(0, 32);
+
+                if(Object.values(this._accounts).some(account => account.name === accountName))
+                    accountName = false;
+
+                childAccount.name = accountName;
+            }
+
+            accounts.push(childAccount);
+        }
+
+        accounts.forEach(account => {
+            this.addAccount(account);
+        });
+
+        return accounts;
     }
 
     getFullAccount() {
@@ -103,24 +179,6 @@ export default class Wallet {
             name,
             options
         );
-    }
-
-    _saveStorage(password = false) {
-        if (!this._password && !password)
-            throw 'Storage requires a password for encryption';
-
-        this._encryptedStorage = Utils.encrypt(JSON.stringify({
-            accounts: this._accounts,
-            mnemonic: this._mnemonic,
-            currentAccount: this._currentAccount,
-            internalAccounts: this._internalAccounts
-        }), this._password || password);
-
-        if (!this._password)
-            this._password = password;
-
-        logger.info('Saving storage');
-        Utils.saveStorage(this._encryptedStorage);
     }
 
     async updateAccount(address, save = false) {
@@ -246,7 +304,7 @@ export default class Wallet {
         return this._accounts[this._currentAccount];
     }
 
-    createAccount(name = false) {
+    createAccount(name = '') {
         const account = this._rootAccount.getAccountAtIndex(
             this._internalAccounts + 1
         );
@@ -263,9 +321,17 @@ export default class Wallet {
         this._internalAccounts += 1;
         this.addAccount(account);
 
-        this._saveStorage();
-
         return account;
+    }
+
+    importAccount(accountType, importData, name = false) {
+        if(accountType == ACCOUNT_TYPE.RAW)
+            return this._importRaw(importData, name);
+
+        if(accountType == ACCOUNT_TYPE.MNEMONIC)
+            return this._importMnemonic(importData, name);
+
+        throw new Error(`Invalid ACCOUNT_TYPE ${accountType} supplied`);
     }
 
     selectAccount(publicKey) {
