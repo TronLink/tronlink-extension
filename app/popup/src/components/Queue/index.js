@@ -8,6 +8,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
 import SendTron from './Renderers/SendTron';
+import SendAsset from './Renderers/SendAsset';
 import CreateSmartContract from './Renderers/CreateSmartContract';
 import TriggerSmartContract from './Renderers/TriggerSmartContract';
 import Button from 'components/Button';
@@ -20,7 +21,7 @@ class Queue extends React.Component {
     state = {
         loading: false,
         error: false
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -37,11 +38,11 @@ class Queue extends React.Component {
             title: this.translate({ id: 'queue.transaction.sent' })
         };
 
-        if(error) {
+        if (error) {
             config.type = 'error';
             config.title = this.translate({ id: 'queue.transaction.failed' });
             config.text = error;
-        };
+        }
 
         return Swal(config).then(res => {
             logger.info('Swal Res', res);
@@ -96,26 +97,26 @@ class Queue extends React.Component {
                         type={ 'secondary' }
                         loading={ this.state.loading == 'reject' }
                         disabled={ this.state.loading == 'accept' }
-                        style={{ 'margin-right': '10px' }}
+                        style={ { 'margin-right': '10px' } }
                     >
-                        <FormattedMessage id='words.reject' />
+                        <FormattedMessage id='words.reject'/>
                     </Button>
                     <Button
                         onClick={ () => this.acceptConfirmation(confirmation) }
                         loading={ this.state.loading == 'accept' }
                         disabled={ this.state.loading == 'reject' }
-                        style={{ 'margin-left': '10px' }}
+                        style={ { 'margin-left': '10px' } }
                     >
-                        <FormattedMessage id='words.confirm' />
+                        <FormattedMessage id='words.confirm'/>
                     </Button>
                 </div>
             ),
             queueLength: (
                 <div className="confirmQueueCountCont">
                     <div className="confirmQueueLabel">
-                        <FormattedMessage 
+                        <FormattedMessage
                             id='queue.length'
-                            values={{ length: this.props.confirmations.length }} />
+                            values={ { length: this.props.confirmations.length } }/>
                     </div>
                 </div>
             )
@@ -124,29 +125,33 @@ class Queue extends React.Component {
 
     render() {
         const { confirmations } = this.props;
-        const [ confirmation ] = confirmations;
+        const [confirmation] = confirmations;
 
         let Component = (
             <span>
-                <FormattedMessage id='queue.unknownConfirmation' />
+                <FormattedMessage id='queue.unknownConfirmation'/>
             </span>
         );
 
-        switch(confirmation.type) {
+        switch (confirmation.type) {
             case CONFIRMATION_TYPE.SEND_TRON: {
                 Component = SendTron;
+                break;
+            }
+            case CONFIRMATION_TYPE.SEND_ASSET: {
+                Component = SendAsset;
                 break;
             }
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT: {
                 Component = CreateSmartContract;
                 break;
             }
-            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:{
+            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT: {
                 Component = TriggerSmartContract;
                 break;
             }
-            default:{
-                logger.error("Attempted to render unknown confirmation type", confirmation);
+            default: {
+                logger.error('Attempted to render unknown confirmation type', confirmation);
                 break;
             }
         }

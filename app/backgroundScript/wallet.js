@@ -33,7 +33,7 @@ export default class Wallet {
     _loadWallet() {
         this._encryptedStorage = Utils.loadStorage();
 
-        if(this._encryptedStorage)
+        if (this._encryptedStorage)
             this._walletStatus = WALLET_STATUS.LOCKED;
     }
 
@@ -113,7 +113,7 @@ export default class Wallet {
     }
 
     getFullAccount() {
-        if(this._accounts[this._currentAccount])
+        if (this._accounts[this._currentAccount])
             return this._accounts[this._currentAccount];
 
         const keys = Object.keys(this._accounts);
@@ -136,10 +136,27 @@ export default class Wallet {
         );
     }
 
+    async sendAsset(recipient, asset, amount) {
+        const account = this.getFullAccount();
+        logger.info(`Sending asset from ${account.publicKey} to ${recipient}, asset: ${asset}, amount: ${amount}`);
+
+        return rpc.sendAsset(
+            account.privateKey,
+            recipient,
+            asset,
+            amount
+        );
+    }
+
     async triggerSmartContract(address, functionSelector, parameters, options) {
         const account = this.getFullAccount();
 
-        logger.info(`Triggering smart contract from ${account.publicKey}`, { address, functionSelector, parameters, options });
+        logger.info(`Triggering smart contract from ${account.publicKey}`, {
+            address,
+            functionSelector,
+            parameters,
+            options
+        });
 
         return rpc.triggerContract(
             account.privateKey,
@@ -179,7 +196,7 @@ export default class Wallet {
             balance: account.balance || 0
         };
 
-        if(save)
+        if (save)
             this._saveStorage();
     }
 
@@ -276,7 +293,7 @@ export default class Wallet {
         if (this._walletStatus !== WALLET_STATUS.UNLOCKED)
             return false;
 
-        if(this._accounts[address])
+        if (this._accounts[address])
             return this._accounts[address];
 
         const keys = Object.keys(this._accounts);
@@ -292,10 +309,10 @@ export default class Wallet {
             this._internalAccounts + 1
         );
 
-        if(name) {
+        if (name) {
             let accountName = name.toString().substring(0, 32).trim();
 
-            if(Object.values(this._accounts).some(account => account.name === accountName))
+            if (Object.values(this._accounts).some(account => account.name === accountName))
                 accountName = false;
 
             account.name = accountName;
@@ -318,7 +335,7 @@ export default class Wallet {
     }
 
     selectAccount(publicKey) {
-        if(!this._accounts.hasOwnProperty(publicKey))
+        if (!this._accounts.hasOwnProperty(publicKey))
             return;
 
         this._currentAccount = publicKey;
@@ -326,15 +343,15 @@ export default class Wallet {
     }
 
     deleteAccount(publicKey) {
-        if(!this._accounts.hasOwnProperty(publicKey))
+        if (!this._accounts.hasOwnProperty(publicKey))
             return;
 
-        if(Object.keys(this._accounts).length === 1)
+        if (Object.keys(this._accounts).length === 1)
             return;
 
         delete this._accounts[publicKey];
 
-        if(this._currentAccount === publicKey)
+        if (this._currentAccount === publicKey)
             this.selectAccount(Object.keys(this._accounts)[0]); // this calls saveStorage()
         else this._saveStorage();
     }
