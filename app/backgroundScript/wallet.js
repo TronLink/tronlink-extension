@@ -222,6 +222,7 @@ export default class Wallet {
         const defaultAccount = account.getAccountAtIndex(0);
 
         defaultAccount.name = 'Default Account';
+        defaultAccount.internal = true;
 
         this._rootAccount = new AccountHandler(wordList);
         this._mnemonic = wordList;
@@ -301,6 +302,7 @@ export default class Wallet {
             account.name = accountName;
         }
 
+        account.internal = true;
         this._internalAccounts += 1;
         this.addAccount(account);
 
