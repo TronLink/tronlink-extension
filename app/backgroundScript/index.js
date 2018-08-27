@@ -211,7 +211,7 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.asset, info.amoun);
+                output.rpcResponse = await wallet.sendAsset(info.recipient, info.asset, info.amount);
                 break;
 
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:

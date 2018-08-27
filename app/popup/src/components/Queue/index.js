@@ -43,7 +43,6 @@ class Queue extends React.Component {
             config.title = this.translate({ id: 'queue.transaction.failed' });
             config.text = error;
         }
-        ;
 
         return Swal(config).then(res => {
             logger.info('Swal Res', res);
@@ -94,19 +93,19 @@ class Queue extends React.Component {
             buttons: (
                 <div className="confirmButtonContainer">
                     <Button
-                        onClick={() => this.rejectConfirmation(confirmation)}
-                        type={'secondary'}
-                        loading={this.state.loading == 'reject'}
-                        disabled={this.state.loading == 'accept'}
-                        style={{ 'margin-right': '10px' }}
+                        onClick={ () => this.rejectConfirmation(confirmation) }
+                        type={ 'secondary' }
+                        loading={ this.state.loading == 'reject' }
+                        disabled={ this.state.loading == 'accept' }
+                        style={ { 'margin-right': '10px' } }
                     >
                         <FormattedMessage id='words.reject'/>
                     </Button>
                     <Button
-                        onClick={() => this.acceptConfirmation(confirmation)}
-                        loading={this.state.loading == 'accept'}
-                        disabled={this.state.loading == 'reject'}
-                        style={{ 'margin-left': '10px' }}
+                        onClick={ () => this.acceptConfirmation(confirmation) }
+                        loading={ this.state.loading == 'accept' }
+                        disabled={ this.state.loading == 'reject' }
+                        style={ { 'margin-left': '10px' } }
                     >
                         <FormattedMessage id='words.confirm'/>
                     </Button>
@@ -117,7 +116,7 @@ class Queue extends React.Component {
                     <div className="confirmQueueLabel">
                         <FormattedMessage
                             id='queue.length'
-                            values={{ length: this.props.confirmations.length }}/>
+                            values={ { length: this.props.confirmations.length } }/>
                     </div>
                 </div>
             )
@@ -160,10 +159,10 @@ class Queue extends React.Component {
         return (
             <div className="queue">
                 <Component
-                    confirmation={confirmation}
-                    price={this.props.price}
-                    {...this.renderers(confirmation)}
-                    {...this.state}
+                    confirmation={ confirmation }
+                    price={ this.props.price }
+                    { ...this.renderers(confirmation) }
+                    { ...this.state }
                 />
             </div>
         );
