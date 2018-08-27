@@ -229,6 +229,10 @@ popup.on('acceptConfirmation', async ({
                 output.rpcResponse = await wallet.send(info.recipient, info.amount);
                 break;
 
+            case CONFIRMATION_TYPE.SEND_ASSET:
+                output.rpcResponse = await wallet.sendAsset(info.recipient, info.asset, info.amount);
+                break;
+
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
                 output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
                 break;
@@ -437,6 +441,33 @@ const handleWebCall = async ({
                 recipient: address,
                 desc,
                 hostname,
+            }, resolve, reject);
+        }
+        case 'sendAsset': {
+            const {
+                recipient,
+                asset,
+                amount,
+                desc
+            } = args;
+
+            const address = Utils.transformAddress(recipient);
+            if(!address)
+                return reject('Invalid recipient provided');
+
+            if(!Utils.validateAmount(amount))
+                return reject('Invalid amount provided');
+
+            if(!Utils.validateDescription(desc))
+                return reject('Invalid description provided');
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.SEND_ASSET,
+                amount: parseInt(amount),
+                recipient: address,
+                asset,
+                desc,
+                hostname
             }, resolve, reject);
         }
         case 'createSmartContract': {
