@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { SettingsIcon } from 'components/Icons';
@@ -79,10 +80,6 @@ class Accounts extends Component {
         getAccounts();
     }
 
-    importAccount() {
-        // TODO: Go to import page (full screen with header hideNav={ true })
-    }
-
     exportAccount() {
         const {
             wordList: mnemonic,
@@ -125,9 +122,9 @@ class Accounts extends Component {
                 <div className='button' onClick={ () => this.createAccount() }>
                     <FormattedMessage id='accounts.button.create' />
                 </div>
-                <div className='button disabled' onClick={ () => this.importAccount() }>
+                <NavLink to='/main/import' className='button'>
                     <FormattedMessage id='accounts.button.import' />
-                </div>
+                </NavLink>
                 <div className={ 'button' } onClick={ () => this.exportAccount() }>
                     <FormattedMessage id='accounts.button.export' />
                 </div>

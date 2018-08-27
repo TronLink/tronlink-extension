@@ -166,10 +166,29 @@ popup.on('createAccount', ({
     data: name,
     resolve
 }) => {
-    if(name && name.length > 32)
+    if(!name || name.length > 32)
         return;
 
     const account = wallet.createAccount(name);
+    const { publicKey } = account;
+
+    wallet.selectAccount(publicKey);
+
+    resolve(account);
+});
+
+popup.on('importAccount', async ({
+    data: {
+        accountType,
+        importData,
+        name
+    },
+    resolve
+}) => {
+    if(!name || name.length > 32)
+        return;
+
+    const account = await wallet.importAccount(accountType, importData, name);
     const { publicKey } = account;
 
     wallet.selectAccount(publicKey);

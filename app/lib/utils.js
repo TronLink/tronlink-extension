@@ -1,10 +1,7 @@
 import { BigNumber } from 'bignumber.js';
+import { keccak256 } from 'js-sha3';
 
-import crypto from 'crypto';
-import Sha from 'jssha';
-import ByteArray from './ByteArray';
-import Logger from './logger';
-import validator from 'validator';
+import { ec as EC } from 'elliptic';
 
 import {
     ENCRYPTION_ALGORITHM,
@@ -12,6 +9,12 @@ import {
     TRON_CONSTANTS_MAINNET,
     TRON_CONSTANTS_TESTNET
 } from './constants';
+
+import crypto from 'crypto';
+import Sha from 'jssha';
+import ByteArray from './ByteArray';
+import Logger from './logger';
+import validator from 'validator';
 
 const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -273,6 +276,51 @@ const utils = {
                 return false;
             }
         }
+    },
+
+    publicKeyToAddress(pubKey) {
+        const publicKey = (pubKey.length === 65) ? pubKey.slice(1) : pubKey;
+        const hash = keccak256(publicKey).toString();
+        const address = TRON_CONSTANTS_MAINNET.ADD_PRE_FIX_STRING + hash.substring(24);
+
+        return ByteArray.fromHexString(address);
+    },
+
+    privateKeyToPublicKey(privateKey) {
+        const ec = new EC('secp256k1');
+        const key = ec.keyFromPrivate(privateKey, 'bytes');
+        const publicKey = key.getPublic();
+
+        const { x, y } = publicKey;
+
+        let xHex = x.toString('hex');
+        let yHex = y.toString('hex');
+
+        while(xHex.length < 64)
+            xHex = `0${xHex}`;
+
+        while(yHex.length < 64)
+            yHex = `0${yHex}`;
+
+        const publicKeyHex = `04${xHex}${yHex}`;
+
+        return ByteArray.fromHexString(publicKeyHex);
+    },
+
+    privateKeyToAddress(privateKey) {
+        // React (babel) won't compile TronUtils so I get to write this manually :)))
+
+        const privateKeyBytes = ByteArray.fromHexString(privateKey);
+        const publicKeyBytes = this.privateKeyToPublicKey(privateKeyBytes);
+        const addressBytes = this.publicKeyToAddress(publicKeyBytes);
+
+        return this.hexToBase58(
+            ByteArray.toHexString(addressBytes)
+        );
+    },
+
+    isHex(string) {
+        return typeof string === 'string' && !isNaN(parseInt(string, 16));
     }
 };
 
