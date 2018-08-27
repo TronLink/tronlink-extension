@@ -80,10 +80,6 @@ class Accounts extends Component {
         getAccounts();
     }
 
-    importAccount() {
-        // TODO: Go to import page (full screen with header hideNav={ true })
-    }
-
     exportAccount() {
         const {
             wordList: mnemonic,

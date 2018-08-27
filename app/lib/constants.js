@@ -20,13 +20,6 @@ export const ACCOUNT_TYPE = {
     MNEMONIC: 1
 };
 
-export const IMPORT_TYPE = {
-    PRIVATE_KEY: 0,
-    TRON_WATCH: 1,
-    TRON_SCAN: 2,
-    MNEMONIC: 3
-};
-
 export const BIP44 = {
     INDEX: 195,
     HEXA: 0x800000c3
