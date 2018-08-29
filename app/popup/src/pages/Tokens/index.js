@@ -23,6 +23,15 @@ class Tokens extends Component {
     }
 
     render() {
+        const { tokens } = this.props.account;
+
+        const tokenList = Object.entries(tokens).map(([ token, balance ], index) => (
+            <div className='token' key={ index }>
+                <div className='tokenName'>{ token }</div>
+                <div className='tokenAmount'>{ balance }</div>
+            </div>
+        ));
+
         return (
             <div class="mainContainer">
                 <Header 
@@ -32,13 +41,11 @@ class Tokens extends Component {
                     rightIconRoute="/main/settings"
                 />
                 <div className="mainContent">
-                    <div className="accountView container">
-                        <div className="contentContainer">
-                            Should show tokens balances here (3 columns?)
-                            Clicking on the token should show a dedicated page
-                            with token info from the API if we ever get around
-                            to doing that
-                        </div>
+                    <div className="tokensView">
+                        { !tokenList.length && <div className='tokensEmpty'>
+                            Your account does not hold any tokens
+                        </div> }
+                        { tokenList }
                     </div>
                 </div>
             </div>
@@ -47,6 +54,5 @@ class Tokens extends Component {
 }
 
 export default connect(state => ({
-    account: state.wallet.account,
-    status: state.wallet.status
+    account: state.wallet.account
 }))(Tokens);
