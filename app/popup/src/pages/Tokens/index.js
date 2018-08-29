@@ -43,7 +43,7 @@ class Tokens extends Component {
                 <div className="mainContent">
                     <div className="tokensView">
                         { !tokenList.length && <div className='tokensEmpty'>
-                            Your account does not hold any tokens
+                            <FormattedMessage id='tokens.noTokens' />
                         </div> }
                         { tokenList }
                     </div>
