@@ -170,6 +170,15 @@ class TronLink {
                 });
             },
             /**
+             *
+             * @param options an object containing everything required to create an asset. More issues here https://github.com/tronprotocol/Documentation/blob/master/TRX/Tron-http.md
+             */
+            issueAsset: (options) => {
+                return this._dispatch('issueAsset', {
+                    options
+                });
+            },
+            /**
              * Requests confirmation from the end user to freeze tron for the specified duration. Will broadcast the transaction if accepted
              * @param {number} amount The amount of TRX the end user should freeze
              * @param {number} duration The duration (in days) of how long the TRX should be frozen for

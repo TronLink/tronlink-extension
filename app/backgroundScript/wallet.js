@@ -148,6 +148,16 @@ export default class Wallet {
         );
     }
 
+    async issueAsset(options) {
+        const account = this.getFullAccount();
+        logger.info('Issuing asset: ', options);
+
+        return rpc.issueAsset(
+            account.privateKey,
+            options
+        );
+    }
+
     async triggerSmartContract(address, functionSelector, parameters, options) {
         const account = this.getFullAccount();
 
