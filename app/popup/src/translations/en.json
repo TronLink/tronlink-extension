@@ -75,5 +75,7 @@
     "accounts.delete.title": "Delete Account",
     "accounts.delete.text": "Are you sure you want to delete this account?",
     "accounts.delete.button": "Delete",
-    "accounts.import.title": "Import Account"
+    "accounts.import.title": "Import Account",
+
+    "tokens.noTokens": "Your account does not hold any tokens",
 }
