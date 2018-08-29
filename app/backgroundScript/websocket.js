@@ -69,6 +69,9 @@ export default class TronWebsocket {
     }
 
     _connect() {
+        if(!this._url)
+            return logger.warn('Websocket attempted connection without valid URL');
+
         logger.info('Initiating connection');
 
         this._webSocket = new WebSocket(this._url);

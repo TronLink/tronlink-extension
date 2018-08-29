@@ -23,10 +23,10 @@ const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet();
-const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
+const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket ? `wss://${nodeSelector.node.websocket}` : false);
 const rpc = new TronUtils.rpc({
-    url_full: nodeSelector.node.full, // eslint-disable-line
-    url_solidity: nodeSelector.node.solidity // eslint-disable-line
+    url_full: `https://${nodeSelector.node.full}`, // eslint-disable-line
+    url_solidity: `https://${nodeSelector.node.solidity}` // eslint-disable-line
 });
 
 logger.info('Script loaded');
@@ -40,11 +40,11 @@ let addedWebsocketAlert = false;
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
-    rpc.url_full = node.full; // eslint-disable-line
-    rpc.url_solidity = node.solidity; // eslint-disable-line
+    rpc.url_full = `https://${node.full}`; // eslint-disable-line
+    rpc.url_solidity = `https://${node.solidity}`; // eslint-disable-line
 
     if(node.websocket) {
-        webSocket._url = node.websocket;
+        webSocket._url = `wss://${node.websocket}`;
         webSocket.start();
     }
 };

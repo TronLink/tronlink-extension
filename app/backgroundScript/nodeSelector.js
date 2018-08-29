@@ -16,9 +16,9 @@ const nodeSelector = {
         this._defaultNodes = {
             [DEFAULT_NODE]: {
                 name: 'TronWatch Private TestNet',
-                full: 'http://rpc.tron.watch:8090',
-                solidity: 'http://rpc.tron.watch:8091',
-                websocket: 'ws://rpc.tron.watch:8080',
+                full: 'rpc.tron.watch:8090',
+                solidity: 'rpc.tron.watch:8091',
+                websocket: 'rpc.tron.watch:8080',
                 default: true,
                 mainnet: false
             }

@@ -100,17 +100,29 @@ const utils = {
     },
 
     validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+        if(!full.startsWith('https://'))
+            return 'Full node must run through https protocol';
+
+        if(!solidity.startsWith('https://'))
+            return 'Solditity node must run through https protocol';
+
+        if(websocket && !websocket.startsWith('ws://'))
+            return 'Websocket must run through wss protocol';
+
+        // https will be manually appended in front of URIs for each connection
+
+        name = name.trim(); // eslint-disable-line
+        full = full.trim().substr(8); // eslint-disable-line
+        solidity = solidity.trim().substr(8); // eslint-disable-line
+
         if(websocket)
-            websocket = websocket.replace(/(wss?:\/\/)/, ''); // eslint-disable-line
+            websocket = websocket.trim().substr(6); // eslint-disable-line
 
         if(!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
 
         if(!validator.isURL(solidity) && !validator.isIP(solidity))
             return 'Invalid solidity node provided';
-
-        if(this.isBoolean(websocket) && websocket !== false)
-            return 'Invalid websocket node provided';
 
         if(websocket && !validator.isURL(websocket) && !validator.isIP(websocket))
             return 'Invalid websocket node provided';
