@@ -43,14 +43,14 @@ class AccountHeader extends Component {
                     <span className="accountBalanceTicker">TRX</span>
                     <div className="accountBalanceUSD">${ usdValue } USD</div>
                 </div>
-                <div className='accountLabel'>
+                { /* <div className='accountLabel'>
                     <span class='amount'>
                         36,319 Tron Power
                     </span>
                     <span class='label'>
                         Expires in 3 days
                     </span>
-                </div>
+                </div> */ }
             </div>
         );
     }
