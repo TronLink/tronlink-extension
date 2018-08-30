@@ -148,7 +148,7 @@
 }
 
 .nodeStatus {
-    justify-content: center;
+    justify-content: space-around;
     display: flex;
     flex-direction: column;
 }
@@ -160,6 +160,7 @@
     color: #ffffff;
     font-size: 11px;
     transition: all 200ms ease;
+    text-align: center;
 }
 
 .nodeLabel.active {
@@ -172,4 +173,62 @@
 
 .nodeLabel:not(.active) {
     cursor: pointer;
+}
+
+.customNode input {
+    flex: 1;
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    font-size: 13px;
+    border: none;
+    outline: none;
+    font-family: Roboto, sans-serif;
+    color: #444;
+}
+
+.customNode input:focus {
+    border-color: #bcbcbc;
+}
+
+.customNode .inputContainer {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    padding: 0 15px;
+    box-sizing: border-box;
+    transition: all 200ms ease;
+    font-size: 13px;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    color: #444;
+}
+
+.customNode .inputContainer::before {
+    content: attr(data-prefix);
+    width: 90px;
+}
+
+.customNodeButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+.customNodeButtons .button:first-of-type {
+    margin-right: 5px;
+    flex: 1;
+}
+
+.customNodeButtons .button:last-of-type {
+    margin-left: 5px;
+    flex: 1;
+}
+
+.nodeLabel.delete {
+    background: #ed3f21;
 }

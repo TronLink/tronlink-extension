@@ -67,20 +67,26 @@ const nodeSelector = {
             logger.warn('Invalid node provided', node);
             logger.error('Node error:', error);
 
-            return error;
+            return { error };
         }
 
         logger.info('Adding new node', node);
 
         const {
-            name,
             full,
             solidity,
             websocket,
             mainnet
         } = node;
 
-        const nodeHash = md5([ full, solidity, websocket ].join('&'));
+        const name = node.name.trim().toLowerCase();
+        const nodeHash = md5([ full.toLowerCase(), solidity.toLowerCase(), websocket ? websocket.toLowerCase() : '' ].join('&'));
+
+        if(Object.keys(this._nodes).includes(nodeHash))
+            return { error: 'Node already exists' };
+
+        if(Object.values(this._nodes).some(node => node.name.toLowerCase() === name))
+            return { error: 'Name already in use' };
 
         const newNode = {
             default: false,
@@ -95,6 +101,8 @@ const nodeSelector = {
         this._nodes[nodeHash] = newNode;
 
         this._saveState();
+
+        return { nodeHash };
     },
 
     removeNode(nodeHash) {

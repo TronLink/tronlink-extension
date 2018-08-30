@@ -89,8 +89,13 @@ popup.on('sendAccount', data => {
 popup.on('broadcastPrice', data => {
     logger.info('Received price', data);
 
+    const {
+        price,
+        lastUpdated
+    } = data;
+
     store.dispatch(
-        setTrxPrice(data)
+        setTrxPrice(price, lastUpdated)
     );
 });
 
