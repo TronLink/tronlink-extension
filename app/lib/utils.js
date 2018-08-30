@@ -100,23 +100,17 @@ const utils = {
     },
 
     validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+        if(!this.isString(name) || !name.length || name.length > 256)
+            return 'Invalid node name provided';
+
         if(!full.startsWith('https://'))
             return 'Full node must run through https protocol';
 
         if(!solidity.startsWith('https://'))
             return 'Solditity node must run through https protocol';
 
-        if(websocket && !websocket.startsWith('ws://'))
+        if(websocket && !websocket.startsWith('wss://'))
             return 'Websocket must run through wss protocol';
-
-        // https will be manually appended in front of URIs for each connection
-
-        name = name.trim(); // eslint-disable-line
-        full = full.trim().substr(8); // eslint-disable-line
-        solidity = solidity.trim().substr(8); // eslint-disable-line
-
-        if(websocket)
-            websocket = websocket.trim().substr(6); // eslint-disable-line
 
         if(!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
@@ -124,14 +118,11 @@ const utils = {
         if(!validator.isURL(solidity) && !validator.isIP(solidity))
             return 'Invalid solidity node provided';
 
-        if(websocket && !validator.isURL(websocket) && !validator.isIP(websocket))
+        if(websocket && !validator.isURL(websocket.substr(6)) && !validator.isIP(websocket.substr(6)))
             return 'Invalid websocket node provided';
 
         if(!this.isBoolean(mainnet))
             return 'Invalid network type provided';
-
-        if(!this.isString(name) || !name.length || name.length > 256)
-            return 'Invalid node name provided';
 
         return false;
     },

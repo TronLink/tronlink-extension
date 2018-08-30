@@ -1,21 +1,74 @@
 import randomUUID from 'uuid/v4';
 import Logger from 'lib/logger';
+import Utils from 'lib/Utils';
+
+import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
 const logger = new Logger('WebSocket');
 
 export default class TronWebsocket {
-    constructor(popup, url = 'ws://rpc.tron.watch:8080') {
+    constructor(popup, url = 'rpc.tron.watch:8080') {
         this._popup = popup;
         this._url = url;
+        this._storageKey = `${ LOCALSTORAGE_NAMESPACE }_PRICE`;
 
+        this._stopped = false;
         this._webSocket = false;
         this._connectionID = randomUUID();
         this._addresses = [];
         this._price = 0;
+        this._lastPriceUpdate = 0;
+
+        this.loadPrice();
 
         this._popup.on('getPrice', ({ resolve }) => {
-            resolve(this._price);
+            resolve({
+                price: this._price,
+                lastUpdated: this._lastPriceUpdate
+            });
         });
+
+        setInterval(() => {
+            if(!this._webSocket || this._webSocket.readyState !== 1)
+                return;
+
+            this._webSocket.send(JSON.stringify({
+                userid: this._connectionID,
+                cmd: 'PING'
+            }));
+        }, 2500);
+    }
+
+    loadPrice() {
+        const {
+            price,
+            lastUpdated
+        } = Utils.loadStorage(this._storageKey);
+
+        if(!price)
+            return;
+
+        this._price = price;
+        this._lastPriceUpdate = lastUpdated;
+
+        this.broadcastPrice();
+    }
+
+    broadcastPrice() {
+        this._popup.broadcastPrice({
+            price: this._price,
+            lastUpdated: this._lastPriceUpdate
+        });
+    }
+
+    savePrice(price, lastUpdated = Date.now()) {
+        this._price = price;
+        this._lastPriceUpdate = lastUpdated;
+
+        Utils.saveStorage({
+            price,
+            lastUpdated
+        }, this._storageKey);
     }
 
     onEvent(event) {
@@ -38,10 +91,11 @@ export default class TronWebsocket {
         if(message.symbol === 'TRX' && message.USD && message.USD.price) {
             logger.info(`Received new TRX price: $${message.USD.price}`);
 
-            this._price = parseFloat(message.USD.price);
-            return this._popup.broadcastPrice(
-                this._price
+            this.savePrice(
+                parseFloat(message.USD.price)
             );
+
+            return this.broadcastPrice();
         }
 
         logger.warn('Received unknown websocket event', event);
@@ -68,31 +122,6 @@ export default class TronWebsocket {
         }));
     }
 
-    _connect() {
-        if(!this._url)
-            return logger.warn('Websocket attempted connection without valid URL');
-
-        logger.info('Initiating connection');
-
-        this._webSocket = new WebSocket(this._url);
-
-        this._webSocket.onopen = event => {
-            this.onConnect(event);
-        };
-
-        this._webSocket.onclose = () => {
-            logger.info('Lost connection to websocket');
-
-            setTimeout(() => {
-                this._connect();
-            }, 5000);
-        };
-
-        this._webSocket.onmessage = event => {
-            this.onEvent(event);
-        };
-    }
-
     getPrice() {
         return this._price;
     }
@@ -113,13 +142,35 @@ export default class TronWebsocket {
     }
 
     start() {
-        this._connect();
+        if(!this._url)
+            return logger.warn('Websocket attempted connection without valid URL');
 
-        setInterval(() => {
-            this._webSocket.send(JSON.stringify({
-                userid: this._connectionID,
-                cmd: 'PING'
-            }));
-        }, 2500);
+        logger.info('Initiating connection');
+
+        this._webSocket = new WebSocket(this._url);
+
+        this._webSocket.onopen = event => {
+            this.onConnect(event);
+        };
+
+        this._webSocket.onclose = () => {
+            logger.warn('Lost connection to websocket');
+        };
+
+        this._webSocket.onmessage = event => {
+            this.onEvent(event);
+        };
+
+        this._stopped = false;
+    }
+
+    stop() {
+        if(!this._webSocket)
+            return;
+
+        this._stopped = true;
+        this._webSocket.close();
+
+        this._webSocket = false;
     }
 }
