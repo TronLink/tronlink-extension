@@ -27,9 +27,10 @@ export const setAccount  = account => ({
     account
 });
 
-export const setTrxPrice = price => ({
+export const setTrxPrice = (price, lastUpdated) => ({
     type: SET_TRX_PRICE,
-    price
+    price,
+    lastUpdated
 });
 
 export const setNodes = nodes => ({
@@ -59,13 +60,15 @@ export const updateStatus = async () => {
 };
 
 export const updatePrice = async () => {
-    const price = await popup.getPrice();
+    const {
+        price,
+        lastUpdated
+    } = await popup.getPrice();
 
-    logger.info('Update price required');
-    logger.info('New price:', price);
+    logger.info('Latest price update', { price, lastUpdated });
 
     store.dispatch(
-        setTrxPrice(price)
+        setTrxPrice(price, lastUpdated)
     );
 };
 
@@ -99,7 +102,7 @@ export function walletReducer(state = {
     networks: {},
     selectedNetwork: false,
     price: 0,
-    lastPriceUpdate: Date.now()
+    lastPriceUpdate: 0
 }, action) {
     switch (action.type) {
         case SET_ACCOUNTS: {
@@ -130,7 +133,7 @@ export function walletReducer(state = {
             return {
                 ...state,
                 price: action.price,
-                lastPriceUpdate: Date.now()
+                lastPriceUpdate: action.lastUpdated
             }
         }
         case SET_NODES: {

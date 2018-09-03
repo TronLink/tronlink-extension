@@ -152,7 +152,7 @@ export default class PopupHost extends EventEmitter {
     }
 
     deleteNode(nodeHash) {
-        return this.raw('updateAccount', nodeHash, false);
+        return this.raw('deleteNode', nodeHash, false);
     }
 
     addNode(node) {

@@ -43,6 +43,8 @@ const setNodeURLs = () => {
     rpc.url_full = node.full; // eslint-disable-line
     rpc.url_solidity = node.solidity; // eslint-disable-line
 
+    webSocket.stop();
+
     if(node.websocket) {
         webSocket._url = node.websocket;
         webSocket.start();
@@ -107,11 +109,15 @@ popup.on('addNode', ({
     resolve,
     reject
 }) => {
-    const error = nodeSelector.addNode(data);
+    const { error, nodeHash } = nodeSelector.addNode(data);
 
     if(error)
-        reject(error);
-    else resolve();
+        return reject(error);
+
+    nodeSelector.setNode(nodeHash);
+
+    setNodeURLs();
+    resolve(nodeHash);
 });
 
 popup.on('deleteNode', nodeHash => {
