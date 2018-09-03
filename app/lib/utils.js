@@ -20,6 +20,14 @@ const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 const utils = {
+
+    String2Hex(tmp) {
+        let str = '';
+        for (let i = 0; i < tmp.length; i++)
+            str += tmp[i].charCodeAt(0).toString(16);
+        return str;
+    },
+
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {
         const cipher = crypto.createCipher(algorithm, password);
 
@@ -100,32 +108,32 @@ const utils = {
     },
 
     validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
-        if(websocket)
+        if (websocket)
             websocket = websocket.replace(/(wss?:\/\/)/, ''); // eslint-disable-line
 
-        if(!validator.isURL(full) && !validator.isIP(full))
+        if (!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
 
-        if(!validator.isURL(solidity) && !validator.isIP(solidity))
+        if (!validator.isURL(solidity) && !validator.isIP(solidity))
             return 'Invalid solidity node provided';
 
-        if(this.isBoolean(websocket) && websocket !== false)
+        if (this.isBoolean(websocket) && websocket !== false)
             return 'Invalid websocket node provided';
 
-        if(websocket && !validator.isURL(websocket) && !validator.isIP(websocket))
+        if (websocket && !validator.isURL(websocket) && !validator.isIP(websocket))
             return 'Invalid websocket node provided';
 
-        if(!this.isBoolean(mainnet))
+        if (!this.isBoolean(mainnet))
             return 'Invalid network type provided';
 
-        if(!this.isString(name) || !name.length || name.length > 256)
+        if (!this.isString(name) || !name.length || name.length > 256)
             return 'Invalid node name provided';
 
         return false;
     },
 
     base58ToHex(string) {
-        const bytes = [ 0 ];
+        const bytes = [0];
 
         for (let i = 0; i < string.length; i++) {
             const char = string[i];
@@ -170,7 +178,7 @@ const utils = {
         const secondary = this.sha256(primary);
 
         const buffer = ByteArray.fromHexString(string + secondary.slice(0, 8));
-        const digits = [ 0 ];
+        const digits = [0];
 
         for (let i = 0; i < buffer.length; i++) {
             for (let j = 0; j < digits.length; j++)
@@ -251,26 +259,28 @@ const utils = {
     },
 
     transformAddress(address) {
-        if(!this.isString(address))
+        if (!this.isString(address))
             return false;
 
-        switch(address.length) {
+        switch (address.length) {
             case 42: {
                 // hex -> base58
                 return this.transformAddress(
                     this.hexToBase58(address)
                 );
-            } case 28: {
+            }
+            case 28: {
                 // base64 -> base58
                 const hex = this.base64ToHex(address);
                 const base58 = this.hexToBase58(hex);
 
                 return this.transformAddress(base58);
-            } case 34: {
+            }
+            case 34: {
                 // base58
                 const isAddressValid = this.validateAddress(address);
 
-                if(isAddressValid)
+                if (isAddressValid)
                     return address;
 
                 return false;
@@ -296,10 +306,10 @@ const utils = {
         let xHex = x.toString('hex');
         let yHex = y.toString('hex');
 
-        while(xHex.length < 64)
+        while (xHex.length < 64)
             xHex = `0${xHex}`;
 
-        while(yHex.length < 64)
+        while (yHex.length < 64)
             yHex = `0${yHex}`;
 
         const publicKeyHex = `04${xHex}${yHex}`;

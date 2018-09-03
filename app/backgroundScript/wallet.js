@@ -7,6 +7,7 @@ import {
     WALLET_STATUS,
     ACCOUNT_TYPE
 } from 'lib/constants';
+import utils from '../lib/utils';
 
 const logger = new Logger('wallet');
 const rpc = new TronUtils.rpc();
@@ -143,7 +144,7 @@ export default class Wallet {
         return rpc.sendAsset(
             account.privateKey,
             recipient,
-            asset,
+            utils.String2Hex(asset),
             amount
         );
     }
@@ -151,6 +152,12 @@ export default class Wallet {
     async issueAsset(options) {
         const account = this.getFullAccount();
         logger.info('Issuing asset: ', options);
+
+        options.name = utils.String2Hex(options.name);
+        options.abbr = utils.String2Hex(options.abbr);
+        options.description = utils.String2Hex(options.description);
+        options.url = utils.String2Hex(options.url);
+
 
         return rpc.issueAsset(
             account.privateKey,
@@ -202,7 +209,7 @@ export default class Wallet {
         this._accounts[address] = {
             ...this._accounts[address],
             transactions: Utils.convertTransactions(transactions, address),
-            tokens: {},
+            tokens: account.asset,
             balance: account.balance || 0
         };
 

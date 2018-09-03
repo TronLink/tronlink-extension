@@ -230,7 +230,7 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.asset, info.amount);
+                output.rpcResponse = await wallet.sendAsset(info.recipient, info.assetID, info.amount);
                 break;
 
             case CONFIRMATION_TYPE.ISSUE_ASSET:
@@ -461,7 +461,7 @@ const handleWebCall = async ({
         case 'sendAsset': {
             const {
                 recipient,
-                asset,
+                assetID,
                 amount,
                 desc
             } = args;
@@ -480,7 +480,7 @@ const handleWebCall = async ({
                 type: CONFIRMATION_TYPE.SEND_ASSET,
                 amount: parseInt(amount),
                 recipient: address,
-                asset,
+                assetID,
                 desc,
                 hostname
             }, resolve, reject);

@@ -16,7 +16,7 @@ export default class IssueAsset extends Component {
                 <div className="confirmGroup">
                     <textarea value={
                         JSON.stringify(confirmation.options, null, 2)
-                    } className="confirmTextArea" readonly"/>
+                    } className="confirmTextArea" readonly/>
                 </div>
 
                 { this.props.buttons }
