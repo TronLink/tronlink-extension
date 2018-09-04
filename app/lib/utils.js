@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { keccak256 } from 'js-sha3';
-
+import { Buffer } from 'buffer/';
 import { ec as EC } from 'elliptic';
 
 import {
@@ -20,11 +20,12 @@ const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 const utils = {
-    stringToHex(tmp) {
-        let str = '';
-        for (let i = 0; i < tmp.length; i++)
-            str += tmp[i].charCodeAt(0).toString(16);
-        return str;
+    stringToHex(string) {
+        return Buffer.from(string).toString('hex');
+    },
+
+    hexToString(hex) {
+        return Buffer.from(hex, 'hex').toString();
     },
 
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {

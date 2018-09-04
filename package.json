@@ -16,7 +16,7 @@
     "bestzip": "^1.1.4",
     "bignumber.js": "^7.2.1",
     "bip32": "^1.0.2",
-    "buffer": "^5.2.0",
+    "buffer": "^5.2.1",
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "elliptic": "^6.4.1",

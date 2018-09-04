@@ -20,11 +20,10 @@ class Transaction extends Component {
 	renderIcon() {
         switch(this.props.txType) {
             case 'TransferContract':
-            case 'TransferAssetContract':
-                if(this.props.isMine)
-                    return <Icons.TopRightArrow className="iconSent" />;
+                return <Icons.TopRightArrow className={ this.props.isMine ? 'iconSent' : 'iconReceived' } />;
 
-            return <Icons.TopRightArrow className="iconReceived" />;
+            case 'TransferAssetContract':
+                return <Icons.TokensIcon className={ this.props.isMine ? 'iconSent' : 'iconReceived' } />;
 
             case 'ParticipateAssetIssueContract':            
                 return <Icons.TokensIcon className="iconToken" />;
@@ -52,12 +51,18 @@ class Transaction extends Component {
 
 	renderLabel() {
         switch(this.props.txType) {
-            case 'TransferContract':
-            case 'TransferAssetContract':
+            case 'TransferContract':            
                 if(this.props.isMine)
                     return <div className="txLabel red"><FormattedMessage id='words.sent' /></div>;
-                
-            return <div className="txLabel green"><FormattedMessage id='words.received' /></div>;        
+
+            return <div className="txLabel green"><FormattedMessage id='words.received' /></div>;   
+
+            case 'TransferAssetContract':            
+                if(this.props.isMine)
+                    return <div className="txLabel red"><FormattedMessage id='words.sentToken' /></div>;
+
+            return <div className="txLabel green"><FormattedMessage id='words.receivedToken' /></div>;      
+
             case 'ParticipateAssetIssueContract':
                 return <div className="txLabel"><FormattedMessage id='words.token' /></div>;
 
@@ -87,6 +92,7 @@ class Transaction extends Component {
 	renderAddress() {
         switch(this.props.txType) {
             case 'TransferContract':
+            case 'TransferAssetContract':
                 if(this.props.isMine)
                     return this.props.toAddress;
 
@@ -102,23 +108,52 @@ class Transaction extends Component {
                     this.props.raw.parameter.value.contract_address
                 );
 
+            case 'AssetIssueContract':
+                return Utils.hexToString(
+                    this.props.raw.parameter.value.name
+                );
+
             default:
                 return 'Unknown address';
         }
 	}
 
 	renderAmount() {
+        if(this.props.txType === 'AssetIssueContract') {
+            return (
+                <div className={ 'txAmount red' }>
+                    - <FormattedNumber value={ 1024 } />
+                    <span class='margin-left'>TRX</span>
+                </div>
+            );
+        }
+
         if(!this.props.amount)
             return null;
 
-        const isMine = this.props.isMine;
-        const amount = Utils.sunToTron(this.props.amount).toString();
+        const { 
+            raw,
+            isMine, 
+            amount 
+        } = this.props;
+
+        if(this.props.txType == 'TransferContract') {
+            return (
+                <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>
+                    { isMine ? '- ' : '+ ' }
+                    <FormattedNumber value={ Utils.sunToTron(amount) } minimumFractionDigits={ 0 } maximumFractionDigits={ 8 } /> 
+                    <span class='margin-left'>TRX</span>
+                </div>
+            );
+        }
 
         return (
             <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>
                 { isMine ? '- ' : '+ ' }
-                <FormattedNumber value={ amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 8 } /> 
-                <span class='margin-left'>TRX</span>
+                <FormattedNumber value={ amount } maximumFractionDigits={ 0 } /> 
+                <span class='margin-left'>
+                    { Utils.hexToString(raw.parameter.value.asset_name) }
+                </span>
             </div>
         );
 	}

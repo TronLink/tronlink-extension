@@ -10,10 +10,14 @@ import {
 import utils from '../lib/utils';
 
 const logger = new Logger('wallet');
-const rpc = new TronUtils.rpc();
 
 export default class Wallet {
-    constructor() {
+    constructor({ full, solidity }) {
+        this._rpc = new TronUtils.rpc({
+            full_node: full, // eslint-disable-line
+            solidity_node: solidity // eslint-disable-line
+        });
+
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
         this._accounts = {};
@@ -29,6 +33,10 @@ export default class Wallet {
 
     get status() {
         return this._walletStatus;
+    }
+
+    get rpc() {
+        return this._rpc;
     }
 
     _loadWallet() {
@@ -82,7 +90,7 @@ export default class Wallet {
 
         while(checked < 20) {
             const childAccount = account.getAccountAtIndex(accountIndex);
-            const transactions = await rpc.getTransactions(childAccount.publicKey);
+            const transactions = await this._rpc.getTransactions(childAccount.publicKey);
 
             accountIndex++;
 
@@ -130,7 +138,7 @@ export default class Wallet {
 
         logger.info(`Sending from ${account.publicKey} to ${recipient}, amount: ${amount}`);
 
-        return rpc.sendTrx(
+        return this._rpc.sendTrx(
             account.privateKey,
             recipient,
             amount
@@ -141,7 +149,7 @@ export default class Wallet {
         const account = this.getFullAccount();
         logger.info(`Sending asset from ${account.publicKey} to ${recipient}, asset: ${asset}, amount: ${amount}`);
 
-        return rpc.sendAsset(
+        return this._rpc.sendAsset(
             account.privateKey,
             recipient,
             utils.stringToHex(asset),
@@ -158,8 +166,7 @@ export default class Wallet {
         options.description = utils.stringToHex(options.description);
         options.url = utils.stringToHex(options.url);
 
-
-        return rpc.issueAsset(
+        return this._rpc.issueAsset(
             account.privateKey,
             options
         );
@@ -175,7 +182,7 @@ export default class Wallet {
             options
         });
 
-        return rpc.triggerContract(
+        return this._rpc.triggerContract(
             account.privateKey,
             address,
             functionSelector,
@@ -189,7 +196,7 @@ export default class Wallet {
 
         logger.info(`Creating smart contract from account ${account.publicKey}`, { abi, bytecode, name, options });
 
-        return rpc.deployContract(
+        return this._rpc.deployContract(
             account.privateKey,
             abi,
             bytecode,
@@ -201,16 +208,23 @@ export default class Wallet {
     async updateAccount(address, save = false) {
         logger.info(`Account update requested for ${address}`);
 
-        const account = await rpc.getAccount(address);
-        const transactions = await rpc.getTransactions(address);
+        const account = await this._rpc.getAccount(address);
+        const transactions = await this._rpc.getTransactions(address);
 
         logger.info('Account updated', { account, transactions });
+
+        const tokens = (account.asset || []).filter(({ value }) => {
+            return value > 0;
+        }).reduce((obj, { key, value }) => {
+            obj[key] = value;
+            return obj;
+        }, {});
 
         this._accounts[address] = {
             ...this._accounts[address],
             transactions: Utils.convertTransactions(transactions, address),
-            tokens: {},
-            balance: account.balance || 0
+            balance: account.balance || 0,
+            tokens
         };
 
         if (save)
