@@ -4,10 +4,9 @@
     padding-bottom: 0;
     display: flex;
     flex-direction: row;
-    flex: 1;
     flex-wrap: wrap;
     align-content: baseline;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 .token {

@@ -19,6 +19,8 @@
 
 .transaction > svg {
     margin: 0px 10px;
+    min-width: 24px;
+    max-width: 24px;
 }
 
 .iconFreeze {

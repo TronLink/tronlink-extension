@@ -14,8 +14,8 @@ const logger = new Logger('wallet');
 export default class Wallet {
     constructor({ full, solidity }) {
         this._rpc = new TronUtils.rpc({
-            full_node: full,
-            solidity_node: solidity
+            full_node: full, // eslint-disable-line
+            solidity_node: solidity // eslint-disable-line
         });
 
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
@@ -166,7 +166,6 @@ export default class Wallet {
         options.description = utils.stringToHex(options.description);
         options.url = utils.stringToHex(options.url);
 
-
         return this._rpc.issueAsset(
             account.privateKey,
             options
@@ -214,11 +213,18 @@ export default class Wallet {
 
         logger.info('Account updated', { account, transactions });
 
+        const tokens = (account.asset || []).filter(({ value }) => {
+            return value > 0;
+        }).reduce((obj, { key, value }) => {
+            obj[key] = value;
+            return obj;
+        }, {});
+
         this._accounts[address] = {
             ...this._accounts[address],
             transactions: Utils.convertTransactions(transactions, address),
-            tokens: {},
-            balance: account.balance || 0
+            balance: account.balance || 0,
+            tokens
         };
 
         if (save)

@@ -164,7 +164,7 @@ class TronLink {
 
                 return this._dispatch('sendAsset', {
                     recipient: address,
-                    amount,
+                    amount: amount,
                     assetID,
                     desc
                 });

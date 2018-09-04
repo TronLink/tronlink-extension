@@ -468,6 +468,7 @@ const handleWebCall = async ({
             } = args;
 
             const address = Utils.transformAddress(recipient);
+
             if(!address)
                 return reject('Invalid recipient provided');
 
@@ -476,6 +477,12 @@ const handleWebCall = async ({
 
             if(!Utils.validateDescription(desc))
                 return reject('Invalid description provided');
+
+            if(!wallet.getAccount().tokens.hasOwnProperty(assetID))
+                return reject('Account does not have enough balance');
+
+            if(amount > wallet.getAccount().tokens[assetID])
+                return reject('Account does not have enough balance');
 
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_ASSET,
