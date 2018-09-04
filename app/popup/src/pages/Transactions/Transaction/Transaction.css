@@ -101,6 +101,24 @@
 }
 
 .smartContract {
-    color: #f39100;
-    fill: #f39100;
+    color: #3085d6;
+    fill: #3085d6;
+}
+
+/*
+
+
+
+
+
+    TODO: CHANGE THESE COLOURS
+
+
+
+
+*/
+
+.triggerSmartContract {
+    color: #ff9800;
+    fill: #ff9800;
 }

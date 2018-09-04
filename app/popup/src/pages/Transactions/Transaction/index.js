@@ -42,6 +42,9 @@ class Transaction extends Component {
             case 'CreateSmartContract':
                 return <Icons.SmartContractIcon className='smartContract' />;
 
+            case 'TriggerSmartContract':
+                return <Icons.TriggerSmartContractIcon className='smartContract triggerSmartContract' />;
+
             default:
                 return null;
         }
@@ -73,6 +76,9 @@ class Transaction extends Component {
             case 'CreateSmartContract':
                 return <div className='txLabel smartContract'><FormattedMessage id='account.transactions.deployContract' /></div>;
 
+            case 'TriggerSmartContract':
+                return <div className='txLabel smartContract triggerSmartContract'><FormattedMessage id='account.transactions.triggerContract' /></div>;
+
             default:
                 return null;
         }
@@ -87,7 +93,14 @@ class Transaction extends Component {
                 return this.props.ownerAddress;
 
             case 'CreateSmartContract':
-                return this.props.contractAddress;
+                return Utils.transformAddress(
+                    this.props.contractAddress
+                );
+
+            case 'TriggerSmartContract':
+                return Utils.transformAddress(
+                    this.props.raw.parameter.value.contract_address
+                );
 
             default:
                 return 'Unknown address';

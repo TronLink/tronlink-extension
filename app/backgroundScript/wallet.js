@@ -144,7 +144,7 @@ export default class Wallet {
         return rpc.sendAsset(
             account.privateKey,
             recipient,
-            utils.String2Hex(asset),
+            utils.stringToHex(asset),
             amount
         );
     }
@@ -153,10 +153,10 @@ export default class Wallet {
         const account = this.getFullAccount();
         logger.info('Issuing asset: ', options);
 
-        options.name = utils.String2Hex(options.name);
-        options.abbr = utils.String2Hex(options.abbr);
-        options.description = utils.String2Hex(options.description);
-        options.url = utils.String2Hex(options.url);
+        options.name = utils.stringToHex(options.name);
+        options.abbr = utils.stringToHex(options.abbr);
+        options.description = utils.stringToHex(options.description);
+        options.url = utils.stringToHex(options.url);
 
 
         return rpc.issueAsset(
@@ -209,7 +209,7 @@ export default class Wallet {
         this._accounts[address] = {
             ...this._accounts[address],
             transactions: Utils.convertTransactions(transactions, address),
-            tokens: account.asset,
+            tokens: {},
             balance: account.balance || 0
         };
 
