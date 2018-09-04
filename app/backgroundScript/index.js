@@ -225,7 +225,7 @@ popup.on('acceptConfirmation', async ({
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
 
-    const output = {
+    let output = {
         result: CONFIRMATION_RESULT.ACCEPTED
     };
 
@@ -244,11 +244,11 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-                output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
+                output = { output, ...await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options) };
                 break;
 
             case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-                output.rpcResponse = await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options);
+                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
                 break;
 
             default:
@@ -262,7 +262,7 @@ popup.on('acceptConfirmation', async ({
         }
 
         if(!output.rpcResponse.result)
-            throw new Error(`Node returned ${ output.rpcResponse.code }`);
+            throw new Error(`Node returned invalid output: ${ output }`);
     } catch(ex) {
         const error = 'Failed to build valid transaction';
 

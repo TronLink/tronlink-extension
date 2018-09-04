@@ -1,6 +1,6 @@
 import randomUUID from 'uuid/v4';
 import Logger from 'lib/logger';
-import Utils from 'lib/Utils';
+import Utils from 'lib/utils';
 
 import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
