@@ -6,9 +6,8 @@ import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import Wallet from './wallet';
 import TronWebsocket from './websocket';
-import TronUtils from 'TronUtils';
-import randomUUID from 'uuid/v4';
 import nodeSelector from './nodeSelector';
+import randomUUID from 'uuid/v4';
 
 // Constants
 import {
@@ -22,12 +21,8 @@ const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
-const wallet = new Wallet();
+const wallet = new Wallet(nodeSelector.node);
 const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
-const rpc = new TronUtils.rpc({
-    url_full: nodeSelector.node.full, // eslint-disable-line
-    url_solidity: nodeSelector.node.solidity // eslint-disable-line
-});
 
 logger.info('Script loaded');
 
@@ -40,8 +35,8 @@ let addedWebsocketAlert = false;
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
-    rpc.url_full = node.full; // eslint-disable-line
-    rpc.url_solidity = node.solidity; // eslint-disable-line
+    wallet.rpc.url_full = node.full; // eslint-disable-line
+    wallet.rpc.url_solidity = node.solidity; // eslint-disable-line
 
     webSocket.stop();
 
@@ -535,7 +530,7 @@ const handleWebCall = async ({
 
             if(account) {
                 return resolve(
-                    await rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
+                    await wallet.rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
                 );
             }
 
@@ -555,43 +550,43 @@ const handleWebCall = async ({
             } = args;
 
             return resolve(
-                await rpc.getAccount(address)
+                await wallet.rpc.getAccount(address)
             );
         }
         case 'getLatestBlock' : {
             return resolve(
-                await rpc.getNowBlock()
+                await wallet.rpc.getNowBlock()
             );
         }
         case 'getWitnesses' : {
             return resolve(
-                await rpc.getWitnesses()
+                await wallet.rpc.getWitnesses()
             );
         }
         case 'getTokens' : {
             return resolve(
-                await rpc.getTokens()
+                await wallet.rpc.getTokens()
             );
         }
         case 'getBlock' : {
             const { blockID } = args;
 
             return resolve(
-                await rpc.getBlock(blockID)
+                await wallet.rpc.getBlock(blockID)
             );
         }
         case 'getTransaction' : {
             const { transactionID } = args;
 
             return resolve(
-                await rpc.getTransactionById(transactionID)
+                await wallet.rpc.getTransactionById(transactionID)
             );
         }
         case 'getTransactionInfo' : {
             const { transactionID } = args;
 
             return resolve(
-                await rpc.getTransactionInfoById(transactionID)
+                await wallet.rpc.getTransactionInfoById(transactionID)
             );
         }
         default:

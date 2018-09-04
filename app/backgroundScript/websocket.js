@@ -115,6 +115,9 @@ export default class TronWebsocket {
 
         this._addresses.push(address);
 
+        if(!this._webSocket)
+            return;
+
         this._webSocket.send(JSON.stringify({
             userid: this._connectionID,
             cmd: 'START_ALERT',
