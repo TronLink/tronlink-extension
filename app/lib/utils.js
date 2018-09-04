@@ -20,8 +20,7 @@ const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 const utils = {
-
-    String2Hex(tmp) {
+    stringToHex(tmp) {
         let str = '';
         for (let i = 0; i < tmp.length; i++)
             str += tmp[i].charCodeAt(0).toString(16);
