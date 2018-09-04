@@ -5,7 +5,7 @@ import { popup } from 'index';
 import { ACCOUNT_TYPE } from 'extension/constants';
 import { connect } from 'react-redux';
 
-import Utils from 'extension/Utils';
+import Utils from 'extension/utils';
 import Swal from 'sweetalert2';
 import Header from 'components/Header';
 import Button from 'components/Button';
