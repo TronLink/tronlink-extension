@@ -21,6 +21,14 @@ const nodeSelector = {
                 websocket: 'ws://rpc.tron.watch:8080',
                 default: true,
                 mainnet: false
+            },
+            AB015F81F2E4CAA9BB94140D6A72BF56: {
+                name: 'Tron TestNet',
+                full: 'http://13.57.30.186:8090',
+                solidity: 'http://47.75.108.229:8091',
+                websocket: false,
+                default: false,
+                mainnet: false
             }
         };
 
