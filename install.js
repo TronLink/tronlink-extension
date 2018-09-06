@@ -19,6 +19,11 @@ exec('git diff-tree -r --name-only ORIG_HEAD HEAD', (err, stdOut, stdErr) => {
     if(stdErr)
         throw new Error('Error occurred when reading git differences', stdErr);
 
-    if(stdOut.trim().length)
+    if(!stdOut.trim().length)
+        return;
+
+    const differences = stdOut.split('\n');
+
+    if(differences.some(file => file.trim() === 'package.json'))
         installPackages();
 });
