@@ -1,6 +1,6 @@
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import LinkedRequest from 'lib/messages/LinkedRequest';
-import TronLink from 'pageHook/api/v1';
+import TronLink from './api';
 import Logger from 'lib/logger';
 
 const logger = new Logger('pageHook');
@@ -12,13 +12,7 @@ const scriptVariable = (window.TRON_LINK_VARIABLE || 'TronLink').toString();
  * Exposes the versioned TronLink API to the browser
  * @type {object}
  */
-window[scriptVariable] = {
-    /**
-     * TronLink API v1
-     * @param {string} [network='mainnet'] Network type to configure the API with for address validation
-     */
-    v1: (network = 'mainnet') => new TronLink(linkedRequest, network)
-};
+window[scriptVariable] = (network = 'mainnet') => new TronLink(linkedRequest, network);
 
 window.TRON_LINK_ENABLED = true;
 

@@ -6,9 +6,8 @@ import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import Wallet from './wallet';
 import TronWebsocket from './websocket';
-import TronUtils from 'TronUtils';
-import randomUUID from 'uuid/v4';
 import nodeSelector from './nodeSelector';
+import randomUUID from 'uuid/v4';
 
 // Constants
 import {
@@ -22,12 +21,8 @@ const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
-const wallet = new Wallet();
+const wallet = new Wallet(nodeSelector.node);
 const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
-const rpc = new TronUtils.rpc({
-    url_full: nodeSelector.node.full, // eslint-disable-line
-    url_solidity: nodeSelector.node.solidity // eslint-disable-line
-});
 
 logger.info('Script loaded');
 
@@ -40,8 +35,8 @@ let addedWebsocketAlert = false;
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
-    rpc.url_full = node.full; // eslint-disable-line
-    rpc.url_solidity = node.solidity; // eslint-disable-line
+    wallet.rpc.url_full = node.full; // eslint-disable-line
+    wallet.rpc.url_solidity = node.solidity; // eslint-disable-line
 
     webSocket.stop();
 
@@ -225,7 +220,7 @@ popup.on('acceptConfirmation', async ({
     const confirmation = pendingConfirmations[confirmationID];
     const info = confirmation.confirmation;
 
-    const output = {
+    let output = {
         result: CONFIRMATION_RESULT.ACCEPTED
     };
 
@@ -236,15 +231,19 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.asset, info.amount);
+                output.rpcResponse = await wallet.sendAsset(info.recipient, info.assetID, info.amount);
+                break;
+
+            case CONFIRMATION_TYPE.ISSUE_ASSET:
+                output.rpcResponse = await wallet.issueAsset(info.options);
                 break;
 
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-                output.rpcResponse = await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options);
+                output = { output, ...await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options) };
                 break;
 
             case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-                output.rpcResponse = await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options);
+                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
                 break;
 
             default:
@@ -258,7 +257,7 @@ popup.on('acceptConfirmation', async ({
         }
 
         if(!output.rpcResponse.result)
-            throw new Error(`Node returned ${ output.rpcResponse.code }`);
+            throw new Error(`Node returned invalid output: ${ output }`);
     } catch(ex) {
         const error = 'Failed to build valid transaction';
 
@@ -449,15 +448,27 @@ const handleWebCall = async ({
                 hostname,
             }, resolve, reject);
         }
+        case 'issueAsset' : {
+            const {
+                options
+            } = args;
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.ISSUE_ASSET,
+                options,
+                hostname
+            }, resolve, reject);
+        }
         case 'sendAsset': {
             const {
                 recipient,
-                asset,
+                assetID,
                 amount,
                 desc
             } = args;
 
             const address = Utils.transformAddress(recipient);
+
             if(!address)
                 return reject('Invalid recipient provided');
 
@@ -467,11 +478,17 @@ const handleWebCall = async ({
             if(!Utils.validateDescription(desc))
                 return reject('Invalid description provided');
 
+            if(!wallet.getAccount().tokens.hasOwnProperty(assetID))
+                return reject('Account does not have enough balance');
+
+            if(amount > wallet.getAccount().tokens[assetID])
+                return reject('Account does not have enough balance');
+
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_ASSET,
                 amount: parseInt(amount),
                 recipient: address,
-                asset,
+                assetID,
                 desc,
                 hostname
             }, resolve, reject);
@@ -520,7 +537,7 @@ const handleWebCall = async ({
 
             if(account) {
                 return resolve(
-                    await rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
+                    await wallet.rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
                 );
             }
 
@@ -540,43 +557,43 @@ const handleWebCall = async ({
             } = args;
 
             return resolve(
-                await rpc.getAccount(address)
+                await wallet.rpc.getAccount(address)
             );
         }
         case 'getLatestBlock' : {
             return resolve(
-                await rpc.getNowBlock()
+                await wallet.rpc.getNowBlock()
             );
         }
         case 'getWitnesses' : {
             return resolve(
-                await rpc.getWitnesses()
+                await wallet.rpc.getWitnesses()
             );
         }
         case 'getTokens' : {
             return resolve(
-                await rpc.getTokens()
+                await wallet.rpc.getTokens()
             );
         }
         case 'getBlock' : {
             const { blockID } = args;
 
             return resolve(
-                await rpc.getBlock(blockID)
+                await wallet.rpc.getBlock(blockID)
             );
         }
         case 'getTransaction' : {
             const { transactionID } = args;
 
             return resolve(
-                await rpc.getTransactionById(transactionID)
+                await wallet.rpc.getTransactionById(transactionID)
             );
         }
         case 'getTransactionInfo' : {
             const { transactionID } = args;
 
             return resolve(
-                await rpc.getTransactionInfoById(transactionID)
+                await wallet.rpc.getTransactionInfoById(transactionID)
             );
         }
         default:

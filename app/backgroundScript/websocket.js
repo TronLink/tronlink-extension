@@ -1,6 +1,6 @@
 import randomUUID from 'uuid/v4';
 import Logger from 'lib/logger';
-import Utils from 'lib/Utils';
+import Utils from 'lib/utils';
 
 import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
@@ -114,6 +114,9 @@ export default class TronWebsocket {
             return logger.warn('Attempted to add duplicate alert for', address);
 
         this._addresses.push(address);
+
+        if(!this._webSocket)
+            return;
 
         this._webSocket.send(JSON.stringify({
             userid: this._connectionID,

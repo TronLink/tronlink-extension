@@ -7,7 +7,9 @@
     "words.transactions": "Transactions",
     "words.tokens": "Tokens",
     "words.sent": "Sent",
+    "words.sentToken": "Sent Token",
     "words.received": "Received",
+    "words.receivedToken": "Received Token",
     "words.vote": "Vote",
     "words.frozen": "Frozen",
     "words.unfrozen": "Unfrozen",
@@ -36,6 +38,7 @@
     "account.transactions.noneFound": "No transactions found",
     "account.transactions.tokenCreation": "Token Creation",
     "account.transactions.deployContract": "Deployed Smart Contract",
+    "account.transactions.triggerContract": "Triggered Smart Contract",
 
     "give.sent.header": "Funds sent",
     "give.sent.body": "You have been sent 20,000 TestNet TRX",

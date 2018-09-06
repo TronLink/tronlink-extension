@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { keccak256 } from 'js-sha3';
-
+import { Buffer } from 'buffer/';
 import { ec as EC } from 'elliptic';
 
 import {
@@ -20,6 +20,14 @@ const logger = new Logger('Utils');
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 const utils = {
+    stringToHex(string) {
+        return Buffer.from(string).toString('hex');
+    },
+
+    hexToString(hex) {
+        return Buffer.from(hex, 'hex').toString();
+    },
+
     encrypt(data, password, algorithm = ENCRYPTION_ALGORITHM) {
         const cipher = crypto.createCipher(algorithm, password);
 
@@ -128,7 +136,7 @@ const utils = {
     },
 
     base58ToHex(string) {
-        const bytes = [ 0 ];
+        const bytes = [0];
 
         for (let i = 0; i < string.length; i++) {
             const char = string[i];
@@ -173,7 +181,7 @@ const utils = {
         const secondary = this.sha256(primary);
 
         const buffer = ByteArray.fromHexString(string + secondary.slice(0, 8));
-        const digits = [ 0 ];
+        const digits = [0];
 
         for (let i = 0; i < buffer.length; i++) {
             for (let j = 0; j < digits.length; j++)
@@ -254,26 +262,28 @@ const utils = {
     },
 
     transformAddress(address) {
-        if(!this.isString(address))
+        if (!this.isString(address))
             return false;
 
-        switch(address.length) {
+        switch (address.length) {
             case 42: {
                 // hex -> base58
                 return this.transformAddress(
                     this.hexToBase58(address)
                 );
-            } case 28: {
+            }
+            case 28: {
                 // base64 -> base58
                 const hex = this.base64ToHex(address);
                 const base58 = this.hexToBase58(hex);
 
                 return this.transformAddress(base58);
-            } case 34: {
+            }
+            case 34: {
                 // base58
                 const isAddressValid = this.validateAddress(address);
 
-                if(isAddressValid)
+                if (isAddressValid)
                     return address;
 
                 return false;
@@ -299,10 +309,10 @@ const utils = {
         let xHex = x.toString('hex');
         let yHex = y.toString('hex');
 
-        while(xHex.length < 64)
+        while (xHex.length < 64)
             xHex = `0${xHex}`;
 
-        while(yHex.length < 64)
+        while (yHex.length < 64)
             yHex = `0${yHex}`;
 
         const publicKeyHex = `04${xHex}${yHex}`;

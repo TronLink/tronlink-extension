@@ -19,6 +19,8 @@
 
 .transaction > svg {
     margin: 0px 10px;
+    min-width: 24px;
+    max-width: 24px;
 }
 
 .iconFreeze {
@@ -101,6 +103,11 @@
 }
 
 .smartContract {
-    color: #f39100;
-    fill: #f39100;
+    color: #3085d6;
+    fill: #3085d6;
+}
+
+.triggerSmartContract {
+    color: #ff9800;
+    fill: #ff9800;
 }

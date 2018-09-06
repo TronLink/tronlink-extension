@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
 import SendTron from './Renderers/SendTron';
 import SendAsset from './Renderers/SendAsset';
+import IssueAsset from './Renderers/IssueAsset';
 import CreateSmartContract from './Renderers/CreateSmartContract';
 import TriggerSmartContract from './Renderers/TriggerSmartContract';
 import Button from 'components/Button';
@@ -140,6 +141,10 @@ class Queue extends React.Component {
             }
             case CONFIRMATION_TYPE.SEND_ASSET: {
                 Component = SendAsset;
+                break;
+            }
+            case CONFIRMATION_TYPE.ISSUE_ASSET: {
+                Component = IssueAsset;
                 break;
             }
             case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT: {

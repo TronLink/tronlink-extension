@@ -164,9 +164,18 @@ class TronLink {
 
                 return this._dispatch('sendAsset', {
                     recipient: address,
-                    amount: amount * 1000000,
+                    amount,
                     assetID,
                     desc
+                });
+            },
+            /**
+             *
+             * @param options an object containing everything required to create an asset. More issues here https://github.com/tronprotocol/Documentation/blob/master/TRX/Tron-http.md
+             */
+            issueAsset: (options) => {
+                return this._dispatch('issueAsset', {
+                    options
                 });
             },
             /**

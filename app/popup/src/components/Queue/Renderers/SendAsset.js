@@ -19,8 +19,7 @@ export default class SendAsset extends Component {
             <div className="confirmGroup">
                 <div className="confirmGroupTop">
                     <div className="confirmGroupHeader bold">
-                        <FormattedMessage id="queue.send.site"
-                         />
+                        <FormattedMessage id="queue.send.site" />
                     </div>
                     <div className="confirmGroupAmount bold orange">{ hostname }</div>
                 </div>
@@ -30,11 +29,11 @@ export default class SendAsset extends Component {
 
     render() {
         const confirmation = this.props.confirmation;
-        const amount = confirmation.amount / 1000000;
-
-        const trxPrice = Number(
-            amount * this.props.price
-        ) || 0;
+        const {
+            recipient,
+            amount,
+            asset
+        } = confirmation;
 
         return (
             <div className="confirmSend">
@@ -46,7 +45,7 @@ export default class SendAsset extends Component {
                         <div className="confirmGroupHeader bold">
                             <FormattedMessage id='queue.send.to' />
                         </div>
-                        <div className="confirmGroupAddress bold orange">{ confirmation.recipient }</div>
+                        <div className="confirmGroupAddress bold orange">{ recipient }</div>
                     </div>
                 </div>
 
@@ -58,15 +57,9 @@ export default class SendAsset extends Component {
                         <div className="confirmGroupAmount bold orange">
                             <FormattedNumber value={ amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 6 } />
                             <span>
-                                &nbsp;{confirmation.asset}
+                                &nbsp;{ asset }
                             </span>
                         </div>
-                    </div>
-                    <div className="confirmGroupBottom">
-                        <FormattedNumber value={ trxPrice } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
-                        <span>
-                            &nbsp;USD
-                        </span>
                     </div>
                 </div>
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { SettingsIcon } from 'components/Icons';
 import { popup } from 'index';
 
@@ -28,7 +28,9 @@ class Tokens extends Component {
         const tokenList = Object.entries(tokens).map(([ token, balance ], index) => (
             <div className='token' key={ index }>
                 <div className='tokenName'>{ token }</div>
-                <div className='tokenAmount'>{ balance }</div>
+                <div className='tokenAmount'>
+                    <FormattedNumber value={ balance } maximumFractionDigits={ 0 } />
+                </div>
             </div>
         ));
 
