@@ -192,10 +192,7 @@ class TronLink {
                 if (!Number.isInteger(duration) || duration <= 0)
                     throw new Error('Invalid duration provided');
 
-                return this._dispatch('freezeTrx', {
-                    amount: amount * 1000000,
-                    duration
-                });
+                return this._dispatch('freezeTrx', { amount, duration });
             },
             /**
              * Requests confirmation from the end user to unfreeze all of their current frozen TRX. Will broadcast the transaction if accepted
