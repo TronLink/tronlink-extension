@@ -246,6 +246,14 @@ popup.on('acceptConfirmation', async ({
                 output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
                 break;
 
+            case CONFIRMATION_TYPE.FREEZE:
+                output = { output, ...await wallet.freeze(info.amount, info.duration) };
+                break;
+
+            case CONFIRMATION_TYPE.UNFREEZE:
+                output = { output, ...await wallet.unfreeze() };
+                break;
+
             default:
                 logger.warn('Tried to confirm confirmation of unknown type:', info.type);
 
@@ -446,6 +454,23 @@ const handleWebCall = async ({
                 recipient: address,
                 desc,
                 hostname,
+            }, resolve, reject);
+        }
+        case 'freezeTrx' : {
+            const {
+                amount,
+                duration
+            } = args;
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.FREEZE,
+                amount,
+                duration
+            }, resolve, reject);
+        }
+        case 'unfreezeTrx' : {
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.UNFREEZE
             }, resolve, reject);
         }
         case 'issueAsset' : {
