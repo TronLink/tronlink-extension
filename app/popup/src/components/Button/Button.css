@@ -5,13 +5,25 @@
     text-align: center;
     font-size: 14px;
     cursor: pointer;
-    -webkit-transition: .3s;
-    -o-transition: .3s;
-    transition: .3s;
+    transition: 200ms;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.button:hover {
+    transition: 0s;
+    transform: scale(0.98);
+}
+
+.button:active {
+    transition:  0s;
+    transform: scale(0.95);
+}
+
+.button.disabled:hover, .button.loading:hover {
+    transform: none;
 }
 
 .button.disabled, .button.loading {
