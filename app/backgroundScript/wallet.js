@@ -133,6 +133,28 @@ export default class Wallet {
         return this._accounts[this._currentAccount];
     }
 
+    async freeze(amount, duration) {
+        const account = this.getFullAccount();
+
+        logger.info(`Freezing from ${account.publicKey} amount ${amount} duration ${duration}`);
+
+        return this._rpc.freezeBalance(
+            account.privateKey,
+            amount,
+            duration
+        );
+    }
+
+    async unfreeze() {
+        const account = this.getFullAccount();
+
+        logger.info(`Unfreezing from ${account.publicKey}`);
+
+        return this._rpc.unfreezeBalance(
+            account.privateKey
+        );
+    }
+
     async send(recipient, amount) {
         const account = this.getFullAccount();
 
