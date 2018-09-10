@@ -247,11 +247,11 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.FREEZE:
-                output = { output, ...await wallet.freeze(info.amount, info.duration) };
+                output.rpcResponse = await wallet.freeze(info.amount, info.duration);
                 break;
 
             case CONFIRMATION_TYPE.UNFREEZE:
-                output = { output, ...await wallet.unfreeze() };
+                output.rpcResponse = await wallet.unfreeze();
                 break;
 
             default:
