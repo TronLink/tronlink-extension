@@ -228,11 +228,11 @@ popup.on('acceptConfirmation', async ({
     try {
         switch (info.type) {
             case CONFIRMATION_TYPE.SEND_TRON:
-                output.rpcResponse = await wallet.send(info.recipient, info.amount);
+                output.rpcResponse = await wallet.sendTrx(info.to, info.amount);
                 break;
 
             case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.assetID, info.amount);
+                output.rpcResponse = await wallet.sendAsset(info.to, info.amount, info.assetID);
                 break;
 
             case CONFIRMATION_TYPE.ISSUE_ASSET:
@@ -399,7 +399,7 @@ popup.on('updateAccount', async data => {
 });
 
 popup.on('sendTron', ({ data, resolve, reject }) => {
-    const address = Utils.transformAddress(data.recipient);
+    const address = Utils.transformAddress(data.to);
 
     if(!address)
         return reject('The recipient address is invalid');
@@ -413,7 +413,7 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     return addConfirmation({
         type: CONFIRMATION_TYPE.SEND_TRON,
         amount: parseInt(data.amount),
-        recipient: address,
+        to: address,
         desc: false,
         hostname: 'TronLink',
     }, resolve, reject);
@@ -433,12 +433,12 @@ const handleWebCall = async ({
     switch (method) {
         case CONFIRMATION_METHODS.SEND_TRX: {
             const {
-                recipient,
+                to,
                 amount,
                 desc
             } = args;
 
-            const address = Utils.transformAddress(recipient);
+            const address = Utils.transformAddress(to);
 
             if(!address)
                 return reject('Invalid recipient provided');
@@ -452,7 +452,7 @@ const handleWebCall = async ({
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_TRON,
                 amount: parseInt(amount),
-                recipient: address,
+                to: address,
                 desc,
                 hostname,
             }, resolve, reject);
@@ -487,13 +487,13 @@ const handleWebCall = async ({
         }
         case CONFIRMATION_METHODS.SEND_ASSET: {
             const {
-                recipient,
+                to,
                 assetID,
                 amount,
                 desc
             } = args;
 
-            const address = Utils.transformAddress(recipient);
+            const address = Utils.transformAddress(to);
 
             if(!address)
                 return reject('Invalid recipient provided');
@@ -513,7 +513,7 @@ const handleWebCall = async ({
             return addConfirmation({
                 type: CONFIRMATION_TYPE.SEND_ASSET,
                 amount: parseInt(amount),
-                recipient: address,
+                to: address,
                 assetID,
                 desc,
                 hostname
@@ -588,38 +588,38 @@ const handleWebCall = async ({
         }
         case CONFIRMATION_METHODS.GET_CURRENT_BLOCK : {
             return resolve(
-                await wallet.rpc.getNowBlock()
+                await wallet.tronweb.trx.getCurrentBlock()
             );
         }
         case CONFIRMATION_METHODS.LIST_SUPER_REPRESENTATIVES: {
             return resolve(
-                await wallet.rpc.getWitnesses()
+                await wallet.tronweb.trx.listSuperRepresentatives()
             );
         }
         case CONFIRMATION_METHODS.LIST_TOKENS : {
             return resolve(
-                await wallet.rpc.getTokens()
+                await wallet.tronweb.trx.listTokens()
             );
         }
         case CONFIRMATION_METHODS.GET_BLOCK : {
             const { blockID } = args;
 
             return resolve(
-                await wallet.rpc.getBlock(blockID)
+                await wallet.tronweb.trx.getBlock(blockID)
             );
         }
         case CONFIRMATION_METHODS.GET_TRANSACTION : {
             const { transactionID } = args;
 
             return resolve(
-                await wallet.rpc.getTransactionById(transactionID)
+                await wallet.tronweb.trx.getTransactionById(transactionID)
             );
         }
         case CONFIRMATION_METHODS.GET_TRANSACTION_INFO : {
             const { transactionID } = args;
 
             return resolve(
-                await wallet.rpc.getTransactionInfoById(transactionID)
+                await wallet.tronweb.trx.getTransactionInfoById(transactionID)
             );
         }
         default:

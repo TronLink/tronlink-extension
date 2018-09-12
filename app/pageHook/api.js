@@ -164,7 +164,7 @@ class TronLink {
                     throw new Error('Invalid description provided');
 
                 return this._dispatch(CONFIRMATION_METHODS.SEND_ASSET, {
-                    recipient: address,
+                    to: address,
                     amount,
                     assetID,
                     desc

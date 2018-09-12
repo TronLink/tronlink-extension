@@ -1,4 +1,4 @@
-import TronUtils from 'TronUtils';
+import TronWeb from 'tronweb';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import AccountHandler from 'lib/AccountHandler';
@@ -13,10 +13,10 @@ const logger = new Logger('wallet');
 
 export default class Wallet {
     constructor({ full, solidity }) {
-        this._rpc = new TronUtils.rpc({
-            full_node: full, // eslint-disable-line
-            solidity_node: solidity // eslint-disable-line
-        });
+        this._tronweb = new TronWeb(
+            full,
+            solidity
+        );
 
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
@@ -35,8 +35,8 @@ export default class Wallet {
         return this._walletStatus;
     }
 
-    get rpc() {
-        return this._rpc;
+    get tronweb() {
+        return this._tronweb;
     }
 
     _loadWallet() {
@@ -155,27 +155,27 @@ export default class Wallet {
         );
     }
 
-    async send(recipient, amount) {
+    async sendTrx(to, amount) {
         const account = this.getFullAccount();
 
-        logger.info(`Sending from ${account.publicKey} to ${recipient}, amount: ${amount}`);
+        logger.info(`Sending from ${account.publicKey} to ${to}, amount: ${amount}`);
 
-        return this._rpc.sendTrx(
+        return this._tronweb.trx.sendTrx(
+            to,
+            amount,
             account.privateKey,
-            recipient,
-            amount
         );
     }
 
-    async sendAsset(recipient, asset, amount) {
+    async sendAsset(to, amount, asset) {
         const account = this.getFullAccount();
-        logger.info(`Sending asset from ${account.publicKey} to ${recipient}, asset: ${asset}, amount: ${amount}`);
+        logger.info(`Sending asset from ${account.publicKey} to ${to}, asset: ${asset}, amount: ${amount}`);
 
-        return this._rpc.sendAsset(
-            account.privateKey,
-            recipient,
+        return this._tronweb.trx.sendAsset(
+            to,
+            amount,
             utils.stringToHex(asset),
-            amount
+            account.privateKey
         );
     }
 
