@@ -13,6 +13,7 @@ import randomUUID from 'uuid/v4';
 import {
     CONFIRMATION_TYPE,
     CONFIRMATION_RESULT,
+    CONFIRMATION_METHODS,
     WALLET_STATUS
 } from 'lib/constants';
 
@@ -430,7 +431,7 @@ const handleWebCall = async ({
     reject
 }) => {
     switch (method) {
-        case 'sendTron': {
+        case CONFIRMATION_METHODS.SEND_TRX: {
             const {
                 recipient,
                 amount,
@@ -456,7 +457,7 @@ const handleWebCall = async ({
                 hostname,
             }, resolve, reject);
         }
-        case 'freezeTrx' : {
+        case CONFIRMATION_METHODS.FREEZE_TRX : {
             const {
                 amount,
                 duration
@@ -468,12 +469,12 @@ const handleWebCall = async ({
                 duration
             }, resolve, reject);
         }
-        case 'unfreezeTrx' : {
+        case CONFIRMATION_METHODS.UNFREEZE_TRX : {
             return addConfirmation({
                 type: CONFIRMATION_TYPE.UNFREEZE
             }, resolve, reject);
         }
-        case 'issueAsset' : {
+        case CONFIRMATION_METHODS.ISSUE_ASSET : {
             const {
                 options
             } = args;
@@ -484,7 +485,7 @@ const handleWebCall = async ({
                 hostname
             }, resolve, reject);
         }
-        case 'sendAsset': {
+        case CONFIRMATION_METHODS.SEND_ASSET: {
             const {
                 recipient,
                 assetID,
@@ -518,7 +519,7 @@ const handleWebCall = async ({
                 hostname
             }, resolve, reject);
         }
-        case 'createSmartContract': {
+        case CONFIRMATION_METHODS.CREATE_SMARTCONTRACT: {
             const {
                 abi,
                 bytecode,
@@ -534,7 +535,7 @@ const handleWebCall = async ({
                 options
             }, resolve, reject);
         }
-        case 'triggerSmartContract' : {
+        case CONFIRMATION_METHODS.TRIGGER_SMARTCONTRACT : {
             const {
                 address,
                 functionSelector,
@@ -550,7 +551,7 @@ const handleWebCall = async ({
                 options
             }, resolve, reject);
         }
-        case 'callSmartContract' : {
+        case CONFIRMATION_METHODS.CALL_SMARTCONTRACT : {
             const {
                 address,
                 functionSelector,
@@ -568,7 +569,7 @@ const handleWebCall = async ({
 
             return reject('Wallet not unlocked');
         }
-        case 'getAccount': {
+        case CONFIRMATION_METHODS.GET_ACCOUNT: {
             const account = wallet.getAccount();
 
             if(account)
@@ -576,7 +577,7 @@ const handleWebCall = async ({
 
             return reject('Wallet not unlocked');
         }
-        case 'nodeGetAccount': {
+        case CONFIRMATION_METHODS.NODE_GET_ACCOUNT: {
             const {
                 address
             } = args;
@@ -585,36 +586,36 @@ const handleWebCall = async ({
                 await wallet.rpc.getAccount(address)
             );
         }
-        case 'getLatestBlock' : {
+        case CONFIRMATION_METHODS.GET_CURRENT_BLOCK : {
             return resolve(
                 await wallet.rpc.getNowBlock()
             );
         }
-        case 'getWitnesses' : {
+        case CONFIRMATION_METHODS.LIST_SUPER_REPRESENTATIVES: {
             return resolve(
                 await wallet.rpc.getWitnesses()
             );
         }
-        case 'getTokens' : {
+        case CONFIRMATION_METHODS.LIST_TOKENS : {
             return resolve(
                 await wallet.rpc.getTokens()
             );
         }
-        case 'getBlock' : {
+        case CONFIRMATION_METHODS.GET_BLOCK : {
             const { blockID } = args;
 
             return resolve(
                 await wallet.rpc.getBlock(blockID)
             );
         }
-        case 'getTransaction' : {
+        case CONFIRMATION_METHODS.GET_TRANSACTION : {
             const { transactionID } = args;
 
             return resolve(
                 await wallet.rpc.getTransactionById(transactionID)
             );
         }
-        case 'getTransactionInfo' : {
+        case CONFIRMATION_METHODS.GET_TRANSACTION_INFO : {
             const { transactionID } = args;
 
             return resolve(

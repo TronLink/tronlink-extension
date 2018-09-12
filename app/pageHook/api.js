@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
+import { CONFIRMATION_METHODS } from 'lib/constants';
 
 const logger = new Logger('TronLink');
 
@@ -40,40 +41,40 @@ class TronLink {
      * @readonly
      * @memberof TronLink
      */
-    get node() {
+    get trx() {
         return {
             /**
              * Returns the latest tracked block
              * @readonly
              * @memberof TronLink
              */
-            getLatestBlock: () => {
-                return this._dispatch('getLatestBlock');
+            getCurrentBlock: () => {
+                return this._dispatch(CONFIRMATION_METHODS.GET_CURRENT_BLOCK);
             },
             /**
-             * Returns the current list of tracked witnesses
+             * Returns the current list of super representatives in the network.
              * @readonly
              * @memberof TronLink
              */
-            getWitnesses: () => {
-                return this._dispatch('getWitnesses');
+            listSuperRepresentatives: () => {
+                return this._dispatch(CONFIRMATION_METHODS.LIST_SUPER_REPRESENTATIVES);
             },
             /**
-             * Returns all tokens that are currently tracked
+             * Returns all basic tokens in the network.
              * @readonly
              * @memberof TronLink
              */
-            getTokens: () => {
-                return this._dispatch('getTokens');
+            listTokens: () => {
+                return this._dispatch(CONFIRMATION_METHODS.LIST_TOKENS);
             },
             /**
-             * Returns a block given a valid blockID
-             * @param {string} blockID A valid blockID for a tracked block on the blockchain
+             * Returns a block given a block id, block hash, or 'earliest' or 'latest'
+             * @param block id, block hash, or 'earliest' or 'latest'
              * @readonly
              * @memberof TronLink
              */
-            getBlock: blockID => {
-                return this._dispatch('getBlock', { blockID });
+            getBlock: block => {
+                return this._dispatch(CONFIRMATION_METHODS.GET_BLOCK, { block });
             },
             /**
              * Returns a transaction given a valid transactionID
@@ -82,7 +83,7 @@ class TronLink {
              * @memberof TronLink
              */
             getTransaction: transactionID => {
-                return this._dispatch('getTransaction', { transactionID });
+                return this._dispatch(CONFIRMATION_METHODS.GET_TRANSACTION, { transactionID });
             },
             /**
              * Returns the transaction info given a valid transactionID
@@ -91,7 +92,7 @@ class TronLink {
              * @memberof TronLink
              */
             getTransactionInfo: transactionID => {
-                return this._dispatch('getTransactionInfo', { transactionID });
+                return this._dispatch(CONFIRMATION_METHODS.GET_TRANSACTION_INFO, { transactionID });
             },
             /**
              * Returns an account given a valid hex, base58 or base64 address
@@ -103,7 +104,7 @@ class TronLink {
                 if (!this.utils.validateAddress(address))
                     throw new Error('Invalid address provided');
 
-                return this._dispatch('nodeGetAccount', { address });
+                return this._dispatch(CONFIRMATION_METHODS.NODE_GET_ACCOUNT, { address });
             }
         };
     }
@@ -117,14 +118,14 @@ class TronLink {
         return {
             /**
              * Requests confirmation from the end user to send tron to the specified address. Will broadcast the transaction if accepted
-             * @param {string} recipient A valid hex, base58 or base64 address of the recipient
+             * @param {string} to A valid hex, base58 or base64 address of the recipient
              * @param {number} amount The amount of TRX the end user should send
              * @param {string} [desc=false] Transaction description with a maximum of 240 characters to display in the confirmation dialog
              * @readonly
              * @memberof TronLink
              */
-            sendTron: (recipient, amount, desc = false) => {
-                const address = this.utils.validateAddress(recipient);
+            sendTrx: (to, amount, desc = false) => {
+                const address = this.utils.validateAddress(to);
 
                 if (!address)
                     throw new Error('Invalid recipient provided');
@@ -135,23 +136,23 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendTron', {
-                    recipient: address,
+                return this._dispatch(CONFIRMATION_METHODS.SEND_TRX, {
+                    to: address,
                     amount: amount * 1000000,
                     desc
                 });
             },
             /**
              * Requests confirmation from the end user to send an asset to the specified address. Will broadcast the transaction if accepted
-             * @param {string} recipient A valid hex, base58 or base64 address of the recipient
+             * @param {string} to A valid hex, base58 or base64 address of the recipient
              * @param {number} amount The amount of the asset the end user should send
              * @param {string} assetID The ID of the asset you would like the end user to send. You can obtain this from the token list
              * @param {string} [desc=false] Transaction description with a maximum of 240 characters to display in the confirmation dialog
              * @readonly
              * @memberof TronLink
              */
-            sendAsset: (recipient, amount, assetID, desc) => {
-                const address = this.utils.validateAddress(recipient);
+            sendAsset: (to, amount, assetID, desc) => {
+                const address = this.utils.validateAddress(to);
 
                 if (!address)
                     throw new Error('Invalid recipient provided');
@@ -162,7 +163,7 @@ class TronLink {
                 if (!Utils.validateDescription(desc))
                     throw new Error('Invalid description provided');
 
-                return this._dispatch('sendAsset', {
+                return this._dispatch(CONFIRMATION_METHODS.SEND_ASSET, {
                     recipient: address,
                     amount,
                     assetID,
@@ -174,7 +175,7 @@ class TronLink {
              * @param options an object containing everything required to create an asset. More issues here https://github.com/tronprotocol/Documentation/blob/master/TRX/Tron-http.md
              */
             issueAsset: (options) => {
-                return this._dispatch('issueAsset', {
+                return this._dispatch(CONFIRMATION_METHODS.ISSUE_ASSET, {
                     options
                 });
             },
@@ -192,7 +193,7 @@ class TronLink {
                 if (!Number.isInteger(duration) || duration <= 0)
                     throw new Error('Invalid duration provided');
 
-                return this._dispatch('freezeTrx', {
+                return this._dispatch(CONFIRMATION_METHODS.FREEZE_TRX, {
                     amount: amount * 1000000,
                     duration
                 });
@@ -203,7 +204,7 @@ class TronLink {
              * @memberof TronLink
              */
             unfreeze: () => {
-                return this._dispatch('unfreezeTrx', {});
+                return this._dispatch(CONFIRMATION_METHODS.UNFREEZE_TRX, {});
             },
             /**
              * Requests confirmation from the end user to sign and broadcast a transaction. Will broadcast the transaction if accepted
@@ -212,7 +213,7 @@ class TronLink {
              * @memberof TronLink
              */
             sendTransaction: transaction => {
-                return this._dispatch('sendTransaction', { transaction });
+                return this._dispatch(CONFIRMATION_METHODS.SEND_TRANSACTION, { transaction });
             },
             /**
              * Requests confirmation from the end user to sign a transaction without broadcasting it
@@ -221,7 +222,7 @@ class TronLink {
              * @memberof TronLink
              */
             signTransaction: transaction => {
-                return this._dispatch('signTransaction', { transaction });
+                return this._dispatch(CONFIRMATION_METHODS.SIGN_TRANSACTION, { transaction });
             },
             /**
              * Requests confirmation from the end user to simulate a smart contract call
@@ -236,7 +237,7 @@ class TronLink {
                 if (!this.utils.validateAddress(address))
                     throw new Error('Invalid smart contract address provided');
 
-                return this._dispatch('simulateSmartContract', {
+                return this._dispatch(CONFIRMATION_METHODS.SIMULATE_SMARTCONTRACT, {
                     address,
                     functionSelector,
                     parameters,
@@ -254,7 +255,7 @@ class TronLink {
             createSmartContract: (abi, bytecode, name, options = {
                 feeLimit: 10000000,
                 callValue: 0
-            }) => this._dispatch('createSmartContract', {
+            }) => this._dispatch(CONFIRMATION_METHODS.CREATE_SMARTCONTRACT, {
                 abi,
                 bytecode,
                 name,
@@ -272,7 +273,7 @@ class TronLink {
             triggerSmartContract: (address, functionSelector, parameters = [], options = {
                 feeLimit: 10000000,
                 callValue: 0
-            }) => this._dispatch('triggerSmartContract', {
+            }) => this._dispatch(CONFIRMATION_METHODS.TRIGGER_SMARTCONTRACT, {
                 address,
                 functionSelector,
                 parameters,
@@ -290,7 +291,7 @@ class TronLink {
             callSmartContract: (address, functionSelector, parameters = [], options = {
                 feeLimit: 10000000,
                 callValue: 0
-            }) => this._dispatch('callSmartContract', {
+            }) => this._dispatch(CONFIRMATION_METHODS.CALL_SMARTCONTRACT, {
                 address,
                 functionSelector,
                 parameters,
@@ -302,7 +303,7 @@ class TronLink {
              * @memberof TronLink
              */
             getAccount: () => {
-                return this._dispatch('getAccount');
+                return this._dispatch(CONFIRMATION_METHODS.GET_ACCOUNT);
             }
         };
     }

@@ -13,6 +13,28 @@ export const CONFIRMATION_RESULT = {
     DECLINED: 'DECLINED'
 };
 
+export const CONFIRMATION_METHODS = {
+    GET_CURRENT_BLOCK: 'getCurrentBlock',
+    LIST_SUPER_REPRESENTATIVES: 'listSuperRepresentatives',
+    LIST_TOKENS: 'listTokens',
+    GET_BLOCK: 'getBlock',
+    GET_TRANSACTION: 'getTransaction',
+    GET_TRANSACTION_INFO: 'getTransactionInfo',
+    NODE_GET_ACCOUNT: 'nodeGetAccount',
+    SEND_TRX: 'sendTrx',
+    SEND_ASSET: 'sendAsset',
+    ISSUE_ASSET: 'issueAsset',
+    FREEZE_TRX: 'freezeTrx',
+    UNFREEZE_TRX: 'unfreezeTrx',
+    SEND_TRANSACTION: 'sendTransaction',
+    SIGN_TRANSACTION: 'signTransaction',
+    SIMULATE_SMARTCONTRACT: 'simulatedSmartContract',
+    CREATE_SMARTCONTRACT: 'createSmartContract',
+    TRIGGER_SMARTCONTRACT: 'triggerSmartContract',
+    CALL_SMARTCONTRACT: 'callSmartContract',
+    GET_ACCOUNT: 'getAccount'
+};
+
 export const WALLET_STATUS = {
     UNINITIALIZED: 'UNINITIALIZED',
     LOCKED: 'LOCKED',
