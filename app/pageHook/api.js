@@ -1,24 +1,24 @@
-import { BigNumber } from 'bignumber.js';
+import TronWeb from 'tronweb';
 
-import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import { CONFIRMATION_METHODS } from 'lib/constants';
 
-const logger = new Logger('TronLink');
+//import Logger from 'lib/logger';
+//const logger = new Logger('TronLink');
 
 /**
  * TronLink API v1
  * - Exposes node, wallet and utility methods
  * @class TronLink
  */
-class TronLink {
+class TronLink extends TronWeb {
     /**
      * Creates an instance of TronLink v1
      * @param {object} linkedRequest Event handler for data communication with backgroundScript
      * @param {string} [network='mainnet'] Network type to configure the API with for address validation
-     * @memberof TronLink
      */
     constructor(linkedRequest, network = 'mainnet') {
+        super('', '');
         if (network !== 'mainnet' && network !== 'testnet')
             throw new Error('Invalid network supplied. Expected mainnet or testnet');
 
@@ -36,51 +36,56 @@ class TronLink {
         });
     }
 
-    /**
-     * External node methods for communicating with the blockchain
-     * @readonly
-     * @memberof TronLink
-     */
     get trx() {
         return {
             /**
              * Returns the latest tracked block
-             * @readonly
-             * @memberof TronLink
              */
             getCurrentBlock: () => {
                 return this._dispatch(CONFIRMATION_METHODS.GET_CURRENT_BLOCK);
             },
             /**
-             * Returns the current list of super representatives in the network.
-             * @readonly
-             * @memberof TronLink
-             */
-            listSuperRepresentatives: () => {
-                return this._dispatch(CONFIRMATION_METHODS.LIST_SUPER_REPRESENTATIVES);
-            },
-            /**
-             * Returns all basic tokens in the network.
-             * @readonly
-             * @memberof TronLink
-             */
-            listTokens: () => {
-                return this._dispatch(CONFIRMATION_METHODS.LIST_TOKENS);
-            },
-            /**
              * Returns a block given a block id, block hash, or 'earliest' or 'latest'
              * @param block id, block hash, or 'earliest' or 'latest'
-             * @readonly
-             * @memberof TronLink
              */
             getBlock: block => {
                 return this._dispatch(CONFIRMATION_METHODS.GET_BLOCK, { block });
             },
             /**
+             * Returns a block given a block hash
+             * @param hash, block hash
+             */
+            getBlockByHash: hash => {
+                //TODO verify that argument is actually a hash
+                return this._dispatch(CONFIRMATION_METHODS.GET_BLOCK, { hash });
+            },
+            /**
+             * Returns a block given a block id
+             * @param blockID
+             */
+            getBlockByNumber: blockID => {
+                //TODO verify that argument is actually a block id
+                return this._dispatch(CONFIRMATION_METHODS.GET_BLOCK, { blockID });
+            },
+            /**
+             * returns transaction count given either a block hash or a block id.
+             * @param block
+             */
+            getBlockTransactionCount: block => {
+                //TODO IMPLEMENT
+                throw `getBlockTransactionCount(${block} not implemented`;
+            },
+            /**
+             * returns transactions count given either a block hash or a block id.
+             * @param block
+             */
+            getTransactionFromBlock: block => {
+                //TODO IMPLEMENT
+                throw `getTransactionFromBlock(${block} not implemented`;
+            },
+            /**
              * Returns a transaction given a valid transactionID
              * @param {string} transactionID A valid transactionID for a tracked block on the blockchain
-             * @readonly
-             * @memberof TronLink
              */
             getTransaction: transactionID => {
                 return this._dispatch(CONFIRMATION_METHODS.GET_TRANSACTION, { transactionID });
@@ -88,43 +93,136 @@ class TronLink {
             /**
              * Returns the transaction info given a valid transactionID
              * @param {string} transactionID A valid transactionID for a tracked block on the blockchain
-             * @readonly
-             * @memberof TronLink
              */
             getTransactionInfo: transactionID => {
                 return this._dispatch(CONFIRMATION_METHODS.GET_TRANSACTION_INFO, { transactionID });
             },
             /**
+             * Returns list of transactions TO this address
+             */
+            getTransactionsToAddress: (address, limit = 30, offset = 0) => {
+                //TODO IMPLEMENT
+                throw `getTransactionsToAddress(${address}, ${limit}, ${offset}) not implemented`;
+            },
+            /**
+             * Returns list of transactions FROM this address
+             */
+            getTransactionsFromAddress: (address, limit = 30, offset = 0) => {
+                //TODO IMPLEMENT
+                throw `getTransactionsToAddress(${address}, ${limit}, ${offset}) not implemented`;
+            },
+            /**
+             * Returns list of transactions related to this address
+             */
+            getTransactionsRelated: (address, direction = 'all', limit = 30, offset = 0) => {
+                //TODO IMPLEMENT
+                throw `getTransactionsToAddress(${address}, ${direction}, ${limit}, ${offset}) not implemented`;
+            },
+            /**
              * Returns an account given a valid hex, base58 or base64 address
              * @param {string} address A valid hex, base58 or base64 address belonging to an account that has received TRX in the past
-             * @readonly
-             * @memberof TronLink
              */
             getAccount: address => {
                 if (!this.utils.validateAddress(address))
                     throw new Error('Invalid address provided');
 
                 return this._dispatch(CONFIRMATION_METHODS.NODE_GET_ACCOUNT, { address });
-            }
-        };
-    }
-
-    /**
-     * External wallet methods for communicating with the blockchain.
-     * @readonly
-     * @memberof TronLink
-     */
-    get wallet() {
-        return {
+            },
+            /**
+             * Returns balance of an address
+             * @param {string} address A valid hex, base58 or base64 address belonging to an account that has received TRX in the past
+             */
+            getBalance: address => {
+                //TODO IMPLEMENT
+                throw `getBalance(${address}) not implemented`;
+            },
+            /**
+             * Returns bandwidth of an address
+             * @param {string} address A valid hex, base58 or base64 address belonging to an account that has received TRX in the past
+             */
+            getBandwidth: address => {
+                //TODO IMPLEMENT
+                throw `getBandwidth(${address}) not implemented`;
+            },
+            /**
+             * Returns token issued by an address
+             * @param {string} address A valid hex, base58 or base64 address belonging to an account that has received TRX in the past
+             */
+            getTokensIssuedByAddress: address => {
+                //TODO IMPLEMENT
+                throw `getTokensIssuedByAddress(${address}) not implemented`;
+            },
+            /**
+             * Returns the token given its id
+             * @param {string} tokenID
+             */
+            getTokenFromId: tokenID => {
+                //TODO IMPLEMENT
+                throw `getTokenFromId(${tokenID}) not implemented`;
+            },
+            /**
+             * Returns nodes in the network
+             */
+            listNodes: () => {
+                //TODO IMPLEMENT
+                throw 'listNodes() not implemented';
+            },
+            /**
+             * Returns blocks in the given range.
+             */
+            getBlockRange: (start = 0, end = 30) => {
+                //TODO IMPLEMENT
+                throw `getBlockRange(${start}, ${end}) not implemented`;
+            },
+            /**
+             * Returns the current list of super representatives in the network.
+             */
+            listSuperRepresentatives: () => {
+                return this._dispatch(CONFIRMATION_METHODS.LIST_SUPER_REPRESENTATIVES);
+            },
+            /**
+             * Returns all basic tokens in the network.
+             */
+            listTokens: () => {
+                return this._dispatch(CONFIRMATION_METHODS.LIST_TOKENS);
+            },
+            /**
+             * Returns time until next vote cycle
+             */
+            timeUntilNextVoteCycle: () => {
+                //TODO IMPLEMENT
+                throw 'timeUntilNextVoteCycle(not implemented';
+            },
+            /**
+             * Returns the contract given its address
+             * @param contractAddress {string} valid hex string of existing smart contract in the network
+             */
+            getContract: contractAddress => {
+                //TODO IMPLEMENT
+                throw `getContract(${contractAddress} not implemented`;
+            },
+            /**
+             * Returns signed transaction
+             * @param transaction
+             */
+            sign: transaction => {
+                //TODO IMPLEMENT
+                throw `sign(${transaction} not implemented`;
+            },
+            /**
+             * @param transaction
+             */
+            sendRawTransaction: transaction => {
+                //TODO IMPLEMENT
+                throw `sendRawTransaction(${transaction} not implemented`;
+            },
             /**
              * Requests confirmation from the end user to send tron to the specified address. Will broadcast the transaction if accepted
              * @param {string} to A valid hex, base58 or base64 address of the recipient
              * @param {number} amount The amount of TRX the end user should send
              * @param {string} [desc=false] Transaction description with a maximum of 240 characters to display in the confirmation dialog
-             * @readonly
-             * @memberof TronLink
              */
-            sendTrx: (to, amount, desc = false) => {
+            sendTransaction: (to, amount, desc = false) => {
                 const address = this.utils.validateAddress(to);
 
                 if (!address)
@@ -146,12 +244,10 @@ class TronLink {
              * Requests confirmation from the end user to send an asset to the specified address. Will broadcast the transaction if accepted
              * @param {string} to A valid hex, base58 or base64 address of the recipient
              * @param {number} amount The amount of the asset the end user should send
-             * @param {string} assetID The ID of the asset you would like the end user to send. You can obtain this from the token list
+             * @param {string} tokenID The ID of the asset you would like the end user to send. You can obtain this from the token list
              * @param {string} [desc=false] Transaction description with a maximum of 240 characters to display in the confirmation dialog
-             * @readonly
-             * @memberof TronLink
              */
-            sendAsset: (to, amount, assetID, desc) => {
+            sendToken: (to, amount, tokenID, desc) => {
                 const address = this.utils.validateAddress(to);
 
                 if (!address)
@@ -166,188 +262,30 @@ class TronLink {
                 return this._dispatch(CONFIRMATION_METHODS.SEND_ASSET, {
                     to: address,
                     amount,
-                    assetID,
+                    tokenID,
                     desc
                 });
             },
-            /**
-             *
-             * @param options an object containing everything required to create an asset. More issues here https://github.com/tronprotocol/Documentation/blob/master/TRX/Tron-http.md
-             */
-            issueAsset: (options) => {
-                return this._dispatch(CONFIRMATION_METHODS.ISSUE_ASSET, {
-                    options
-                });
-            },
-            /**
-             * Requests confirmation from the end user to freeze tron for the specified duration. Will broadcast the transaction if accepted
-             * @param {number} amount The amount of TRX the end user should freeze
-             * @param {number} duration The duration (in days) of how long the TRX should be frozen for
-             * @readonly
-             * @memberof TronLink
-             */
-            freeze: (amount, duration) => {
-                if (!Number.isInteger(amount) || amount <= 0)
-                    throw new Error('Invalid amount provided');
 
-                if (!Number.isInteger(duration) || duration <= 0)
-                    throw new Error('Invalid duration provided');
+            sendAsset: (...args) => {
+                return this.sendToken(...args);
+            },
 
-                return this._dispatch(CONFIRMATION_METHODS.FREEZE_TRX, {
-                    amount: amount * 1000000,
-                    duration
-                });
+            send: (...args) => {
+                return this.sendTransaction(...args);
             },
-            /**
-             * Requests confirmation from the end user to unfreeze all of their current frozen TRX. Will broadcast the transaction if accepted
-             * @readonly
-             * @memberof TronLink
-             */
-            unfreeze: () => {
-                return this._dispatch(CONFIRMATION_METHODS.UNFREEZE_TRX, {});
-            },
-            /**
-             * Requests confirmation from the end user to sign and broadcast a transaction. Will broadcast the transaction if accepted
-             * @param {string} transaction The transaction for the user to sign and broadcast
-             * @readonly
-             * @memberof TronLink
-             */
-            sendTransaction: transaction => {
-                return this._dispatch(CONFIRMATION_METHODS.SEND_TRANSACTION, { transaction });
-            },
-            /**
-             * Requests confirmation from the end user to sign a transaction without broadcasting it
-             * @param {string} transaction The transaction for the user to sign
-             * @readonly
-             * @memberof TronLink
-             */
-            signTransaction: transaction => {
-                return this._dispatch(CONFIRMATION_METHODS.SIGN_TRANSACTION, { transaction });
-            },
-            /**
-             * Requests confirmation from the end user to simulate a smart contract call
-             * @param {string} address The address that hosts the smart contract
-             * @param {object} functionSelector The function to be triggered
-             * @param {array} [parameters=[]] Any parameters that the function takes
-             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
-             * @readonly
-             * @memberof TronLink
-             */
-            simulateSmartContract: (address, functionSelector, parameters = [], options = {}) => {
-                if (!this.utils.validateAddress(address))
-                    throw new Error('Invalid smart contract address provided');
 
-                return this._dispatch(CONFIRMATION_METHODS.SIMULATE_SMARTCONTRACT, {
-                    address,
-                    functionSelector,
-                    parameters,
-                    options
-                });
+            sendTrx: (...args) => {
+                return this.sendTransaction(...args);
             },
-            /**
-             * Requests confirmation from the end user to create and deploy a smart contract. Will deploy the contract if accepted
-             * @param {string} abi The ABI configuration for the smart contract
-             * @param {string} bytecode The compiled bytecode for the smart contract
-             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
-             * @readonly
-             * @memberof TronLink
-             */
-            createSmartContract: (abi, bytecode, name, options = {
-                feeLimit: 10000000,
-                callValue: 0
-            }) => this._dispatch(CONFIRMATION_METHODS.CREATE_SMARTCONTRACT, {
-                abi,
-                bytecode,
-                name,
-                options
-            }),
-            /**
-             * Requests confirmation from the end user to trigger a smart contract call
-             * @param {string} address The address that hosts the smart contract
-             * @param {object} functionSelector The function to be triggered
-             * @param {array} [parameters=[]] Any parameters that the function takes
-             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
-             * @readonly
-             * @memberof TronLink
-             */
-            triggerSmartContract: (address, functionSelector, parameters = [], options = {
-                feeLimit: 10000000,
-                callValue: 0
-            }) => this._dispatch(CONFIRMATION_METHODS.TRIGGER_SMARTCONTRACT, {
-                address,
-                functionSelector,
-                parameters,
-                options
-            }),
-            /**
-             * Requests confirmation from the end user to trigger a smart contract call
-             * @param {string} address The address that hosts the smart contract
-             * @param {object} functionSelector The function to be triggered
-             * @param {array} [parameters=[]] Any parameters that the function takes
-             * @param {object} [options={}] Any options to pass to the node, such as storage_limit, cpu_limit or drop_limit
-             * @readonly
-             * @memberof TronLink
-             */
-            callSmartContract: (address, functionSelector, parameters = [], options = {
-                feeLimit: 10000000,
-                callValue: 0
-            }) => this._dispatch(CONFIRMATION_METHODS.CALL_SMARTCONTRACT, {
-                address,
-                functionSelector,
-                parameters,
-                options
-            }),
-            /**
-             * Returns the current active account used in the extension by the end user
-             * @readonly
-             * @memberof TronLink
-             */
-            getAccount: () => {
-                return this._dispatch(CONFIRMATION_METHODS.GET_ACCOUNT);
-            }
-        };
-    }
 
-    get utils() {
-        return {
-            /**
-             * Validates an address
-             * @param {string} address The address to validate
-             * @returns {(string|boolean)} The base58 transformed address on success, or false on failure
-             * @readonly
-             * @memberof TronLink
-             */
-            validateAddress: input => {
-                logger.info(`Validating address ${input}`);
-
-                const address = Utils.transformAddress(input);
-
-                if (!address)
-                    logger.warn(`Address ${input} is invalid`);
-                else logger.info(`Address ${input} is valid, base58 transformation: ${address}`);
-
-                return address;
+            broadcast: (...args) => {
+                return this.sendRawTransaction(...args);
             },
-            /**
-             * Converts SUN to TRX
-             * @param {number} sun The amount of SUN to convert to TRX
-             * @returns {number} The result of dividing the input by 1,000,000. Use .toNumber() to convert to a JavaScript Number, or toString() to convert to a string
-             * @readonly
-             * @memberof TronLink
-             */
-            sunToTron: sun => {
-                return (new BigNumber(sun)).dividedBy(1000000);
+
+            signTransaction: (...args) => {
+                return this.sign(...args);
             },
-            /**
-             * Converts TRX to SUN
-             * @param {number} tron The amount of TRX to convert to SUN
-             * @returns {number} The result of multiplying the input by 1,000,000. Use .toNumber() to convert to a JavaScript Number, or toString() to convert to a string
-             * @readonly
-             * @memberof TronLink
-             */
-            tronToSun: tron => {
-                return (new BigNumber(tron)).multipliedBy(1000000);
-            }
         };
     }
 
