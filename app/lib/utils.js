@@ -321,8 +321,6 @@ const utils = {
     },
 
     privateKeyToAddress(privateKey) {
-        // React (babel) won't compile TronUtils so I get to write this manually :)))
-
         const privateKeyBytes = ByteArray.fromHexString(privateKey);
         const publicKeyBytes = this.privateKeyToPublicKey(privateKeyBytes);
         const addressBytes = this.publicKeyToAddress(publicKeyBytes);
@@ -334,7 +332,21 @@ const utils = {
 
     isHex(string) {
         return typeof string === 'string' && !isNaN(parseInt(string, 16));
-    }
+    },
+
+    injectPromise(func, ...args) {
+        return new Promise((resolve, reject) => {
+            func(...args, (err, res) => {
+                if(err)
+                    reject(err);
+                else resolve(res);
+            });
+        });
+    },
+
+    isFunction(obj) {
+        return typeof obj === 'function';
+    },
 };
 
 export default utils;

@@ -35,8 +35,8 @@ let addedWebsocketAlert = false;
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
-    wallet.rpc.url_full = node.full; // eslint-disable-line
-    wallet.rpc.url_solidity = node.solidity; // eslint-disable-line
+    wallet.tronWeb.setFullNode(node.full); // eslint-disable-line
+    wallet.tronWeb.setSolidityNode(node.solidity); // eslint-disable-line
 
     webSocket.stop();
 
@@ -418,7 +418,7 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     }, resolve, reject);
 });
 
-const handleWebCall = async ({
+/*const handleWebCall = async ({
     request: {
         method,
         args = {}
@@ -642,4 +642,30 @@ linkedResponse.on('request', ({
     }
 
     reject('Unknown protocol called');
+});*/
+
+// Ideally we should move this into a separate file
+linkedResponse.on('request', ({
+    request,
+    resolve,
+    reject
+}) => {
+    const {
+        method,
+        payload // eslint-disable-line
+    } = request;
+
+    if(!method)
+        return reject('Unknown protocol called');
+
+    const callback = (err, result) => (
+        err ? reject(err) : resolve(result)
+    );
+
+    switch(method) {
+        case 'listNodes':
+            return wallet.tronWeb.trx.listNodes(callback);
+        default:
+            reject('Method not implemented');
+    }
 });
