@@ -15,13 +15,25 @@ const nodeSelector = {
 
         this._defaultNodes = {
             [DEFAULT_NODE]: {
-                name: 'TronWatch Private TestNet',
-                full: 'http://rpc.tron.watch:8090',
-                solidity: 'http://rpc.tron.watch:8091',
-                websocket: 'ws://rpc.tron.watch:8080',
+                name: 'TronGrid Private TestNet',
+                full: 'https://api.trongrid.io:8090',
+                solidity: 'https://api.trongrid.io:8091',
+                event: 'https://api.trongrid.io',
+                websocket: '',
                 default: true,
                 mainnet: false
-            }/*,
+            }
+
+            // {
+            //     name: 'TronWatch Private TestNet',
+            //     full: 'http://rpc.tron.watch:8090',
+            //     solidity: 'http://rpc.tron.watch:8091',
+            //     event: '',
+            //     websocket: 'ws://rpc.tron.watch:8080',
+            //     default: true,
+            //     mainnet: false
+            // }
+            /*,
             AB015F81F2E4CAA9BB94140D6A72BF56: {
                 name: 'Tron TestNet',
                 full: 'http://47.254.146.147:8090',
@@ -83,6 +95,7 @@ const nodeSelector = {
         const {
             full,
             solidity,
+            event,
             websocket,
             mainnet
         } = node;
@@ -101,6 +114,7 @@ const nodeSelector = {
             name,
             full,
             solidity,
+            event,
             websocket,
             mainnet
         };

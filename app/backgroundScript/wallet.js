@@ -12,10 +12,11 @@ import utils from '../lib/utils';
 const logger = new Logger('wallet');
 
 export default class Wallet {
-    constructor({ full, solidity }) {
+    constructor({ full, solidity, event }) {
         this._tronweb = new TronWeb(
             full,
-            solidity
+            solidity,
+            event
         );
 
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
@@ -90,7 +91,7 @@ export default class Wallet {
 
         while(checked < 20) {
             const childAccount = account.getAccountAtIndex(accountIndex);
-            const transactions = await this._rpc.getTransactions(childAccount.publicKey);
+            const transactions = await this._tronweb.trx.getTransactionsRelated(childAccount.publicKey, 'all');
 
             accountIndex++;
 
@@ -128,6 +129,7 @@ export default class Wallet {
         const keys = Object.keys(this._accounts);
 
         this._currentAccount = keys[0];
+        this._tronweb.setAddress(this._currentAccount);
         this._saveStorage();
 
         return this._accounts[this._currentAccount];
@@ -138,11 +140,12 @@ export default class Wallet {
 
         logger.info(`Freezing from ${account.publicKey} amount ${amount} duration ${duration}`);
 
-        return this._rpc.freezeBalance(
-            account.privateKey,
-            amount,
-            duration
-        );
+        // return this._rpc.freezeBalance(
+        //     account.privateKey,
+        //     amount,
+        //     duration
+        // );
+        return {};
     }
 
     async unfreeze() {
@@ -150,9 +153,10 @@ export default class Wallet {
 
         logger.info(`Unfreezing from ${account.publicKey}`);
 
-        return this._rpc.unfreezeBalance(
-            account.privateKey
-        );
+        // return this._rpc.unfreezeBalance(
+        //     account.privateKey
+        // );
+        return {};
     }
 
     async sendTrx(to, amount) {
@@ -180,18 +184,19 @@ export default class Wallet {
     }
 
     async issueAsset(options) {
-        const account = this.getFullAccount();
+        // const account = this.getFullAccount();
         logger.info('Issuing asset: ', options);
 
-        options.name = utils.stringToHex(options.name);
-        options.abbr = utils.stringToHex(options.abbr);
-        options.description = utils.stringToHex(options.description);
-        options.url = utils.stringToHex(options.url);
+        // options.name = utils.stringToHex(options.name);
+        // options.abbr = utils.stringToHex(options.abbr);
+        // options.description = utils.stringToHex(options.description);
+        // options.url = utils.stringToHex(options.url);
 
-        return this._rpc.issueAsset(
-            account.privateKey,
-            options
-        );
+        // return this._rpc.issueAsset(
+        //     account.privateKey,
+        //     options
+        // );
+        return {};
     }
 
     async triggerSmartContract(address, functionSelector, parameters, options) {
@@ -204,13 +209,14 @@ export default class Wallet {
             options
         });
 
-        return this._rpc.triggerContract(
-            account.privateKey,
-            address,
-            functionSelector,
-            parameters,
-            options
-        );
+        // return this._rpc.triggerContract(
+        //     account.privateKey,
+        //     address,
+        //     functionSelector,
+        //     parameters,
+        //     options
+        // );
+        return {};
     }
 
     async createSmartContract(abi, bytecode, name, options) {
@@ -218,20 +224,20 @@ export default class Wallet {
 
         logger.info(`Creating smart contract from account ${account.publicKey}`, { abi, bytecode, name, options });
 
-        return this._rpc.deployContract(
-            account.privateKey,
-            abi,
-            bytecode,
-            name,
-            options
-        );
+        // return this._rpc.deployContract(
+        //     account.privateKey,
+        //     abi,
+        //     bytecode,
+        //     name,
+        //     options
+        // );
+        return {};
     }
 
     async updateAccount(address, save = false) {
         logger.info(`Account update requested for ${address}`);
-
-        const account = await this._rpc.getAccount(address);
-        const transactions = await this._rpc.getTransactions(address);
+        const account = await this._tronweb.trx.getAccount(address);
+        const transactions = await this._tronweb.trx.getTransactionsRelated(address, 'all');
 
         logger.info('Account updated', { account, transactions });
 
@@ -327,6 +333,8 @@ export default class Wallet {
             this._password = password;
             this._internalAccounts = internalAccounts;
 
+            this._tronweb.setAddress(this._currentAccount);
+
             this._walletStatus = WALLET_STATUS.UNLOCKED;
 
             logger.info('Wallet unlocked successfully');
@@ -353,6 +361,7 @@ export default class Wallet {
         const keys = Object.keys(this._accounts);
 
         this._currentAccount = keys[0];
+        this._tronweb.setAddress(this._currentAccount);
         this._saveStorage();
 
         return this._accounts[this._currentAccount];
@@ -394,6 +403,7 @@ export default class Wallet {
             return;
 
         this._currentAccount = publicKey;
+        this._tronweb.setAddress(this._currentAccount);
         this._saveStorage();
     }
 

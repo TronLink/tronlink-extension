@@ -18,6 +18,7 @@ class Settings extends Component {
         customNode: {
             full: '',
             solidity: '',
+            event: '',
             websocket: '',
             loading: false
         }
@@ -174,6 +175,14 @@ class Settings extends Component {
                         value={ this.state.customNode.solidity }
                         onChange={ ({ target: { value } }) => this.changeCustomNode('solidity', value) }
                         placeholder={ this.translate({ id: 'settings.addNode.solidityNode' }) } />
+                </div>
+                <div className='inputContainer' data-prefix='Event Server'>
+                    <input
+                        type='text'
+                        readOnly={ this.state.customNode.loading }
+                        value={ this.state.customNode.event }
+                        onChange={ ({ target: { value } }) => this.changeCustomNode('event', value) }
+                        placeholder={ this.translate({ id: 'settings.addNode.event' }) } />
                 </div>
                 <div className='inputContainer' data-prefix='Web Socket'>
                     <input
