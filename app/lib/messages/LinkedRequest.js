@@ -25,7 +25,7 @@ export default class LinkedRequest {
             const responseSent = this._dataStream(data);
 
             if(!responseSent)
-                return logger.error(`Promise timed out for linked request ${data.uuid}`);
+                return logger.error('Failed to send response for request', data);
         });
     }
 
@@ -69,7 +69,7 @@ export default class LinkedRequest {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject('Request timed out');
+                    reject(`Request ${input.method}timed out`);
                     delete this._pendingRequests[uuid];
                 }, expiration * 1000),
                 resolve,

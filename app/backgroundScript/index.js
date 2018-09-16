@@ -5,7 +5,6 @@ import LinkedResponse from 'lib/messages/LinkedResponse';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import Wallet from './wallet';
-import TronWebsocket from './websocket';
 import nodeSelector from './nodeSelector';
 import randomUUID from 'uuid/v4';
 
@@ -22,28 +21,18 @@ const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet(nodeSelector.node);
-const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
 
 logger.info('Script loaded');
 
-webSocket.start();
-
 const pendingConfirmations = {};
 let dialog = false;
-let addedWebsocketAlert = false;
 
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
     wallet.tronWeb.setFullNode(node.full); // eslint-disable-line
     wallet.tronWeb.setSolidityNode(node.solidity); // eslint-disable-line
-
-    webSocket.stop();
-
-    if(node.websocket) {
-        webSocket._url = node.websocket;
-        webSocket.start();
-    }
+    wallet.tronWeb.setEventServer(node.event);
 };
 
 const addConfirmation = (confirmation, resolve, reject) => {
@@ -326,24 +315,10 @@ const updateAccount = async () => {
 
     await wallet.updateAccounts();
 
-    if(!addedWebsocketAlert) {
-        webSocket.addAddress(
-            wallet.getAccount().publicKey
-        );
-
-        addedWebsocketAlert = true;
-    }
-
     popup.sendAccount(
         wallet.getAccount()
     );
 };
-
-const onWebsocketAlert = function(address) {
-    updateAccount(address);
-};
-
-webSocket.callback = onWebsocketAlert;
 
 popup.on('unlockWallet', ({
     data,
@@ -644,6 +619,27 @@ linkedResponse.on('request', ({
     reject('Unknown protocol called');
 });*/
 
+const unparseToken = token => ({
+    ...token,
+    name: wallet.tronWeb.fromUtf8(token.name),
+    abbr: token.abbr && wallet.tronWeb.fromUtf8(token.abbr),
+    description: token.description && wallet.tronWeb.fromUtf8(token.description),
+    url: token.url && wallet.tronWeb.fromUtf8(token.url)
+});
+
+const unparseTokens = tokens => tokens.map(unparseToken);
+
+const unparseNodes = nodes => nodes.map(node => {
+    const [ address, port ] = node.split(':');
+
+    return {
+        address: {
+            host: wallet.tronWeb.fromUtf8(address),
+            port
+        }
+    };
+});
+
 // Ideally we should move this into a separate file
 linkedResponse.on('request', ({
     request,
@@ -652,7 +648,7 @@ linkedResponse.on('request', ({
 }) => {
     const {
         method,
-        payload // eslint-disable-line
+        payload
     } = request;
 
     if(!method)
@@ -662,9 +658,93 @@ linkedResponse.on('request', ({
         err ? reject(err) : resolve(result)
     );
 
+    // payload will already be transformed by the calling function
+
     switch(method) {
+        case 'getCurrentBlock':
+            return wallet.tronWeb.trx.getCurrentBlock(callback);
+
+        case 'getBlockByHash':
+            return wallet.tronWeb.trx.getBlockByHash(payload.value, callback);
+
+        case 'getBlockByNumber':
+            return wallet.tronWeb.trx.getBlockByNumber(payload.num, callback);
+
+        case 'getTransaction':
+            return wallet.tronWeb.trx.getTransaction(payload.value, callback);
+
+        case 'getTransactionInfo':
+            return wallet.tronWeb.trx.getTransactionInfo(payload.value, callback);
+
+        case 'getTransactionsTo':
+            return wallet.tronWeb.trx.getTransactionsToAddress(payload.account.address, payload.limit, payload.offset).then(res => {
+                callback(null, { transaction: res }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getTransactionsFrom':
+            return wallet.tronWeb.trx.getTransactionsFromAddress(payload.account.address, payload.limit, payload.offset).then(res => {
+                callback(null, { transaction: res }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getAccount':
+            return wallet.tronWeb.trx.getAccount(payload.address, callback);
+
+        case 'getBandwidth':
+            return wallet.tronWeb.trx.getBandwidth(payload.address).then(res => {
+                callback(null, { freeNetLimit: res }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getTokenByAddress':
+            return wallet.tronWeb.trx.getTokensIssuedByAddress(payload.address).then(res => {
+                callback(null, { assetIssue: unparseTokens(Object.values(res)) }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getTokenByName':
+            return wallet.tronWeb.trx.getTokenFromID(
+                wallet.tronWeb.toUtf8(payload.value)
+            ).then(res => {
+                callback(null, unparseToken(res)); // eslint-disable-line
+            }).catch(callback);
+
         case 'listNodes':
-            return wallet.tronWeb.trx.listNodes(callback);
+            return wallet.tronWeb.trx.listNodes().then(res => {
+                callback(null, unparseNodes(res)); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getBlockRange':
+            return wallet.tronWeb.trx.getBlockRange(
+                payload.startNum,
+                payload.endNum - 1
+            ).then(res => {
+                callback(null, { block: res }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'listWitnesses':
+            return wallet.tronWeb.trx.listSuperRepresentatives().then(res => {
+                callback(null, { witnesses: res }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'listTokens':
+            return wallet.tronWeb.trx.listTokens(callback).then(res => {
+                callback(null, { assetIssue: unparseTokens(res) }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'listTokensPaginated':
+            return wallet.tronWeb.trx.listTokens(payload.limit, payload.offset).then(res => {
+                callback(null, { assetIssue: unparseTokens(res) }); // eslint-disable-line
+            }).catch(callback);
+
+        case 'getContract':
+            return wallet.tronWeb.trx.listTokens(payload.value, callback);
+
+        case 'broadcast':
+            return wallet.tronWeb.trx.sendRawTransaction(payload, callback);
+
+        case 'timeUntilNextVoteCycle':
+            return wallet.tronWeb.trx.timeUntilNextVoteCycle().then(res => {
+                callback(null, { num: res * 1000 }); // eslint-disable-line
+            }).catch(callback);
+
         default:
             reject('Method not implemented');
     }

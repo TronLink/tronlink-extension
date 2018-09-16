@@ -107,7 +107,7 @@ const utils = {
         return shaObj.getHash('HEX');
     },
 
-    validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+    validateNode({ name, full, solidity, event, mainnet = false }) {
         if(!this.isString(name) || !name.length || name.length > 256)
             return 'Invalid node name provided';
 
@@ -117,8 +117,8 @@ const utils = {
         if(!solidity.startsWith('https://'))
             return 'Solditity node must run through https protocol';
 
-        if(websocket && !websocket.startsWith('wss://'))
-            return 'Websocket must run through wss protocol';
+        if(event && !event.startsWith('https://'))
+            return 'Event server must run through https protocol';
 
         if(!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
@@ -126,8 +126,8 @@ const utils = {
         if(!validator.isURL(solidity) && !validator.isIP(solidity))
             return 'Invalid solidity node provided';
 
-        if(websocket && !validator.isURL(websocket.substr(6)) && !validator.isIP(websocket.substr(6)))
-            return 'Invalid websocket node provided';
+        if(!validator.isURL(event) && !validator.isIP(event))
+            return 'Invalid event server provided';
 
         if(!this.isBoolean(mainnet))
             return 'Invalid network type provided';

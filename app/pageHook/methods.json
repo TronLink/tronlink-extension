@@ -29,5 +29,6 @@
     "wallet/getassetissuelist": "listTokens",
     "wallet/getpaginatedassetissuelist": "listTokensPaginated",
     "wallet/getcontract": "getContract",
-    "wallet/broadcasttransaction": "broadcast"
+    "wallet/broadcasttransaction": "broadcast",
+    "wallet/getnextmaintenancetime": "timeUntilNextVoteCycle"
 }

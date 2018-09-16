@@ -1,5 +1,5 @@
 import Logger from 'lib/logger';
-import Utils from 'lib/Utils';
+import Utils from 'lib/utils';
 import AccountHandler from 'lib/AccountHandler';
 import TronWeb from 'tronweb';
 

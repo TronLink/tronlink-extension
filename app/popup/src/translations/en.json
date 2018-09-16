@@ -65,7 +65,7 @@
     "settings.addNode.title": "Custom node",
     "settings.addNode.fullNode": "https://rpc.tron.watch:8090",
     "settings.addNode.solidityNode": "https://rpc.tron.watch:8091",
-    "settings.addNode.websocket": "Optional",
+    "settings.addNode.event": "https://api.trongrid.io/",
     "settings.addNode.mainNet": "Add as Maintet",
     "settings.addNode.testNet": "Add as Testnet",
     "settings.addNode.name": "TronWatch Node",
