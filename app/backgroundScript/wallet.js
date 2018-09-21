@@ -2,6 +2,7 @@ import Logger from 'lib/logger';
 import Utils from 'lib/utils';
 import AccountHandler from 'lib/AccountHandler';
 import TronWeb from 'tronweb';
+import EventEmitter from 'events';
 
 import {
     WALLET_STATUS,
@@ -10,10 +11,11 @@ import {
 
 const logger = new Logger('wallet');
 
-export default class Wallet {
-    constructor({ full, solidity }) {
-        this._tronWeb = new TronWeb(full, solidity); // TODO: Add event server
+export default class Wallet extends EventEmitter {
+    constructor({ full, solidity, event }) {
+        super();
 
+        this._tronWeb = new TronWeb(full, solidity, event);
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
         this._accounts = {};
@@ -121,12 +123,8 @@ export default class Wallet {
         if (this._accounts[this._currentAccount])
             return this._accounts[this._currentAccount];
 
-        const keys = Object.keys(this._accounts);
-
-        this._currentAccount = keys[0];
-        this._saveStorage();
-
-        return this._accounts[this._currentAccount];
+        this.selectAccount(Object.keys(this._accounts)[0]);
+        return this.getFullAccount();
     }
 
     async freeze(amount, duration) {
@@ -368,11 +366,11 @@ export default class Wallet {
             this._rootAccount = new AccountHandler(mnemonic);
             this._accounts = accounts;
             this._mnemonic = mnemonic;
-            this._currentAccount = currentAccount;
             this._password = password;
             this._internalAccounts = internalAccounts;
-
             this._walletStatus = WALLET_STATUS.UNLOCKED;
+
+            this.selectAccount(currentAccount);
 
             logger.info('Wallet unlocked successfully');
             return true;
@@ -395,12 +393,8 @@ export default class Wallet {
         if (this._accounts[address])
             return this._accounts[address];
 
-        const keys = Object.keys(this._accounts);
-
-        this._currentAccount = keys[0];
-        this._saveStorage();
-
-        return this._accounts[this._currentAccount];
+        this.selectAccount(Object.keys(this._accounts)[0]);
+        return this.getAccount();
     }
 
     createAccount(name = '') {
@@ -440,6 +434,8 @@ export default class Wallet {
 
         this._currentAccount = publicKey;
         this._saveStorage();
+
+        this.emit('accountChange', publicKey);
     }
 
     deleteAccount(publicKey) {

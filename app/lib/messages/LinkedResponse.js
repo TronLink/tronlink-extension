@@ -34,7 +34,8 @@ export default class LinkedResponse extends EventEmitter {
                 });
             },
             request,
-            meta
+            meta,
+            source
         };
 
         this.emit('request', response);

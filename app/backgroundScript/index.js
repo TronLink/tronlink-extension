@@ -30,9 +30,13 @@ let dialog = false;
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
+    logger.info('New node selected:', node);
+
     wallet.tronWeb.setFullNode(node.full); // eslint-disable-line
     wallet.tronWeb.setSolidityNode(node.solidity); // eslint-disable-line
     wallet.tronWeb.setEventServer(node.event);
+
+    portHost.broadcast('setEventServer', node.event);
 };
 
 const addConfirmation = (confirmation, resolve, reject) => {
@@ -658,9 +662,15 @@ linkedResponse.on('request', ({
         err ? reject(err) : resolve(result)
     );
 
-    // payload will already be transformed by the calling function
+    // Payload will already be transformed by the calling function
 
     switch(method) {
+        case 'init':
+            return resolve({
+                eventServer: wallet.tronWeb.eventServer,
+                address: wallet.tronWeb.defaultAddress.base58
+            });
+
         case 'getCurrentBlock':
             return wallet.tronWeb.trx.getCurrentBlock(callback);
 
@@ -748,4 +758,9 @@ linkedResponse.on('request', ({
         default:
             reject('Method not implemented');
     }
+});
+
+wallet.on('accountChange', address => {
+    logger.info('New account detected:', address);
+    portHost.broadcast('setAddress', address);
 });
