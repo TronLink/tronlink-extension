@@ -432,6 +432,7 @@ export default class Wallet extends EventEmitter {
         if (!this._accounts.hasOwnProperty(publicKey))
             return;
 
+        this._tronWeb.setPrivateKey(this._accounts[publicKey].privateKey);
         this._currentAccount = publicKey;
         this._saveStorage();
 
