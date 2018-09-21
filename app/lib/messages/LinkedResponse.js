@@ -18,6 +18,7 @@ export default class LinkedResponse extends EventEmitter {
     }
 
     _respond(source, uuid, request, meta) {
+
         const response = {
             resolve: data => {
                 this._eventHandler.send(source, 'tunnel', {

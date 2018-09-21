@@ -103,10 +103,11 @@ class Transaction extends Component {
                     this.props.contractAddress
                 );
 
-            case 'TriggerSmartContract':
+            case 'TriggerSmartContract': {
                 return Utils.transformAddress(
-                    this.props.raw.parameter.value.contract_address
+                    this.props.contract_address
                 );
+            }
 
             case 'AssetIssueContract':
                 return Utils.hexToString(

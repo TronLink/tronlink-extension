@@ -14,11 +14,14 @@ const injectTronWeb = () => {
         return logger.warn('Failed to inject TronWeb as it already exists in the global namespace');
 
     const provider = new TronLinkProvider(linkedRequest);
-    const tronWeb = new TronWeb('http://127.0.0.1', 'http://127.0.0.1'); // Default URLs to validate provider
+    const tronWeb = new TronWeb('https://api.trongrid.io:8090', 'https://api.trongrid.io:8091', 'https://api.trongrid.io'); // Default URLs to validate provider
 
-    tronWeb.fullNode = provider;
-    tronWeb.solidityNode = provider;
+    // tronWeb.fullNode = provider;
+    // tronWeb.solidityNode = provider;
 
+    tronWeb.setAddress("TAN4RmPrhZmCednPGcmwbLG41VDNMcqTaC")
+
+    tronWeb._tronlinkSetAddress = tronWeb.setAddress
     // TODO:
     // - Overwrite event server
 
@@ -28,33 +31,35 @@ const injectTronWeb = () => {
     tronWeb.setSolidityNode = () => logger.warn('Setting solidity node disabled in TronLink');
     tronWeb.setEventServer = () => logger.warn('Setting event server disabled in TronLink');
 
-    const sign = tronWeb.sign;
+    tronWeb.trx.sign = async function(transaction = false, privateKey = false, callback = false) {
+        if (!callback) {
+            return new Promise((resolve, reject) => {
+                linkedRequest.build({
+                    method: 'signTransaction',
+                    payload: transaction
+                }).then((response)  => {
+                    resolve(response.response)
 
-    tronWeb.sign = function(transaction = false, privateKey = false, callback = false) {
-        if(utils.isFunction(privateKey)) {
-            callback = privateKey; // eslint-disable-line
-            privateKey = false; // eslint-disable-line
+                }).catch((err) => { // eslint-disable-line
+                    logger.warn('Failed to sign transaction', err);
+                    reject(err);
+                });
+            });
+        } else {
+            return linkedRequest.build({
+                method: 'signTransaction',
+                payload: transaction
+            }).then(transaction => {
+                callback(null, transaction)
+
+            }).catch(err => { // eslint-disable-line
+                logger.warn('Failed to sign transaction', err);
+                callback(err);
+            });
         }
 
-        if(!callback)
-            return utils.injectPromise(this, transaction, privateKey);
-
-        if(privateKey)
-            return sign(transaction, privateKey, callback);
-
-        if(!transaction)
-            return callback('Invalid transaction provided');
-
-        linkedRequest.build({
-            method: 'signTransaction',
-            payload: transaction
-        }).then(transaction => callback(null, transaction)).catch(err => { // eslint-disable-line
-            logger.warn('Failed to sign transaction', err);
-            callback(err);
-        });
     };
 
-    tronWeb.signTransaction = tronWeb.sign;
     window.tronWeb = tronWeb;
 
     logger.info('Script injected into page');

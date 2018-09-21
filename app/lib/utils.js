@@ -67,17 +67,18 @@ const utils = {
 
     convertTransactions(transactions, address) {
         return transactions.map((transaction) => {
-            const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
-            const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
+            const ownerAddress = this.hexToBase58(transaction.raw_data.contract[0].parameter.value.owner_address);
+            const toAddress = transaction.raw_data.contract[0].parameter.value.to_address ? 
+            this.hexToBase58(transaction.raw_data.contract[0].parameter.value.to_address) : false;
             const isMine = address === ownerAddress;
 
             return {
                 raw: transaction,
-                txType: transaction.type,
-                amount: transaction.parameter.value.amount,
-                date: transaction.timestamp,
+                txType: transaction.raw_data.contract[0].type,
+                amount: transaction.raw_data.contract[0].parameter.value.amount,
+                date: transaction.raw_data.timestamp,
                 txID: transaction.txID,
-                contractAddress: transaction.contract_address,
+                contractAddress: transaction.raw_data.contract[0].parameter.value.contract_address,
                 ownerAddress,
                 toAddress,
                 isMine
