@@ -232,7 +232,11 @@ popup.on('acceptConfirmation', async ({
                 break;
 
             case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
+                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.callValue, info.feeLimit, info.options) };
+                break;
+
+            case CONFIRMATION_TYPE.SIGN_SMARTCONTRACT:
+                output.response = await wallet.signSmartContract(info.transaction);
                 break;
 
             case CONFIRMATION_TYPE.FREEZE:
@@ -253,7 +257,7 @@ popup.on('acceptConfirmation', async ({
                 return closeDialog();
         }
 
-        if(!output.rpcResponse.result)
+        if(!output.response && !output.rpcResponse.result)
             throw new Error(`Node returned invalid output: ${ output }`);
     } catch(ex) {
         const error = 'Failed to build valid transaction';
@@ -735,7 +739,7 @@ linkedResponse.on('request', ({
             }).catch(callback);
 
         case 'getContract':
-            return wallet.tronWeb.trx.listTokens(payload.value, callback);
+            return wallet.tronWeb.trx.getContract(payload.value, callback);
 
         case 'broadcast':
             return wallet.tronWeb.trx.sendRawTransaction(payload, callback);
@@ -744,6 +748,35 @@ linkedResponse.on('request', ({
             return wallet.tronWeb.trx.timeUntilNextVoteCycle().then(res => {
                 callback(null, { num: res * 1000 }); // eslint-disable-line
             }).catch(callback);
+
+        case 'createTriggerContractTransaction':
+            const {
+                contract_address,
+                function_selector,
+                call_value,
+                fee_limit
+            } = payload;
+
+            const parameter = payload.parameter && payload.parameter.length() ? payload.parameter : [];
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT,
+                address: contract_address,
+                functionSelector: function_selector,
+                parameters: parameter,
+                callValue: call_value,
+                feeLimit: fee_limit
+            }, resolve, reject);
+
+        case 'signTransaction':
+            const {
+                transaction
+            } = payload;
+
+            return addConfirmation({
+                type: CONFIRMATION_TYPE.SIGN_SMARTCONTRACT,
+                transaction: payload
+            }, resolve, reject);
 
         default:
             reject('Method not implemented');

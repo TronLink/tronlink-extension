@@ -12,6 +12,7 @@ import SendAsset from './Renderers/SendAsset';
 import IssueAsset from './Renderers/IssueAsset';
 import CreateSmartContract from './Renderers/CreateSmartContract';
 import TriggerSmartContract from './Renderers/TriggerSmartContract';
+import SignSmartContract from './Renderers/SignSmartContract';
 import Freeze from './Renderers/Freeze';
 import Unfreeze from './Renderers/Unfreeze';
 import Button from 'components/Button';
@@ -155,6 +156,10 @@ class Queue extends React.Component {
             }
             case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT: {
                 Component = TriggerSmartContract;
+                break;
+            }
+            case CONFIRMATION_TYPE.SIGN_SMARTCONTRACT: {
+                Component = SignSmartContract;
                 break;
             }
             case CONFIRMATION_TYPE.FREEZE: {

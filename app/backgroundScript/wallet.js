@@ -11,8 +11,8 @@ import {
 const logger = new Logger('wallet');
 
 export default class Wallet {
-    constructor({ full, solidity }) {
-        this._tronWeb = new TronWeb(full, solidity); // TODO: Add event server
+    constructor({ full, solidity, event }) {
+        this._tronWeb = new TronWeb(full, solidity, event);
 
         this._walletStatus = WALLET_STATUS.UNINITIALIZED;
 
@@ -225,7 +225,12 @@ export default class Wallet {
         return false;
     }
 
-    async triggerSmartContract(address, functionSelector, parameters, options) {
+    async signSmartContract(transaction) {
+        const signedResult = await this._tronWeb.trx.sign(transaction);
+        return signedResult;
+    }
+
+    async triggerSmartContract(address, functionSelector, parameters, callValue, feeLimit, options) {
         const account = this.getFullAccount();
 
         logger.info(`Triggering smart contract from ${account.publicKey}`, {
@@ -235,20 +240,11 @@ export default class Wallet {
             options
         });
 
-        // TODO:
-        // - this._tronWeb.transactionBuilder.triggerSmartContract()
-        // - this._tronWeb.trx.sign()
-        // - this._tronWeb.trx.broadcast();
+        const buildResult = await this._tronWeb.transactionBuilder.triggerSmartContract(address, functionSelector, feeLimit, callValue, parameters);
+        const signedResult = await this._tronWeb.trx.sign(buildResult.transaction);
+        const result = await this._tronWeb.trx.broadcast(signedResult.transaction);
 
-        // return this._rpc.triggerContract(
-        //     account.privateKey,
-        //     address,
-        //     functionSelector,
-        //     parameters,
-        //     options
-        // );
-
-        return false;
+        return result;
     }
 
     async createSmartContract(abi, bytecode, name, options) {
@@ -371,6 +367,7 @@ export default class Wallet {
             this._currentAccount = currentAccount;
             this._password = password;
             this._internalAccounts = internalAccounts;
+            this._tronWeb.setPrivateKey(this.getFullAccount().privateKey);
 
             this._walletStatus = WALLET_STATUS.UNLOCKED;
 
@@ -398,6 +395,7 @@ export default class Wallet {
         const keys = Object.keys(this._accounts);
 
         this._currentAccount = keys[0];
+        this._tronWeb.setPrivateKey(this.getFullAccount().privateKey);
         this._saveStorage();
 
         return this._accounts[this._currentAccount];
@@ -439,6 +437,7 @@ export default class Wallet {
             return;
 
         this._currentAccount = publicKey;
+        this._tronWeb.setPrivateKey(this.getFullAccount().privateKey);
         this._saveStorage();
     }
 
