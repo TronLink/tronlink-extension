@@ -15,13 +15,16 @@ const tronWeb = new TronWeb('http://127.0.0.1', 'http://127.0.0.1'); // These ar
 tronWeb.fullNode = provider;
 tronWeb.solidityNode = provider;
 
+const _sign = tronWeb.trx.sign.bind(tronWeb);
+const _setAddress = tronWeb.setAddress.bind(tronWeb);
+const _setEventServer = tronWeb.setEventServer.bind(tronWeb);
+
 tronWeb.setPrivateKey = () => logger.warn('Setting private key disabled in TronLink');
 tronWeb.setAddress = () => logger.warn('Setting address disabled in TronLink');
 tronWeb.setFullNode = () => logger.warn('Setting full node disabled in TronLink');
 tronWeb.setSolidityNode = () => logger.warn('Setting solidity node disabled in TronLink');
 tronWeb.setEventServer = () => logger.warn('Setting event server disabled in TronLink');
 
-const signFunction = tronWeb.sign;
 const proxiedSignFunction = (transaction = false, privateKey = false, callback = false) => {
     if(utils.isFunction(privateKey)) {
         callback = privateKey; // eslint-disable-line
@@ -32,7 +35,7 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
         return utils.injectPromise(this, transaction, privateKey);
 
     if(privateKey)
-        return signFunction(transaction, privateKey, callback);
+        return _sign(transaction, privateKey, callback);
 
     if(!transaction)
         return callback('Invalid transaction provided');
@@ -46,38 +49,39 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
     });
 };
 
-tronWeb.sign = proxiedSignFunction;
-tronWeb.signTransaction = proxiedSignFunction;
+tronWeb.trx.sign = proxiedSignFunction;
+tronWeb.trx.signTransaction = proxiedSignFunction;
 
 contentScript.on('setEventServer', ({ data: eventServer }) => {
     logger.info('TronLink detected Event Server change:', eventServer);
-    tronWeb.eventServer = eventServer;
+    _setEventServer(eventServer);
 });
 
 contentScript.on('setAddress', ({ data: address }) => {
     logger.info('TronLink detected account change:', address);
-
-    tronWeb.defaultAddress = {
-        hex: tronWeb.address.toHex(address),
-        base58: tronWeb.address.fromHex(address)
-    };
+    _setAddress(address);
 });
 
 linkedRequest.build({ method: 'init' }).then(({ eventServer, address }) => {
     logger.info('TronLink initiated with values', { eventServer, address });
 
-    tronWeb.eventServer = eventServer;
+    _setEventServer(eventServer);
 
-    if(!address)
-        return;
-
-    tronWeb.defaultAddress = {
-        hex: tronWeb.address.toHex(address),
-        base58: tronWeb.address.fromHex(address)
-    };
+    if(address) {
+        _setAddress(address);
+        tronWeb.emit('loggedIn', tronWeb.defaultAddress);
+    }
 }).catch(err => {
     logger.warn('Failed to initialise TronLink');
     logger.error(err);
+});
+
+tronWeb.on('addressChanged', () => {
+    logger.info('TronWeb has switched to a new account');
+});
+
+tronWeb.on('loggedIn', () => {
+    logger.info('TronWeb has logged in');
 });
 
 const injectTronWeb = () => {
