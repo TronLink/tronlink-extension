@@ -1,15 +1,15 @@
 /*global chrome*/
+import EventEmitter from 'eventemitter3';
 import Logger from '../logger';
 
 const logger = new Logger('PortChild');
 
-export default class PortChild {
+export default class PortChild extends EventEmitter {
     constructor(channelKey = false, eventHandler = false) {
+        super();
+
         if(!channelKey)
             throw 'No communication channel provided';
-
-        if(!eventHandler)
-            throw 'No event handler provided';
 
         this._channelKey = channelKey;
         this._eventHandler = eventHandler;
@@ -23,10 +23,13 @@ export default class PortChild {
         this._connected = true;
 
         this._port.onMessage.addListener(({ action, data }) => {
-            this._eventHandler.send(action, data);
+            if(this._eventHandler)
+                this._eventHandler.send(action, data);
+
+            this.emit(action, data);
         });
 
-        this._eventHandler.on('tunnel', ({ data }) => {
+        this._eventHandler && this._eventHandler.on('tunnel', ({ data }) => {
             this.send('tunnel', data);
         });
 
