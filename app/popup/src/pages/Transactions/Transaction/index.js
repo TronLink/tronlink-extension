@@ -29,7 +29,7 @@ class Transaction extends Component {
                 return <Icons.TokensIcon className="iconToken" />;
 
             case 'VoteWitnessContract':
-                return <Icons.VoteIcon className="iconToken" />;
+                return <Icons.VoteIcon className='iconToken vote' />;
 
             case 'AssetIssueContract':
                 return <Icons.PencilIcon className="iconToken" />;
@@ -67,19 +67,19 @@ class Transaction extends Component {
                 return <div className="txLabel"><FormattedMessage id='words.token' /></div>;
 
             case 'VoteWitnessContract':
-                return <div className="txLabel"><FormattedMessage id='words.vote' /></div>;
+                return <div className="txLabel vote"><FormattedMessage id='account.transactions.voted' /></div>;
 
             case 'AssetIssueContract':
                 return <div className="txLabel"><FormattedMessage id='account.transactions.tokenCreation' /></div>;
 
             case 'FreezeBalanceContract':
-                return <div className="txLabel red"><FormattedMessage id='words.frozen' /></div>;
+                return <div className="txLabel red"><FormattedMessage id='account.transactions.frozen' /></div>;
 
             case 'UnfreezeBalanceContract':
-                return <div className="txLabel green"><FormattedMessage id='words.unfrozen' /></div>;
+                return <div className="txLabel green no-margin"><FormattedMessage id='account.transactions.unfrozen' /></div>;
 
             case 'CreateSmartContract':
-                return <div className='txLabel smartContract'><FormattedMessage id='account.transactions.deployContract' /></div>;
+                return <div className='txLabel smartContract no-margin'><FormattedMessage id='account.transactions.deployContract' /></div>;
 
             case 'TriggerSmartContract':
                 return <div className='txLabel smartContract triggerSmartContract'><FormattedMessage id='account.transactions.triggerContract' /></div>;
@@ -98,20 +98,35 @@ class Transaction extends Component {
 
                 return this.props.ownerAddress;
 
-            case 'CreateSmartContract':
+            case 'TriggerSmartContract':
                 return Utils.transformAddress(
                     this.props.contractAddress
                 );
 
-            case 'TriggerSmartContract':
-                return Utils.transformAddress(
-                    this.props.raw.parameter.value.contract_address
-                );
-
             case 'AssetIssueContract':
                 return Utils.hexToString(
-                    this.props.raw.parameter.value.name
+                    this.props.name
                 );
+
+            case 'FreezeBalanceContract':
+                return (
+                    <FormattedMessage id='account.transactions.triggerContract.amount' values={{ 
+                        days: this.props.raw.parameter.value.frozen_duration
+                    }} />
+                );
+
+            case 'VoteWitnessContract':
+                return (
+                    <FormattedMessage id='account.transactions.vote.amount' values={{
+                        amount: this.props.raw.parameter.value.votes.length
+                    }} />
+                );
+
+            case 'UnfreezeBalanceContract':
+                return null;
+
+            case 'CreateSmartContract':
+                return null;
 
             default:
                 return 'Unknown address';
@@ -128,9 +143,6 @@ class Transaction extends Component {
             );
         }
 
-        if(!this.props.amount)
-            return null;
-
         const { 
             raw,
             isMine, 
@@ -142,10 +154,40 @@ class Transaction extends Component {
                 <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>
                     { isMine ? '- ' : '+ ' }
                     <FormattedNumber value={ Utils.sunToTron(amount) } minimumFractionDigits={ 0 } maximumFractionDigits={ 8 } /> 
-                    <span class='margin-left'>TRX</span>
+                    <span className='margin-left'>TRX</span>
                 </div>
             );
         }
+
+        if(this.props.txType == 'VoteWitnessContract') {
+            return (
+                <div className='txAmount red'>
+                    - <FormattedNumber value={ this.props.raw.parameter.value.votes.reduce((total, vote) => total + vote.vote_count, 0) } />
+                    <span className='margin-left'>TP</span>
+                </div>
+            )
+        }
+
+        if(this.props.txType == 'FreezeBalanceContract') {
+            return (
+                <div className='txAmount red'>
+                    - <FormattedNumber value={ this.props.raw.parameter.value.frozen_balance } />
+                    <span className='margin-left'>TRX</span>
+                </div>
+            )
+        }
+
+        if(this.props.txType == 'UnfreezeBalanceContract') {
+            return (
+                <div className='txAmount green'>
+                    + <FormattedNumber value={ this.props.raw.parameter.value.frozen_balance } />
+                    <span className='margin-left'>TRX</span>
+                </div>
+            )
+        }
+
+        if(!amount)
+            return null;
 
         return (
             <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>

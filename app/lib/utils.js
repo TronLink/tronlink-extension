@@ -66,22 +66,35 @@ const utils = {
     },
 
     convertTransactions(transactions, address) {
-        return transactions.map((transaction) => {
-            const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
-            const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
+        return transactions.map(transaction => {
+            const contract = transaction.raw_data.contract[0];
+            const ownerAddress = this.hexToBase58(contract.parameter.value.owner_address);
+            const toAddress = contract.parameter.value.to_address ? this.hexToBase58(contract.parameter.value.to_address) : false;
             const isMine = address === ownerAddress;
 
-            return {
-                raw: transaction,
-                txType: transaction.type,
-                amount: transaction.parameter.value.amount,
-                date: transaction.timestamp,
+            const { value } = contract.parameter;
+
+            const tx = {
+                raw: contract,
+                txType: contract.type,
+                amount: contract.parameter.value.amount,
+                date: transaction.raw_data.timestamp,
                 txID: transaction.txID,
-                contractAddress: transaction.contract_address,
                 ownerAddress,
                 toAddress,
                 isMine
             };
+
+            if(value.contract_address)
+                tx.contractAddress = value.contract_address;
+
+            if(value.name)
+                tx.name = value.name;
+
+            if(value.asset_name)
+                tx.name = value.asset_name;
+
+            return tx;
         }).reverse();
     },
 

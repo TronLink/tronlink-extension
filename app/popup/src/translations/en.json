@@ -38,9 +38,14 @@
     "send.noTokens": "No token balance to send",
 
     "account.transactions.noneFound": "No transactions found",
-    "account.transactions.tokenCreation": "Token Creation",
+    "account.transactions.tokenCreation": "Created Token",
     "account.transactions.deployContract": "Deployed Smart Contract",
     "account.transactions.triggerContract": "Triggered Smart Contract",
+    "account.transactions.triggerContract.amount": "Frozen for {days, number} days",
+    "account.transactions.vote.amount": "{amount, plural, one {# Super Representative} other {# Super Representatives}}",
+    "account.transactions.frozen": "Froze TRX",
+    "account.transactions.unfrozen": "Unfroze TRX",
+    "account.transactions.voted": "Voted",
 
     "give.sent.header": "Funds sent",
     "give.sent.body": "You have been sent 20,000 TestNet TRX",

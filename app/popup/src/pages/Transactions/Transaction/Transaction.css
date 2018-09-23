@@ -111,3 +111,7 @@
     color: #ff9800;
     fill: #ff9800;
 }
+
+.txLabel.no-margin {
+    margin-bottom: 0;
+}
