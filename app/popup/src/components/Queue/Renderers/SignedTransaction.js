@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 import { 
-    FormattedMessage, 
-    FormattedNumber 
+    FormattedMessage
 } from 'react-intl';
 
 import TransferContract from './TransferContract';
@@ -17,8 +16,7 @@ export default class SignedTransaction extends Component {
             <div className="confirmGroup">
                 <div className="confirmGroupTop">
                     <div className="confirmGroupHeader bold">
-                        <FormattedMessage id="queue.send.site"
-                         />
+                        <FormattedMessage id="queue.send.site" />
                     </div>
                     <div className="confirmGroupAmount bold orange">{ hostname }</div>
                 </div>
@@ -26,13 +24,27 @@ export default class SignedTransaction extends Component {
         );
     }
 
-    rawTransaction(contract, contractType, parameters) {
-        // show warning
-        // this is not a verified TronLink transaction
-        // please be careful and read over the data below carefully
-        // show the JSON stringified transaction
+    rawTransaction(contractType, parameters) {
+        return <React.Fragment>
+            <div className="confirmWarningHeader">
+                &#9888; 
+                <FormattedMessage id='queue.send.warning.header' />
+            </div>
 
-        return null;
+            <div className="confirmWarningBody">
+                <FormattedMessage id='queue.send.warning.body' />
+            </div>
+
+            <div className="confirmSmartContract bold">
+                <FormattedMessage id='queue.send.type' values={{ type: contractType.split('Contract')[0] }} />
+            </div>
+
+            <div className="confirmGroup">
+                <textarea value={ 
+                    JSON.stringify(parameters, null, 2) 
+                } className="confirmTextArea maxHeight200" readonly />
+            </div>
+        </React.Fragment>;
     }
 
     render() {
@@ -57,16 +69,7 @@ export default class SignedTransaction extends Component {
                 { this.renderNote() }
 
                 { Renderer && <Renderer parameters={ parameters } price={ this.props.price } /> }
-                { !Renderer && this.rawTransaction(contract, contractType, parameters) }
-
-                <div className="confirmWarningHeader">
-                    &#9888; 
-                    <FormattedMessage id='queue.send.warning.header' />
-                </div>
-
-                <div className="confirmWarningBody">
-                    <FormattedMessage id='queue.send.warning.body' />
-                </div>
+                { !Renderer && this.rawTransaction(contractType, parameters) }
 
                 { this.props.buttons }
             </div>

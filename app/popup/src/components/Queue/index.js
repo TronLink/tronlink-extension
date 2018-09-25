@@ -42,8 +42,6 @@ class Queue extends React.Component {
         }
 
         return Swal(config).then(res => {
-            logger.info('Swal Res', res);
-
             this.setState({
                 loading: false
             });
