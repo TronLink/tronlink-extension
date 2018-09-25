@@ -1,49 +1,43 @@
-// Libraries
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
+import mapTransaction from 'lib/mapTransaction';
 import Wallet from './wallet';
-import TronWebsocket from './websocket';
 import nodeSelector from './nodeSelector';
 import randomUUID from 'uuid/v4';
 
-// Constants
 import {
     CONFIRMATION_TYPE,
-    CONFIRMATION_RESULT,
     WALLET_STATUS
 } from 'lib/constants';
 
-// Initialise utilities
 const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
 const linkedResponse = new LinkedResponse(portHost);
 const wallet = new Wallet(nodeSelector.node);
-const webSocket = new TronWebsocket(popup, nodeSelector.node.websocket);
 
 logger.info('Script loaded');
 
-webSocket.start();
-
 const pendingConfirmations = {};
 let dialog = false;
-let addedWebsocketAlert = false;
 
 const setNodeURLs = () => {
     const node = nodeSelector.node;
 
-    wallet.rpc.url_full = node.full; // eslint-disable-line
-    wallet.rpc.url_solidity = node.solidity; // eslint-disable-line
+    logger.info('New node selected:', node);
 
-    webSocket.stop();
+    wallet.tronWeb.setFullNode(node.full); // eslint-disable-line
+    wallet.tronWeb.setSolidityNode(node.solidity); // eslint-disable-line
+    wallet.tronWeb.setEventServer(node.event);
 
-    if(node.websocket) {
-        webSocket._url = node.websocket;
-        webSocket.start();
-    }
+    portHost.broadcast('setNodes', {
+        fullNode: node.full,
+        solidityNode: node.solidity,
+        eventServer: node.event
+    });
 };
 
 const addConfirmation = (confirmation, resolve, reject) => {
@@ -134,27 +128,6 @@ popup.on('setNode', ({
     resolve();
 });
 
-popup.on('declineConfirmation', ({
-    data,
-    resolve
-}) => {
-    const { id: confirmationID } = data;
-
-    if (!pendingConfirmations.hasOwnProperty(confirmationID))
-        return logger.warn(`Attempted to reject non-existent confirmation ${confirmationID}`);
-
-    const confirmation = pendingConfirmations[confirmationID];
-
-    logger.info(`Declining confirmation ${confirmationID}`);
-    logger.info(confirmation);
-
-    confirmation.reject('denied');
-    delete pendingConfirmations[data.id];
-
-    closeDialog();
-    resolve();
-});
-
 popup.on('selectAccount', publicKey => {
     wallet.selectAccount(publicKey);
 
@@ -212,78 +185,45 @@ popup.on('acceptConfirmation', async ({
 }) => {
     const { id: confirmationID } = data;
 
-    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+    if (!pendingConfirmations.hasOwnProperty(confirmationID)) {
+        reject('Confirmation does not exist');
         return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
+    }
 
     logger.info(`Confirmation ${confirmationID} has been accepted by the user`);
 
+    const {
+        confirmation,
+        resolve: confirmationResolve
+    } = pendingConfirmations[confirmationID];
+
+    const transaction = confirmation.signedTransaction;
+
+    logger.info(`Signed transaction for confirmation ${confirmationID}`);
+    logger.info('Signed transaction', transaction);
+
+    confirmationResolve(transaction);
+    delete pendingConfirmations[confirmationID];
+
+    closeDialog();
+    resolve();
+});
+
+popup.on('declineConfirmation', ({
+    data,
+    resolve
+}) => {
+    const { id: confirmationID } = data;
+
+    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+        return logger.warn(`Attempted to reject non-existent confirmation ${confirmationID}`);
+
     const confirmation = pendingConfirmations[confirmationID];
-    const info = confirmation.confirmation;
 
-    let output = {
-        result: CONFIRMATION_RESULT.ACCEPTED
-    };
+    logger.info(`Declining confirmation ${confirmationID}`);
+    logger.info(confirmation);
 
-    try {
-        switch (info.type) {
-            case CONFIRMATION_TYPE.SEND_TRON:
-                output.rpcResponse = await wallet.send(info.recipient, info.amount);
-                break;
-
-            case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.assetID, info.amount);
-                break;
-
-            case CONFIRMATION_TYPE.ISSUE_ASSET:
-                output.rpcResponse = await wallet.issueAsset(info.options);
-                break;
-
-            case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-                output = { output, ...await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options) };
-                break;
-
-            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
-                break;
-
-            case CONFIRMATION_TYPE.FREEZE:
-                output.rpcResponse = await wallet.freeze(info.amount, info.duration);
-                break;
-
-            case CONFIRMATION_TYPE.UNFREEZE:
-                output.rpcResponse = await wallet.unfreeze();
-                break;
-
-            default:
-                logger.warn('Tried to confirm confirmation of unknown type:', info.type);
-
-                confirmation.reject('Unknown transaction type');
-                delete pendingConfirmations[data.id];
-
-                reject();
-                return closeDialog();
-        }
-
-        if(!output.rpcResponse.result)
-            throw new Error(`Node returned invalid output: ${ output }`);
-    } catch(ex) {
-        const error = 'Failed to build valid transaction';
-
-        logger.error(error, ex);
-
-        confirmation.reject(error);
-        delete pendingConfirmations[data.id];
-
-        closeDialog();
-        reject(error);
-
-        return;
-    }
-
-    logger.info(`Broadcasted transaction for confirmation ${confirmationID}`);
-    logger.info('Transaction output', output);
-
-    confirmation.resolve(output);
+    confirmation.reject('Declined by user');
     delete pendingConfirmations[data.id];
 
     closeDialog();
@@ -326,24 +266,10 @@ const updateAccount = async () => {
 
     await wallet.updateAccounts();
 
-    if(!addedWebsocketAlert) {
-        webSocket.addAddress(
-            wallet.getAccount().publicKey
-        );
-
-        addedWebsocketAlert = true;
-    }
-
     popup.sendAccount(
         wallet.getAccount()
     );
 };
-
-const onWebsocketAlert = function(address) {
-    updateAccount(address);
-};
-
-webSocket.callback = onWebsocketAlert;
 
 popup.on('unlockWallet', ({
     data,
@@ -386,9 +312,9 @@ popup.on('getAccounts', async ({ resolve }) => {
 });
 
 popup.on('updateAccount', async data => {
-    logger.info('Popup requested account update for', data);
-
     const { publicKey } = data;
+
+    logger.info('Popup requested account update for', publicKey);
 
     await wallet.updateAccount(publicKey);
 
@@ -418,228 +344,82 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     }, resolve, reject);
 });
 
-const handleWebCall = async ({
-    request: {
-        method,
-        args = {}
-    },
-    meta: {
-        hostname
-    },
+// Ideally we should move this into a separate file
+linkedResponse.on('request', async ({
+    request,
     resolve,
-    reject
+    reject,
+    meta
 }) => {
-    switch (method) {
-        case 'sendTron': {
-            const {
-                recipient,
-                amount,
-                desc
-            } = args;
+    const {
+        method,
+        payload
+    } = request;
 
-            const address = Utils.transformAddress(recipient);
+    if(!method)
+        return reject('Unknown protocol called');
 
-            if(!address)
-                return reject('Invalid recipient provided');
+    logger.info('TronWeb requested method', method);
 
-            if (!Utils.validateAmount(amount))
-                return reject('Invalid amount provided');
+    switch(method) {
+        case 'init': {
+            if(!wallet.isSetup())
+                return reject('Wallet not signed in');
 
-            if (!Utils.validateDescription(desc))
-                return reject('Invalid description provided');
+            const { node } = nodeSelector;
 
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.SEND_TRON,
-                amount: parseInt(amount),
-                recipient: address,
-                desc,
-                hostname,
-            }, resolve, reject);
+            return resolve({
+                address: wallet.getAccount().publicKey,
+                node: {
+                    fullNode: node.full,
+                    solidityNode: node.solidity,
+                    eventServer: node.event
+                }
+            });
         }
-        case 'freezeTrx' : {
-            const {
-                amount,
-                duration
-            } = args;
 
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.FREEZE,
-                amount,
-                duration
-            }, resolve, reject);
-        }
-        case 'unfreezeTrx' : {
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.UNFREEZE
-            }, resolve, reject);
-        }
-        case 'issueAsset' : {
-            const {
-                options
-            } = args;
+        case 'signTransaction':
+            logger.info('Received sign request for', payload);
 
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.ISSUE_ASSET,
-                options,
-                hostname
-            }, resolve, reject);
-        }
-        case 'sendAsset': {
-            const {
-                recipient,
-                assetID,
-                amount,
-                desc
-            } = args;
+            if(!wallet.isSetup())
+                return reject('User has not unlocked wallet');
 
-            const address = Utils.transformAddress(recipient);
+            try {
+                const contractType = payload.raw_data.contract[0].type;
 
-            if(!address)
-                return reject('Invalid recipient provided');
+                const {
+                    mapped,
+                    error
+                } = await mapTransaction(wallet.tronWeb, contractType, payload.raw_data.contract[0].parameter.value);
 
-            if(!Utils.validateAmount(amount))
-                return reject('Invalid amount provided');
+                if(error)
+                    return reject(error);
 
-            if(!Utils.validateDescription(desc))
-                return reject('Invalid description provided');
+                if(!mapped)
+                    return reject('Invalid transaction provided');
 
-            if(!wallet.getAccount().tokens.hasOwnProperty(assetID))
-                return reject('Account does not have enough balance');
+                const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped);
 
-            if(amount > wallet.getAccount().tokens[assetID])
-                return reject('Account does not have enough balance');
+                logger.info('Initial transaction', payload);
+                logger.info('Recreated transaction', mapped);
+                logger.info('Signed transaction', signedTransaction);
 
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.SEND_ASSET,
-                amount: parseInt(amount),
-                recipient: address,
-                assetID,
-                desc,
-                hostname
-            }, resolve, reject);
-        }
-        case 'createSmartContract': {
-            const {
-                abi,
-                bytecode,
-                name,
-                options
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.CREATE_SMARTCONTRACT,
-                abi,
-                bytecode,
-                name,
-                options
-            }, resolve, reject);
-        }
-        case 'triggerSmartContract' : {
-            const {
-                address,
-                functionSelector,
-                parameters,
-                options
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT,
-                address,
-                functionSelector,
-                parameters,
-                options
-            }, resolve, reject);
-        }
-        case 'callSmartContract' : {
-            const {
-                address,
-                functionSelector,
-                parameters,
-                options
-            } = args;
-
-            const account = wallet.getFullAccount();
-
-            if(account) {
-                return resolve(
-                    await wallet.rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
-                );
+                return addConfirmation({
+                    type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
+                    hostname: meta.hostname,
+                    signedTransaction
+                }, resolve, reject);
+            } catch(ex) {
+                return reject('Invalid transaction provided');
             }
 
-            return reject('Wallet not unlocked');
-        }
-        case 'getAccount': {
-            const account = wallet.getAccount();
-
-            if(account)
-                return resolve(account.address);
-
-            return reject('Wallet not unlocked');
-        }
-        case 'nodeGetAccount': {
-            const {
-                address
-            } = args;
-
-            return resolve(
-                await wallet.rpc.getAccount(address)
-            );
-        }
-        case 'getLatestBlock' : {
-            return resolve(
-                await wallet.rpc.getNowBlock()
-            );
-        }
-        case 'getWitnesses' : {
-            return resolve(
-                await wallet.rpc.getWitnesses()
-            );
-        }
-        case 'getTokens' : {
-            return resolve(
-                await wallet.rpc.getTokens()
-            );
-        }
-        case 'getBlock' : {
-            const { blockID } = args;
-
-            return resolve(
-                await wallet.rpc.getBlock(blockID)
-            );
-        }
-        case 'getTransaction' : {
-            const { transactionID } = args;
-
-            return resolve(
-                await wallet.rpc.getTransactionById(transactionID)
-            );
-        }
-        case 'getTransactionInfo' : {
-            const { transactionID } = args;
-
-            return resolve(
-                await wallet.rpc.getTransactionInfoById(transactionID)
-            );
-        }
         default:
-            reject(`Unknown method called (${ method })`);
+            logger.warn('TronWeb requsted invalid method', method);
+            reject('Method not implemented');
     }
-};
+});
 
-linkedResponse.on('request', ({
-    request,
-    meta,
-    resolve,
-    reject
-}) => {
-    if (request.method) {
-        return handleWebCall({
-            request,
-            meta,
-            resolve,
-            reject
-        });
-    }
-
-    reject('Unknown protocol called');
+wallet.on('accountChange', address => {
+    logger.info('New account detected:', address);
+    portHost.broadcast('setAddress', address);
 });

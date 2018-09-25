@@ -4,15 +4,8 @@ import Logger from 'lib/logger';
 
 const logger = new Logger('contentScript');
 const pageHook = new EventDispatcher('contentScript', 'pageHook');
-const backgroundScript = new PortChild('contentScript');
 
-pageHook.on('tunnel', ({ data }) => {
-    backgroundScript.send('tunnel', data);
-});
-
-backgroundScript.on('tunnel', data => {
-    pageHook.send('tunnel', data);
-});
+new PortChild('contentScript', pageHook);
 
 logger.info('Script loaded. Waiting for DOM load event');
 

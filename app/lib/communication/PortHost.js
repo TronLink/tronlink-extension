@@ -51,6 +51,8 @@ export default class PortHost extends EventEmitter {
                 if(!Object.keys(this._ports[source]).length)
                     delete this._ports[source];
             });
+
+            this.emit('newConnection', source);
         });
     }
 

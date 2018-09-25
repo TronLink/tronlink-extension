@@ -18,7 +18,7 @@ class Settings extends Component {
         customNode: {
             full: '',
             solidity: '',
-            websocket: '',
+            event: '',
             loading: false
         }
     }
@@ -76,9 +76,6 @@ class Settings extends Component {
                         <span className={ 'nodeFeature ' + (node.mainnet ? 'valid' : '') }>
                             Mainnet
                         </span>
-                        <span className={ 'nodeFeature ' + (node.websocket ? 'valid' : '') }>
-                            Websocket
-                        </span>
                     </div>
                 </div>
                 <div className='nodeStatus'>
@@ -123,7 +120,7 @@ class Settings extends Component {
             name: customNode.name,
             full: customNode.full,
             solidity: customNode.solidity,
-            websocket: customNode.websocket.length ? customNode.websocket : false,
+            event: customNode.event,
             mainnet
         }).then(async () => {
             await getNodes();
@@ -175,13 +172,13 @@ class Settings extends Component {
                         onChange={ ({ target: { value } }) => this.changeCustomNode('solidity', value) }
                         placeholder={ this.translate({ id: 'settings.addNode.solidityNode' }) } />
                 </div>
-                <div className='inputContainer' data-prefix='Web Socket'>
+                <div className='inputContainer' data-prefix='Event Server'>
                     <input
                         type='text'
                         readOnly={ this.state.customNode.loading }
-                        value={ this.state.customNode.websocket }
-                        onChange={ ({ target: { value } }) => this.changeCustomNode('websocket', value) }
-                        placeholder={ this.translate({ id: 'settings.addNode.websocket' }) } />
+                        value={ this.state.customNode.event }
+                        onChange={ ({ target: { value } }) => this.changeCustomNode('event', value) }
+                        placeholder={ this.translate({ id: 'settings.addNode.event' }) } />
                 </div>
                 <div className='customNodeButtons'>
                     <Button type='black' loading={ this.state.customNode.loading } onClick={ () => this.addCustomNode(false) }>

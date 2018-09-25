@@ -25,15 +25,13 @@ export default class LinkedRequest {
             const responseSent = this._dataStream(data);
 
             if(!responseSent)
-                return logger.error(`Promise timed out for linked request ${data.uuid}`);
+                return logger.error('Failed to send response for request', data);
         });
     }
 
-    _dataStream(output) {
-        let input = output;
-
+    _dataStream(input) {
         if(this._outputMap)
-            input = this._outputMap(output);
+            input = this._outputMap(input); // eslint-disable-line
 
         const {
             uuid,
@@ -49,7 +47,9 @@ export default class LinkedRequest {
             this._pendingRequests[uuid].resolve(data);
         else this._pendingRequests[uuid].reject(error);
 
-        clearTimeout(this._pendingRequests[uuid].timeout);
+        if(this._pendingRequests[uuid].timeout)
+            clearTimeout(this._pendingRequests[uuid].timeout);
+
         delete this._pendingRequests[uuid];
 
         return true;
@@ -67,11 +67,17 @@ export default class LinkedRequest {
         });
 
         return new Promise((resolve, reject) => {
-            this._pendingRequests[uuid] = {
-                timeout: setTimeout(() => {
-                    reject('Request timed out');
+            let timeout = false;
+
+            if(expiration) {
+                timeout = setTimeout(() => {
+                    reject(`Request ${input.method} timed out`);
                     delete this._pendingRequests[uuid];
-                }, expiration * 1000),
+                }, expiration * 1000);
+            }
+
+            this._pendingRequests[uuid] = {
+                timeout,
                 resolve,
                 reject
             };

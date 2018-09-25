@@ -66,22 +66,35 @@ const utils = {
     },
 
     convertTransactions(transactions, address) {
-        return transactions.map((transaction) => {
-            const ownerAddress = this.hexToBase58(transaction.parameter.value.owner_address);
-            const toAddress = transaction.parameter.value.to_address ? this.hexToBase58(transaction.parameter.value.to_address) : false;
+        return transactions.map(transaction => {
+            const contract = transaction.raw_data.contract[0];
+            const ownerAddress = this.hexToBase58(contract.parameter.value.owner_address);
+            const toAddress = contract.parameter.value.to_address ? this.hexToBase58(contract.parameter.value.to_address) : false;
             const isMine = address === ownerAddress;
 
-            return {
-                raw: transaction,
-                txType: transaction.type,
-                amount: transaction.parameter.value.amount,
-                date: transaction.timestamp,
+            const { value } = contract.parameter;
+
+            const tx = {
+                raw: contract,
+                txType: contract.type,
+                amount: contract.parameter.value.amount,
+                date: transaction.raw_data.timestamp,
                 txID: transaction.txID,
-                contractAddress: transaction.contract_address,
                 ownerAddress,
                 toAddress,
                 isMine
             };
+
+            if(value.contract_address)
+                tx.contractAddress = value.contract_address;
+
+            if(value.name)
+                tx.name = value.name;
+
+            if(value.asset_name)
+                tx.name = value.asset_name;
+
+            return tx;
         }).reverse();
     },
 
@@ -107,7 +120,7 @@ const utils = {
         return shaObj.getHash('HEX');
     },
 
-    validateNode({ name, full, solidity, websocket = false, mainnet = false }) {
+    validateNode({ name, full, solidity, event, mainnet = false }) {
         if(!this.isString(name) || !name.length || name.length > 256)
             return 'Invalid node name provided';
 
@@ -117,8 +130,8 @@ const utils = {
         if(!solidity.startsWith('https://'))
             return 'Solditity node must run through https protocol';
 
-        if(websocket && !websocket.startsWith('wss://'))
-            return 'Websocket must run through wss protocol';
+        if(event && !event.startsWith('https://'))
+            return 'Event server must run through https protocol';
 
         if(!validator.isURL(full) && !validator.isIP(full))
             return 'Invalid full node provided';
@@ -126,8 +139,8 @@ const utils = {
         if(!validator.isURL(solidity) && !validator.isIP(solidity))
             return 'Invalid solidity node provided';
 
-        if(websocket && !validator.isURL(websocket.substr(6)) && !validator.isIP(websocket.substr(6)))
-            return 'Invalid websocket node provided';
+        if(!validator.isURL(event) && !validator.isIP(event))
+            return 'Invalid event server provided';
 
         if(!this.isBoolean(mainnet))
             return 'Invalid network type provided';
@@ -321,8 +334,6 @@ const utils = {
     },
 
     privateKeyToAddress(privateKey) {
-        // React (babel) won't compile TronUtils so I get to write this manually :)))
-
         const privateKeyBytes = ByteArray.fromHexString(privateKey);
         const publicKeyBytes = this.privateKeyToPublicKey(privateKeyBytes);
         const addressBytes = this.publicKeyToAddress(publicKeyBytes);
@@ -334,7 +345,21 @@ const utils = {
 
     isHex(string) {
         return typeof string === 'string' && !isNaN(parseInt(string, 16));
-    }
+    },
+
+    injectPromise(func, ...args) {
+        return new Promise((resolve, reject) => {
+            func(...args, (err, res) => {
+                if(err)
+                    reject(err);
+                else resolve(res);
+            });
+        });
+    },
+
+    isFunction(obj) {
+        return typeof obj === 'function';
+    },
 };
 
 export default utils;
