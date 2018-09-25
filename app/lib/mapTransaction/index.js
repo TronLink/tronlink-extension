@@ -2,7 +2,7 @@ import Contracts from './contracts';
 
 export default async (tronWeb, contractType = false, parameters = false) => {
     if(!Contracts.hasOwnProperty(contractType))
-        return { error: 'Contract type not supported' };
+        return { error: `Contract type ${ contractType } not supported` };
 
     // Replace default address (PrivateKey: FF) with user address
     Object.entries(parameters).forEach(([ key, value ]) => {

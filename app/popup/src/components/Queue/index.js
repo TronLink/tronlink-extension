@@ -7,13 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 
 import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
-import SendTron from './Renderers/SendTron';
-import SendAsset from './Renderers/SendAsset';
-import IssueAsset from './Renderers/IssueAsset';
-import CreateSmartContract from './Renderers/CreateSmartContract';
-import TriggerSmartContract from './Renderers/TriggerSmartContract';
-import Freeze from './Renderers/Freeze';
-import Unfreeze from './Renderers/Unfreeze';
+import SignedTransaction from './Renderers/SignedTransaction';
 import Button from 'components/Button';
 
 import './Queue.css';
@@ -128,46 +122,27 @@ class Queue extends React.Component {
 
     render() {
         const { confirmations } = this.props;
-        const [confirmation] = confirmations;
+        const [ confirmation ] = confirmations;
 
-        let Component = (
-            <span>
-                <FormattedMessage id='queue.unknownConfirmation'/>
-            </span>
-        );
+        let Component = false;
 
         switch (confirmation.type) {
-            case CONFIRMATION_TYPE.SEND_TRON: {
-                Component = SendTron;
-                break;
-            }
-            case CONFIRMATION_TYPE.SEND_ASSET: {
-                Component = SendAsset;
-                break;
-            }
-            case CONFIRMATION_TYPE.ISSUE_ASSET: {
-                Component = IssueAsset;
-                break;
-            }
-            case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT: {
-                Component = CreateSmartContract;
-                break;
-            }
-            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT: {
-                Component = TriggerSmartContract;
-                break;
-            }
-            case CONFIRMATION_TYPE.FREEZE: {
-                Component = Freeze;
-                break;
-            }
-            case CONFIRMATION_TYPE.UNFREEZE: {
-                Component = Unfreeze;
+            case CONFIRMATION_TYPE.SIGNED_TRANSACTION: {
+                Component = SignedTransaction;
                 break;
             }
             default: {
-                logger.error('Attempted to render unknown confirmation type', confirmation);
-                break;
+                logger.error('Attempted to render unknown confirmation', confirmation);
+                
+                setTimeout(() => {
+                    this.rejectConfirmation(confirmation);
+                }, 3000);
+
+                return (
+                    <span>
+                        <FormattedMessage id='queue.unknownConfirmation'/>
+                    </span>
+                );
             }
         }
 

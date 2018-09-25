@@ -40,10 +40,13 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
     if(!transaction)
         return callback('Invalid transaction provided');
 
+    if(!tronWeb.ready)
+        return callback('User has not unlocked wallet');
+
     linkedRequest.build({
         method: 'signTransaction',
         payload: transaction
-    }).then(transaction => callback(null, transaction)).catch(err => { // eslint-disable-line
+    }, 0).then(transaction => callback(null, transaction)).catch(err => { // eslint-disable-line
         logger.warn('Failed to sign transaction', err);
         callback(err);
     });

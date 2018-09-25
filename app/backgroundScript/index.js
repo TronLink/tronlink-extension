@@ -10,7 +10,6 @@ import randomUUID from 'uuid/v4';
 
 import {
     CONFIRMATION_TYPE,
-    CONFIRMATION_RESULT,
     WALLET_STATUS
 } from 'lib/constants';
 
@@ -129,27 +128,6 @@ popup.on('setNode', ({
     resolve();
 });
 
-popup.on('declineConfirmation', ({
-    data,
-    resolve
-}) => {
-    const { id: confirmationID } = data;
-
-    if (!pendingConfirmations.hasOwnProperty(confirmationID))
-        return logger.warn(`Attempted to reject non-existent confirmation ${confirmationID}`);
-
-    const confirmation = pendingConfirmations[confirmationID];
-
-    logger.info(`Declining confirmation ${confirmationID}`);
-    logger.info(confirmation);
-
-    confirmation.reject('denied');
-    delete pendingConfirmations[data.id];
-
-    closeDialog();
-    resolve();
-});
-
 popup.on('selectAccount', publicKey => {
     wallet.selectAccount(publicKey);
 
@@ -207,78 +185,45 @@ popup.on('acceptConfirmation', async ({
 }) => {
     const { id: confirmationID } = data;
 
-    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+    if (!pendingConfirmations.hasOwnProperty(confirmationID)) {
+        reject('Confirmation does not exist');
         return logger.warn(`Attempted to resolve non-existent confirmation ${confirmationID}`);
+    }
 
     logger.info(`Confirmation ${confirmationID} has been accepted by the user`);
 
+    const {
+        confirmation,
+        resolve: confirmationResolve
+    } = pendingConfirmations[confirmationID];
+
+    const transaction = confirmation.signedTransaction;
+
+    logger.info(`Signed transaction for confirmation ${confirmationID}`);
+    logger.info('Signed transaction', transaction);
+
+    confirmationResolve(transaction);
+    delete pendingConfirmations[confirmationID];
+
+    closeDialog();
+    resolve();
+});
+
+popup.on('declineConfirmation', ({
+    data,
+    resolve
+}) => {
+    const { id: confirmationID } = data;
+
+    if (!pendingConfirmations.hasOwnProperty(confirmationID))
+        return logger.warn(`Attempted to reject non-existent confirmation ${confirmationID}`);
+
     const confirmation = pendingConfirmations[confirmationID];
-    const info = confirmation.confirmation;
 
-    let output = {
-        result: CONFIRMATION_RESULT.ACCEPTED
-    };
+    logger.info(`Declining confirmation ${confirmationID}`);
+    logger.info(confirmation);
 
-    try {
-        switch (info.type) {
-            case CONFIRMATION_TYPE.SEND_TRON:
-                output.rpcResponse = await wallet.send(info.recipient, info.amount);
-                break;
-
-            case CONFIRMATION_TYPE.SEND_ASSET:
-                output.rpcResponse = await wallet.sendAsset(info.recipient, info.assetID, info.amount);
-                break;
-
-            case CONFIRMATION_TYPE.ISSUE_ASSET:
-                output.rpcResponse = await wallet.issueAsset(info.options);
-                break;
-
-            case CONFIRMATION_TYPE.CREATE_SMARTCONTRACT:
-                output = { output, ...await wallet.createSmartContract(info.abi, info.bytecode, info.name, info.options) };
-                break;
-
-            case CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT:
-                output = { output, ...await wallet.triggerSmartContract(info.address, info.functionSelector, info.parameters, info.options) };
-                break;
-
-            case CONFIRMATION_TYPE.FREEZE:
-                output.rpcResponse = await wallet.freeze(info.amount, info.duration);
-                break;
-
-            case CONFIRMATION_TYPE.UNFREEZE:
-                output.rpcResponse = await wallet.unfreeze();
-                break;
-
-            default:
-                logger.warn('Tried to confirm confirmation of unknown type:', info.type);
-
-                confirmation.reject('Unknown transaction type');
-                delete pendingConfirmations[data.id];
-
-                reject();
-                return closeDialog();
-        }
-
-        if(!output.rpcResponse.result)
-            throw new Error(`Node returned invalid output: ${ output }`);
-    } catch(ex) {
-        const error = 'Failed to build valid transaction';
-
-        logger.error(error, ex);
-
-        confirmation.reject(error);
-        delete pendingConfirmations[data.id];
-
-        closeDialog();
-        reject(error);
-
-        return;
-    }
-
-    logger.info(`Broadcasted transaction for confirmation ${confirmationID}`);
-    logger.info('Transaction output', output);
-
-    confirmation.resolve(output);
+    confirmation.reject('Declined by user');
     delete pendingConfirmations[data.id];
 
     closeDialog();
@@ -403,7 +348,8 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
 linkedResponse.on('request', async ({
     request,
     resolve,
-    reject
+    reject,
+    meta
 }) => {
     const {
         method,
@@ -444,16 +390,20 @@ linkedResponse.on('request', async ({
                 if(!mapped)
                     return reject('Invalid transaction provided');
 
+                const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped);
+
                 logger.info('Initial transaction', payload);
                 logger.info('Recreated transaction', mapped);
+                logger.info('Signed transaction', signedTransaction);
 
-                return resolve(mapped);
+                return addConfirmation({
+                    type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
+                    hostname: meta.hostname,
+                    signedTransaction
+                }, resolve, reject);
             } catch(ex) {
                 return reject('Invalid transaction provided');
             }
-
-            // Need to replace owner_address with wallet.tronWeb.defaultAddress.hex
-            // return wallet.tronWeb.trx.getCurrentBlock(callback);
 
         default:
             logger.warn('TronWeb requsted invalid method', method);
