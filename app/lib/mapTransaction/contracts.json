@@ -5,6 +5,7 @@
     "WitnessCreateContract": "wallet/createwitness",
     "TransferAssetContract": "wallet/transferasset",
     "ParticipateAssetIssueContract": "wallet/participateassetissue",
+    "AssetIssueContract": "wallet/createassetissue",
     "FreezeBalanceContract": "wallet/freezebalance",
     "UnfreezeBalanceContract": "wallet/unfreezebalance",
     "WithdrawBalanceContract": "wallet/withdrawbalance",
