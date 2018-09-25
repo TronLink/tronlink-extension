@@ -1,22 +1,19 @@
-// Libraries
 import PortHost from 'lib/communication/PortHost';
 import PopupClient from 'lib/communication/popup/PopupClient';
 import LinkedResponse from 'lib/messages/LinkedResponse';
 import Logger from 'lib/logger';
 import Utils from 'lib/utils';
+import mapTransaction from 'lib/mapTransaction';
 import Wallet from './wallet';
 import nodeSelector from './nodeSelector';
 import randomUUID from 'uuid/v4';
-import mapTransaction from './mapTransaction';
 
-// Constants
 import {
     CONFIRMATION_TYPE,
     CONFIRMATION_RESULT,
     WALLET_STATUS
 } from 'lib/constants';
 
-// Initialise utilities
 const logger = new Logger('backgroundScript');
 const portHost = new PortHost();
 const popup = new PopupClient(portHost);
@@ -403,7 +400,7 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
 });
 
 // Ideally we should move this into a separate file
-linkedResponse.on('request', ({
+linkedResponse.on('request', async ({
     request,
     resolve,
     reject
@@ -430,14 +427,27 @@ linkedResponse.on('request', ({
         case 'signTransaction':
             logger.info('Received sign request for', payload);
 
+            if(!wallet.isSetup())
+                return reject('User has not unlocked wallet');
+
             try {
                 const contractType = payload.raw_data.contract[0].type;
-                const mapped = mapTransaction(wallet.tronWeb, contractType, payload.raw_data.contract[0].parameter.value);
+
+                const {
+                    mapped,
+                    error
+                } = await mapTransaction(wallet.tronWeb, contractType, payload.raw_data.contract[0].parameter.value);
+
+                if(error)
+                    return reject(error);
 
                 if(!mapped)
-                    reject('Invalid transaction provided');
+                    return reject('Invalid transaction provided');
 
-                return mapped;
+                logger.info('Initial transaction', payload);
+                logger.info('Recreated transaction', mapped);
+
+                return resolve(mapped);
             } catch(ex) {
                 return reject('Invalid transaction provided');
             }
