@@ -73,6 +73,7 @@
 
 .txAccountDataLeft {
     text-align: left;
+    overflow: hidden;
 }
 
 .txAccountDataRight {

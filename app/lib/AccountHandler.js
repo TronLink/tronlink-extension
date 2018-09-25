@@ -70,7 +70,7 @@ export default class AccountHandler {
             name: false,
             internal: false,
             privateKey,
-            publicKey,
+            publicKey
         };
     }
 

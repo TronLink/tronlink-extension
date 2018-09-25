@@ -69,7 +69,7 @@ export default class LinkedRequest {
         return new Promise((resolve, reject) => {
             this._pendingRequests[uuid] = {
                 timeout: setTimeout(() => {
-                    reject(`Request ${input.method}timed out`);
+                    reject(`Request ${input.method} timed out`);
                     delete this._pendingRequests[uuid];
                 }, expiration * 1000),
                 resolve,

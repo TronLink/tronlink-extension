@@ -7,6 +7,7 @@ import Utils from 'lib/utils';
 import Wallet from './wallet';
 import nodeSelector from './nodeSelector';
 import randomUUID from 'uuid/v4';
+import mapTransaction from './mapTransaction';
 
 // Constants
 import {
@@ -36,7 +37,11 @@ const setNodeURLs = () => {
     wallet.tronWeb.setSolidityNode(node.solidity); // eslint-disable-line
     wallet.tronWeb.setEventServer(node.event);
 
-    portHost.broadcast('setEventServer', node.event);
+    portHost.broadcast('setNodes', {
+        fullNode: node.full,
+        solidityNode: node.solidity,
+        eventServer: node.event
+    });
 };
 
 const addConfirmation = (confirmation, resolve, reject) => {
@@ -365,9 +370,9 @@ popup.on('getAccounts', async ({ resolve }) => {
 });
 
 popup.on('updateAccount', async data => {
-    logger.info('Popup requested account update for', data);
-
     const { publicKey } = data;
+
+    logger.info('Popup requested account update for', publicKey);
 
     await wallet.updateAccount(publicKey);
 
@@ -397,253 +402,6 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     }, resolve, reject);
 });
 
-/*const handleWebCall = async ({
-    request: {
-        method,
-        args = {}
-    },
-    meta: {
-        hostname
-    },
-    resolve,
-    reject
-}) => {
-    switch (method) {
-        case 'sendTron': {
-            const {
-                recipient,
-                amount,
-                desc
-            } = args;
-
-            const address = Utils.transformAddress(recipient);
-
-            if(!address)
-                return reject('Invalid recipient provided');
-
-            if (!Utils.validateAmount(amount))
-                return reject('Invalid amount provided');
-
-            if (!Utils.validateDescription(desc))
-                return reject('Invalid description provided');
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.SEND_TRON,
-                amount: parseInt(amount),
-                recipient: address,
-                desc,
-                hostname,
-            }, resolve, reject);
-        }
-        case 'freezeTrx' : {
-            const {
-                amount,
-                duration
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.FREEZE,
-                amount,
-                duration
-            }, resolve, reject);
-        }
-        case 'unfreezeTrx' : {
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.UNFREEZE
-            }, resolve, reject);
-        }
-        case 'issueAsset' : {
-            const {
-                options
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.ISSUE_ASSET,
-                options,
-                hostname
-            }, resolve, reject);
-        }
-        case 'sendAsset': {
-            const {
-                recipient,
-                assetID,
-                amount,
-                desc
-            } = args;
-
-            const address = Utils.transformAddress(recipient);
-
-            if(!address)
-                return reject('Invalid recipient provided');
-
-            if(!Utils.validateAmount(amount))
-                return reject('Invalid amount provided');
-
-            if(!Utils.validateDescription(desc))
-                return reject('Invalid description provided');
-
-            if(!wallet.getAccount().tokens.hasOwnProperty(assetID))
-                return reject('Account does not have enough balance');
-
-            if(amount > wallet.getAccount().tokens[assetID])
-                return reject('Account does not have enough balance');
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.SEND_ASSET,
-                amount: parseInt(amount),
-                recipient: address,
-                assetID,
-                desc,
-                hostname
-            }, resolve, reject);
-        }
-        case 'createSmartContract': {
-            const {
-                abi,
-                bytecode,
-                name,
-                options
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.CREATE_SMARTCONTRACT,
-                abi,
-                bytecode,
-                name,
-                options
-            }, resolve, reject);
-        }
-        case 'triggerSmartContract' : {
-            const {
-                address,
-                functionSelector,
-                parameters,
-                options
-            } = args;
-
-            return addConfirmation({
-                type: CONFIRMATION_TYPE.TRIGGER_SMARTCONTRACT,
-                address,
-                functionSelector,
-                parameters,
-                options
-            }, resolve, reject);
-        }
-        case 'callSmartContract' : {
-            const {
-                address,
-                functionSelector,
-                parameters,
-                options
-            } = args;
-
-            const account = wallet.getFullAccount();
-
-            if(account) {
-                return resolve(
-                    await wallet.rpc.callContract(account.publicKey, address, functionSelector, parameters, options)
-                );
-            }
-
-            return reject('Wallet not unlocked');
-        }
-        case 'getAccount': {
-            const account = wallet.getAccount();
-
-            if(account)
-                return resolve(account.address);
-
-            return reject('Wallet not unlocked');
-        }
-        case 'nodeGetAccount': {
-            const {
-                address
-            } = args;
-
-            return resolve(
-                await wallet.rpc.getAccount(address)
-            );
-        }
-        case 'getLatestBlock' : {
-            return resolve(
-                await wallet.rpc.getNowBlock()
-            );
-        }
-        case 'getWitnesses' : {
-            return resolve(
-                await wallet.rpc.getWitnesses()
-            );
-        }
-        case 'getTokens' : {
-            return resolve(
-                await wallet.rpc.getTokens()
-            );
-        }
-        case 'getBlock' : {
-            const { blockID } = args;
-
-            return resolve(
-                await wallet.rpc.getBlock(blockID)
-            );
-        }
-        case 'getTransaction' : {
-            const { transactionID } = args;
-
-            return resolve(
-                await wallet.rpc.getTransactionById(transactionID)
-            );
-        }
-        case 'getTransactionInfo' : {
-            const { transactionID } = args;
-
-            return resolve(
-                await wallet.rpc.getTransactionInfoById(transactionID)
-            );
-        }
-        default:
-            reject(`Unknown method called (${ method })`);
-    }
-};
-
-linkedResponse.on('request', ({
-    request,
-    meta,
-    resolve,
-    reject
-}) => {
-    if (request.method) {
-        return handleWebCall({
-            request,
-            meta,
-            resolve,
-            reject
-        });
-    }
-
-    reject('Unknown protocol called');
-});*/
-
-const unparseToken = token => ({
-    ...token,
-    name: wallet.tronWeb.fromUtf8(token.name),
-    abbr: token.abbr && wallet.tronWeb.fromUtf8(token.abbr),
-    description: token.description && wallet.tronWeb.fromUtf8(token.description),
-    url: token.url && wallet.tronWeb.fromUtf8(token.url)
-});
-
-const unparseTokens = tokens => tokens.map(unparseToken);
-
-const unparseNodes = nodes => nodes.map(node => {
-    const [ address, port ] = node.split(':');
-
-    return {
-        address: {
-            host: wallet.tronWeb.fromUtf8(address),
-            port
-        }
-    };
-});
-
 // Ideally we should move this into a separate file
 linkedResponse.on('request', ({
     request,
@@ -658,104 +416,37 @@ linkedResponse.on('request', ({
     if(!method)
         return reject('Unknown protocol called');
 
-    const callback = (err, result) => (
-        err ? reject(err) : resolve(result)
-    );
-
-    // Payload will already be transformed by the calling function
+    logger.info('TronWeb requested method', method);
 
     switch(method) {
-        case 'init':
-            return resolve({
-                eventServer: wallet.tronWeb.eventServer,
-                address: wallet.tronWeb.defaultAddress.base58
-            });
+        case 'init': {
+            setNodeURLs();
 
-        case 'getCurrentBlock':
-            return wallet.tronWeb.trx.getCurrentBlock(callback);
+            return resolve(
+                wallet.isSetup() && wallet.getAccount().publicKey
+            );
+        }
 
-        case 'getBlockByHash':
-            return wallet.tronWeb.trx.getBlockByHash(payload.value, callback);
+        case 'signTransaction':
+            logger.info('Received sign request for', payload);
 
-        case 'getBlockByNumber':
-            return wallet.tronWeb.trx.getBlockByNumber(payload.num, callback);
+            try {
+                const contractType = payload.raw_data.contract[0].type;
+                const mapped = mapTransaction(wallet.tronWeb, contractType, payload.raw_data.contract[0].parameter.value);
 
-        case 'getTransaction':
-            return wallet.tronWeb.trx.getTransaction(payload.value, callback);
+                if(!mapped)
+                    reject('Invalid transaction provided');
 
-        case 'getTransactionInfo':
-            return wallet.tronWeb.trx.getTransactionInfo(payload.value, callback);
+                return mapped;
+            } catch(ex) {
+                return reject('Invalid transaction provided');
+            }
 
-        case 'getTransactionsTo':
-            return wallet.tronWeb.trx.getTransactionsToAddress(payload.account.address, payload.limit, payload.offset).then(res => {
-                callback(null, { transaction: res }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getTransactionsFrom':
-            return wallet.tronWeb.trx.getTransactionsFromAddress(payload.account.address, payload.limit, payload.offset).then(res => {
-                callback(null, { transaction: res }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getAccount':
-            return wallet.tronWeb.trx.getAccount(payload.address, callback);
-
-        case 'getBandwidth':
-            return wallet.tronWeb.trx.getBandwidth(payload.address).then(res => {
-                callback(null, { freeNetLimit: res }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getTokenByAddress':
-            return wallet.tronWeb.trx.getTokensIssuedByAddress(payload.address).then(res => {
-                callback(null, { assetIssue: unparseTokens(Object.values(res)) }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getTokenByName':
-            return wallet.tronWeb.trx.getTokenFromID(
-                wallet.tronWeb.toUtf8(payload.value)
-            ).then(res => {
-                callback(null, unparseToken(res)); // eslint-disable-line
-            }).catch(callback);
-
-        case 'listNodes':
-            return wallet.tronWeb.trx.listNodes().then(res => {
-                callback(null, unparseNodes(res)); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getBlockRange':
-            return wallet.tronWeb.trx.getBlockRange(
-                payload.startNum,
-                payload.endNum - 1
-            ).then(res => {
-                callback(null, { block: res }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'listWitnesses':
-            return wallet.tronWeb.trx.listSuperRepresentatives().then(res => {
-                callback(null, { witnesses: res }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'listTokens':
-            return wallet.tronWeb.trx.listTokens(callback).then(res => {
-                callback(null, { assetIssue: unparseTokens(res) }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'listTokensPaginated':
-            return wallet.tronWeb.trx.listTokens(payload.limit, payload.offset).then(res => {
-                callback(null, { assetIssue: unparseTokens(res) }); // eslint-disable-line
-            }).catch(callback);
-
-        case 'getContract':
-            return wallet.tronWeb.trx.listTokens(payload.value, callback);
-
-        case 'broadcast':
-            return wallet.tronWeb.trx.sendRawTransaction(payload, callback);
-
-        case 'timeUntilNextVoteCycle':
-            return wallet.tronWeb.trx.timeUntilNextVoteCycle().then(res => {
-                callback(null, { num: res * 1000 }); // eslint-disable-line
-            }).catch(callback);
+            // Need to replace owner_address with wallet.tronWeb.defaultAddress.hex
+            // return wallet.tronWeb.trx.getCurrentBlock(callback);
 
         default:
+            logger.warn('TronWeb requsted invalid method', method);
             reject('Method not implemented');
     }
 });
