@@ -363,11 +363,19 @@ linkedResponse.on('request', async ({
 
     switch(method) {
         case 'init': {
-            setNodeURLs();
+            if(!wallet.isSetup())
+                return reject('Wallet not signed in');
 
-            return resolve(
-                wallet.isSetup() && wallet.getAccount().publicKey
-            );
+            const { node } = nodeSelector;
+
+            return resolve({
+                address: wallet.getAccount().publicKey,
+                node: {
+                    fullNode: node.full,
+                    solidityNode: node.solidity,
+                    eventServer: node.event
+                }
+            });
         }
 
         case 'signTransaction':

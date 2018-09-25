@@ -70,14 +70,24 @@ contentScript.on('setAddress', ({ data: address }) => {
     _setAddress(address);
 });
 
-linkedRequest.build({ method: 'init' }).then((address = false) => {
+linkedRequest.build({ method: 'init' }).then(({
+    address = false,
+    node: {
+        fullNode,
+        solidityNode,
+        eventServer
+    }
+}) => {
     logger.info('TronLink initiated');
 
-    if(!address)
-        return;
+    _setFullNode(fullNode);
+    _setSolidityNode(solidityNode);
+    _setEventServer(eventServer);
 
-    _setAddress(address);
-    tronWeb.ready = true;
+    if(address) {
+        _setAddress(address);
+        tronWeb.ready = true;
+    }
 }).catch(err => {
     logger.warn('Failed to initialise TronLink');
     logger.error(err);
