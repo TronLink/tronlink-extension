@@ -421,7 +421,8 @@ linkedResponse.on('request', async ({
                 return addConfirmation({
                     type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
                     hostname: meta.hostname,
-                    signedTransaction
+                    signedTransaction,
+                    input
                 }, resolve, reject);
             } catch(ex) {
                 logger.error('Failed to sign transaction:', ex);

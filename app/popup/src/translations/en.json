@@ -29,6 +29,9 @@
     "queue.send.warning.body": "TronLink does not recognise this transaction. Please verify the data below is legitimate before confirming.",
     "queue.send.to": "To:",
     "queue.send.total": "Total",
+    "queue.trigger.contract": "Contract:",
+    "queue.trigger.data": "Data:",
+    "queue.trigger.value": "Cost:",
     "queue.unknownConfirmation": "Failed to identify confirmation",
     "queue.freeze.title": "Freeze Balance",
     "queue.unfreeze.title": "Unfreeze Balance",
@@ -95,5 +98,9 @@
     "accounts.delete.button": "Delete",
     "accounts.import.title": "Import Account",
 
-    "tokens.noTokens": "Your account does not hold any tokens"
+    "tokens.noTokens": "Your account does not hold any tokens",
+
+    "contactType.Unknown": "Unknown Transaction",
+    "contractType.TransferContract": "Send TRX",
+    "contractType.TriggerSmartContract": "Trigger DApp"
 }
