@@ -98,5 +98,9 @@
     "accounts.delete.button": "Delete",
     "accounts.import.title": "Import Account",
 
-    "tokens.noTokens": "Your account does not hold any tokens"
+    "tokens.noTokens": "Your account does not hold any tokens",
+
+    "contactType.Unknown": "Unknown Transaction",
+    "contractType.TransferContract": "Send TRX",
+    "contractType.TriggerSmartContract": "Trigger DApp"
 }
