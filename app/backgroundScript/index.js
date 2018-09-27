@@ -385,12 +385,17 @@ linkedResponse.on('request', async ({
                 return reject('User has not unlocked wallet');
 
             try {
-                const contractType = payload.raw_data.contract[0].type;
+                const {
+                    transaction,
+                    input
+                } = payload;
+
+                const contractType = transaction.raw_data.contract[0].type;
 
                 const {
                     mapped,
                     error
-                } = await mapTransaction(wallet.tronWeb, contractType, payload.raw_data.contract[0].parameter.value);
+                } = await mapTransaction(wallet.tronWeb, contractType, input);
 
                 if(error)
                     return reject(error);
@@ -398,7 +403,7 @@ linkedResponse.on('request', async ({
                 if(!mapped)
                     return reject('Invalid transaction provided');
 
-                const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped);
+                const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped.transaction || mapped);
 
                 logger.info('Initial transaction', payload);
                 logger.info('Recreated transaction', mapped);
@@ -410,6 +415,7 @@ linkedResponse.on('request', async ({
                     signedTransaction
                 }, resolve, reject);
             } catch(ex) {
+                logger.error('Failed to sign transaction:', ex);
                 return reject('Invalid transaction provided');
             }
 

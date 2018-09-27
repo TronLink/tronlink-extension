@@ -3,21 +3,27 @@ import LinkedRequest from 'lib/messages/LinkedRequest';
 import Logger from 'lib/logger';
 import TronWeb from 'tronweb';
 import utils from 'lib/utils';
+import ExtensionProvider from './ExtensionProvider';
 
 const logger = new Logger('pageHook');
 const contentScript = new EventDispatcher('pageHook', 'contentScript');
 const linkedRequest = new LinkedRequest(contentScript, ({ data }) => ({ ...data }));
 
 const tronWeb = new TronWeb('http://placeholder.dev', 'http://placeholder.dev'); // These are not used. They're only to validate the provider.
-
-tronWeb.defaultPrivateKey = 'FF'; // Default private key replaced in backgroundScript
 tronWeb.ready = false;
+
+const providerWrapper = boundFunction => (...args) => (
+    boundFunction(
+        new ExtensionProvider(...args)
+    )
+);
 
 const _sign = tronWeb.trx.sign.bind(tronWeb);
 const _setAddress = tronWeb.setAddress.bind(tronWeb);
-const _setFullNode = tronWeb.setFullNode.bind(tronWeb);
-const _setSolidityNode = tronWeb.setSolidityNode.bind(tronWeb);
 const _setEventServer = tronWeb.setEventServer.bind(tronWeb);
+
+const _setFullNode = providerWrapper(tronWeb.setFullNode.bind(tronWeb));
+const _setSolidityNode = providerWrapper(tronWeb.setSolidityNode.bind(tronWeb));
 
 tronWeb.setPrivateKey = () => logger.warn('Setting private key disabled in TronLink');
 tronWeb.setAddress = () => logger.warn('Setting address disabled in TronLink');
@@ -34,7 +40,7 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
     if(!callback)
         return utils.injectPromise(proxiedSignFunction, transaction, privateKey);
 
-    if(privateKey || privateKey === 'FF')
+    if(privateKey)
         return _sign(transaction, privateKey, callback);
 
     if(!transaction)
@@ -45,7 +51,10 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
 
     linkedRequest.build({
         method: 'signTransaction',
-        payload: transaction
+        payload: {
+            transaction,
+            input: transaction.__payload__ || transaction.raw_data.contract[0].parameter.value
+        }
     }, 0).then(transaction => callback(null, transaction)).catch(err => { // eslint-disable-line
         logger.warn('Failed to sign transaction', err);
         callback(err);
