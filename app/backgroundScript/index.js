@@ -65,7 +65,16 @@ const addConfirmation = (confirmation, resolve, reject) => {
         dialog = window.open(
             'app/popup/build/index.html',
             'extension_popup',
-            'width=436,height=634,status=no,scrollbars=no,centerscreen=yes,alwaysRaised=yes'
+            [
+                'width=436',
+                'height=634',
+                'status=no',
+                'scrollbars=no',
+                'centerscreen=yes',
+                'alwaysRaised=yes',
+                'top=25',
+                'left=25'
+            ].join(',')
         );
     });
 };
