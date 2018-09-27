@@ -7781,8 +7781,8 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
 "tronweb@https://github.com/Kondax/tron-web.git":
-  version "2.0.9"
-  resolved "https://github.com/Kondax/tron-web.git#ee3b660ef452ce0eac0622f604b79c671f1b6ed2"
+  version "2.0.10"
+  resolved "https://github.com/Kondax/tron-web.git#ec3d89bf075a93ca1bd837ce355988b7958b3350"
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
