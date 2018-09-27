@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 
-import { 
+import {
     FormattedMessage
 } from 'react-intl';
 
 import TransferContract from './TransferContract';
+import TriggerSmartContract from './TriggerSmartContract';
 
 export default class SignedTransaction extends Component {
     renderNote() {
@@ -27,7 +28,7 @@ export default class SignedTransaction extends Component {
     rawTransaction(contractType, parameters) {
         return <React.Fragment>
             <div className="confirmWarningHeader">
-                &#9888; 
+                &#9888;
                 <FormattedMessage id='queue.send.warning.header' />
             </div>
 
@@ -40,8 +41,8 @@ export default class SignedTransaction extends Component {
             </div>
 
             <div className="confirmGroup">
-                <textarea value={ 
-                    JSON.stringify(parameters, null, 2) 
+                <textarea value={
+                    JSON.stringify(parameters, null, 2)
                 } className="confirmTextArea maxHeight200" readonly />
             </div>
         </React.Fragment>;
@@ -58,7 +59,10 @@ export default class SignedTransaction extends Component {
         switch(contractType) {
             case 'TransferContract':
                 Renderer = TransferContract;
-            break;
+                break;
+            case 'TriggerSmartContract':
+                Renderer = TriggerSmartContract;
+                break;
             default:
                 console.warn('Unknown contract type requested', { contractType, contract });
         }
@@ -68,7 +72,7 @@ export default class SignedTransaction extends Component {
                 { this.props.queueLength }
                 { this.renderNote() }
 
-                { Renderer && <Renderer parameters={ parameters } price={ this.props.price } /> }
+                { Renderer && <Renderer parameters={ parameters } price={ this.props.price } contract={ contract } /> }
                 { !Renderer && this.rawTransaction(contractType, parameters) }
 
                 { this.props.buttons }

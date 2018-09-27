@@ -148,3 +148,12 @@
 .maxHeight200 {
     max-height: 200px;
 }
+
+.contractAddress {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.contractDataContent {
+    margin-top: 10px;
+}
