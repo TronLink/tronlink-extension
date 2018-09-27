@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
     "name": "TronLink",
-    "version": "1.0.0",
-    "version_name": "1.0.0-beta",
-    "description": "An interactive chrome extension for signing, receiving and broadcasting Tron transactions",
+    "version": "1.0.1",
+    "version_name": "1.0.1-beta",
+    "description": "An interactive chrome extension for signing, receiving and broadcasting TRON transactions",
     "author": "https://github.com/TronWatch",
 	"icons": {
 		"128": "static/icon128.png"
@@ -39,7 +39,6 @@
     ],
     "browser_action": {
         "default_popup": "app/popup/build/index.html",
-        "default_title": "Tron Chrome"
-    },
-    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuwVUXHP6igeqchpCIAEAIr0kEPCi0UhbeV6h/GPFP930TNSwDBvrEz7IwUs54bo3Rw2/quG2lsO/00HB3rxSAV1Y7ri0twvaBHo10ah+bV+2qjIZ8uRVoGNmELPtUPPjX27TLhnigmSz10ScA9/+QcogmSXde8cY043CTc5GptjFmI0c2iN/OF3nttKg/+hk1Nk9TMQUgmGTPdc1mx3xJEhVrOCpaCaykTzzHHCl321JKXNQ7cKZlhfzcurcGu+nBUIV/JfWX3JfQtao753pE4e2cSjatLdgDM0Mz3T1Rp9HWxOGE66iyfxnryffrbTRlMl0TqFbMf1c6G2kaZVdLwIDAQAB"
+        "default_title": "TronLink"
+    }
 }

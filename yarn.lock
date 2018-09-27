@@ -7782,7 +7782,7 @@ trim-right@^1.0.1:
 
 "tronweb@https://github.com/Kondax/tron-web.git":
   version "2.0.10"
-  resolved "https://github.com/Kondax/tron-web.git#ec3d89bf075a93ca1bd837ce355988b7958b3350"
+  resolved "https://github.com/Kondax/tron-web.git#c32c74da6232b137c0d7c4e9ccdd755681aeaed6"
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
