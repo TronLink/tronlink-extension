@@ -332,7 +332,7 @@ popup.on('updateAccount', async data => {
     );
 });
 
-popup.on('sendTron', ({ data, resolve, reject }) => {
+popup.on('sendTron', async ({ data, resolve, reject }) => {
     const address = Utils.transformAddress(data.recipient);
 
     if(!address)
@@ -344,13 +344,18 @@ popup.on('sendTron', ({ data, resolve, reject }) => {
     if(data.amount > wallet.getAccount().balance)
         return reject('You don\'t have the funds required');
 
+    const unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendTrx(address, data.amount);
+    const signedTransaction = await wallet.tronWeb.trx.signTransaction(unsignedTransaction);
+    const input = signedTransaction.raw_data.contract[0].parameter.value;
+
     return addConfirmation({
-        type: CONFIRMATION_TYPE.SEND_TRON,
-        amount: parseInt(data.amount),
-        recipient: address,
-        desc: false,
+        type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
         hostname: 'TronLink',
-    }, resolve, reject);
+        signedTransaction,
+        input
+    }, (transaction) => {
+        resolve(wallet.tronWeb.trx.sendRawTransaction(transaction));
+    }, reject);
 });
 
 // Ideally we should move this into a separate file

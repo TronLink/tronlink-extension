@@ -9,7 +9,7 @@ export default class TransferContract extends Component {
             price
         } = this.props;
 
-        const amount = parameters.amount;
+        const amount = parameters.amount / 1000000;
         const to = TronWeb.address.fromHex(parameters.to_address);
 
         const trxPrice = Number(

@@ -1,6 +1,6 @@
 {
     "name": "tronlink",
-    "version": "1.0.3-beta",
+    "version": "1.0.5-beta",
     "private": false,
     "dependencies": {
         "TronUtils": "git+https://github.com/TronWatch/TronUtils.git",
