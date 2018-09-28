@@ -95,7 +95,7 @@ const utils = {
                 tx.name = value.asset_name;
 
             return tx;
-        });
+        }).sort((a, b) => b.date - a.date);
     },
 
     base64ToHex(string) {
