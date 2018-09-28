@@ -88,7 +88,7 @@
         "build:react": "cd app/popup && npm run build && cd ../../",
         "build:all": "npm run build && npm run build:react",
         "test:react": "cd app/popup && npm run test && cd ../../",
-        "zip": "npm run build:all && npx bestzip chrome-extension.zip dist static manifest.json",
+        "zip": "npm run build:all && npx bestzip chrome-extension.zip dist static manifest.json app/popup/build",
         "symlink:win": "mklink /D app\\popup\\src\\extension ..\\..\\lib",
         "symlink": "cd app/popup/src && ln -s ../../lib extension && cd ../../../"
     },
