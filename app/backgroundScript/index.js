@@ -344,18 +344,22 @@ popup.on('sendTron', async ({ data, resolve, reject }) => {
     if(data.amount > wallet.getAccount().balance)
         return reject('You don\'t have the funds required');
 
-    const unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendTrx(address, data.amount);
-    const signedTransaction = await wallet.tronWeb.trx.signTransaction(unsignedTransaction);
-    const input = signedTransaction.raw_data.contract[0].parameter.value;
+    try {
+        const unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendTrx(address, data.amount);
+        const signedTransaction = await wallet.tronWeb.trx.signTransaction(unsignedTransaction);
+        const input = signedTransaction.raw_data.contract[0].parameter.value;
 
-    return addConfirmation({
-        type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
-        hostname: 'TronLink',
-        signedTransaction,
-        input
-    }, (transaction) => {
-        resolve(wallet.tronWeb.trx.sendRawTransaction(transaction));
-    }, reject);
+        return addConfirmation({
+            type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
+            hostname: 'TronLink',
+            signedTransaction,
+            input
+        }, (transaction) => {
+            resolve(wallet.tronWeb.trx.sendRawTransaction(transaction));
+        }, reject);
+    } catch (e) {
+        return reject('Error while sending trx.');
+    }
 });
 
 // Ideally we should move this into a separate file
