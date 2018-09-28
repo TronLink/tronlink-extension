@@ -297,26 +297,20 @@ popup.on('unlockWallet', ({
 popup.on('getWalletStatus', async ({ resolve }) => {
     logger.info('Requesting wallet status');
 
+    wallet.status === WALLET_STATUS.UNLOCKED && popup.sendAccount(
+        wallet.getAccount()
+    );
+
     resolve(wallet.status);
-
-    if(wallet.status === WALLET_STATUS.UNLOCKED) {
-        await wallet.updateAccounts();
-
-        return popup.sendAccount(
-            wallet.getAccount()
-        );
-    }
 });
 
 popup.on('getAccounts', async ({ resolve }) => {
-    await wallet.updateAccounts();
+    popup.sendAccount(
+        wallet.getAccount()
+    );
 
     resolve(
         wallet.getAccounts()
-    );
-
-    popup.sendAccount(
-        wallet.getAccount()
     );
 });
 

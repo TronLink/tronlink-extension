@@ -16,8 +16,8 @@ const nodeSelector = {
         this._defaultNodes = {
             [DEFAULT_NODE]: {
                 name: 'TronGrid Private TestNet',
-                full: 'https://api.trongrid.io:8090',
-                solidity: 'https://api.trongrid.io:8091',
+                full: 'https://api.trongrid.io',
+                solidity: 'https://api.trongrid.io',
                 event: 'https://api.trongrid.io/',
                 default: true,
                 mainnet: false
