@@ -95,7 +95,7 @@ const utils = {
                 tx.name = value.asset_name;
 
             return tx;
-        }).reverse();
+        });
     },
 
     base64ToHex(string) {
