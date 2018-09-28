@@ -7780,9 +7780,9 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-"tronweb@https://github.com/Kondax/tron-web.git":
-  version "2.0.10"
-  resolved "https://github.com/Kondax/tron-web.git#c32c74da6232b137c0d7c4e9ccdd755681aeaed6"
+tronweb@tronprotocol/tron-web:
+  version "2.0.12"
+  resolved "https://codeload.github.com/tronprotocol/tron-web/tar.gz/82fdb2113f3b76cadc04dbb710ff76232bbfc79f"
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
@@ -8050,8 +8050,8 @@ validator@^10.5.0:
   resolved "https://registry.yarnpkg.com/validator/-/validator-10.5.0.tgz#1debbe1e6f5fd0c920ed2af47516f3762033939c"
 
 validator@^10.7.1:
-  version "10.7.1"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-10.7.1.tgz#dd4cc750c2134ce4a15a2acfc7b233669d659c5b"
+  version "10.8.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-10.8.0.tgz#8acb15a5c39411cbc8ef2be0c98c2514da4410a7"
 
 value-equal@^0.4.0:
   version "0.4.0"
