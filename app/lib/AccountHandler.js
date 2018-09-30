@@ -1,4 +1,4 @@
-import TronUtils from 'TronUtils';
+import TronWeb from 'tronweb';
 import Logger from './logger';
 import bip39 from 'bip39';
 import bip32 from 'bip32';
@@ -31,7 +31,7 @@ export default class AccountHandler {
 
         this._type = ACCOUNT_TYPE.RAW;
         this._privateKey = privateKey;
-        this._publicKey = TronUtils.accounts.privateKeyToAddress(privateKey);
+        this._publicKey = TronWeb.address.fromPrivateKey(privateKey).base58;
     }
 
     _importFromWordList(wordList) {
@@ -59,7 +59,7 @@ export default class AccountHandler {
         const child = node.derivePath(`m/44'/${ BIP44.INDEX }'/${ index }'/0/0`, this._seed);
 
         const privateKey = child.privateKey.toString('hex');
-        const publicKey = TronUtils.accounts.privateKeyToAddress(privateKey);
+        const publicKey = TronWeb.address.fromPrivateKey(privateKey).base58;
 
         logger.info(`Generated public key ${publicKey}`);
 
