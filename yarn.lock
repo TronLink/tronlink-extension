@@ -16,19 +16,6 @@
   dependencies:
     any-observable "^0.3.0"
 
-"TronUtils@git+https://github.com/TronWatch/TronUtils.git":
-  version "1.0.6"
-  resolved "git+https://github.com/TronWatch/TronUtils.git#af3d9328195b6038e5ad3f789bdde6dd079bac05"
-  dependencies:
-    assert "^1.4.1"
-    axios "^0.18.0"
-    bip39 "2.3.0"
-    btoa "^1.2.1"
-    elliptic "^6.4.0"
-    js-sha3 "^0.7.0"
-    sha256 "^0.2.0"
-    text-encoding "^0.6.4"
-
 abab@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -395,7 +382,7 @@ assert-plus@1.0.0, assert-plus@^1.0.0:
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
   integrity sha1-8S4PPF13sLHN2RRpQuTpbB5N1SU=
 
-assert@^1.1.1, assert@^1.4.1:
+assert@^1.1.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
   integrity sha1-mZEtWRg2tab1s0XA8H7vwI/GXZE=
@@ -1685,16 +1672,6 @@ bip32@^1.0.2:
     typeforce "^1.11.5"
     wif "^2.0.6"
 
-bip39@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/bip39/-/bip39-2.3.0.tgz#e4ee6c6d1bd90ca00ffd57ad446bdf8c017ff484"
-  integrity sha1-5O5sbRvZDKAP/VetRGvfjAF/9IQ=
-  dependencies:
-    create-hash "^1.1.0"
-    pbkdf2 "^3.0.9"
-    randombytes "^2.0.1"
-    unorm "^1.3.3"
-
 bl@^1.0.0:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/bl/-/bl-1.2.2.tgz#a160911717103c07410cef63ef51b397c025af9c"
@@ -1908,11 +1885,6 @@ bser@^2.0.0:
   integrity sha1-mseNPtXZFYBP2HrLFYvHlxR6Fxk=
   dependencies:
     node-int64 "^0.4.0"
-
-btoa@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
-  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
 
 buffer-crc32@~0.2.1:
   version "0.2.13"
@@ -2454,20 +2426,10 @@ content-type@~1.0.4:
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
 
-convert-hex@~0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/convert-hex/-/convert-hex-0.1.0.tgz#08c04568922c27776b8a2e81a95d393362ea0b65"
-  integrity sha1-CMBFaJIsJ3drii6BqV05M2LqC2U=
-
 convert-source-map@^1.4.0, convert-source-map@^1.5.0, convert-source-map@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.1.tgz#b8278097b9bc229365de5c62cf5fcaed8b5599e5"
   integrity sha1-uCeAl7m8IpNl3lxiz1/K7YtVmeU=
-
-convert-string@~0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/convert-string/-/convert-string-0.1.0.tgz#79ce41a9bb0d03bcf72cdc6a8f3c56fbbc64410a"
-  integrity sha1-ec5BqbsNA7z3LNxqjzxW+7xkQQo=
 
 cookie-signature@1.0.6:
   version "1.0.6"
@@ -5421,11 +5383,6 @@ js-sha3@0.5.7:
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
   integrity sha1-DU/9gALVMzqrr0oj7tL2N0yfKOc=
 
-js-sha3@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.7.0.tgz#0a5c57b36f79882573b2d84051f8bb85dd1bd63a"
-  integrity sha512-Wpks3yBDm0UcL5qlVhwW9Jr9n9i4FfeWBFOOXP5puDS/SiudJGhw7DPyBqn3487qD4F0lsC0q3zxink37f7zeA==
-
 js-sha3@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.8.0.tgz#b9b7a5da73afad7dedd0f8c463954cbde6818840"
@@ -6867,7 +6824,7 @@ path-type@^2.0.0:
   dependencies:
     pify "^2.0.0"
 
-pbkdf2@^3.0.16, pbkdf2@^3.0.3, pbkdf2@^3.0.9:
+pbkdf2@^3.0.16, pbkdf2@^3.0.3:
   version "3.0.16"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.16.tgz#7404208ec6b01b62d85bf83853a8064f8d9c2a5c"
   integrity sha512-y4CXP3thSxqf7c0qmOF+9UeOTrifiVTIM+u7NWlq+PRsHbr7r7dpCmvzrZxa96JJUNi0Y5w9VqG5ZNeCVMoDcA==
@@ -8288,14 +8245,6 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-sha256@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/sha256/-/sha256-0.2.0.tgz#73a0b418daab7035bff86e8491e363412fc2ab05"
-  integrity sha1-c6C0GNqrcDW/+G6EkeNjQS/CqwU=
-  dependencies:
-    convert-hex "~0.1.0"
-    convert-string "~0.1.0"
-
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
@@ -8837,11 +8786,6 @@ test-exclude@^4.2.1:
     read-pkg-up "^1.0.1"
     require-main-filename "^1.0.1"
 
-text-encoding@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
-  integrity sha1-45mpgiV6J22uQou5KEXLcb3CbRk=
-
 text-table@0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
@@ -9102,11 +9046,6 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
   integrity sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==
-
-unorm@^1.3.3:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/unorm/-/unorm-1.4.1.tgz#364200d5f13646ca8bcd44490271335614792300"
-  integrity sha1-NkIA1fE2RsqLzURJAnEzVhR5IwA=
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
