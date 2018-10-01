@@ -70,21 +70,13 @@ popup.on('isOpen', ({ resolve }) => {
     resolve();
 });
 
-popup.on('addConfirmation', data => {
-    logger.info('Adding confirmation', data);
+popup.on('addConfirmation', data => store.dispatch(
+    addConfirmation(data)
+));
 
-    store.dispatch(
-        addConfirmation(data)
-    );
-});
-
-popup.on('sendAccount', data => {
-    logger.info('Received account', data);
-
-    store.dispatch(
-        setAccount(data)
-    );
-});
+popup.on('sendAccount', data => store.dispatch(
+    setAccount(data)
+));
 
 popup.on('broadcastPrice', data => {
     logger.info('Received price', data);
@@ -103,3 +95,5 @@ updateConfirmations();
 updateStatus();
 updatePrice();
 getNodes();
+
+setInterval(() => updatePrice(), 30 * 60 * 1000);

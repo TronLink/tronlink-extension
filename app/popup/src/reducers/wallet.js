@@ -1,6 +1,8 @@
 import { store, popup } from 'index';
 import { WALLET_STATUS } from 'extension/constants';
+
 import Logger from 'extension/logger';
+import axios from 'axios';
 
 const logger = new Logger('Wallet Reducer');
 
@@ -63,9 +65,16 @@ export const updatePrice = async () => {
     const {
         price,
         lastUpdated
-    } = await popup.getPrice();
+    } = await axios('https://api.coinmarketcap.com/v2/ticker/1958/').then(({ data: res }) => ({
+        price: res.data.quotes.USD.price,
+        lastUpdated: res.data.last_updated
+    })).catch(err => {
+        logger.error('Failed to fetch price', err);
+        return false;
+    });
 
-    logger.info('Latest price update', { price, lastUpdated });
+    if(!price || !lastUpdated)
+        return;
 
     store.dispatch(
         setTrxPrice(price, lastUpdated)

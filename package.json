@@ -1,10 +1,11 @@
 {
     "name": "tronlink",
-    "version": "1.0.8-beta",
+    "version": "1.0.9-beta",
     "private": false,
     "dependencies": {
         "aes-js": "^3.1.1",
         "autoprefixer": "7.1.6",
+        "axios": "^0.18.0",
         "babel-core": "6.26.0",
         "babel-eslint": "7.2.3",
         "babel-jest": "20.0.3",
@@ -20,6 +21,7 @@
         "bestzip": "^1.1.4",
         "bignumber.js": "^7.2.1",
         "bip32": "^1.0.2",
+        "bip39": "^2.5.0",
         "buffer": "^5.2.1",
         "case-sensitive-paths-webpack-plugin": "2.1.1",
         "chalk": "1.1.3",
