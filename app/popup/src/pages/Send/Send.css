@@ -141,11 +141,3 @@
 .sendGroup .button {
     flex: 1;
 }
-
-.sendGroup .button.secondary {
-    margin-right: 10px;
-}
-
-.sendGroup .button.primary {
-    margin-left: 10px;
-}

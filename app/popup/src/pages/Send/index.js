@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { SettingsIcon, ArrowLeftIcon } from 'components/Icons';
+import { SettingsIcon } from 'components/Icons';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { popup } from 'index';
 
+import Utils from 'extension/utils';
 import Header from 'components/Header';
 import AddressView from './AddressView';
 import Logger from 'extension/logger';
@@ -88,7 +89,7 @@ class Send extends Component {
     }
 
     sendTransaction() {
-        logger.info(`User is requesting to send ${this.state.amount.toLocaleString()} TRX to ${this.state.address}`);
+        logger.info(`User is requesting to send ${this.state.amount.toLocaleString()} ${this.state.label} to ${this.state.address}`);
 
         this.setState({
             error: false,
@@ -115,38 +116,34 @@ class Send extends Component {
             return <div className="queueError">{ this.state.error }</div>;
     }
 
+    isValid() {
+        const { amount, address } = this.state;
+
+        if(isNaN(amount))
+            return false;
+
+        if(amount <= 0)
+            return false;
+
+        if(this.mode === 'trx' && amount > (this.props.account.balance * 1000000))
+            return false;
+
+        if(this.mode === 'TOKEN' && amount > this.props.account.tokens[this.state.label])
+            return false;
+
+        if(!Utils.transformAddress(address))
+            return false;
+
+        return true;
+    }
+
     renderBody() {
-        const totalUSD = this.props.price * (this.state.amount || 0);
+        const totalUSD = this.isValid() ? this.props.price * (this.state.amount || 0) : 0;
+        const amount = this.isValid() ? this.state.amount : 0;
 
         return (
             <div className="send">
                 { this.checkError() }
-                <div className="sendRadioGroup">
-                    <div className="sendRadioButton">
-                        <input 
-                            type="radio"
-                            value={ 'TRX' }
-                            onChange={ event => this.onRadioToggle(event) }
-                            checked={ this.state.mode === 'TRX' }
-                            readOnly={ this.state.loading }
-                        />
-                        <span>
-                            TRX
-                        </span>
-                    </div>
-                    <div className="sendRadioButton">
-                        <input 
-                            type="radio"
-                            value={ 'TOKEN' }
-                            onChange={ event => this.onRadioToggle(event) }
-                            checked={ this.state.mode === 'TOKEN' }
-                            disabled
-                        />
-                        <span className="disabled">
-                            <FormattedMessage id='words.token' />
-                        </span>
-                    </div>
-                </div>
                 { this.renderInput() }
                 <div className="sendGroup">
                     <div className="sendGroupTop">
@@ -166,11 +163,8 @@ class Send extends Component {
                     <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />                    
                 </div>
                 <div className="sendGroup sendButtonContainer">
-                    <Button onClick={ () => this.cancelTransaction() } width={ '150px' } type={ 'secondary' } disabled={ this.state.loading }>
-                        <FormattedMessage id='words.cancel' />
-                    </Button>
-                    <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading }>
-                        <FormattedMessage id='send.total' values={{ amount: this.state.amount, token: this.state.label }} />
+                    <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading } disabled={ !this.isValid() }>
+                        <FormattedMessage id='send.total' values={{ amount, token: this.state.label }} />
                     </Button>
                 </div>
             </div>

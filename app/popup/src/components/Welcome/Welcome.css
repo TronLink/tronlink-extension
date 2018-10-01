@@ -62,14 +62,14 @@
 
 .welcomeWarning {
     width: 310px;
-    border: 2px solid red;
-    border-radius: 5px;
+    border-radius: 4px;
     margin: 0 auto;
     box-sizing: border-box;
     padding: 10px;
     font-size: 14px;
     text-align: center;
-    font-weight: 500;
-    color: #000;
-    margin-top: 7px;
+    margin-top: 3px;
+    line-height: 17px;
+    background: #ed3f21;
+    color: #fff;
 }
