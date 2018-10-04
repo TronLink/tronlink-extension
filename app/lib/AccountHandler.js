@@ -31,7 +31,7 @@ export default class AccountHandler {
 
         this._type = ACCOUNT_TYPE.RAW;
         this._privateKey = privateKey;
-        this._publicKey = TronWeb.address.fromPrivateKey(privateKey).base58;
+        this._publicKey = TronWeb.address.fromPrivateKey(privateKey);
     }
 
     _importFromWordList(wordList) {
@@ -59,7 +59,7 @@ export default class AccountHandler {
         const child = node.derivePath(`m/44'/${ BIP44.INDEX }'/${ index }'/0/0`, this._seed);
 
         const privateKey = child.privateKey.toString('hex');
-        const publicKey = TronWeb.address.fromPrivateKey(privateKey).base58;
+        const publicKey = TronWeb.address.fromPrivateKey(privateKey);
 
         logger.info(`Generated public key ${publicKey}`);
 
