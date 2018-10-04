@@ -13,14 +13,6 @@ const nodeSelector = {
         this._storageKey = `${ LOCALSTORAGE_NAMESPACE }_NODES`;
 
         this._defaultNodes = {
-            TESTNET: {
-                name: 'Shasta Testnet',
-                full: 'https://api.shasta.trongrid.io',
-                solidity: 'https://api.shasta.trongrid.io',
-                event: 'https://api.shasta.trongrid.io',
-                default: true,
-                mainnet: false
-            },
             MAINNET: {
                 name: 'Mainnet',
                 full: 'https://api.trongrid.io',
@@ -29,6 +21,14 @@ const nodeSelector = {
                 default: true,
                 mainnet: true
             },
+            TESTNET: {
+                name: 'Shasta Testnet',
+                full: 'https://api.shasta.trongrid.io',
+                solidity: 'https://api.shasta.trongrid.io',
+                event: 'https://api.shasta.trongrid.io',
+                default: true,
+                mainnet: false
+            }
         };
 
         this._readUserNodes();
