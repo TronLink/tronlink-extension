@@ -5,8 +5,7 @@ import md5 from 'md5';
 import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
 const logger = new Logger('nodes');
-
-const DEFAULT_NODE = '34BD2B5CEBB1FB295117F7CD29056525';
+const DEFAULT_NODE = 'TESTNET';
 
 const nodeSelector = {
     init() {
@@ -14,14 +13,22 @@ const nodeSelector = {
         this._storageKey = `${ LOCALSTORAGE_NAMESPACE }_NODES`;
 
         this._defaultNodes = {
-            [DEFAULT_NODE]: {
-                name: 'TronGrid Private TestNet',
-                full: 'https://api.trongrid.io',
-                solidity: 'https://api.trongrid.io',
-                event: 'https://api.trongrid.io/',
+            TESTNET: {
+                name: 'Shasta Testnet',
+                full: 'https://api.shasta.trongrid.io',
+                solidity: 'https://api.shasta.trongrid.io',
+                event: 'https://api.shasta.trongrid.io',
                 default: true,
                 mainnet: false
-            }
+            },
+            MAINNET: {
+                name: 'Mainnet',
+                full: 'https://api.trongrid.io',
+                solidity: 'https://api.trongrid.io',
+                event: 'https://api.trongrid.io',
+                default: true,
+                mainnet: true
+            },
         };
 
         this._readUserNodes();
