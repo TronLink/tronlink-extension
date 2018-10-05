@@ -5,7 +5,7 @@ import md5 from 'md5';
 import { LOCALSTORAGE_NAMESPACE } from 'lib/constants';
 
 const logger = new Logger('nodes');
-const DEFAULT_NODE = 'TESTNET';
+const DEFAULT_NODE = 'MAINNET';
 
 const nodeSelector = {
     init() {
