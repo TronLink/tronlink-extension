@@ -2,37 +2,31 @@ import React, { Component } from 'react';
 import TronWeb from 'tronweb';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 
-export default class TransferAssetContract extends Component {
+export default class ParticipateAssetIssueContract extends Component {
     render() {
         const {
-            amount,
-            asset_name: tokenName,
-            to_address: recipient
-        } = this.props.parameters;
+            parameters,
+        } = this.props;
 
-        const to = TronWeb.address.fromHex(recipient);
-        const token = TronWeb.toUtf8(tokenName);
+        const name = TronWeb.toUtf8(parameters.name);
 
         return <React.Fragment>
             <div className="confirmGroup">
                 <div className="confirmGroupTop">
                     <div className="confirmGroupHeader bold">
-                        <FormattedMessage id='queue.send.to' />
+                        <FormattedMessage id='queue.issue.name' />
                     </div>
-                    <div className="confirmGroupAddress bold orange">{ to }</div>
+                    <div className="confirmGroupAddress bold orange">{ name }</div>
                 </div>
             </div>
 
             <div className="confirmGroupTotal">
                 <div className="confirmGroupTop">
                     <div className="confirmGroupHeader bold">
-                        <FormattedMessage id='words.total' />
+                        <FormattedMessage id='queue.participate.amount' />
                     </div>
                     <div className="confirmGroupAmount bold orange">
-                        <FormattedNumber value={ amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 6 } />
-                        <span>
-                            &nbsp;{ token }
-                        </span>
+                        <FormattedNumber value={ parameters.amount } minimumFractionDigits={ 0 } maximumFractionDigits={ 0 } />
                     </div>
                 </div>
             </div>

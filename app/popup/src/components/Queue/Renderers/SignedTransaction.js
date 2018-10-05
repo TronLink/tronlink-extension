@@ -7,6 +7,8 @@ import {
 import TransferContract from './TransferContract';
 import TriggerSmartContract from './TriggerSmartContract';
 import TransferAssetContract from './TransferAssetContract';
+import AssetIssueContract from './AssetIssueContract';
+import ParticipateAssetIssueContract from './ParticipateAssetIssueContract';
 
 export default class SignedTransaction extends Component {
     renderType(contractType) {
@@ -67,6 +69,8 @@ export default class SignedTransaction extends Component {
         let Renderer = false;
         let contractName = contractType;
 
+        // Ideally we should just do renderers[contractType] || false;
+
         switch(contractType) {
             case 'TransferContract':
                 Renderer = TransferContract;
@@ -76,6 +80,12 @@ export default class SignedTransaction extends Component {
                 break;
             case 'TransferAssetContract':
                 Renderer = TransferAssetContract;
+                break;
+            case AssetIssueContract:
+                Renderer = AssetIssueContract;
+                break;
+            case ParticipateAssetIssueContract:
+                Renderer = ParticipateAssetIssueContract;
                 break;
             default:
                 contractName = 'Unknown';

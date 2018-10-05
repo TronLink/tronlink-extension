@@ -132,6 +132,10 @@ export default class Wallet extends EventEmitter {
 
         let transactions = await this._tronWeb.trx.getTransactionsRelated(address, 'all', 999999999999);
 
+        transactions = transactions.filter(({ raw_data: { timestamp } }) => timestamp && timestamp < Date.now()).sort((a, b) => (
+            b.raw_data.timestamp - a.raw_data.timestamp
+        ));
+
         if(transactions.length > 30)
             transactions = transactions.slice(0, 30);
 
