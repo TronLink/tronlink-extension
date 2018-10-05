@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import TronWeb from 'tronweb';
+
+import {
+    FormattedMessage,
+    FormattedNumber
+} from 'react-intl';
 
 import * as Icons from 'components/Icons';
 import Utils from 'extension/utils.js';
@@ -64,7 +69,7 @@ class Transaction extends Component {
             return <div className='txLabel green'><FormattedMessage id='words.receivedToken' /></div>;      
 
             case 'ParticipateAssetIssueContract':
-                return <div className='txLabel'><FormattedMessage id='words.token' /></div>;
+                return <div className='txLabel'><FormattedMessage id='words.purchasedToken' /></div>;
 
             case 'VoteWitnessContract':
                 return <div className='txLabel vote'><FormattedMessage id='account.transactions.voted' /></div>;
@@ -121,6 +126,9 @@ class Transaction extends Component {
                         amount: this.props.raw.parameter.value.votes.length
                     }} />
                 );
+
+            case 'ParticipateAssetIssueContract':
+                return TronWeb.address.fromHex(this.props.raw.parameter.value.to_address);
 
             case 'UnfreezeBalanceContract':
                 return null;
@@ -179,11 +187,13 @@ class Transaction extends Component {
             )
         }
 
-        if(this.props.txType == 'UnfreezeBalanceContract') {
+        if(this.props.txType == 'ParticipateAssetIssueContract') {
             return (
                 <div className={ 'txAmount green' + className }>
-                    + <FormattedNumber value={ this.props.raw.parameter.value.frozen_balance } />
-                    <span className='margin-left'>TRX</span>
+                    + <FormattedNumber value={ this.props.raw.parameter.value.amount } />
+                    <span className='margin-left'>
+                        { Utils.hexToString(raw.parameter.value.asset_name) }
+                    </span>
                 </div>
             )
         }
@@ -203,6 +213,13 @@ class Transaction extends Component {
 	}
 
 	render() {
+        const ignored = [
+            'AccountUpdateContract'
+        ];
+
+        if(ignored.includes(this.props.txType))
+            return null;
+
 		return (
 			<div className='transaction'>
                 { this.renderIcon() }

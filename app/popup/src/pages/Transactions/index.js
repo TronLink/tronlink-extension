@@ -55,6 +55,9 @@ class Transactions extends Component {
                     <AccountHeader />
                     <div className="accountView container">
                         <div className="transactionList">
+                            <div className='transactionWarning'>
+                                <FormattedMessage id='tron.is.broken' />
+                            </div>
                             { this.renderTransactions() }
                         </div>
                     </div>
