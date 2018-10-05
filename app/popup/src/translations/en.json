@@ -55,15 +55,6 @@
     "account.transactions.unfrozen": "Unfroze TRX",
     "account.transactions.voted": "Voted",
 
-    "give.sent.header": "Funds sent",
-    "give.sent.body": "You have been sent 20,000 TestNet TRX",
-    "give.failed.header:": "Failed to send funds",
-    "give.fund.header": "TestNet Funding",
-    "give.fund.body": "Sends 20,000 TestNet TRX to your account",
-    "give.fund.address": "Address: {address}",
-    "give.fund.button": "Fund Account",
-    "give.fund.title": "GRANT FUNDS",
-
     "import.header": "Import Private Key",
     "import.body": "Please enter the private key of your wallet below. We will then generate the address and fetch the past transactions",
     "import.button": "Import",

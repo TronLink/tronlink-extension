@@ -207,6 +207,7 @@
     flex-direction: column;
     width: 360px;
     background: transparent;
+    max-height: 180px;
 }
 
 .send-dropdown--menu .Dropdown-option {
@@ -220,6 +221,7 @@
     overflow: hidden;
     border-top: 1px solid #eee;
     position: relative;
+    min-height: 40px;
 }
 
 .send-dropdown--menu .Dropdown-option.is-selected {

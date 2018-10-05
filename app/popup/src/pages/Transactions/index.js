@@ -46,8 +46,6 @@ class Transactions extends Component {
                 <Header 
                     navbarTitle={ 'Transaction History' }
                     navbarLabel={ this.props.account.name || this.props.account.publicKey }
-                    leftIconImg={ <MoneyIcon /> }
-                    leftIconRoute="/main/redeem"
                     rightIconImg={ <SettingsIcon /> }
                     rightIconRoute="/main/settings"
                 />
