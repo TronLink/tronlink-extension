@@ -17,8 +17,6 @@ import Accounts from 'pages/Accounts';
 import Transactions from 'pages/Transactions';
 import Tokens from 'pages/Tokens';
 import Send from 'pages/Send';
-
-import Redeem from 'pages/Redeem';
 import Settings from 'pages/Settings';
 
 import './App.css';
@@ -51,8 +49,7 @@ class App extends Component {
                                 <Route exact path="/main/import/tronscan" component={ ImportTronScan } />
                                 <Route exact path="/main/import/mnemonic" component={ ImportMnemonicPhrase } />
                                 <Route exact path="/main/import/privatekey" component={ ImportPrivateKey } />
-                                
-                                <Route path="/main/redeem" component={ Redeem } />
+
                                 <Route path="/main/settings" component={ Settings } />                                
                             </Switch>
                         </div>
