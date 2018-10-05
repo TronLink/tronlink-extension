@@ -207,6 +207,7 @@
     flex-direction: column;
     width: 360px;
     background: transparent;
+    max-height: 180px;
 }
 
 .send-dropdown--menu .Dropdown-option {
