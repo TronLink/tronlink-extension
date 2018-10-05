@@ -10,96 +10,86 @@ import Header from 'components/Header';
 import AddressView from './AddressView';
 import Logger from 'extension/logger';
 import Button from 'components/Button';
+import Dropdown from 'react-dropdown';
 
+import 'react-dropdown/style.css';
 import './Send.css';
 
 const logger = new Logger('Send');
 
 class Send extends Component {
     state = {
-        mode: 'TRX',
-        label: 'TRX',
+        token: {
+            value: false,
+            label: 'TRX'
+        },
         amount: 0,
         error: false,
+        loading: false,
         address: ''
     };
 
-    onSetAddress(address) {
+    onAddressChange(address) {
         this.setState({ address });
-    }
-
-    onRadioToggle({ target: { value: mode } }) {
-        this.setState({ mode });
     }
 
     onAmountChange({ target: { value: amount } }) {
         this.setState({ amount });
     }
 
-    renderTokens() {
-        return Object.entries(this.props.account.tokens).map(([ tokenID, token ], index) => {
-            const label = token.tokenAbbr || token.tokenName;
+    setToken(token) {
+        logger.info(`Setting token to -> ${ token }`);
 
-            return (
-                <option value={ tokenID }>
-                    { label }
-                </option>
-            );
+        this.setState({
+            token
         });
     }
 
-    renderInput() {
-        let token = (
-            <div className="sendLabel">
-                TRX
-            </div>
-        );
-
-        if (this.state.mode === 'TOKEN') {
-            if (Object.keys(this.props.account.tokens).length > 0) {
-                token = (
-                    <select>
-                        { this.renderTokens() }
-                    </select>
-                );
-            } else return (
-                <div className="sendInputGroup">
-                    <FormattedMessage id='send.noTokens' />
-                </div>
-            );
-        }
+    tokensDropdown() {
+        const tokens = [ {
+            value: false,
+            label: 'TRX'
+        }, ...Object.entries(this.props.account.tokens).map(([ tokenID, amount ]) => ({
+            value: tokenID,
+            className: 'isToken',
+            label: (<React.Fragment>
+                { tokenID } <span className='tokenLabel trx10'>token</span>
+            </React.Fragment>)
+        })) ];
 
         return (
-            <div className="sendInputGroup">
-                <input
-                    className="textInput"
-                    type="text"
-                    value={ this.state.amount }
-                    onChange={ event => this.onAmountChange(event) }
-                    onFocus={ ({ target }) => target.select() }
-                />
-                { token }
-            </div>
+            <Dropdown
+                disabled={ this.state.loading }
+                value={ this.state.token }
+                options={ tokens }
+                className='send-dropdown'
+                controlClassName='send-dropdown--control'
+                menuClassName='send-dropdown--menu'
+                arrowClassName='send-dropdown--arrow'
+                onChange={ token => this.setToken(token) } />
         );
-    }
-
-    cancelTransaction() {
-        logger.info('User has cancelled transaction');
-        this.props.history.push('/main/transactions');
     }
 
     sendTransaction() {
-        logger.info(`User is requesting to send ${this.state.amount.toLocaleString()} ${this.state.label} to ${this.state.address}`);
+        const {
+            value: tokenID,
+            label: tokenLabel
+        } = this.state.token;
+
+        const isTRX = tokenID === false;
+
+        logger.info(`User is requesting to send ${this.state.amount.toLocaleString()} ${tokenLabel} to ${this.state.address}`);
 
         this.setState({
             error: false,
             loading: true
         });
 
-        popup.requestSend(
-            this.state.address, 
-            this.state.amount * 1000000
-        ).then(res => {
+        const func = isTRX ?
+            popup.requestSend(this.state.address, this.state.amount * 1000000) :
+            popup.requestSendToken(this.state.address, this.state.amount, tokenID);
+
+        return func.then(res => {
             logger.info('Send response', res);                   
         }).catch(error => {
             logger.error('Sending failed', error);
@@ -111,13 +101,14 @@ class Send extends Component {
         });
     }
 
-    checkError() {
-        if (this.state.error)
-            return <div className="queueError">{ this.state.error }</div>;
-    }
-
     isValid() {
-        const { amount, address } = this.state;
+        const { 
+            amount, 
+            address,
+            token
+        } = this.state;
+
+        const isTRX = token.value === false;
 
         if(isNaN(amount))
             return false;
@@ -125,10 +116,10 @@ class Send extends Component {
         if(amount <= 0)
             return false;
 
-        if(this.mode === 'trx' && amount > (this.props.account.balance * 1000000))
+        if(isTRX && amount > (this.props.account.balance * 1000000))
             return false;
 
-        if(this.mode === 'TOKEN' && amount > this.props.account.tokens[this.state.label])
+        if(!isTRX && amount > this.props.account.tokens[token.value])
             return false;
 
         if(!Utils.transformAddress(address))
@@ -140,31 +131,42 @@ class Send extends Component {
     renderBody() {
         const totalUSD = this.isValid() ? this.props.price * (this.state.amount || 0) : 0;
         const amount = this.isValid() ? this.state.amount : 0;
+        const isTRX = this.state.token.value === false;
 
         return (
-            <div className="send">
-                { this.checkError() }
-                { this.renderInput() }
-                <div className="sendGroup">
-                    <div className="sendGroupTop">
-                        <div className="sendGroupHeader bold">
+            <div className='send'>
+                { this.state.error && <div className='queueError'>{ this.state.error }</div> }
+                <div className='tokenInputGroup'>
+                    <input
+                        className='tokenInput'
+                        type='text'
+                        value={ this.state.amount }
+                        disabled={ this.state.loading }
+                        onChange={ event => this.onAmountChange(event) }
+                        onFocus={ ({ target }) => target.select() }
+                    />
+                    { this.tokensDropdown() }
+                </div>
+                <div className='sendGroup'>
+                    <div className='sendGroupTop'>
+                        <div className='sendGroupHeader bold'>
                             <FormattedMessage id='words.total' />
                         </div>
-                        <div className="sendGroupAmount bold orange">
-                            <FormattedMessage id='send.total' values={{ amount: this.state.amount, token: this.state.label }} />
+                        <div className='sendGroupAmount bold orange'>
+                            <FormattedMessage id='send.total' values={{ amount: this.state.amount, token: this.state.token.value }} />
                         </div>
                     </div>
                 </div>
-                <div className="sendGroupDetail">
+                { isTRX && <div className='sendGroupDetail'>
                     Transaction Value: 
                     <span>
                         &nbsp;USD
                     </span>
                     <FormattedNumber value={ totalUSD } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />                    
-                </div>
-                <div className="sendGroup sendButtonContainer">
+                </div> }
+                <div className='sendGroup sendButtonContainer'>
                     <Button onClick={ () => this.sendTransaction() } width={ '150px' } loading={ this.state.loading } disabled={ !this.isValid() }>
-                        <FormattedMessage id='send.total' values={{ amount, token: this.state.label }} />
+                        <FormattedMessage id='send.total' values={{ amount, token: this.state.token.value || 'TRX' }} />
                     </Button>
                 </div>
             </div>
@@ -173,15 +175,15 @@ class Send extends Component {
 
     render() {
         return (
-            <div class="mainContainer">
+            <div class='mainContainer'>
 				<Header
-					navbarTitle="Send Funds"
+					navbarTitle='Send Funds'
 					navbarLabel={ this.props.account.name || this.props.account.publicKey }
 					rightIconImg={ <SettingsIcon /> }
-                    rightIconRoute="/main/settings"
+                    rightIconRoute='/main/settings'
 				/>
-				<div className="mainContent">
-                    <AddressView onSetAddress={ address => this.onSetAddress(address) } />
+				<div className='mainContent'>
+                    <AddressView onSetAddress={ address => this.onAddressChange(address) } disabled={ this.state.loading } />
 					{ this.renderBody() }
                 </div>
 			</div>

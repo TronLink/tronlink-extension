@@ -15,6 +15,7 @@
 
 .decryptContainer {
     position: relative;
+    width: 310px;
 }
 
 .decryptContainer > span {

@@ -12,11 +12,6 @@
     transition: 100ms;
 }
 
-/*.transaction:hover {
-    transform: translateX(2px);
-    transition: 0ms;
-} why?????? */
-
 .transaction > svg {
     margin: 0px 10px;
     min-width: 24px;
@@ -74,6 +69,11 @@
     text-align: right;
     margin-right: 10px;
     white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    height: 26px;
 }
 
 .txAmount {
@@ -112,6 +112,6 @@
     fill: #ff9800;
 }
 
-.txLabel.no-margin {
+.txLabel.no-margin, .txAmount.no-margin {
     margin-bottom: 0;
 }

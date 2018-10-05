@@ -95,18 +95,6 @@ export default class PopupClient extends EventEmitter {
         });
     }
 
-    requestSendTron(address, amount) {
-        return this.raw('requestSendTron', { address, amount }, true, false);
-    }
-
-    requestSendToken(address, amount) {
-        return this.raw('requestSendToken', { address, amount }, true, false);
-    }
-
-    requestVote(address) {
-        return this.raw('requestVote', { address }, true, false);
-    }
-
     sendNewConfirmation(confirmation) {
         return this.raw('addConfirmation', confirmation, false);
     }

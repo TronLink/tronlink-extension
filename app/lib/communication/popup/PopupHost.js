@@ -143,6 +143,10 @@ export default class PopupHost extends EventEmitter {
         return this.raw('sendTron', { recipient, amount });
     }
 
+    requestSendToken(recipient, amount, token) {
+        return this.raw('sendToken', { recipient, amount, token });
+    }
+
     updateAccount(publicKey) {
         return this.raw('updateAccount', { publicKey }, false);
     }

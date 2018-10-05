@@ -33,6 +33,7 @@ class Settings extends Component {
 
         popup.setNode(nodeHash).then(() => {
             this.props.selectNode(nodeHash);
+            popup.updateAccount(this.props.wallet.account.publicKey);
         }).catch(err => {
             logger.error(`Failed to set node ${ nodeHash }:`, err);
         });

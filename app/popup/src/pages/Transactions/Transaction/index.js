@@ -26,17 +26,17 @@ class Transaction extends Component {
                 return <Icons.TokensIcon className={ this.props.isMine ? 'iconSent' : 'iconReceived' } />;
 
             case 'ParticipateAssetIssueContract':            
-                return <Icons.TokensIcon className="iconToken" />;
+                return <Icons.TokensIcon className='iconToken' />;
 
             case 'VoteWitnessContract':
                 return <Icons.VoteIcon className='iconToken vote' />;
 
             case 'AssetIssueContract':
-                return <Icons.PencilIcon className="iconToken" />;
+                return <Icons.PencilIcon className='iconToken' />;
 
             case 'FreezeBalanceContract':
             case 'UnfreezeBalanceContract':
-                return <Icons.SnowIcon className="iconFreeze" />;
+                return <Icons.SnowIcon className='iconFreeze' />;
 
             case 'CreateSmartContract':
                 return <Icons.SmartContractIcon className='smartContract' />;
@@ -53,30 +53,30 @@ class Transaction extends Component {
         switch(this.props.txType) {
             case 'TransferContract':            
                 if(this.props.isMine)
-                    return <div className="txLabel red"><FormattedMessage id='words.sent' /></div>;
+                    return <div className='txLabel red'><FormattedMessage id='words.sent' /></div>;
 
-            return <div className="txLabel green"><FormattedMessage id='words.received' /></div>;   
+            return <div className='txLabel green'><FormattedMessage id='words.received' /></div>;   
 
             case 'TransferAssetContract':            
                 if(this.props.isMine)
-                    return <div className="txLabel red"><FormattedMessage id='words.sentToken' /></div>;
+                    return <div className='txLabel red'><FormattedMessage id='words.sentToken' /></div>;
 
-            return <div className="txLabel green"><FormattedMessage id='words.receivedToken' /></div>;      
+            return <div className='txLabel green'><FormattedMessage id='words.receivedToken' /></div>;      
 
             case 'ParticipateAssetIssueContract':
-                return <div className="txLabel"><FormattedMessage id='words.token' /></div>;
+                return <div className='txLabel'><FormattedMessage id='words.token' /></div>;
 
             case 'VoteWitnessContract':
-                return <div className="txLabel vote"><FormattedMessage id='account.transactions.voted' /></div>;
+                return <div className='txLabel vote'><FormattedMessage id='account.transactions.voted' /></div>;
 
             case 'AssetIssueContract':
-                return <div className="txLabel"><FormattedMessage id='account.transactions.tokenCreation' /></div>;
+                return <div className='txLabel'><FormattedMessage id='account.transactions.tokenCreation' /></div>;
 
             case 'FreezeBalanceContract':
-                return <div className="txLabel red"><FormattedMessage id='account.transactions.frozen' /></div>;
+                return <div className='txLabel red'><FormattedMessage id='account.transactions.frozen' /></div>;
 
             case 'UnfreezeBalanceContract':
-                return <div className="txLabel green no-margin"><FormattedMessage id='account.transactions.unfrozen' /></div>;
+                return <div className='txLabel green no-margin'><FormattedMessage id='account.transactions.unfrozen' /></div>;
 
             case 'CreateSmartContract':
                 return <div className='txLabel smartContract no-margin'><FormattedMessage id='account.transactions.deployContract' /></div>;
@@ -149,9 +149,11 @@ class Transaction extends Component {
             amount 
         } = this.props;
 
+        const className = this.props.date ? '' : ' no-margin'; 
+
         if(this.props.txType == 'TransferContract') {
             return (
-                <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>
+                <div className={ 'txAmount ' + (isMine ? 'red' : 'green') + className }>
                     { isMine ? '- ' : '+ ' }
                     <FormattedNumber value={ Utils.sunToTron(amount) } minimumFractionDigits={ 0 } maximumFractionDigits={ 8 } /> 
                     <span className='margin-left'>TRX</span>
@@ -161,7 +163,7 @@ class Transaction extends Component {
 
         if(this.props.txType == 'VoteWitnessContract') {
             return (
-                <div className='txAmount red'>
+                <div className={ 'txAmount red' + className }>
                     - <FormattedNumber value={ this.props.raw.parameter.value.votes.reduce((total, vote) => total + vote.vote_count, 0) } />
                     <span className='margin-left'>TP</span>
                 </div>
@@ -170,7 +172,7 @@ class Transaction extends Component {
 
         if(this.props.txType == 'FreezeBalanceContract') {
             return (
-                <div className='txAmount red'>
+                <div className={ 'txAmount red' + className }>
                     - <FormattedNumber value={ this.props.raw.parameter.value.frozen_balance } />
                     <span className='margin-left'>TRX</span>
                 </div>
@@ -179,7 +181,7 @@ class Transaction extends Component {
 
         if(this.props.txType == 'UnfreezeBalanceContract') {
             return (
-                <div className='txAmount green'>
+                <div className={ 'txAmount green' + className }>
                     + <FormattedNumber value={ this.props.raw.parameter.value.frozen_balance } />
                     <span className='margin-left'>TRX</span>
                 </div>
@@ -190,7 +192,7 @@ class Transaction extends Component {
             return null;
 
         return (
-            <div className={ 'txAmount ' + (isMine ? 'red' : 'green') }>
+            <div className={ 'txAmount ' + (isMine ? 'red' : 'green') + className }>
                 { isMine ? '- ' : '+ ' }
                 <FormattedNumber value={ amount } maximumFractionDigits={ 0 } /> 
                 <span class='margin-left'>
@@ -202,23 +204,23 @@ class Transaction extends Component {
 
 	render() {
 		return (
-			<div className="transaction">
+			<div className='transaction'>
                 { this.renderIcon() }
                 
-				<div className="txInfoLeft">
+				<div className='txInfoLeft'>
                     { this.renderLabel() }
 
-                    <div className="txAddress">
+                    <div className='txAddress'>
                         { this.renderAddress() }
                     </div>
 				</div>
 
-				<div className="txInfoRight">
+				<div className='txInfoRight'>
                     { this.renderAmount() }
                     
-                    <div className="txDate">
+                    { this.props.date && <div className='txDate'>
                         { this.formattedDate() }
-                    </div>
+                    </div> }
 				</div>
 			</div>
 		);

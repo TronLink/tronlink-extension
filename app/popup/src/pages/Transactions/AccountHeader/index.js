@@ -30,7 +30,7 @@ class AccountHeader extends Component {
     render() {
         const usdValue = Number(
             this.state.balance * this.props.price
-        ).toFixed(2).toLocaleString();
+        ).toLocaleString();
 
         return (
             <div className="accountHeader">

@@ -75,10 +75,10 @@ const utils = {
             const { value } = contract.parameter;
 
             const tx = {
+                date: transaction.raw_data.timestamp || false,
                 raw: contract,
                 txType: contract.type,
                 amount: contract.parameter.value.amount,
-                date: transaction.raw_data.timestamp,
                 txID: transaction.txID,
                 ownerAddress,
                 toAddress,
@@ -94,8 +94,11 @@ const utils = {
             if(value.asset_name)
                 tx.name = value.asset_name;
 
+            if(tx.date && tx.date > Date.now())
+                tx.date = false;
+
             return tx;
-        }).sort((a, b) => b.date - a.date);
+        });
     },
 
     base64ToHex(string) {
