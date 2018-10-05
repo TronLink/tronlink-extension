@@ -330,16 +330,28 @@ popup.on('sendTron', async ({ data, resolve, reject }) => {
     const address = Utils.transformAddress(data.recipient);
 
     if(!address)
-        return reject('The recipient address is invalid');
+        return reject('Invalid recipient supplied');
 
     if(!Utils.validateAmount(data.amount))
-        return reject('The amount specified is invalid');
+        return reject('Invalid amount supplied');
 
     if(data.amount > wallet.getAccount().balance)
         return reject('You don\'t have the funds required');
 
+    let unsignedTransaction = false;
+
+    // Catch any invalid input data
     try {
-        const unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendTrx(address, data.amount);
+        unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendTrx(address, data.amount);
+    } catch(ex) {
+        logger.warn('Invalid transaction data provided');
+        logger.error(ex);
+
+        return reject(ex);
+    }
+
+    // Catch sign / broadcast errors
+    try {
         const signedTransaction = await wallet.tronWeb.trx.signTransaction(unsignedTransaction);
         const input = signedTransaction.raw_data.contract[0].parameter.value;
 
@@ -351,11 +363,66 @@ popup.on('sendTron', async ({ data, resolve, reject }) => {
         }, (transaction) => {
             resolve(wallet.tronWeb.trx.sendRawTransaction(transaction));
         }, reject);
-    } catch (e) {
-        return reject('Error while sending trx.');
+    } catch (ex) {
+        logger.warn('Failed to send TRX');
+        logger.error(ex);
+
+        return reject('Failed to broadcast transaction');
     }
 });
 
+popup.on('sendToken', async ({ data, resolve, reject }) => {
+    const {
+        amount,
+        token
+    } = data;
+
+    const address = Utils.transformAddress(data.recipient);
+
+    if(!address)
+        return reject('Invalid recipient supplied');
+
+    if(!Utils.validateAmount(amount))
+        return reject('Invalid amount supplied');
+
+    if(!wallet.getAccount().tokens.hasOwnProperty(token))
+        return reject('Invalid amount supplied');
+
+    if(amount > wallet.getAccount().tokens[token])
+        return reject('You don\'t have the funds required');
+
+    let unsignedTransaction = false;
+
+    // Catch any invalid input data
+    try {
+        unsignedTransaction = await wallet.tronWeb.transactionBuilder.sendToken(address, amount, token);
+    } catch(ex) {
+        logger.warn('Invalid transaction data provided');
+        logger.error(ex);
+
+        return reject(ex);
+    }
+
+    // Catch sign / broadcast errors
+    try {
+        const signedTransaction = await wallet.tronWeb.trx.signTransaction(unsignedTransaction);
+        const input = signedTransaction.raw_data.contract[0].parameter.value;
+
+        return addConfirmation({
+            type: CONFIRMATION_TYPE.SIGNED_TRANSACTION,
+            hostname: 'TronLink',
+            signedTransaction,
+            input
+        }, (transaction) => {
+            resolve(wallet.tronWeb.trx.sendRawTransaction(transaction));
+        }, reject);
+    } catch (ex) {
+        logger.warn('Failed to send token');
+        logger.error(ex);
+
+        return reject('Failed to broadcast transaction');
+    }
+});
 // Ideally we should move this into a separate file
 linkedResponse.on('request', async ({
     request,

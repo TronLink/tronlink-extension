@@ -59,6 +59,7 @@
         "react": "^16.4.1",
         "react-dev-utils": "^5.0.1",
         "react-dom": "^16.4.1",
+        "react-dropdown": "^1.6.2",
         "react-dropzone": "^5.0.1",
         "react-intl": "^2.4.0",
         "react-lottie": "^1.2.3",

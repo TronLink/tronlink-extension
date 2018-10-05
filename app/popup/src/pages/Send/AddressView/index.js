@@ -6,6 +6,7 @@ import './AddressView.css';
 
 class AddressView extends Component {
     render() {
+        const disabled = this.props.disabled || false;
         const address = this.props.account.publicKey;
         const balance = (this.props.account.balance || 0) / 1000000;
 
@@ -14,24 +15,24 @@ class AddressView extends Component {
         ).toFixed(2).toLocaleString();
 
         return (
-            <div className="addressContainer">
-                <div className="flowLine"></div>
-                <div className="txDataContainer">
-                    <div className="txAccountData">
-                        <div className="txAccountDataLeft">
-                            <div className="txAccountDataLabel">
+            <div className='addressContainer'>
+                <div className='flowLine'></div>
+                <div className='txDataContainer'>
+                    <div className='txAccountData'>
+                        <div className='txAccountDataLeft'>
+                            <div className='txAccountDataLabel'>
                                 <FormattedHTMLMessage tagName='div' id='send.from' values={{ accountName: this.props.account.name }} />
                             </div>
-                            <div className="txAccountDataLabel">{ address }</div>
+                            <div className='txAccountDataLabel'>{ address }</div>
                         </div>
-                        <div className="txAccountDataRight">
-                            <div className="txAccountDataLabel">
+                        <div className='txAccountDataRight'>
+                            <div className='txAccountDataLabel'>
                                 <FormattedNumber value={ balance } minimumFractionDigits={ 0 } maximumFractionDigits={ 6 } />
                                 <span>
                                     &nbsp;TRX
                                 </span>
                             </div>
-                            <div className="txAccountDataLabel">
+                            <div className='txAccountDataLabel'>
                                 <FormattedNumber value={ usdValue } style='currency' currency='USD' minimumFractionDigits={ 0 } maximumFractionDigits={ 2 } />
                                 <span>
                                     &nbsp;USD
@@ -39,15 +40,16 @@ class AddressView extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="txToData">
-                        <div className="txToDataHeader">
+                    <div className='txToData'>
+                        <div className='txToDataHeader'>
                             <FormattedMessage id='send.to' />
                         </div>
                         <input 
-                            placeholder="Enter Address to Send to..."
-                            className="txToDataAddress"
-                            type="text"
-                            spellcheck="false"
+                            placeholder={ 'Recipient\'s address' }
+                            className='txToDataAddress'
+                            type='text'
+                            spellcheck='false'
+                            disabled={ disabled }
                             onChange={ ({ target: { value } }) => this.props.onSetAddress(value) }
                             onFocus={ e => e.target.select() }
                         />
