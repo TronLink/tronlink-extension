@@ -6,6 +6,7 @@ import {
 
 import TransferContract from './TransferContract';
 import TriggerSmartContract from './TriggerSmartContract';
+import TransferAssetContract from './TransferAssetContract';
 
 export default class SignedTransaction extends Component {
     renderType(contractType) {
@@ -72,6 +73,9 @@ export default class SignedTransaction extends Component {
                 break;
             case 'TriggerSmartContract':
                 Renderer = TriggerSmartContract;
+                break;
+            case 'TransferAssetContract':
+                Renderer = TransferAssetContract;
                 break;
             default:
                 contractName = 'Unknown';

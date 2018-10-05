@@ -38,7 +38,7 @@ class Send extends Component {
     }
 
     setToken(token) {
-        logger.info(`Setting token to -> ${ token }`);
+        logger.info(`Setting token to -> ${ token.value }`);
 
         this.setState({
             token
@@ -49,7 +49,7 @@ class Send extends Component {
         const tokens = [ {
             value: false,
             label: 'TRX'
-        }, ...Object.entries(this.props.account.tokens).map(([ tokenID, amount ]) => ({
+        }, ...Object.entries(this.props.account.tokens).map(([ tokenID ]) => ({
             value: tokenID,
             className: 'isToken',
             label: (<React.Fragment>

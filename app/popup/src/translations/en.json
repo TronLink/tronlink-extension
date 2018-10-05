@@ -102,5 +102,6 @@
 
     "contractType.Unknown": "Unknown Transaction",
     "contractType.TransferContract": "Send TRX",
-    "contractType.TriggerSmartContract": "Trigger DApp"
+    "contractType.TriggerSmartContract": "Trigger DApp",
+    "contractType.TransferAssetContract": "Send Token"
 }
