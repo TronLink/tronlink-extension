@@ -12,6 +12,8 @@ const linkedRequest = new LinkedRequest(contentScript, ({ data }) => ({ ...data 
 const tronWeb = new TronWeb('http://placeholder.dev', 'http://placeholder.dev'); // These are not used. They're only to validate the provider.
 tronWeb.ready = false;
 
+let hasReceivedNodes = false;
+
 const providerWrapper = boundFunction => (...args) => (
     boundFunction(
         new ExtensionProvider(...args)
@@ -75,8 +77,10 @@ contentScript.on('setNodes', ({ data: { fullNode, solidityNode, eventServer } })
 contentScript.on('setAddress', ({ data: address }) => {
     logger.info('TronLink detected account change:', address);
 
-    tronWeb.ready = true;
     _setAddress(address);
+
+    if(hasReceivedNodes)
+        tronWeb.ready = true;
 });
 
 linkedRequest.build({ method: 'init' }).then(({
@@ -92,6 +96,8 @@ linkedRequest.build({ method: 'init' }).then(({
     _setFullNode(fullNode);
     _setSolidityNode(solidityNode);
     _setEventServer(eventServer);
+
+    hasReceivedNodes = true;
 
     if(address) {
         _setAddress(address);
