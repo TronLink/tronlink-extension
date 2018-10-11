@@ -442,13 +442,10 @@ linkedResponse.on('request', async ({
 
     switch(method) {
         case 'init': {
-            if(!wallet.isSetup())
-                return reject('Wallet not signed in');
-
             const { node } = nodeSelector;
 
             return resolve({
-                address: wallet.getAccount().publicKey,
+                address: wallet.isLoggedIn() ? wallet.getAccount().publicKey : false,
                 node: {
                     fullNode: node.full,
                     solidityNode: node.solidity,

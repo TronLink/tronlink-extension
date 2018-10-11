@@ -317,4 +317,8 @@ export default class Wallet extends EventEmitter {
             this.selectAccount(Object.keys(this._accounts)[0]); // this calls saveStorage()
         else this._saveStorage();
     }
+
+    isLoggedIn() {
+        return this._walletStatus === WALLET_STATUS.UNLOCKED;
+    }
 }
