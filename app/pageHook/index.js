@@ -9,29 +9,62 @@ const logger = new Logger('pageHook');
 const contentScript = new EventDispatcher('pageHook', 'contentScript');
 const linkedRequest = new LinkedRequest(contentScript, ({ data }) => ({ ...data }));
 
-const tronWeb = new TronWeb('http://placeholder.dev', 'http://placeholder.dev'); // These are not used. They're only to validate the provider.
-tronWeb.ready = false;
-
-let hasReceivedNodes = false;
-
-const providerWrapper = boundFunction => (...args) => (
-    boundFunction(
-        new ExtensionProvider(...args)
-    )
+const tronWeb = new TronWeb(
+    new ExtensionProvider('http://placeholder.dev'),
+    new ExtensionProvider('http://placeholder.dev')
 );
+
+const eventQueue = [];
+
+tronWeb.eventServer = true;
+tronWeb.ready = false;
 
 const _sign = tronWeb.trx.sign.bind(tronWeb);
 const _setAddress = tronWeb.setAddress.bind(tronWeb);
 const _setEventServer = tronWeb.setEventServer.bind(tronWeb);
-
-const _setFullNode = providerWrapper(tronWeb.setFullNode.bind(tronWeb));
-const _setSolidityNode = providerWrapper(tronWeb.setSolidityNode.bind(tronWeb));
+const _getEventResult = tronWeb.getEventResult.bind(tronWeb);
+const _getEventByTransacionID = tronWeb.getEventByTransacionID.bind(tronWeb);
 
 tronWeb.setPrivateKey = () => logger.warn('Setting private key disabled in TronLink');
 tronWeb.setAddress = () => logger.warn('Setting address disabled in TronLink');
 tronWeb.setFullNode = () => logger.warn('Setting full node disabled in TronLink');
 tronWeb.setSolidityNode = () => logger.warn('Setting solidity node disabled in TronLink');
 tronWeb.setEventServer = () => logger.warn('Setting event server disabled in TronLink');
+
+Object.entries({
+    getEventResult: _getEventResult,
+    getEventByTransacionID: _getEventByTransacionID
+}).forEach(([ funcName, func ]) => {
+    tronWeb[funcName] = (...args) => {
+        if(tronWeb.eventServer !== true)
+            return func(...args);
+
+        let promise = false;
+        let success = false;
+        let failure = false;
+
+        if(!args.length || typeof args[args.length - 1] !== 'function') {
+            promise = new Promise((resolve, reject) => {
+                success = resolve;
+                failure = reject;
+            });
+        }
+
+        const callback = !promise && args[args.length - 1];
+
+        eventQueue.push({
+            success: success || callback.bind(false),
+            failure: failure || callback,
+            args,
+            func
+        });
+
+        logger.info(`Event request #${ eventQueue.length } has been queued`);
+
+        if(promise)
+            return promise;
+    };
+});
 
 const proxiedSignFunction = (transaction = false, privateKey = false, callback = false) => {
     if(utils.isFunction(privateKey)) {
@@ -69,8 +102,9 @@ tronWeb.trx.signTransaction = proxiedSignFunction;
 contentScript.on('setNodes', ({ data: { fullNode, solidityNode, eventServer } }) => {
     logger.info('TronLink detected node change:', { fullNode, solidityNode, eventServer });
 
-    _setFullNode(fullNode);
-    _setSolidityNode(solidityNode);
+    tronWeb.fullNode.setURL(fullNode);
+    tronWeb.solidityNode.setURL(solidityNode);
+
     _setEventServer(eventServer);
 });
 
@@ -78,9 +112,7 @@ contentScript.on('setAddress', ({ data: address }) => {
     logger.info('TronLink detected account change:', address);
 
     _setAddress(address);
-
-    if(hasReceivedNodes)
-        tronWeb.ready = true;
+    tronWeb.ready = true;
 });
 
 linkedRequest.build({ method: 'init' }).then(({
@@ -93,16 +125,23 @@ linkedRequest.build({ method: 'init' }).then(({
 }) => {
     logger.info('TronLink initiated');
 
-    _setFullNode(fullNode);
-    _setSolidityNode(solidityNode);
+    tronWeb.fullNode.setURL(fullNode);
+    tronWeb.solidityNode.setURL(solidityNode);
     _setEventServer(eventServer);
-
-    hasReceivedNodes = true;
 
     if(address) {
         _setAddress(address);
         tronWeb.ready = true;
     }
+
+    eventQueue.forEach(({ resolve, reject, args, func }, index) => {
+        func(...args)
+            .then(resolve)
+            .catch(reject)
+            .then(() => (
+                logger.info(`Event request #${ index + 1 } completed`)
+            ));
+    });
 }).catch(err => {
     logger.warn('Failed to initialise TronLink');
     logger.error(err);
