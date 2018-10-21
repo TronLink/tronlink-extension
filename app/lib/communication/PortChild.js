@@ -1,6 +1,6 @@
-/*global chrome*/
 import EventEmitter from 'eventemitter3';
 import Logger from '../logger';
+import extensionizer from 'extensionizer';
 
 const logger = new Logger('PortChild');
 
@@ -19,7 +19,7 @@ export default class PortChild extends EventEmitter {
     }
 
     _connect() {
-        this._port = chrome.runtime.connect({ name: this._channelKey });
+        this._port = extensionizer.runtime.connect({ name: this._channelKey });
         this._connected = true;
 
         this._port.onMessage.addListener(({ action, data }) => {
@@ -34,7 +34,7 @@ export default class PortChild extends EventEmitter {
         });
 
         this._port.onDisconnect.addListener(() => {
-            logger.warn(`Lost connection to backgroundScript: ${chrome.runtime.lastError || 'No reason provided'}`);
+            logger.warn(`Lost connection to backgroundScript: ${extensionizer.runtime.lastError || 'No reason provided'}`);
             this._connected = false;
         });
     }
