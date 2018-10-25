@@ -8,6 +8,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import Swal from 'sweetalert2';
 import Logger from 'extension/logger';
 import SignedTransaction from './Renderers/SignedTransaction';
+import SignedString from './Renderers/SignedString';
 import Button from 'components/Button';
 
 import './Queue.css';
@@ -129,9 +130,13 @@ class Queue extends React.Component {
                 Component = SignedTransaction;
                 break;
             }
+            case CONFIRMATION_TYPE.SIGNED_STRING: {
+                Component = SignedString;
+                break;
+            }
             default: {
                 logger.error('Attempted to render unknown confirmation', confirmation);
-                
+
                 setTimeout(() => {
                     this.rejectConfirmation(confirmation);
                 }, 3000);

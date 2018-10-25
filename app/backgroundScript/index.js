@@ -466,6 +466,21 @@ linkedResponse.on('request', async ({
                     input
                 } = payload;
 
+                if(typeof input === 'string') {
+                    logger.info('Signing string', input);
+
+                    const signedTransaction = await wallet.tronWeb.trx.signTransaction(input);
+
+                    logger.info('Signed transaction', signedTransaction);
+
+                    return addConfirmation({
+                        type: CONFIRMATION_TYPE.SIGNED_STRING,
+                        hostname: meta.hostname,
+                        signedTransaction,
+                        input
+                    }, resolve, reject);
+                }
+
                 const contractType = transaction.raw_data.contract[0].type;
 
                 const {
@@ -476,8 +491,11 @@ linkedResponse.on('request', async ({
                 if(error)
                     return reject(error);
 
-                if(!mapped)
+                if(!mapped) {
+                    console.log('input:');
+                    console.log(input);
                     return reject('Invalid transaction provided');
+                }
 
                 const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped.transaction || mapped);
 
