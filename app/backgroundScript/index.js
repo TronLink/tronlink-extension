@@ -7,6 +7,7 @@ import mapTransaction from 'lib/mapTransaction';
 import Wallet from './wallet';
 import nodeSelector from './nodeSelector';
 import randomUUID from 'uuid/v4';
+import extensionizer from 'extensionizer';
 
 import {
     CONFIRMATION_TYPE,
@@ -56,26 +57,22 @@ const addConfirmation = (confirmation, resolve, reject) => {
     if(dialog && dialog.closed)
         dialog = false;
 
-    if (dialog)
-        return dialog.focus();
+    if (dialog) {
+        logger.info('Found dialog with id:', dialog.id);
+        return extensionizer.windows.update(dialog.id, { focused: true });
+    }
 
-    popup.isOpen().catch(() => {
+    popup.isOpen().catch(async () => {
         logger.info('Popup is not open, opening dialog');
 
-        dialog = window.open(
-            'app/popup/build/index.html',
-            'extension_popup',
-            [
-                'width=436',
-                'height=634',
-                'status=no',
-                'scrollbars=no',
-                'centerscreen=yes',
-                'alwaysRaised=yes',
-                'top=25',
-                'left=25'
-            ].join(',')
-        );
+        dialog = await extensionizer.windows.create({
+            url: 'app/popup/build/index.html',
+            type: 'popup',
+            width: 436,
+            height: 634,
+            left: 25,
+            top: 25
+        });
     });
 };
 
@@ -86,7 +83,7 @@ const closeDialog = () => {
     if(!dialog)
         return;
 
-    dialog.close();
+    extensionizer.windows.remove(dialog.id);
     dialog = false;
 };
 
