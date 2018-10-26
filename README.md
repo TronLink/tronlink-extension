@@ -3,7 +3,7 @@
 # TronLink
 [View TronLink on the Chrome Webstore](https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec)
 
-TronLink is a Chrome Extension for Website to Blockchain intercommunication on the Tron Network.  
+TronLink is a Browser Extension for Website to Blockchain intercommunication on the Tron Network.  
 It allows developers to integrate smart contract calls on their site, in turn enabling the use of Dapps from within the browser. It also functions as a standard Tron wallet for anybody wanting to broadcast and receive transactions on the network.
 
 If you would like to follow the development progress of the extension we invite you to view our [**task board on waffle.io**](https://waffle.io/TronWatch/TronLink).

@@ -17,7 +17,13 @@ export default class EventDispatcher extends EventEmitter {
     }
 
     _registerEventListener() {
-        window.addEventListener(this._channelKey, ({ detail: { action, data, source } }) => {
+        window.addEventListener('message', ({ data: { fromContentScript = false, action, data, source } }) => {
+            if(!fromContentScript)
+                return;
+
+            if(source == this._channelKey)
+                return;
+
             this.emit(action, { data, source });
         });
     }
@@ -26,17 +32,6 @@ export default class EventDispatcher extends EventEmitter {
         if(!action)
             return { success: false, error: 'Function requires action {string} parameter' };
 
-        window.dispatchEvent(
-            new CustomEvent(
-                this._target,
-                {
-                    detail: {
-                        action,
-                        data,
-                        source: this._channelKey
-                    }
-                }
-            )
-        );
+        window.postMessage({ fromContentScript: true, action, data, source: this._channelKey }, '*');
     }
 }

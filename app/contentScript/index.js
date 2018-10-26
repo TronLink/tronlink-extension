@@ -1,8 +1,12 @@
 import EventDispatcher from 'lib/communication/EventDispatcher.js';
 import PortChild from 'lib/communication/PortChild';
 import Logger from 'lib/logger';
+import extensionizer from 'extensionizer';
+// import MessageDuplex from 'lib/MessageDuplex';
 
 const logger = new Logger('contentScript');
+
+// const child = new MessageDuplex.Tab('contentScript');
 
 new PortChild(
     'contentScript',
@@ -12,15 +16,11 @@ new PortChild(
     )
 );
 
-// https://developer.chrome.com/extensions/storage
-// If we change this over to the Storage API
-// we can get the node config directly from this script
-
 try {
     const injectionSite = (document.head || document.documentElement);
     const container = document.createElement('script');
 
-    container.src = chrome.extension.getURL('dist/pageHook.js');
+    container.src = extensionizer.extension.getURL('dist/pageHook.js');
     container.onload = function() {
         this.parentNode.removeChild(this);
     };

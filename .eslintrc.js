@@ -71,7 +71,6 @@ module.exports = {
     },
     "globals": {
         "EXTENSION_ID": false,
-        "chrome": false,
         "ENVIRONMENT": false
     }
 };

@@ -1,7 +1,7 @@
-/*global chrome*/
 import EventEmitter from 'eventemitter3';
 import randomUUID from 'uuid/v4';
 import Logger from '../logger';
+import extensionizer from 'extensionizer';
 
 const logger = new Logger('PortHost');
 
@@ -14,7 +14,7 @@ export default class PortHost extends EventEmitter {
     }
 
     _registerListeners() {
-        chrome.extension.onConnect.addListener(port => {
+        extensionizer.runtime.onConnect.addListener(port => {
             const uuid = randomUUID();
             port.uuid = uuid;
 
@@ -44,7 +44,7 @@ export default class PortHost extends EventEmitter {
             });
 
             port.onDisconnect.addListener(() => {
-                logger.info(`Port ${source}:${uuid.substr(0, 4)} disconnected: ${chrome.runtime.lastError || 'No reason provided'}`);
+                logger.info(`Port ${source}:${uuid.substr(0, 4)} disconnected: ${extensionizer.runtime.lastError || 'No reason provided'}`);
 
                 delete this._ports[source][uuid];
 
