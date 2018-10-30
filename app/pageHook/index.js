@@ -88,7 +88,7 @@ const proxiedSignFunction = (transaction = false, privateKey = false, callback =
         method: 'signTransaction',
         payload: {
             transaction,
-            input: transaction.__payload__ || transaction.raw_data.contract[0].parameter.value
+            input: (typeof transaction === 'string') ? transaction : (transaction.__payload__ || transaction.raw_data.contract[0].parameter.value)
         }
     }, 0).then(transaction => callback(null, transaction)).catch(err => { // eslint-disable-line
         logger.warn('Failed to sign transaction', err);
