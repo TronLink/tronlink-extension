@@ -14,7 +14,6 @@ module.exports = function(env) {
             filename: '[name].js',
             sourceMapFilename: '[name].js.map'
         },
-        devtool: 'source-map',
         module: {
             loaders: [
                 {
