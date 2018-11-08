@@ -11,5 +11,6 @@
     "WithdrawBalanceContract": "wallet/withdrawbalance",
     "UpdateAssetContract": "wallet/updateasset",
     "CreateSmartContract": "wallet/deploycontract",
-    "TriggerSmartContract": "wallet/triggersmartcontract"
+    "TriggerSmartContract": "wallet/triggersmartcontract",
+    "ExchangeCreateContract": "wallet/exchangecreate"
 }
