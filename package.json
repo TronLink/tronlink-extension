@@ -1,6 +1,6 @@
 {
     "name": "tronlink",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "private": false,
     "dependencies": {
         "aes-js": "^3.1.1",
