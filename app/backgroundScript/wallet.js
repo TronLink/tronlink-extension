@@ -130,14 +130,14 @@ export default class Wallet extends EventEmitter {
     async updateAccount(address, save = false) {
         logger.info(`Account update requested for ${address}`);
 
-        let transactions = await this._tronWeb.trx.getTransactionsRelated(address, 'all', 999999999999);
+        let transactions = await this._tronWeb.trx.getTransactionsRelated(address, 'all', 50);
 
         transactions = transactions.filter(({ raw_data: { timestamp } }) => timestamp && timestamp < Date.now()).sort((a, b) => (
             b.raw_data.timestamp - a.raw_data.timestamp
         ));
 
-        if(transactions.length > 30)
-            transactions = transactions.slice(0, 30);
+        if(transactions.length > 50)
+            transactions = transactions.slice(0, 50);
 
         const account = await this._tronWeb.trx.getAccount(address);
 

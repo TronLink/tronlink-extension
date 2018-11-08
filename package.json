@@ -1,6 +1,6 @@
 {
     "name": "tronlink",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "private": false,
     "dependencies": {
         "aes-js": "^3.1.1",
@@ -74,7 +74,7 @@
         "style-loader": "0.19.0",
         "sw-precache-webpack-plugin": "0.11.4",
         "sweetalert2": "^7.26.10",
-        "tronweb": "https://github.com/TronWatch/TronWeb",
+        "tronweb": "https://github.com/tronprotocol/tron-web",
         "url-loader": "0.6.2",
         "uuid": "^3.3.2",
         "validator": "^10.5.0",
@@ -84,7 +84,7 @@
         "whatwg-fetch": "2.0.3"
     },
     "scripts": {
-        "lint-staged": "lint-staged",
+        "lint-staged": "npx lint-staged",
         "lint": "./node_modules/.bin/eslint .",
         "clean": "rimraf dist",
         "build": "npm run clean && webpack --config webpack.config.js --progress --colors && node fixBuild",

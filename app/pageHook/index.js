@@ -23,7 +23,7 @@ const _sign = tronWeb.trx.sign.bind(tronWeb);
 const _setAddress = tronWeb.setAddress.bind(tronWeb);
 const _setEventServer = tronWeb.setEventServer.bind(tronWeb);
 const _getEventResult = tronWeb.getEventResult.bind(tronWeb);
-const _getEventByTransacionID = tronWeb.getEventByTransacionID.bind(tronWeb);
+const _getEventByTransactionID = tronWeb.getEventByTransactionID.bind(tronWeb);
 
 tronWeb.setPrivateKey = () => logger.warn('Setting private key disabled in TronLink');
 tronWeb.setAddress = () => logger.warn('Setting address disabled in TronLink');
@@ -33,7 +33,7 @@ tronWeb.setEventServer = () => logger.warn('Setting event server disabled in Tro
 
 Object.entries({
     getEventResult: _getEventResult,
-    getEventByTransacionID: _getEventByTransacionID
+    getEventByTransactionID: _getEventByTransactionID
 }).forEach(([ funcName, func ]) => {
     tronWeb[funcName] = (...args) => {
         if(tronWeb.eventServer !== true)
