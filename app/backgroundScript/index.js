@@ -65,14 +65,29 @@ const addConfirmation = (confirmation, resolve, reject) => {
     popup.isOpen().catch(async () => {
         logger.info('Popup is not open, opening dialog');
 
-        dialog = await extensionizer.windows.create({
-            url: 'app/popup/build/index.html',
-            type: 'popup',
-            width: 436,
-            height: 634,
-            left: 25,
-            top: 25
-        });
+        try {
+            if(typeof chrome !== 'undefined') {
+                return extensionizer.windows.create({
+                    url: 'app/popup/build/index.html',
+                    type: 'popup',
+                    width: 436,
+                    height: 634,
+                    left: 25,
+                    top: 25
+                }, window => dialog = window);
+            }
+
+            dialog = await extensionizer.windows.create({
+                url: 'app/popup/build/index.html',
+                type: 'popup',
+                width: 436,
+                height: 634,
+                left: 25,
+                top: 25
+            });
+        } catch(ex) {
+            logger.error('Failed to open dialog', ex);
+        }
     });
 };
 
@@ -488,11 +503,8 @@ linkedResponse.on('request', async ({
                 if(error)
                     return reject(error);
 
-                if(!mapped) {
-                    console.log('input:');
-                    console.log(input);
+                if(!mapped)
                     return reject('Invalid transaction provided');
-                }
 
                 const signedTransaction = await wallet.tronWeb.trx.signTransaction(mapped.transaction || mapped);
 
