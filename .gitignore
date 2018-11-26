@@ -15,6 +15,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 promo
+package-lock.json
 
 # Extension
 /key.pem
