@@ -1,0 +1,57 @@
+.accountInfo {
+    background: #EAEAEA;
+    display: flex;
+    flex-direction: row;
+    padding: 20px;
+    padding-right: 10px;
+
+    .accountBalance {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .trxBalance {
+            & > span:first-of-type {
+                font-size: 16px;
+                color: #353a4e;
+                font-weight: 500;
+            }
+
+            .ticker {
+                font-size: 16px;
+                color: #353a4e;
+                font-weight: 500;
+                padding-left: 5px;
+            }
+        }
+
+        & > span:last-of-type {
+            display: block;
+            margin-top: 3px;
+            font-size: 14px;
+        }
+    }
+
+    .accountLabel {
+        background: #fff;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 13px;
+        margin-right: 10px;
+
+        & > span:first-of-type {
+            font-size: 13px;
+            font-weight: 500;
+            display: block;
+        }
+
+        & > span::last-of-type {
+            font-size: 12px;
+            display: block;
+        }
+    }
+}

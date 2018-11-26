@@ -1,0 +1,103 @@
+.accountsPage {
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 20px;
+    display: flex;
+
+    .accountOptions {
+        display: flex;
+        flex-direction: row;
+        margin: 0 -7.5px;
+        margin-bottom: 15px;
+
+        .customButton {
+            margin: 0 7.5px;
+
+            span {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .accountsList {
+        flex: 1;
+        min-height: 0;
+        min-width: 0;
+
+        .account {
+            background: #FFFFFF;
+            color: #000000;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            transition: background 200ms ease;
+
+            .accountName {
+                font-weight: 500;
+                font-size: 13px;
+            }
+
+            .accountAddress {
+                font-size: 13px;
+                margin-top: 2px;
+            }
+
+            .accountDetails {
+                display: flex;
+                flex-direction: row;
+                margin: 0 -5px;
+                margin-top: 10px;
+
+                .accountBalance, .accountTokens {
+                    color: #222;
+                    margin: 0 5px;
+                    flex: 1;
+                    background: #F6F6F6;
+                    border-radius: 4px;
+                    padding: 11px;
+                    text-align: center;
+                    font-size: 12px;
+                }
+            }            
+
+            &.active {
+                background: #707897;
+                color: #fff;
+            }
+
+            &:not(.active):hover {
+                cursor: pointer;
+                background: #e4e4e4;
+            }
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+
+        .rcs-custom-scroll {
+            .rcs-outer-container {
+                overflow: unset;
+
+                .rcs-positioning {
+                    margin-right: -20px;
+                }
+            }
+            .rcs-inner-container {
+                margin-right: -50px !important;
+                padding-right: 33px;
+            }
+
+            .rcs-inner-handle {
+                margin-top: 0;
+                height: 100%;
+                background: #454c67;
+                margin-left: 3px;
+                margin-right: -3px;
+            }
+        }
+    }
+}

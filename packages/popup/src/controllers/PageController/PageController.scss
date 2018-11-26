@@ -1,0 +1,25 @@
+.pageContainer {
+    width: 420px;
+    height: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #F2F2F2;
+
+    .pageView {
+        flex: 1;
+        position: relative;
+    
+        .page {
+            transition: transform 250ms ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+    }    
+}

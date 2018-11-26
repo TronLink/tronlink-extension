@@ -1,11 +1,9 @@
 # dependencies
-/node_modules
-/app/popup/node_modules
-/app/popup/build
+node_modules
 
 # production
-/build
-/dist
+build
+dist
 
 # misc
 .DS_Store
@@ -22,4 +20,3 @@ promo
 /key.pem
 /chrome-extension.zip
 /.idea
-app/popup/src/extension

@@ -1,0 +1,33 @@
+.transactionsPage {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .transactions {
+        flex: 1;
+        padding: 20px;
+        overflow: hidden;
+
+        .rcs-custom-scroll {
+            .rcs-outer-container {
+                overflow: unset;
+
+                .rcs-positioning {
+                    margin-right: -20px;
+                }
+            }
+            .rcs-inner-container {
+                margin-right: -50px !important;
+                padding-right: 33px;
+            }
+
+            .rcs-inner-handle {
+                margin-top: 0;
+                height: 100%;
+                background: #454c67;
+                margin-left: 3px;
+                margin-right: -3px;
+            }
+        }
+    }
+}

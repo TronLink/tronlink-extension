@@ -1,0 +1,16 @@
+.writingPhrase .wordList {
+    margin: 20px 0;
+    background: #DDDDDD;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+    font-size: 17px;
+    line-height: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    user-select: all;
+
+    .word {
+        width: 33.333333%;   
+    }
+}

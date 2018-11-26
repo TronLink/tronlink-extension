@@ -1,0 +1,61 @@
+.mnemonicImport {
+    .phraseInput {
+        background: #FFFFFF;
+        padding: 20px;
+        font-size: 15px;
+        line-height: 20px;
+        border-radius: 4px;
+        box-shadow: 0 1px 4px 0 #d9d9d9;
+        user-select: all;
+        word-break: break-word;
+        border: none;
+        width: 100%;
+        box-sizing: border-box;
+        resize: none;
+        margin-bottom: 20px;
+    }
+
+    .addressList {
+        background: #FFFFFF;
+        border-radius: 4px;
+        padding: 20px;
+        margin-bottom: 20px;
+
+        .addressOption {
+            transition: all 200ms ease;
+            display: flex;
+            flex-direction: row;
+            will-change: contents;
+            align-items: center;
+            margin-bottom: 17px;
+
+            .checkbox {
+                height: 11px;
+                width: 11px;
+                margin-right: 19px;
+            }
+
+            .address {
+                font-size: 14px;
+                line-height: 14px;
+                height: 14px;
+            }
+
+            &.isSelected {
+                color: #38ad64;
+            }
+
+            &:not(.isLoading) {
+                cursor: pointer;
+            }
+
+            &:not(.isLoading):hover {
+                color: #2196f3;
+            }
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,93 @@
+.customButton {
+    display: flex;
+    height: 40px;
+    width: 100%;
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    transition: all 200ms ease;
+    border: none;
+
+    span {
+        color: #FFFFFF;
+        font-size: 16px;
+    }
+
+    &.is-invalid {
+        opacity: 0.4;
+    }
+
+    &.is-valid {
+        cursor: pointer;
+    }
+
+    &.is-loading {
+        cursor: wait;
+    }
+
+    .loadingIndicator {
+        height: 10px;
+    }
+
+    &.is-valid:not(.is-loading):hover {
+        transform: translateY(-1px);
+        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18);
+    }
+
+    &.is-valid:not(.is-loading):focus {
+        transform: translateY(-1px);
+        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18);
+    }
+
+    &.primary {
+        background: #353A4E;
+
+        &.is-valid:not(.is-loading):hover {
+            background: #454c67;
+        }
+    
+        &.is-valid:not(.is-loading):focus {
+            background: #474d64;
+        }
+    }
+
+    &.success {
+        background: #38ad64;
+
+        &.is-valid:not(.is-loading):hover {
+            background: #53c87f;
+        }
+
+        &.is-valid:not(.is-loading):focus {
+            background: #36ca6d;
+        }
+    }
+
+    &.danger {
+        background: #ca5e5e;
+
+        &.is-valid:not(.is-loading):hover {
+            background: #dc6e6e;
+        }
+
+        &.is-valid:not(.is-loading):focus {
+            background: #e66f6f;
+        }
+    }
+
+    &.white {
+        background: #FFFFFF;
+        
+        span {
+            color: #000000;
+        }
+
+        &.is-valid:not(.is-loading):hover {
+            box-shadow: 0 1px 8px 0 #0000000f;
+        }
+
+        &.is-valid:not(.is-loading):focus {
+            box-shadow: 0 1px 8px 0 #00000030;
+        }
+    }
+}

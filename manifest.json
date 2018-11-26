@@ -1,13 +1,24 @@
 {
     "manifest_version": 2,
-    "name": "TronLink",
-    "version": "1.2.3",
-    "version_name": "1.2.3",
+    "name": "TronLink 2.0",
+    "version": "2.0.0",
+    "version_name": "2.0.0",
     "description": "An interactive browser extension for signing, receiving and broadcasting TRON transactions",
-    "author": "https://github.com/TronWatch",
-	"icons": {
-		"128": "static/icon128.png"
-	},
+    "author": "Kondax <kondaxsolutions@gmail.com>",
+    "content_security_policy": "script-src 'self' 'sha256-IThiKMnsg0UHaLmP7sJxZpd/ohvINImwjxFJyxGFSlk='",
+    "permissions": [
+        "storage",
+        "unlimitedStorage",
+        "clipboardWrite",
+        "activeTab"
+    ],
+    "browser_action": {
+        "default_popup": "packages/popup/build/index.html",
+        "default_title": "TronLink"
+    },
+    "icons": {
+		"128": "packages/popup/static/icon.png"
+    },
     "background": {
         "scripts": [
             "dist/backgroundScript.js"
@@ -28,17 +39,7 @@
             "all_frames": false
         }
     ],
-    "permissions": [
-        "storage",
-        "unlimitedStorage",
-        "clipboardWrite",
-        "activeTab"
-    ],
     "web_accessible_resources": [
         "dist/pageHook.js"
-    ],
-    "browser_action": {
-        "default_popup": "app/popup/build/index.html",
-        "default_title": "TronLink"
-    }
+    ]
 }

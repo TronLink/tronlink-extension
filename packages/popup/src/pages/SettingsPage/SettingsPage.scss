@@ -1,0 +1,170 @@
+.settingsPage {
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 20px;
+    display: flex;
+
+    .priceList {
+        background: #FFFFFF;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+
+        & > span:first-of-type {
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    }
+
+    .nodeList {
+        background: #FFFFFF;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        & > span:first-of-type {
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .nodeContainer {
+            border-radius: 4px;
+            flex: 1;
+            height: 158px;
+            
+            .rcs-positioning {
+                margin-right: -15px !important;
+            }
+        }
+
+        .node {
+            font-size: 13px;
+            transition: all 200ms ease;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #F1F1F1;
+            border-radius: 4px;
+
+            .name {
+                font-weight: 500;
+            }
+
+            .meta {
+                margin-top: 5px;
+                display: flex;
+                flex-direction: column;
+
+                .metaLine {
+                    display: flex;
+                    flex-direction: row;
+                    margin-bottom: 2px;
+
+                    & > span:first-of-type {
+                        flex: 1;
+                    }
+
+                    .value {
+                        overflow: hidden;
+                        padding-left: 15px;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+
+                    &:last-of-type {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+
+            &.selected {
+                background: #707897;
+                color: #FFFFFF;
+                border-radius: 4px;
+            }
+
+            &:not(.selected):hover {
+                cursor: pointer;
+                background: #e2e1e1;
+            }
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .customNode {
+        background: #FFFFFF;
+        padding: 15px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+
+        & > span:first-of-type {
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .inputContainers {
+            .inputContainer {
+                display: flex;
+                flex-direction: row;
+                margin-bottom: 10px;
+                font-size: 13px;
+                background: #f8f8f8;
+                border-radius: 4px;
+                overflow: hidden;
+                padding-left: 15px;
+
+                & > span:first-of-type {
+                    flex: 1;
+                    line-height: 40px;
+                }
+
+                .customInput {
+                    flex: 3;
+                    background: #f8f8f8;
+                    
+                    input {
+                        padding-left: 10px;
+                    }
+                }
+
+                &:last-of-type {
+                    margin-bottom: 15px;
+                }
+            }
+        }
+    }
+
+    .rcs-custom-scroll {
+        .rcs-outer-container {
+            overflow: unset;
+
+            .rcs-positioning {
+                margin-right: -20px;
+            }
+        }
+        .rcs-inner-container {
+            margin-right: -50px !important;
+            padding-right: 33px;
+        }
+
+        .rcs-inner-handle {
+            margin-top: 0;
+            height: 100%;
+            background: #454c67;
+            margin-left: 3px;
+            margin-right: -3px;
+        }
+    }
+}

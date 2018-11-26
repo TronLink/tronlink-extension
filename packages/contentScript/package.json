@@ -1,0 +1,16 @@
+{
+  "name": "@tronlink/contentScript",
+  "main": "index.js",
+  "repository": "https://github.com/TronLink/TronLink",
+  "author": "Kondax <kondaxsolutions@gmail.com>",
+  "private": true,
+  "version": "2.0.0",
+  "scripts": {
+    "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/contentScript.js",
+    "lint": "npx eslint . --fix"
+  },
+  "dependencies": {
+    "extensionizer": "^1.0.1",
+    "tronweb": "^2.1.4"
+  }
+}
