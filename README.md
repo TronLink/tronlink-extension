@@ -20,6 +20,7 @@ holds the ESLint dependencies.
 Build Instructions:
 ```
 git clone https://github.com/TronWatch/TronLink/
+yarn install
 lerna bootstrap
 yarn build
 ```
