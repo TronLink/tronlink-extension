@@ -21,6 +21,7 @@ class Account {
 
         this.address = false;
         this.name = false;
+        this.updatingTransactions = false;
 
         this.energy = 0;
         this.balance = 0;
@@ -237,7 +238,6 @@ class Account {
 
         await Promise.all([
             this.updateBalance(),
-            this.updateTransactions(),
             this.updateTokens(tokens.smart)
         ]);
 
@@ -283,12 +283,17 @@ class Account {
     }
 
     async updateTransactions() {
+        if(this.updatingTransactions)
+            return;
+
+        this.updatingTransactions = true;
+
         const transactions = await this.getTransactions();
 
         const filteredTransactions = transactions
             .filter(({ txID }) => (
-                !Object.keys(this.transactions).includes(txID)/* &&
-                !this.ignoredTransactions.includes(txID)*/
+                !Object.keys(this.transactions).includes(txID) &&
+                !this.ignoredTransactions.includes(txID)
             ));
 
         const mappedTransactions =
@@ -353,6 +358,9 @@ class Account {
             // Transaction is now too old for TronLink (100+)
             this.ignoredTransactions.push(txID);
         });
+
+        this.updatingTransactions = false;
+        this.save();
     }
 
     async updateTokens(tokens) {
