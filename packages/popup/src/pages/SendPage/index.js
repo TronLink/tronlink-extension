@@ -226,13 +226,19 @@ class SendPage extends React.Component {
             );
         }
 
-        func.then(() => (
+        func.then(() => {
             this.setState({
                 error: false,
                 success: true,
-                isLoading: false
-            })
-        )).catch(error => (
+                isLoading: false,
+                recipient: {
+                    valid: VALIDATION_STATE.NONE,
+                    value: ''
+                }
+            });
+
+            this.reset();
+        }).catch(error => (
             this.setState({
                 success: false,
                 isLoading: false,

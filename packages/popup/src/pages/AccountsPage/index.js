@@ -1,10 +1,16 @@
 import React from 'react';
 import Button from 'components/Button';
 import CustomScroll from 'react-custom-scroll';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+
+import {
+    FormattedMessage,
+    injectIntl
+} from 'react-intl';
 
 import {
     APP_STATE,
@@ -13,7 +19,17 @@ import {
 
 import './AccountsPage.scss';
 
+const ReactSwal = withReactContent(Swal);
+
 class AccountsPage extends React.Component {
+    constructor() {
+        super();
+
+        this.onClick = this.onClick.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onExport = this.onExport.bind(this);
+    }
+
     componentDidUpdate(prevProps) {
         const { selected: previous } = prevProps.accounts;
         const { selected } = this.props.accounts;
@@ -29,6 +45,70 @@ class AccountsPage extends React.Component {
             return;
 
         PopupAPI.selectAccount(address);
+    }
+
+    async onDelete() {
+        const { formatMessage } = this.props.intl;
+
+        const { value } = await Swal({
+            title: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE' }),
+            text: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE.BODY' }),
+            confirmButtonText: formatMessage({ id: 'BUTTON.CONFIRM' }),
+            cancelButtonText: formatMessage({ id: 'BUTTON.CANCEL' }),
+            showCancelButton: true
+        });
+
+        if(!value)
+            return;
+
+        PopupAPI.deleteAccount();
+    }
+
+    async onExport() {
+        const { formatMessage } = this.props.intl;
+
+        const {
+            mnemonic,
+            privateKey
+        } = await PopupAPI.exportAccount();
+
+        const swalContent = [];
+
+        if(mnemonic) {
+            swalContent.push(
+                <div className='export'>
+                    <span className='header'>
+                        { formatMessage({ id: 'ACCOUNTS.EXPORT.MNEMONIC' }) }
+                    </span>
+                    <span className='content'>
+                        { mnemonic }
+                    </span>
+                </div>
+            );
+        }
+
+        swalContent.push(
+            <div className='export'>
+                <span className='header'>
+                    { formatMessage({ id: 'ACCOUNTS.EXPORT.PRIVATE_KEY' }) }
+                </span>
+                <span className='content'>
+                    { privateKey }
+                </span>
+            </div>
+        );
+
+        ReactSwal.fire({
+            title: formatMessage({ id: 'ACCOUNTS.EXPORT' }),
+            cancelButtonText: formatMessage({ id: 'BUTTON.CLOSE' }),
+            showCancelButton: true,
+            showConfirmButton: false,
+            html: (
+                <div className='exportDetails'>
+                    { swalContent }
+                </div>
+            )
+        });
     }
 
     renderOptions() {
@@ -47,12 +127,12 @@ class AccountsPage extends React.Component {
                 <Button
                     type={ BUTTON_TYPE.WHITE }
                     id='BUTTON.EXPORT'
-                    isValid={ false }
+                    onClick={ this.onExport }
                 />
                 <Button
                     type={ BUTTON_TYPE.WHITE }
                     id='BUTTON.DELETE'
-                    isValid={ false }
+                    onClick={ this.onDelete }
                 />
             </div>
         );
@@ -122,6 +202,8 @@ class AccountsPage extends React.Component {
     }
 }
 
-export default connect(state => ({
-    accounts: state.accounts
-}))(AccountsPage);
+export default injectIntl(
+    connect(state => ({
+        accounts: state.accounts
+    }))(AccountsPage)
+);

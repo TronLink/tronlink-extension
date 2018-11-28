@@ -8,8 +8,7 @@ import extensionizer from 'extensionizer';
 
 import {
     APP_STATE,
-    ACCOUNT_TYPE,
-    ERRORS
+    ACCOUNT_TYPE
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService');
@@ -292,7 +291,7 @@ class Wallet extends EventEmitter {
             const success = this.migrate(password);
 
             if(!success)
-                return Promise.reject(ERRORS.INVALID_PASSWORD);
+                return Promise.reject('ERRORS.INVALID_PASSWORD');
 
             return;
         }
@@ -524,6 +523,23 @@ class Wallet extends EventEmitter {
     }
 
     getAccountDetails(address) {
+        if(!address) {
+            return {
+                tokens: {
+                    basic: {},
+                    smart: {}
+                },
+                type: false,
+                name: false,
+                address: false,
+                balance: 0,
+                transactions: {
+                    cached: [],
+                    uncached: 0
+                }
+            };
+        }
+
         return this.accounts[ address ].getDetails();
     }
 
@@ -538,12 +554,18 @@ class Wallet extends EventEmitter {
         return this.accounts[ address ];
     }
 
-    deleteAccount(address) {
-        // if(Object.keys(this.accounts).length === 1)
-        //     this.selectedAccount = false;
-        //
-        // if (this.selectedAccount === address)
-        //     this.selectedAccount = Object.keys(this.accounts)[0];
+    deleteAccount() {
+        delete this.accounts[ this.selectedAccount ];
+        StorageService.deleteAccount(this.selectedAccount);
+
+        this.emit('setAccounts', this.getAccounts());
+
+        if(!Object.keys(this.accounts).length) {
+            this.selectAccount(false);
+            return this._setState(APP_STATE.UNLOCKED);
+        }
+
+        this.selectAccount(Object.keys(this.accounts)[ 0 ]);
     }
 
     async addSmartToken(token) {
@@ -590,6 +612,18 @@ class Wallet extends EventEmitter {
         );
 
         this._pollAccounts();
+    }
+
+    exportAccount() {
+        const {
+            mnemonic,
+            privateKey
+        } = this.accounts[ this.selectedAccount ];
+
+        return {
+            mnemonic: mnemonic || false,
+            privateKey
+        };
     }
 }
 

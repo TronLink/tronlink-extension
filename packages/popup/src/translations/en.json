@@ -26,6 +26,7 @@
     "BUTTON.ACCEPT": "Accept",
     "BUTTON.WHITELIST": "Whitelist",
     "BUTTON.ADD_NODE": "Add node",
+    "BUTTON.CLOSE": "Close",
 
     "TITLES.ACCOUNTS": "Accounts",
     "TITLES.TRANSACTIONS": "Transaction History",
@@ -171,5 +172,12 @@
     "SEND.BUTTON.TRX": "Send TRX",
     "SEND.BUTTON.TRC10": "Send Basic Token",
     "SEND.BUTTON.TRC20": "Send Smart Token",
-    "SEND.SUCCESS": "Successfully broadcasted transaction"
+    "SEND.SUCCESS": "Successfully broadcasted transaction",
+
+    "ACCOUNTS.CONFIRM_DELETE": "Delete Account",
+    "ACCOUNTS.CONFIRM_DELETE.BODY": "Are you sure you want to delete this account?",
+
+    "ACCOUNTS.EXPORT": "Export Account",
+    "ACCOUNTS.EXPORT.MNEMONIC": "Mnemonic Phrase",
+    "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key"
 }

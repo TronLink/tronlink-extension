@@ -50,7 +50,7 @@ const NodeService = {
         this._updateTronWeb();
     },
 
-    _updateTronWeb() {
+    _updateTronWeb(skipAddress = false) {
         const {
             fullNode,
             solidityNode,
@@ -63,7 +63,8 @@ const NodeService = {
             eventServer
         );
 
-        this.setAddress();
+        if(!skipAddress)
+            this.setAddress();
     },
 
     setAddress() {
@@ -71,7 +72,7 @@ const NodeService = {
             this._updateTronWeb();
 
         if(!StorageService.selectedAccount)
-            return;
+            return this._updateTronWeb(true);
 
         this.tronWeb.setAddress(
             StorageService.selectedAccount

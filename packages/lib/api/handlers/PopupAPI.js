@@ -63,8 +63,16 @@ export default {
         this.duplex.send('selectAccount', address, false);
     },
 
+    deleteAccount() {
+        this.duplex.send('deleteAccount', {}, false);
+    },
+
     getAccounts() {
         return this.duplex.send('getAccounts');
+    },
+
+    exportAccount() {
+        return this.duplex.send('exportAccount');
     },
 
     getSelectedAccount() {

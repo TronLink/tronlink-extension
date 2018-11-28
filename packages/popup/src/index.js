@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
-import { library } from '@fortawesome/fontawesome-svg-core';   
+import { library } from '@fortawesome/fontawesome-svg-core';
 
 import {
     setAppState,

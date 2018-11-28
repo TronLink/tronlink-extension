@@ -71,6 +71,8 @@ const backgroundScript = {
         duplex.on('addSmartToken', this.walletService.addSmartToken);
         duplex.on('getConfirmations', this.walletService.getConfirmations);
         duplex.on('selectCurrency', this.walletService.selectCurrency);
+        duplex.on('deleteAccount', this.walletService.deleteAccount);
+        duplex.on('exportAccount', this.walletService.exportAccount);
 
         // WalletService: State management
         duplex.on('changeState', this.walletService.changeState);
