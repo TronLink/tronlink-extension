@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'components/Button';
 import CustomScroll from 'react-custom-scroll';
-import Swal from 'sweetalert2';
+import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import { PopupAPI } from '@tronlink/lib/api';
@@ -19,7 +19,7 @@ import {
 
 import './AccountsPage.scss';
 
-const ReactSwal = withReactContent(Swal);
+const ReactSwal = withReactContent(swal);
 
 class AccountsPage extends React.Component {
     constructor() {
@@ -50,7 +50,7 @@ class AccountsPage extends React.Component {
     async onDelete() {
         const { formatMessage } = this.props.intl;
 
-        const { value } = await Swal({
+        const { value } = await swal({
             title: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE' }),
             text: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE.BODY' }),
             confirmButtonText: formatMessage({ id: 'BUTTON.CONFIRM' }),
