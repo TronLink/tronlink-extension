@@ -18,6 +18,7 @@ class ProxiedProvider extends HttpProvider {
     configure(url) {
         logger.info('Received new node:', url);
 
+        this.host = url;
         this.instance = axios.create({
             baseURL: url,
             timeout: 30000

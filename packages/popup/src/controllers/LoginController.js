@@ -24,12 +24,10 @@ class LoginController extends React.Component {
     }
 
     onPasswordChange(value) {
-        const trimmed = value.trim();
-
         this.setState({
             password: {
-                value: trimmed,
-                isValid: trimmed.length
+                isValid: value.trim().length,
+                value
             }
         });
     }
@@ -42,7 +40,7 @@ class LoginController extends React.Component {
         });
 
         PopupAPI
-            .unlockWallet(password.value)
+            .unlockWallet(password.value.trim())
             .then(() => app.getAppState())
             .catch(error => this.setState({
                 error
