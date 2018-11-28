@@ -1,0 +1,121 @@
+.tokensPage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+
+    .inputGroup {
+        display: flex;
+        flex-direction: row;
+
+        .tooltipContainer {
+            flex: 1;
+            position: relative;
+
+            & > span {
+                position: absolute;
+                left: 50%;
+                margin-left: -25%;
+                background: #f05252;
+                padding: 6px 9px;
+                color: #FFFFFF;
+                border-radius: 4px;
+                margin-top: 5px;
+                top: 40px;
+
+                &::after {
+                    bottom: 100%;
+                    left: 50%;
+                    border: solid transparent;
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    pointer-events: none;
+                    border-color: #f0525200;
+                    border-bottom-color: #f05252;
+                    border-width: 6px;
+                    margin-left: -6px;
+                }
+            }
+        }
+
+        .customButton {
+            width: unset;
+            padding: 0 20px;
+
+            span {
+                font-size: 14px;
+            }
+        }
+    }
+
+    .tokenList {
+        margin-top: 10px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .tokenType {
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .tokenGroup {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            margin: 0 -5px;
+
+            .token {
+                background: #FFFFFF;
+                margin: 5px;
+                border-radius: 4px;
+                padding: 10px 13px;
+                text-align: center;                
+
+                .tokenAmount {
+                    font-size: 15px;
+                }
+
+                .tokenSymbol {
+                    font-weight: 500;
+                    font-size: 13px;
+                    margin-top: 2px;
+                    display: block;
+                }
+
+                &.smartToken {
+                    background: #707897;
+                    color: #FFFFFF;
+                }
+            }
+
+            &.smartTokens {
+                margin-bottom: 5px;
+            }
+        }
+
+        .rcs-custom-scroll {
+            .rcs-outer-container {
+                overflow: unset;
+
+                .rcs-positioning {
+                    margin-right: -20px;
+                }
+            }
+            .rcs-inner-container {
+                margin-right: -50px !important;
+                padding-right: 33px;
+            }
+
+            .rcs-inner-handle {
+                margin-top: 0;
+                height: 100%;
+                background: #454c67;
+                margin-left: 3px;
+                margin-right: -3px;
+            }
+        }
+    }
+}

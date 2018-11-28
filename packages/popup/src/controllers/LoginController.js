@@ -1,0 +1,99 @@
+import React from 'react';
+import Input from 'components/Input';
+import Button from 'components/Button';
+
+import { FormattedMessage } from 'react-intl';
+import { PopupAPI } from '@tronlink/lib/api';
+import { app } from 'index';
+
+class LoginController extends React.Component {
+    state = {
+        password: {
+            value: '',
+            isValid: false
+        },
+        loading: false,
+        error: false
+    };
+
+    constructor() {
+        super();
+
+        this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.onButtonClick = this.onButtonClick.bind(this);
+    }
+
+    onPasswordChange(value) {
+        const trimmed = value.trim();
+
+        this.setState({
+            password: {
+                value: trimmed,
+                isValid: trimmed.length
+            }
+        });
+    }
+
+    onButtonClick() {
+        const { password } = this.state;
+
+        this.setState({
+            loading: true
+        });
+
+        PopupAPI
+            .unlockWallet(password.value)
+            .then(() => app.getAppState())
+            .catch(error => this.setState({
+                error
+            }))
+            .then(() => this.setState({
+                loading: false
+            }));
+    }
+
+    render() {
+        const {
+            password,
+            loading,
+            error
+        } = this.state;
+
+        return (
+            <div className='insetContainer'>
+                <div className='pageHeader'>
+                    TronLink
+                </div>
+                { error ? (
+                    <div className='errorModal hasBottomMargin'>
+                        <FormattedMessage className='modalTitle' id='ERRORS.UNLOCK_FAILED' />
+                        <FormattedMessage className='modalBody' id={ error } />
+                    </div>
+                ) : '' }
+                <div className='greyModal'>
+                    <Input
+                        icon='lock'
+                        type='password'
+                        className='hasBottomMargin'
+                        placeholder='INPUT.PASSWORD'
+                        value={ password.value }
+                        isDisabled={ loading }
+                        onChange={ this.onPasswordChange }
+                        onEnter={ this.onButtonClick }
+                        tabIndex={ 1 }
+                    />
+
+                    <Button
+                        id='BUTTON.CONTINUE'
+                        isValid={ password.isValid }
+                        isLoading={ loading }
+                        onClick={ this.onButtonClick }
+                        tabIndex={ 2 }
+                    />
+                </div>
+            </div>
+        );
+    }
+}
+
+export default LoginController;

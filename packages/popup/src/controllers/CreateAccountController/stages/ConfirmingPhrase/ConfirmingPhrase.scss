@@ -1,0 +1,34 @@
+.confirmingPhrase .options {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 17px -3px;
+    align-items: baseline;
+    justify-content: center;
+
+    .word {
+        margin: 3px;
+        background: #2196f3;
+        padding: 7px 9px;
+        font-size: 13px;
+        color: #FFFFFF;
+        border-radius: 4px;
+        transition: all 150ms ease;
+
+        &.correct {
+            opacity: 0.15;
+        }
+
+        &:not(.correct) {
+            cursor: pointer;
+        }
+
+        &:not(.correct):hover {
+            background: #4aafff;
+        }
+
+        &:not(.correct):active {
+            background: #358dd3;
+        }
+    }
+}

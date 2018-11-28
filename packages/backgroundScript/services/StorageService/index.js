@@ -1,0 +1,301 @@
+import extensionizer from 'extensionizer';
+import Logger from '@tronlink/lib/logger';
+import Utils from '@tronlink/lib/utils';
+
+const logger = new Logger('StorageService');
+
+const StorageService = {
+    // We could instead scope the data so we don't need this array
+    storageKeys: [
+        'accounts',
+        'nodes',
+        'transactions',
+        'selectedAccount',
+        'prices',
+        'pendingTransactions'
+    ],
+
+    storage: extensionizer.storage.local,
+
+    prices: {
+        priceList: {
+            USD: 0,
+            GBP: 0,
+            EUR: 0,
+            BTC: 0,
+            ETH: 0
+        },
+        selected: 'USD'
+    },
+    nodes: {
+        nodeList: {},
+        selectedNode: false
+    },
+    pendingTransactions: {},
+    accounts: {},
+    transactions: {},
+    selectedAccount: false,
+
+    ready: false,
+    password: false,
+
+    get needsMigrating() {
+        return localStorage.hasOwnProperty('TronLink_WALLET');
+    },
+
+    get hasAccounts() {
+        return Object.keys(this.accounts).length;
+    },
+
+    getStorage(key) {
+        return new Promise(resolve => (
+            this.storage.get(key, data => {
+                if(key in data)
+                    resolve(data[ key ]);
+                else resolve(false);
+            })
+        ));
+    },
+
+    async dataExists() {
+        return !!(await this.getStorage('accounts'));
+    },
+
+    async unlock(password) {
+        if(this.ready) {
+            logger.error('Attempted to decrypt data whilst already unencrypted');
+            return 'ERRORS.ALREADY_UNLOCKED';
+        }
+
+        if(!await this.dataExists())
+            return 'ERRORS.NOT_SETUP';
+
+        try {
+            for(let i = 0; i < this.storageKeys.length; i++) {
+                const key = this.storageKeys[ i ];
+                const encrypted = await this.getStorage(key);
+
+                if(!encrypted)
+                    continue;
+
+                this[ key ] = Utils.decrypt(
+                    encrypted,
+                    password
+                );
+            }
+        } catch(ex) {
+            logger.warn('Failed to decrypt wallet (wrong password?):', ex);
+            return 'ERRORS.INVALID_PASSWORD';
+        }
+
+        logger.info('Decrypted wallet data');
+
+        this.password = password;
+        this.ready = true;
+
+        return false;
+    },
+
+    hasAccount(address) {
+        // This is the most disgusting piece of code I've ever written.
+        return (address in this.accounts);
+    },
+
+    selectAccount(address) {
+        logger.info(`Storing selected account: ${ address }`);
+
+        this.selectedAccount = address;
+        this.save('selectedAccount');
+    },
+
+    getAccounts() {
+        const accounts = {};
+
+        Object.keys(this.accounts).forEach(address => {
+            accounts[ address ] = {
+                transactions: this.transactions[ address ] || [],
+                ...this.accounts[ address ]
+            };
+        });
+
+        return accounts;
+    },
+
+    getAccount(address) {
+        const account = this.accounts[ address ];
+        const transactions = this.transactions[ address ] || [];
+
+        return {
+            transactions,
+            ...account
+        };
+    },
+
+    deleteAccount(address) {
+        logger.info('Deleting account', address);
+
+        delete this.accounts[ address ];
+        delete this.transactions[ address ];
+
+        this.save('accounts', 'transactions');
+    },
+
+    deleteNode(nodeID) {
+        logger.info('Deleting node', nodeID);
+
+        delete this.nodes.nodeList[ nodeID ];
+        this.save('nodes');
+    },
+
+    saveNode(nodeID, node) {
+        logger.info('Saving node', node);
+
+        this.nodes.nodeList[ nodeID ] = node;
+        this.save('nodes');
+    },
+
+    selectNode(nodeID) {
+        logger.info('Saving selected node', nodeID);
+
+        this.nodes.selectedNode = nodeID;
+        this.save('nodes');
+    },
+
+    saveAccount(account) {
+        logger.info('Saving account', account);
+
+        const {
+            transactions,
+            ...remaining // eslint-disable-line
+        } = account;
+
+        this.transactions[ account.address ] = transactions;
+        this.accounts[ account.address ] = remaining;
+
+        this.save('transactions', 'accounts');
+    },
+
+    migrate() {
+        try {
+            const storage = localStorage.getItem('TronLink_WALLET');
+            const decrypted = Utils.decrypt(
+                JSON.parse(storage),
+                this.password
+            );
+
+            const {
+                accounts,
+                currentAccount
+            } = decrypted;
+
+            return {
+                accounts: Object.values(accounts).map(({ privateKey, name }) => ({
+                    privateKey,
+                    name
+                })),
+                selectedAccount: currentAccount
+            };
+        } catch(ex) {
+            logger.info('Failed to migrate (wrong password?):', ex);
+
+            return {
+                error: true
+            };
+        }
+    },
+
+    authenticate(password) {
+        this.password = password;
+        this.ready = true;
+
+        logger.info('Set storage password');
+    },
+
+    addPendingTransaction(address, txID) {
+        if(!(address in this.pendingTransactions))
+            this.pendingTransactions[ address ] = [];
+
+        if(this.pendingTransactions[ address ].some(tx => tx.txID === txID))
+            return;
+
+        logger.info('Adding pending transaction:', { address, txID });
+
+        this.pendingTransactions[ address ].push({
+            nextCheck: Date.now() + 5000,
+            txID
+        });
+
+        this.save('pendingTransactions');
+    },
+
+    removePendingTransaction(address, txID) {
+        if(!(address in this.pendingTransactions))
+            return;
+
+        logger.info('Removing pending transaction:', { address, txID });
+
+        this.pendingTransactions[ address ] = this.pendingTransactions[ address ].filter(transaction => (
+            transaction.txID !== txID
+        ));
+
+        if(!this.pendingTransactions[ address ].length)
+            delete this.pendingTransactions[ address ];
+
+        this.save('pendingTransactions');
+    },
+
+    getNextPendingTransaction(address) {
+        if(!(address in this.pendingTransactions))
+            return false;
+
+        const [ transaction ] = this.pendingTransactions[ address ];
+
+        if(!transaction)
+            return false;
+
+        if(transaction.nextCheck < Date.now())
+            return false;
+
+        return transaction.txID;
+    },
+
+    setPrices(priceList) {
+        this.prices.priceList = priceList;
+        this.save('prices');
+    },
+
+    selectCurrency(currency) {
+        this.prices.selected = currency;
+        this.save('prices');
+    },
+
+    save(...keys) {
+        if(!this.ready)
+            return logger.error('Attempted to write storage when not ready');
+
+        if(!keys.length)
+            keys = this.storageKeys;
+
+        logger.info(`Writing storage for keys ${ keys.join(', ') }`);
+
+        keys.forEach(key => (
+            this.storage.set({
+                [ key ]: Utils.encrypt(this[ key ], this.password)
+            })
+        ));
+
+        logger.info('Storage saved');
+    },
+
+    purge() {
+        logger.warn('Purging TronLink. This will remove all stored transaction data');
+
+        this.storage.set({
+            transactions: Utils.encrypt({}, this.password)
+        });
+
+        logger.info('Purge complete. Please reload TronLink');
+    }
+};
+
+export default StorageService;

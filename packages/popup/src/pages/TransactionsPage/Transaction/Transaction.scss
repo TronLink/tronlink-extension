@@ -1,0 +1,64 @@
+.transactionsPage .transaction {
+    background: #FFFFFF;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .transactionDetails {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        .transactionType {
+            font-size: 12px;
+            font-weight: 500;
+
+            &.type-TransferContractReceived, &.type-TransferAssetContractReceived {
+                color: #38ad64;
+            }
+
+            &.type-TransferContractSent, &.type-TransferAssetContractSent {
+                color: #f05252;
+            }
+
+            &.type-TriggerSmartContract {
+                color: #2196f3;
+            }
+        }
+
+        .transactionAddress {
+            font-size: 13px;
+            margin-top: 2px;
+        }
+    }
+
+    .transactionMeta {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: right;
+
+        .transactionAmount {
+            font-size: 12px;
+            font-weight: 500;
+
+            &.direction-to {
+                color: #38ad64;
+            }
+
+            &.direction-from {
+                color: #f05252;
+            }
+        }
+
+        .transactionDate {
+            font-size: 12px;
+        }
+    }
+
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+}

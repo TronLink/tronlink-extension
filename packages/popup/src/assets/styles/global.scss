@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik:400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
+@import url('./swal.scss');
+
+* {
+    box-sizing: border-box;
+}
+
+.mono {
+    font-family: 'Ubuntu Mono', monospace;
+}
+
+html, body, #root {
+    height: 600px;
+    width: 420px;
+    font-family: 'Rubik', sans-serif;
+    cursor: default;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+html, body {
+    background: #353A4E;
+}
+
+#root {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background: url('../images/backgroundPattern.png');
+    background-repeat: repeat;
+    background-size: 200px;
+    background-position: center;
+}
+
+:focus {
+    outline: none !important;
+}
+
+.insetContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    align-items: center;
+    justify-content: center;
+
+    .pageHeader {
+        text-align: center;
+        font-weight: 400;
+        font-size: 25px;
+        line-height: 25px;
+        margin-bottom: 20px;
+        color: #FFFFFF;
+        width: 100%;
+    }
+
+    .greyModal {
+        background: #EEEEEE;
+        border-radius: 5px;
+        padding: 25px;
+        width: 100%;
+
+        .modalDesc {
+            font-size: 13px;
+        }
+    }
+
+    .errorModal {
+        background: #c83434;
+        width: 100%;
+        border-radius: 4px;
+        padding: 20px 15px;
+        color: #FFFFFF;
+    
+        span:first-of-type {
+            display: block;
+            text-align: center;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 15px;
+        }
+
+        span:last-of-type {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            line-height: 14px;
+            text-align: center;
+        }
+    }
+}
+
+.hasMargin {
+    margin: 20px;
+}
+
+.hasTopMargin {
+    margin-top: 20px;
+}
+
+.hasBottomMargin {
+    margin-bottom: 20px;
+}
+
+.hasLeftMargin {
+    margin-left: 20px;
+}
+
+.hasRightMargin {
+    margin-right: 20px;
+}
+
+.unsupportedState {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    color: #FFFFFF;
+    font-size: 16px;
+    padding: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.buttonRow {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+
+    .customButton {
+        flex: 1;
+        margin: 0 10px;
+    }
+
+    .customButton:first-of-type {
+        margin-left: 0;
+    }
+
+    .customButton:last-of-type {
+        margin-right: 0;
+    }
+}

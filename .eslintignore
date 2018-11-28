@@ -1,6 +1,6 @@
-/node_modules
-/app/popup
-/dist
-/static
+node_modules
+dist
+static
+build
 webpack.config.js
 install.js

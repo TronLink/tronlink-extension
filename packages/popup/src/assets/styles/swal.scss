@@ -1,0 +1,106 @@
+.swal2-container.swal2-shown {
+    background: #454c67de !important;
+}
+
+.swal2-popup {
+    margin: 10px !important;
+    width: 100% !important;
+    padding: 20px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+
+    .swal2-title {
+        display: flex !important;
+        margin: 0 !important;
+        margin-bottom: 20px !important;
+        font-size: 17px !important;
+        font-weight: 500 !important;    
+    }
+
+    #swal2-content {
+        font-size: 14px !important;
+        background: #F5F5F5 !important;
+        border-radius: 4px !important;
+        padding: 15px !important;
+        margin: 0 !important;
+    }
+
+    .swal2-actions {
+        display: flex !important;
+        margin: 20px -10px 0 -10px !important;
+        flex-direction: row-reverse !important;
+    }
+
+    .swal2-styled {
+        flex: 1;
+        height: 40px !important;
+        line-height: 40px !important;
+        padding: 0 !important;
+        font-size: 14px !important;
+        margin: 0 10px !important;
+        box-shadow: none !important;
+        border: none !important;
+        outline: none !important;
+        transition: all 200ms ease !important;
+        border-radius: 4px !important;
+
+        &.swal2-confirm {
+            background: #353A4E !important;
+
+            &:hover {
+                background: #454c67 !important;
+            }
+
+            &:focus {
+                background: #474d64 !important;
+            }
+        }
+
+        &.swal2-cancel {
+            background: #ca5e5e !important;
+
+            &:hover {
+                background: #dc6e6e !important;
+            }
+
+            &:focus {
+                background: #e66f6f !important;
+            }
+        }
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18) !important;
+        }
+
+        &:focus {
+            transform: translateY(-1px);
+            box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18) !important;
+        }
+    }
+
+    .exportDetails .export {
+        font-size: 14px;
+        background: #F5F5F5;
+        border-radius: 4px;
+        padding: 15px;
+        margin: 0;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+
+        span.header {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        span.content {
+            user-select: all;
+        }
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+    }
+}
