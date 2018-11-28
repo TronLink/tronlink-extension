@@ -164,7 +164,7 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SEND.RECIPIENT": "Recipient's address",
-    "SEND.RECIPIENT.PLACEHOLDER": "TVcaZYGf94J5K6WkPsfSDVUu5cWreZz1h9",
+    "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
     "SEND.TOKENS.TRX": "TRX",
     "SEND.TOKENS.TRC10": "Basic TRC10",
     "SEND.TOKENS.TRC20": "Smart TRC20",
