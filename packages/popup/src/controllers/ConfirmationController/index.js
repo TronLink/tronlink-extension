@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
 
+import { app } from 'index';
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
 
@@ -69,6 +70,23 @@ class ConfirmationController extends React.Component {
         const {
             selected
         } = this.state.whitelisting;
+
+        const {
+            hostname,
+            contractType,
+            input
+        } = this.props.confirmation;
+
+        if(contractType === 'TriggerSmartContract') {
+            const value = input.call_value || 0;
+
+            app.analytics.event({
+                category: 'Smart Contract',
+                action: 'Used Smart Contract',
+                label: `${ hostname } - ${ input.contract_address }`,
+                value
+            });
+        }
 
         PopupAPI.acceptConfirmation(selected.value);
     }
