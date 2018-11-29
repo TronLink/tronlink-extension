@@ -1,28 +1,46 @@
 # TronLink
-[View TronLink on the Chrome Webstore](https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec)
 
-TronLink is a Browser Extension for Website to Blockchain intercommunication on the Tron Network.  
-It allows developers to integrate smart contract calls on their site, in turn enabling the use of
-Dapps from within the browser. It also functions as a standard Tron wallet for anybody wanting to
-broadcast and receive transactions on the network.
+TronLink is a browser wallet for TRON. It enables you to send and receive TRX, TRC10 and TRC20 tokens. Developers can integrate TronLink into their website to create Decentralised Apps.
 
-TronLink v2 uses lerna and yarn workspaces as a monorepo.
+## Downloads
+**Chrome** &ndash; [Download](https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec) &nbsp; [![Chrome Web Store](https://img.shields.io/chrome-web-store/d/ogffaloegjglncjfehdfplabnoondfjo.svg?style=flat-square)](https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec) &nbsp; [![Chrome Web Store](https://img.shields.io/chrome-web-store/rating/ogffaloegjglncjfehdfplabnoondfjo.svg?style=flat-square)](https://chrome.google.com/webstore/detail/ibnejdfjmmkpcnlpebklmnkoeoihofec)
 
-At the moment, webpack and ESLint run at the root of the project. This does
-not follow the pattern for lerna, it should instead have a "@tronlink/tools"
-package. This would then host webpack and ESLint along with its configuration,
-which can then be used by the other packages.
+**Firefox** &ndash; Coming soon
 
-`backgroundScript` currently holds the webpack dependencies. The root workspace
-holds the ESLint dependencies.
+## Installation
 
+#### Install yarn
+**https://yarnpkg.com/en/docs/install**
 
-Build Instructions:
-```
-git clone https://github.com/TronWatch/TronLink/
-yarn install
-lerna bootstrap
-yarn build
+#### Install dependencies
+```sh
+$ yarn install
+$ lerna bootstrap
 ```
 
-You can then load the root folder as an unpacked Chrome Extension in Chrome.
+## Building
+```sh
+# Build all sources
+$ yarn build
+```
+
+```sh
+# Build the backend, along with the injected page script
+$ yarn build:core
+```
+
+```sh
+# Build only the popup component
+$ yarn build:popup
+```
+
+## Linting
+```sh
+# Run linter over the ./packages folder
+$ yarn lint
+```
+
+## Links
++ [Website](https://tronlink.io/)
++ [Support](https://t.me/TronWatch/)
++ [Twitter @TronWatch](https://twitter.com/TronWatch)
