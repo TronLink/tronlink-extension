@@ -5,7 +5,7 @@
     "version_name": "2.0.3",
     "description": "An interactive browser extension for signing, receiving and broadcasting TRON transactions",
     "author": "Kondax <kondaxsolutions@gmail.com>",
-    "content_security_policy": "script-src 'self' 'sha256-IThiKMnsg0UHaLmP7sJxZpd/ohvINImwjxFJyxGFSlk='",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-IThiKMnsg0UHaLmP7sJxZpd/ohvINImwjxFJyxGFSlk=' https://*.sentry.io https://ssl.google-analytics.com; object-src 'self'",
     "permissions": [
         "storage",
         "unlimitedStorage",
