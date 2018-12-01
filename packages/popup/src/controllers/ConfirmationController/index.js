@@ -129,8 +129,9 @@ class ConfirmationController extends React.Component {
         if(input.call_value)
             meta.push({ key: 'CONFIRMATIONS.COST', value: formatNumber(input.call_value / 1000000) });
 
-        if(input.amount)
+        if(input.amount && contractType === 'TransferContract')
             meta.push({ key: 'CONFIRMATIONS.COST', value: formatNumber(input.amount / 1000000) });
+        else meta.push({ key: 'CONFIRMATIONS.COST', value: formatNumber(input.amount) });
 
         if(input.frozen_balance)
             meta.push({ key: 'CONFIRMATIONS.COST', value: formatNumber(input.frozen_balance / 1000000) });
