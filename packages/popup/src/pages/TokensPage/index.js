@@ -112,7 +112,7 @@ class TokensPage extends React.Component {
                         { Object.entries(smart).map(([ address, token ]) => {
                             const BN = BigNumber.clone({
                                 DECIMAL_PLACES: token.decimals,
-                                ROUNDING_MODE: token.decimals
+                                ROUNDING_MODE: Math.min(8, token.decimals)
                             });
 
                             const amount = new BN(token.balance)
