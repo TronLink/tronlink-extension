@@ -5,7 +5,6 @@ import App from 'app';
 import Logger from '@tronlink/lib/logger';
 import MessageDuplex from '@tronlink/lib/MessageDuplex';
 import reducer from 'reducers';
-import ReactGA from 'react-ga';
 
 import * as Sentry from '@sentry/browser';
 
@@ -49,10 +48,8 @@ const logger = new Logger('Popup');
 
 export const app = {
     duplex: new MessageDuplex.Popup(),
-    analytics: ReactGA,
 
     async run() {
-        this.loadAnalytics();
         this.loadLocale();
         this.loadIcons();
         this.createStore();
@@ -61,15 +58,6 @@ export const app = {
 
         this.bindDuplexRequests();
         this.render();
-    },
-
-    loadAnalytics() {
-        this.analytics.initialize('UA-126129673-2', {
-            gaOptions: {
-                applicationName: 'TronLink',
-                applicationVersion: process.env.REACT_APP_VERSION
-            }
-        });
     },
 
     loadLocale() {
