@@ -5,6 +5,7 @@ import StorageService from './services/StorageService';
 import WalletService from './services/WalletService';
 import Utils from '@tronlink/lib/utils';
 import transactionBuilder from '@tronlink/lib/transactionBuilder';
+import TronWeb from 'tronweb';
 
 import * as Sentry from '@sentry/browser';
 
@@ -208,7 +209,7 @@ const backgroundScript = {
                             ga('send', 'event', {
                                 eventCategory: 'Smart Contract',
                                 eventAction: 'Used Smart Contract',
-                                eventLabel: input.contract_address,
+                                eventLabel: TronWeb.address.fromHex(input.contract_address),
                                 eventValue: value,
                                 referrer: hostname,
                                 userId: Utils.hash(input.owner_address)
