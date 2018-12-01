@@ -31,9 +31,33 @@ const backgroundScript = {
     run() {
         BackgroundAPI.init(duplex);
 
+        this.bindAnalytics();
         this.bindPopupDuplex();
         this.bindTabDuplex();
         this.bindWalletEvents();
+    },
+
+    bindAnalytics() {
+        (function(i, s, o, g, r, a, m) {
+            i.GoogleAnalyticsObject = r;
+
+            i[ r ] = i[ r ] || function() {
+                (i[ r ].q = i[ r ].q || []).push(arguments);
+            }, i[ r ].l = 1 * new Date();
+
+            a = s.createElement(o),
+            m = s.getElementsByTagName(o)[ 0 ];
+
+            a.async = 1;
+            a.src = g;
+
+            m.parentNode.insertBefore(a, m);
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-126129673-2', 'auto');
+        ga('set', 'checkProtocolTask', null);
+        ga('set', 'appName', 'TronLink');
+        ga('set', 'appVersion', version);
     },
 
     bindPopupDuplex() {
@@ -177,6 +201,19 @@ const backgroundScript = {
                         );
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
+
+                        if(contractType === 'TriggerSmartContract') {
+                            const value = input.call_value || 0;
+
+                            ga('send', 'event', {
+                                eventCategory: 'Smart Contract',
+                                eventAction: 'Used Smart Contract',
+                                eventLabel: input.contract_address,
+                                eventValue: value,
+                                referrer: hostname,
+                                userId: Utils.hash(input.owner_address)
+                            });
+                        }
 
                         if(contractType === 'TriggerSmartContract' && whitelist) {
                             const expiration = whitelist[ hostname ];

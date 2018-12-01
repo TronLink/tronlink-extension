@@ -5,6 +5,14 @@ import TronWeb from 'tronweb';
 
 const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
+    hashAlgorithm: 'sha256',
+
+    hash(string) {
+        return crypto
+            .createHash(this.hashAlgorithm)
+            .update(string)
+            .digest('hex');
+    },
 
     encrypt(data, key) {
         const encoded = JSON.stringify(data);
