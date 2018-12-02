@@ -411,10 +411,12 @@ class Wallet extends EventEmitter {
         ga('send', 'event', {
             eventCategory: 'Transaction',
             eventAction: 'Confirmed Transaction',
-            eventLabel: confirmation.contractType,
+            eventLabel: confirmation.contractType || 'SignMessage',
             eventValue: confirmation.input.amount || 0,
             referrer: confirmation.hostname,
-            userId: Utils.hash(confirmation.input.owner_address)
+            userId: Utils.hash(
+                TronWeb.address.toHex(this.selectedAccount)
+            )
         });
 
         callback({
@@ -446,10 +448,12 @@ class Wallet extends EventEmitter {
         ga('send', 'event', {
             eventCategory: 'Transaction',
             eventAction: 'Rejected Transaction',
-            eventLabel: confirmation.contractType,
+            eventLabel: confirmation.contractType || 'SignMessage',
             eventValue: confirmation.input.amount || 0,
             referrer: confirmation.hostname,
-            userId: Utils.hash(confirmation.input.owner_address)
+            userId: Utils.hash(
+                TronWeb.address.toHex(this.selectedAccount)
+            )
         });
 
         callback({
