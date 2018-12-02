@@ -83,7 +83,31 @@ class ConfirmationController extends React.Component {
     }
 
     renderMessage() {
-        return null;
+        const {
+            formatMessage
+        } = this.props.intl;
+
+        const {
+            hostname,
+            input
+        } = this.props.confirmation;
+
+        return (
+            <React.Fragment>
+                <div className='modalDesc hasBottomMargin'>
+                    <FormattedHTMLMessage
+                        id='CONFIRMATIONS.BODY'
+                        values={{
+                            hostname: encodeURIComponent(hostname),
+                            action: formatMessage({ id: 'CONTRACTS.SignMessage' })
+                        }}
+                    />
+                </div>
+                <div className='parameters mono'>
+                    { input }
+                </div>
+            </React.Fragment>
+        );
     }
 
     renderTransaction() {

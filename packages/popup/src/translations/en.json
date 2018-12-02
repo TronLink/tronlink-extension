@@ -125,6 +125,7 @@
     "CONFIRMATIONS.OPTIONS.ONE_DAY": "For one day",
     "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "Until the next login",
 
+    "CONTRACTS.SignMessage": "sign a message",
     "CONTRACTS.AccountCreateContract": "create an account",
     "CONTRACTS.TransferContract": "send TRX to an address",
     "CONTRACTS.TransferAssetContract": "send tokens to an address",
