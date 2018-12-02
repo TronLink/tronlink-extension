@@ -5,6 +5,8 @@ import NodeService from '../NodeService';
 import Account from './Account';
 import axios from 'axios';
 import extensionizer from 'extensionizer';
+import Utils from '@tronlink/lib/utils';
+import TronWeb from 'tronweb';
 
 import {
     APP_STATE,
@@ -376,6 +378,15 @@ class Wallet extends EventEmitter {
 
         logger.info(`Added contact ${ address } on host ${ hostname } with duration ${ duration } to whitelist`);
 
+        ga('send', 'event', {
+            eventCategory: 'Smart Contract',
+            eventAction: 'Whitelisted Smart Contract',
+            eventLabel: TronWeb.address.fromHex(confirmation.input.contract_address),
+            eventValue: duration,
+            referrer: confirmation.hostname,
+            userId: Utils.hash(confirmation.input.owner_address)
+        });
+
         this.acceptConfirmation();
     }
 
@@ -396,6 +407,17 @@ class Wallet extends EventEmitter {
 
         if(whitelistDuration !== false)
             this.whitelistContract(confirmation, whitelistDuration);
+
+        ga('send', 'event', {
+            eventCategory: 'Transaction',
+            eventAction: 'Confirmed Transaction',
+            eventLabel: confirmation.contractType || 'SignMessage',
+            eventValue: confirmation.input.amount || 0,
+            referrer: confirmation.hostname,
+            userId: Utils.hash(
+                TronWeb.address.toHex(this.selectedAccount)
+            )
+        });
 
         callback({
             success: true,
@@ -418,9 +440,21 @@ class Wallet extends EventEmitter {
         this.isConfirming = true;
 
         const {
+            confirmation,
             callback,
             uuid
         } = this.confirmations.pop();
+
+        ga('send', 'event', {
+            eventCategory: 'Transaction',
+            eventAction: 'Rejected Transaction',
+            eventLabel: confirmation.contractType || 'SignMessage',
+            eventValue: confirmation.input.amount || 0,
+            referrer: confirmation.hostname,
+            userId: Utils.hash(
+                TronWeb.address.toHex(this.selectedAccount)
+            )
+        });
 
         callback({
             success: false,

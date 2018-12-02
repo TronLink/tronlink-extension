@@ -27,6 +27,7 @@ const backgroundScript = {
         new WalletService()
     ),
 
+    developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec',
     nodeService: Utils.requestHandler(NodeService),
 
     run() {
@@ -53,7 +54,10 @@ const backgroundScript = {
             a.src = g;
 
             m.parentNode.insertBefore(a, m);
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        })(window, document, 'script', (this.developmentMode ?
+            'https://www.google-analytics.com/analytics_debug.js' :
+            'https://www.google-analytics.com/analytics.js'
+        ), 'ga');
 
         ga('create', 'UA-126129673-2', 'auto');
         ga('set', 'checkProtocolTask', null);
@@ -147,6 +151,7 @@ const backgroundScript = {
                         data: response,
                         uuid
                     });
+
                     break;
                 } case 'sign': {
                     if(!this.walletService.selectedAccount) {
