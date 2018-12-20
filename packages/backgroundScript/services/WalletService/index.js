@@ -323,6 +323,21 @@ class Wallet extends EventEmitter {
         this._loadAccounts();
         this._updatePrice();
 
+        // Bandage fix to change old ANTE to new ANTE
+        Object.keys(this.accounts).forEach(address => {
+            const account = this.accounts[ address ];
+            const tokens = account.tokens.smart;
+
+            const oldAddress = 'TBHN6guS6ztVVXbFivajdG3PxFUZ5UXGxY';
+            const newAddress = 'TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E';
+
+            if(!tokens.hasOwnProperty(oldAddress))
+                return;
+
+            tokens[ newAddress ] = tokens[ oldAddress ];
+            delete tokens[ oldAddress ];
+        });
+
         this._setState(APP_STATE.READY);
 
         const node = NodeService.getCurrentNode();
