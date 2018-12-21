@@ -12222,10 +12222,10 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-tronweb@^2.1.15:
-  version "2.1.15"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.1.15.tgz#4e90953b1a734575e1fd280951fbcf97c939e4cb"
-  integrity sha512-3qu5xQ/m1Gm4vBT42co8gLaQokyPk6LVMPjeQS8nFBXgQld3VC5x1xmw+Gheiod2jCH3U1GPdc8IfcDqj9zEhg==
+tronweb@^2.1.17:
+  version "2.1.17"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.1.17.tgz#b4822e06674574cec82ce0c28aeb45a463c265b9"
+  integrity sha512-VdIDWoU9L1IpiXeWWMfPbERD3YW5JXyH5cS/Cx2lcMWrPV5Bq+Vk03SzwZUnY1tfrip1UhEGfy0TCdVmy9Tcug==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
