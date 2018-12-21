@@ -18,5 +18,8 @@
     "UpdateSettingContract": "wallet/updatesetting",
     "ExchangeInjectContract": "wallet/exchangeinject",
     "ProposalApproveContact": "wallet/proposalapprove",
-    "ProposalDeleteContract": "proposaldelete"
+    "ProposalDeleteContract": "wallet/proposaldelete",
+    "UnfreezeAssetContract": "wallet/unfreezeasset",
+    "AccountUpdateContract": "wallet/updateaccount",
+    "WitnessUpdateContract": "wallet/updatewitness"
 }
