@@ -2,6 +2,10 @@
 <html lang="en">
     <head>
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126129673-2"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
+
         <script>
             window.dataLayer = window.dataLayer || [];
 
@@ -11,6 +15,30 @@
 
             gtag('js', new Date());
             gtag('config', 'UA-126129673-2');
+        </script>
+        
+        <script>
+            window.addEventListener("load", function() {
+                window.cookieconsent.initialise({
+                    "palette": {
+                        "popup": {
+                            "background": "#2b2f3f",
+                            "text": "#d4d4d4"
+                        },
+                        "button": {
+                            "background": "#454c67",
+                            "text": "#ffffff"
+                        }
+                    },
+                    "theme": "classic",
+                    "location": true,
+                    "content": {
+                        "message": "By using TronLink, you agree to the use of cookies.",
+                        "dismiss": "Got it",
+                        "link": "Click to learn more."
+                    }
+                })
+            });
         </script>
     </head>
     <body>
