@@ -143,3 +143,18 @@ html, body {
         margin-right: 0;
     }
 }
+
+.cc-window {
+    padding: 20px !important;
+
+    .cc-message {
+        line-height: 19px !important;
+
+        .cc-link {
+            color: #72c1ff !important;
+            padding: 0 !important;
+            text-decoration: none !important;
+            display: inline !important;
+        }
+    }
+}
