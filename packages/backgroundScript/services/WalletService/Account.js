@@ -209,7 +209,7 @@ class Account {
         logger.info(`Requested update for ${ address }`);
 
         const accountExists = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
-            .then(account => {
+            .then(async account => {
                 if(!account.address) {
                     logger.info(`Account ${ address } does not exist on the network`);
 
@@ -217,12 +217,35 @@ class Account {
                     return false;
                 }
 
-                this.tokens.basic = (account.asset || []).filter(({ value }) => {
+                this.tokens.basic = {};
+
+                const filteredTokens = (account.assetV2 || []).filter(({ value }) => {
                     return value > 0;
-                }).reduce((tokens, { key, value }) => {
-                    tokens[ key ] = value;
-                    return tokens;
-                }, {});
+                });
+
+                for(const { key, value } of filteredTokens) {
+                    let token = this.tokens.basic[ key ] || false;
+
+                    if(!token) {
+                        const {
+                            name,
+                            abbr,
+                            decimals = 0
+                        } = await NodeService.tronWeb.trx.getTokenFromID(key);
+
+                        token = {
+                            balance: 0,
+                            name,
+                            abbr,
+                            decimals
+                        };
+                    }
+
+                    this.tokens.basic[ key ] = {
+                        ...token,
+                        balance: value
+                    };
+                }
 
                 this.balance = account.balance || 0;
                 this.lastUpdated = Date.now();
