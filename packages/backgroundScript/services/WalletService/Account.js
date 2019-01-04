@@ -230,7 +230,7 @@ class Account {
                         const {
                             name,
                             abbr,
-                            decimals = 0
+                            precision: decimals = 0
                         } = await NodeService.tronWeb.trx.getTokenFromID(key);
 
                         token = {
