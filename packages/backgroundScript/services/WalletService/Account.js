@@ -136,6 +136,9 @@ class Account {
             lastUpdated
         } = StorageService.getAccount(this.address);
 
+        // Old TRC10 structure are no longer compatible
+        tokens.basic = {};
+
         this.type = type;
         this.name = name;
         this.balance = balance;
@@ -195,9 +198,7 @@ class Account {
             this.tokens.smart[ address ].balance = 0
         ));
 
-        Object.keys(this.tokens.basic).forEach(token => (
-            this.tokens.basic[ token ] = 0
-        ));
+        this.tokens.basic = {};
     }
 
     async update() {
