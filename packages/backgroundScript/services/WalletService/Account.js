@@ -34,13 +34,13 @@ class Account {
             basic: {},
             smart: {}
         };
-
+        this.listTokens = [];
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
-
         this.loadCache();
         this._cacheTransactions();
+        this.loadTokenList();
     }
 
     static generateAccount() {
@@ -120,7 +120,9 @@ class Account {
             index
         );
     }
-
+    async loadTokenList(){
+        this.listTokens = await NodeService.tronWeb.trx.listTokens();
+    }
     loadCache() {
         if(!StorageService.hasAccount(this.address))
             return logger.warn('Attempted to load cache for an account that does not exist');
@@ -216,17 +218,18 @@ class Account {
                     this.reset();
                     return false;
                 }
-
-                this.tokens.basic = (account.asset || []).filter(({ value }) => {
+                this.tokens.basic = (account.assetV2 || []).filter(({ value }) => {
                     return value > 0;
-                }).reduce((tokens, { key, value }) => {
-                    tokens[ key ] = value;
+                }).reduce((tokens, { key, value}) => {
+                    const filter = this.listTokens.filter(v => v.id === key);
+                    const name = filter[0].name;
+                    const precision = filter[0].precision?filter[0].precision:0;
+                    const v = value/Math.pow(10,precision);
+                    tokens[ key ] = {value:v ,name, precision};
                     return tokens;
                 }, {});
-
                 this.balance = account.balance || 0;
                 this.lastUpdated = Date.now();
-
                 return true;
             }).catch(ex => {
                 logger.error(`Failed to update account ${ address }:`, ex);

@@ -180,5 +180,9 @@
 
     "ACCOUNTS.EXPORT": "Export Account",
     "ACCOUNTS.EXPORT.MNEMONIC": "Mnemonic Phrase",
-    "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key"
+    "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key",
+
+    "WARNING.ALLOW.SAME_TOKEN.TITLE":"To the Tron community",
+    "WARNING.ALLOW.SAME_TOKEN.CONTENT":"The proposal “Allow Same Token Name”It has been approved.The impact of this is that token names can no longer be referenced as the sole identifier for a token.Developers are currently working to update applications, trading platforms and wallets to ensure as smooth a transition as possible. We ask that community members take the time to understand that TOKEN ID will now be the proper identifier for all tokens. Developers are taking all necessary steps to update DApps to utilize this new identifier.",
+    "WARNING.ALLOW.SAME_TOKEN.BUTTON":"I Know"
 }

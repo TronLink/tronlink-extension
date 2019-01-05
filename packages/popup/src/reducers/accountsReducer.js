@@ -5,6 +5,7 @@ import {
 
 export const setAccount = createAction('setAccount');
 export const setAccounts = createAction('setAccounts');
+export const setWarning = createAction('setWarning');
 
 export const accountsReducer = createReducer({
     selected: {
@@ -21,7 +22,8 @@ export const accountsReducer = createReducer({
             uncached: 0
         }
     },
-    accounts: { }
+    accounts: { },
+    warning:true
 }, {
     [ setAccount ]: (state, { payload: { transactions, ...account } }) => {
         state.selected = account;
@@ -47,5 +49,8 @@ export const accountsReducer = createReducer({
     },
     [ setAccounts ]: (state, { payload }) => {
         state.accounts = payload;
+    },
+    [ setWarning ]: (state, {payload}) => {
+        state.warning = payload;
     }
 });

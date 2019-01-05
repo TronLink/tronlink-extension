@@ -116,9 +116,8 @@
                 display: flex;
                 flex-direction: row;
                 margin-bottom: 15px;
-
                 .customInput {
-                    flex: 1;
+                    flex:1;
                     background: #F8F8F8;
                 }
 
@@ -126,35 +125,45 @@
                     padding: 0 15px;
                     line-height: 40px;
                 }
+                .dropdown{
+                    box-sizing: border-box;
+                    left:-36px;
+                    .Dropdown-control {
+                        height: 40px;
+                        background: #f8f8f8;
+                        line-height: 40px;
+                        padding:0;
+                        border-radius: 4px;
+                        transition: all 200ms ease;
+                        box-shadow: none !important;
+                        border: 1px solid #F8F8F8 !important;
+                        border-bottom: none !important;
+                        .Dropdown-placeholder{
+                            width: 200px;
+                            padding: 0 14px;
+                            padding-right: 20px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                        &.Dropdown-disabled {
+                            color: #999 !important;
+                        }
 
-                .dropdown .Dropdown-control {
-                    height: 40px;
-                    background: #f8f8f8;
-                    line-height: 40px;
-                    padding: 0 14px;
-                    padding-right: 39px;
-                    border-radius: 4px;
-                    transition: all 200ms ease;
-                    box-shadow: none !important;
-                    border: 1px solid #F8F8F8 !important;
-                    border-bottom: none !important;
+                        .Dropdown-arrow {
+                            margin-top: 0;
+                            top: 17px;
+                            right: 5px;
+                        }
 
-                    &.Dropdown-disabled {
-                        color: #999 !important;
-                    }
-
-                    .Dropdown-arrow {
-                        margin-top: 0;
-                        top: 17px;
-                        right: 15px;
-                    }
-
-                    &:not(.Dropdown-disabled):hover {
-                        box-shadow: none;
-                        background: #EEEEEE;
-                        cursor: pointer;
+                        &:not(.Dropdown-disabled):hover {
+                            box-shadow: none;
+                            background: #EEEEEE;
+                            cursor: pointer;
+                        }
                     }
                 }
+
 
                 .dropdown.is-open {
                     .Dropdown-control {
@@ -163,8 +172,6 @@
                         border-bottom-left-radius: 0px;
                         border-bottom-right-radius: 0px;
                         border-color: #DDD !important;
-                        padding: 0 14px;
-                        padding-right: 39px;
                     }
 
                     .Dropdown-menu {
@@ -173,11 +180,11 @@
                         background: #EEEEEE;
                         box-shadow: none;
                         margin-top: 0;
-                        max-height: 120px;
+                        max-height: 150px;
                         border: 1px solid #DDDDDD;
                         box-sizing: border-box;
                         border-top: none;
-
+                        overflow-y:scroll !important;
                         .Dropdown-option {
                             height: 40px;
                             line-height: 40px;
@@ -185,7 +192,6 @@
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
-
                             &.is-selected {
                                 background: none;
                                 font-weight: 500;

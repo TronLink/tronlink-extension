@@ -148,14 +148,14 @@ class SendPage extends React.Component {
 
         const { value } = this.state.amount;
         const amount = new BigNumber(value.trim());
-
         if(
             amount.isNaN() ||
-            amount.lte(0) ||
-            (
-                mode === TOKEN_MODE.TRC10 &&
-                !amount.isInteger()
-            )
+            amount.lte(0)
+            // ||
+            // (
+            //     mode === TOKEN_MODE.TRC10 &&
+            //     !amount.isInteger()
+            // )
         ) {
             return this.setState({
                 amount: {
@@ -171,7 +171,7 @@ class SendPage extends React.Component {
             balance = new BigNumber(this.props.account.balance).shiftedBy(-6);
 
         if(mode === TOKEN_MODE.TRC10)
-            balance = new BigNumber(basic[ name ]);
+            balance = new BigNumber(basic[ name ].value);
 
         if(mode === TOKEN_MODE.TRC20) {
             const token = smart[ address ];
@@ -214,10 +214,10 @@ class SendPage extends React.Component {
                 new BigNumber(amount).shiftedBy(6).toString()
             );
         }
-
-        if(mode === TOKEN_MODE.TRC10)
-            func = PopupAPI.sendBasicToken(recipient, amount, name);
-
+        if(mode === TOKEN_MODE.TRC10) {
+            const precision = this.props.tokens.basic[name].precision;
+            func = PopupAPI.sendBasicToken(recipient, amount * Math.pow(10,precision), name);
+        }
         if(mode === TOKEN_MODE.TRC20) {
             func = PopupAPI.sendSmartToken(
                 recipient,
@@ -277,7 +277,7 @@ class SendPage extends React.Component {
 
         const options = Object.entries(basic).map(([ token, balance ]) => ({
             value: token,
-            label: `${ token } (${ formatNumber(balance) })`
+            label: `${ balance.name } (${ formatNumber(balance.value) }) id:${token}`
         }));
 
         if(!basic[ name ]) {
@@ -287,7 +287,7 @@ class SendPage extends React.Component {
 
         const selected = {
             value: name,
-            label: `${ name } (${ formatNumber(basic[ name ]) })`
+            label: `${ basic[ name ].name } (${ formatNumber(basic[ name ].value)}) id:${ name }`
         };
 
         return (
