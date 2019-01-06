@@ -1,6 +1,7 @@
 import extensionizer from 'extensionizer';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
+import NodeService from '../NodeService';
 
 const logger = new Logger('StorageService');
 
@@ -12,7 +13,8 @@ const StorageService = {
         'transactions',
         'selectedAccount',
         'prices',
-        'pendingTransactions'
+        'pendingTransactions',
+        'tokenCache'
     ],
 
     storage: extensionizer.storage.local,
@@ -34,6 +36,7 @@ const StorageService = {
     pendingTransactions: {},
     accounts: {},
     transactions: {},
+    tokenCache: {},
     selectedAccount: false,
 
     ready: false,
@@ -51,8 +54,9 @@ const StorageService = {
         return new Promise(resolve => (
             this.storage.get(key, data => {
                 if(key in data)
-                    resolve(data[ key ]);
-                else resolve(false);
+                    return resolve(data[ key ]);
+
+                resolve(false);
             })
         ));
     },
@@ -285,6 +289,24 @@ const StorageService = {
         ));
 
         logger.info('Storage saved');
+    },
+
+    async cacheToken(tokenID) {
+        const {
+            name,
+            abbr,
+            precision: decimals = 0
+        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+
+        this.tokenCache[ tokenID ] = {
+            name,
+            abbr,
+            decimals
+        };
+
+        logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
+
+        this.save('tokenCache');
     },
 
     purge() {

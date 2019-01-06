@@ -139,6 +139,19 @@ class Account {
         // Old TRC10 structure are no longer compatible
         tokens.basic = {};
 
+        // Remove old token transfers so they can be fetched again
+        Object.keys(this.transactions).forEach(txID => {
+            const transaction = this.transactions[ txID ];
+
+            if(transaction.type !== 'TransferAssetContract')
+                return;
+
+            if(transaction.tokenID)
+                return;
+
+            delete this.transactions[ txID ];
+        });
+
         this.type = type;
         this.name = name;
         this.balance = balance;
@@ -227,12 +240,15 @@ class Account {
                 for(const { key, value } of filteredTokens) {
                     let token = this.tokens.basic[ key ] || false;
 
-                    if(!token) {
+                    if(!token && !StorageService.tokenCache.hasOwnProperty(key))
+                        await StorageService.cacheToken(key);
+
+                    if(!token && StorageService.tokenCache.hasOwnProperty(key)) {
                         const {
                             name,
                             abbr,
-                            precision: decimals = 0
-                        } = await NodeService.tronWeb.trx.getTokenFromID(key);
+                            decimals
+                        } = StorageService.tokenCache[ key ];
 
                         token = {
                             balance: 0,
@@ -312,7 +328,12 @@ class Account {
 
         this.updatingTransactions = true;
 
-        const transactions = await this.getTransactions();
+        const transactions = await this.getTransactions().catch(() => {
+            logger.error('Failed to update transactions for', this.address);
+            this.updatingTransactions = false;
+
+            return [];
+        });
 
         const filteredTransactions = transactions
             .filter(({ txID }) => (
@@ -321,7 +342,7 @@ class Account {
             ));
 
         const mappedTransactions =
-            TransactionMapper.mapAll(filteredTransactions)
+            (await TransactionMapper.mapAll(filteredTransactions))
                 .filter(({ type }) => SUPPORTED_CONTRACTS.includes(type));
 
         const newTransactions = [];

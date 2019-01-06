@@ -1,9 +1,17 @@
+import StorageService from '../StorageService';
+
 const TransactionMapper = {
-    mapAll(transactions) {
-        return transactions.map(this.map);
+    async mapAll(transactions) {
+        const newTransactions = [];
+
+        transactions.forEach(async transaction => {
+            newTransactions.push(await this.map(transaction));
+        });
+
+        return newTransactions;
     },
 
-    map(transaction) {
+    async map(transaction) {
         const newTransaction = {
             timestamp: transaction.raw_data.timestamp || false,
             direction: transaction.direction || false,
@@ -39,13 +47,25 @@ const TransactionMapper = {
                 break;
             }
             case 'TransferAssetContract': {
-                newTransaction.sender = owner_address; // eslint-disable-line
-                newTransaction.recipient = to_address; // eslint-disable-line
-                newTransaction.amount = amount;
-                newTransaction.token = Buffer.from(
+                const tokenID = Buffer.from(
                     parameter.value.asset_name,
                     'hex'
                 ).toString('utf8');
+
+                if(!StorageService.tokenCache.hasOwnProperty(tokenID))
+                    await StorageService.cacheToken(tokenID);
+
+                const {
+                    decimals,
+                    name
+                } = StorageService.tokenCache[ tokenID ];
+
+                newTransaction.sender = owner_address; // eslint-disable-line
+                newTransaction.recipient = to_address; // eslint-disable-line
+                newTransaction.amount = amount;
+                newTransaction.decimals = decimals;
+                newTransaction.tokenName = name;
+                newTransaction.tokenID = tokenID;
 
                 break;
             }

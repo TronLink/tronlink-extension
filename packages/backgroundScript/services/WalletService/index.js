@@ -122,10 +122,6 @@ class Wallet extends EventEmitter {
         this.isPolling = true;
         const accounts = Object.values(this.accounts);
 
-        // We could show a loading indicator for each
-        // individual account, and publish updates accordingly
-        // instead of in bulk
-
         for(const account of accounts) {
             await account.update();
 
