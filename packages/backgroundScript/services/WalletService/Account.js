@@ -34,13 +34,13 @@ class Account {
             basic: {},
             smart: {}
         };
-        this.listTokens = [];
+        //this.listTokens = [];
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
         this.loadCache();
         this._cacheTransactions();
-        this.loadTokenList();
+        this.loadTokenList() ;
     }
 
     static generateAccount() {
@@ -120,9 +120,20 @@ class Account {
             index
         );
     }
-    async loadTokenList(){
-        this.listTokens = await NodeService.tronWeb.trx.listTokens();
+
+    async loadTokenList() {
+        let listTokens = [];
+        const cacheListTokens = StorageService.getListTokens();
+        console.log('cacheListTokens', cacheListTokens);
+        if(!cacheListTokens.length) {
+            listTokens = await NodeService.tronWeb.trx.listTokens();
+            StorageService.saveListTokens(listTokens);
+        }
+        else
+            listTokens = cacheListTokens;
+        return listTokens;
     }
+
     loadCache() {
         if(!StorageService.hasAccount(this.address))
             return logger.warn('Attempted to load cache for an account that does not exist');
@@ -209,6 +220,7 @@ class Account {
         } = this;
 
         logger.info(`Requested update for ${ address }`);
+        const listTokens = await this.loadTokenList();
 
         const accountExists = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
             .then(account => {
@@ -221,11 +233,13 @@ class Account {
                 this.tokens.basic = (account.assetV2 || []).filter(({ value }) => {
                     return value > 0;
                 }).reduce((tokens, { key, value}) => {
-                    const filter = this.listTokens.filter(v => v.id === key);
-                    const name = filter[0].name;
-                    const precision = filter[0].precision?filter[0].precision:0;
-                    const v = value/Math.pow(10,precision);
-                    tokens[ key ] = {value:v ,name, precision};
+                    const filter = listTokens.filter(v => v.id === key);
+                    if(filter.length > 0) {
+                        const name = filter[ 0 ].name;
+                        const precision = filter[ 0 ].precision ? filter[ 0 ].precision : 0;
+                        const v = value / Math.pow(10, precision);
+                        tokens[ key ] = { value: v, name, precision };
+                    }
                     return tokens;
                 }, {});
                 this.balance = account.balance || 0;
@@ -291,7 +305,12 @@ class Account {
 
         this.updatingTransactions = true;
 
-        const transactions = await this.getTransactions();
+        const transactions = await this.getTransactions().catch(() => {
+            logger.error('Failed to update transactions for', this.address);
+            this.updatingTransactions = false;
+
+            return [];
+        });
 
         const filteredTransactions = transactions
             .filter(({ txID }) => (
