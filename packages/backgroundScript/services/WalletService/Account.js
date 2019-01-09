@@ -211,7 +211,6 @@ class Account {
         } = this;
 
         logger.info(`Requested update for ${ address }`);
-        const listTokens = await this.loadTokenList();
 
         const accountExists = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
             .then(account => {
