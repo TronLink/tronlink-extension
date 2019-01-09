@@ -13,7 +13,7 @@ import {
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService/Account');
-
+let listTokens = [];
 class Account {
     constructor(accountType, importData, accountIndex = 0) {
         this.type = accountType;
@@ -34,7 +34,6 @@ class Account {
             basic: {},
             smart: {}
         };
-        //this.listTokens = [];
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
@@ -122,15 +121,7 @@ class Account {
     }
 
     async loadTokenList() {
-        let listTokens = [];
-        const cacheListTokens = StorageService.getListTokens();
-        console.log('cacheListTokens', cacheListTokens);
-        if(!cacheListTokens.length) {
-            listTokens = await NodeService.tronWeb.trx.listTokens();
-            StorageService.saveListTokens(listTokens);
-        }
-        else
-            listTokens = cacheListTokens;
+        listTokens = await NodeService.tronWeb.trx.listTokens();
         return listTokens;
     }
 
