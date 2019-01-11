@@ -144,19 +144,22 @@ class TokensPage extends React.Component {
                     )}
                     />
                     <div className='tokenGroup basicTokens'>
-                        { Object.entries(basic).map(([ tokenName, amount ]) => (
+                        { Object.entries(basic).map(([ tokenName, obj ]) => (
                             <div className='token basicToken' key={ tokenName }>
                                 <FormattedNumber
-                                    value={ amount }
-                                    maximumFractionDigits={ 0 }
-                                    children={ amount => (
+                                    value={ obj.value }
+                                    maximumFractionDigits={ obj.precision }
+                                    children={ obj => (
                                         <span className='tokenAmount mono'>
-                                            { amount }
+                                            { obj }
                                         </span>
                                     )}
                                 />
                                 <span className='tokenSymbol'>
-                                    { tokenName }
+                                    { obj.name }
+                                </span>
+                                <span className="show_id">
+                                    id:{tokenName}
                                 </span>
                             </div>
                         )) }
