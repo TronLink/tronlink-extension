@@ -158,7 +158,7 @@ class TokensPage extends React.Component {
                                 <div className='token basicToken' key={ tokenID }>
                                     <FormattedNumber
                                         value={ amount }
-                                        maximumFractionDigits={ 0 }
+                                        maximumFractionDigits={ token.decimals }
                                         children={ amount => (
                                             <span className='tokenAmount mono'>
                                                 { amount }
@@ -167,6 +167,9 @@ class TokensPage extends React.Component {
                                     />
                                     <span className='tokenSymbol'>
                                         { token.name }
+                                    </span>
+                                    <span className="show_id">
+                                        id:{tokenID}
                                     </span>
                                 </div>
                             );

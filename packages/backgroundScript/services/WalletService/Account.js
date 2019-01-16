@@ -11,7 +11,7 @@ import {
     ACCOUNT_TYPE,
     SUPPORTED_CONTRACTS
 } from '@tronlink/lib/constants';
-
+import axios from "axios";
 const logger = new Logger('WalletService/Account');
 
 class Account {
@@ -164,26 +164,48 @@ class Account {
 
     async getTransactions() {
         const transactions = [];
-
-        let hasMoreTransactions = true;
-        let offset = 0;
-
-        while(hasMoreTransactions) {
-            const newTransactions = (await NodeService.tronWeb.trx
-                .getTransactionsRelated(this.address, 'all', 90, offset))
-                .map(transaction => {
+        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            let hasMoreTransactions = true;
+            let offset = 0;
+            while (hasMoreTransactions) {
+                const data = {account: {address: TronWeb.address.toHex(this.address)}, limit: 90, offset};
+                const from = await axios.post('http://47.90.247.237:8091/walletextension/gettransactionsfromthis', data);
+                const to = await axios.post('http://47.90.247.237:8091/walletextension/gettransactionstothis', data);
+                const newTransactions = from.data.transaction.map(transaction => {
+                    transaction.direction = 'from'
+                    return transaction;
+                }).concat(to.data.transaction.map(transaction => {
+                    transaction.direction = 'to';
+                    return transaction;
+                })).map(transaction => {
                     transaction.offset = offset;
                     return transaction;
                 });
+                if (newTransactions.length===0)
+                    hasMoreTransactions = false;
+                else offset += 90;
+                transactions.push(...newTransactions);
+                return transactions;
+            }
+        }else{
+            let hasMoreTransactions = true;
+            let offset = 0;
+            while(hasMoreTransactions) {
+                const newTransactions = (await NodeService.tronWeb.trx
+                    .getTransactionsRelated(this.address, 'all', 90, offset))
+                    .map(transaction => {
+                        transaction.offset = offset;
+                        return transaction;
+                    });
 
-            if(!newTransactions.length)
-                hasMoreTransactions = false;
-            else offset += 90;
+                if(!newTransactions.length)
+                    hasMoreTransactions = false;
+                else offset += 90;
 
-            transactions.push(...newTransactions);
+                transactions.push(...newTransactions);
+            }
+            return transactions;
         }
-
-        return transactions;
     }
 
     matches(accountType, importData) {
