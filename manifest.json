@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
     "name": "TronLink",
-    "version": "2.0.14",
-    "version_name": "2.0.14",
+    "version": "2.0.12",
+    "version_name": "2.0.12",
     "description": "An interactive browser extension for signing, receiving and broadcasting TRON transactions",
     "author": "Kondax <kondaxsolutions@gmail.com>",
     "content_security_policy": "script-src 'self' 'unsafe-eval' 'sha256-LayQc1iWBC+6WbHHvHZj3uSx3CxrGBHUJBR7si4qf8w=' 'sha256-POEO+wER89cezFVZ27JoP523HJNPMQxmh5Rcz/OZpr4=' 'sha256-IThiKMnsg0UHaLmP7sJxZpd/ohvINImwjxFJyxGFSlk=' https://*.sentry.io https://www.google-analytics.com https://www.googletagmanager.com https://cdnjs.cloudflare.com; object-src 'self'",

@@ -34,7 +34,6 @@ const StorageService = {
     pendingTransactions: {},
     accounts: {},
     transactions: {},
-    listTokens: [],
     selectedAccount: false,
 
     ready: false,
@@ -174,14 +173,6 @@ const StorageService = {
         this.accounts[ account.address ] = remaining;
 
         this.save('transactions', 'accounts');
-    },
-    saveListTokens(listTokens) {
-        logger.info('Saving listTokens', listTokens);
-        this.listTokens = listTokens;
-        this.save('listTokens');
-    },
-    getListTokens() {
-        return this.listTokens ;
     },
 
     migrate() {

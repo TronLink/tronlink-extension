@@ -119,6 +119,7 @@ export const app = {
             PopupAPI.getPrices(),
             PopupAPI.getConfirmations()
         ]);
+
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
