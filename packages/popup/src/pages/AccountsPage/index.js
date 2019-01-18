@@ -3,8 +3,10 @@ import Button from 'components/Button';
 import CustomScroll from 'react-custom-scroll';
 import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
+
 import {
     FormattedMessage,
     injectIntl
@@ -16,24 +18,18 @@ import {
 } from '@tronlink/lib/constants';
 
 import './AccountsPage.scss';
-import {setAccounts} from "../../reducers/accountsReducer";
-import reduxLogger from "redux-logger";
-import reducer from "../../reducers";
 
 const ReactSwal = withReactContent(swal);
 
 class AccountsPage extends React.Component {
     constructor() {
         super();
+
         this.onClick = this.onClick.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
     }
-    componentDidMount(){
-        setTimeout(_=>{
-            //this.showWarning();
-        },1000)
-    }
+
     componentDidUpdate(prevProps) {
         const { selected: previous } = prevProps.accounts;
         const { selected } = this.props.accounts;
@@ -41,32 +37,7 @@ class AccountsPage extends React.Component {
         if(selected.name !== previous.name)
             this.props.setSubTitle(selected.name);
     }
-    showWarning(){
-        const { formatMessage } = this.props.intl;
-        const swalContent = [];
-        swalContent.push(
-            <div className='export'>
-                <span className='content'>
-                    { formatMessage({ id: 'WARNING.ALLOW.SAME_TOKEN.CONTENT' }) }
-                </span>
-            </div>
-        );
-        ReactSwal.fire({
-            title: formatMessage({ id: 'WARNING.ALLOW.SAME_TOKEN.TITLE' }),
-            cancelButtonText: formatMessage({ id: 'WARNING.ALLOW.SAME_TOKEN.BUTTON' }),
-            showCancelButton: true,
-            showConfirmButton: false,
-            html: (
-                <div className='exportDetails'>
-                    { swalContent }
-                </div>
-            )
-        }).then(res=>{
-            if(res.dismiss === "cancel"){
 
-            }
-        });
-    }
     onClick(address) {
         const { selected } = this.props.accounts;
 

@@ -13,7 +13,7 @@ import {
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService/Account');
-let listTokens = [];
+
 class Account {
     constructor(accountType, importData, accountIndex = 0) {
         this.type = accountType;
@@ -34,12 +34,13 @@ class Account {
             basic: {},
             smart: {}
         };
+
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
+
         this.loadCache();
         this._cacheTransactions();
-        this.loadTokenList() ;
     }
 
     static generateAccount() {
@@ -118,11 +119,6 @@ class Account {
             this.mnemonic,
             index
         );
-    }
-
-    async loadTokenList() {
-        listTokens = await NodeService.tronWeb.trx.listTokens();
-        return listTokens;
     }
 
     loadCache() {
@@ -220,20 +216,17 @@ class Account {
                     this.reset();
                     return false;
                 }
-                this.tokens.basic = (account.assetV2 || []).filter(({ value }) => {
+
+                this.tokens.basic = (account.asset || []).filter(({ value }) => {
                     return value > 0;
-                }).reduce((tokens, { key, value}) => {
-                    const filter = listTokens.filter(v => v.id === key);
-                    if(filter.length > 0) {
-                        const name = filter[ 0 ].name;
-                        const precision = filter[ 0 ].precision ? filter[ 0 ].precision : 0;
-                        const v = value / Math.pow(10, precision);
-                        tokens[ key ] = { value: v, name, precision };
-                    }
+                }).reduce((tokens, { key, value }) => {
+                    tokens[ key ] = value;
                     return tokens;
                 }, {});
+
                 this.balance = account.balance || 0;
                 this.lastUpdated = Date.now();
+
                 return true;
             }).catch(ex => {
                 logger.error(`Failed to update account ${ address }:`, ex);
@@ -295,12 +288,7 @@ class Account {
 
         this.updatingTransactions = true;
 
-        const transactions = await this.getTransactions().catch(() => {
-            logger.error('Failed to update transactions for', this.address);
-            this.updatingTransactions = false;
-
-            return [];
-        });
+        const transactions = await this.getTransactions();
 
         const filteredTransactions = transactions
             .filter(({ txID }) => (
