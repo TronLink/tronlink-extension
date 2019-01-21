@@ -166,27 +166,45 @@ class Account {
         const transactions = [];
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             let hasMoreTransactions = true;
-            let offset = 0;
-            while (hasMoreTransactions) {
-                const data = {account: {address: TronWeb.address.toHex(this.address)}, limit: 90, offset};
-                const from = await axios.post('http://47.90.247.237:8091/walletextension/gettransactionsfromthis', data);
-                const to = await axios.post('http://47.90.247.237:8091/walletextension/gettransactionstothis', data);
-                const newTransactions = from.data.transaction.map(transaction => {
-                    transaction.direction = 'from'
-                    return transaction;
-                }).concat(to.data.transaction.map(transaction => {
-                    transaction.direction = 'to';
-                    return transaction;
-                })).map(transaction => {
-                    transaction.offset = offset;
-                    return transaction;
-                });
-                if (newTransactions.length===0)
-                    hasMoreTransactions = false;
-                else offset += 90;
-                transactions.push(...newTransactions);
-                return transactions;
-            }
+            let start = 0;
+            const params = {sort:'-timestamp',count:true,limit:50,address:this.address,start};
+            const data = await axios.get('https://apilist.tronscan.org/api/transaction', {params});
+            const newTransactions = data.data.data.map(transaction => {
+                let tran = {};
+                tran.timestamp = transaction.timestamp;
+                tran.signature = transaction.confirmed;
+                tran.direction = transaction.toAddress === this.address ? 'to':'from';
+                tran.start = start;
+                tran.raw_data = {};
+                tran.raw_data.contract = [];
+                tran.raw_data.contract[0] = {};
+                tran.txID = transaction.hash;
+                tran.raw_data.contract[0].parameter = {
+                      value:{
+                          amount:transaction.contractData.amount || transaction.contractData.call_value,
+                          owner_address:transaction.contractData.owner_address
+                      }
+                };
+                if(transaction.contractType === 1){
+                    tran.raw_data.contract[0].type = 'TransferContract';
+                    tran.raw_data.contract[0].parameter.value.to_address = transaction.contractData.to_address;
+
+                }else if(transaction.contractType === 2){
+                    tran.raw_data.contract[0].type = 'TransferAssetContract';
+                    tran.raw_data.contract[0].parameter.value.tokenID = transaction.contractData.asset_name;
+                    tran.raw_data.contract[0].parameter.value.to_address = transaction.contractData.to_address;
+                }else if(transaction.contractType === 31){
+                    tran.raw_data.contract[0].type = 'TriggerSmartContract';
+                    tran.raw_data.contract[0].parameter.value.contract_address = transaction.contractData.contract_address;
+                }else if(transaction.contractType === 11){
+                    tran.raw_data.contract[0].type = 'FreezeBalanceContract';
+                    tran.raw_data.contract[0].parameter.value.frozen_balance = transaction.contractData.frozen_balance;
+                    tran.raw_data.contract[0].parameter.value.frozen_duration = transaction.contractData.frozen_duration;
+                }
+                return tran;
+            });
+            transactions.push(...newTransactions);
+            return transactions;
         }else{
             let hasMoreTransactions = true;
             let offset = 0;
@@ -356,7 +374,6 @@ class Account {
 
             return [];
         });
-
         const filteredTransactions = transactions
             .filter(({ txID }) => (
                 !Object.keys(this.transactions).includes(txID) &&

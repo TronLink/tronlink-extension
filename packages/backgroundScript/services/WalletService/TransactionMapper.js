@@ -13,10 +13,10 @@ const TransactionMapper = {
 
     async map(transaction) {
         const newTransaction = {
-            timestamp: transaction.raw_data.timestamp || false,
+            timestamp: transaction.raw_data.timestamp || transaction.timestamp || false,
             direction: transaction.direction || false,
-            signature: transaction.signature,
-            txID: transaction.txID,
+            signature: transaction.signature || transaction.confirmed,
+            txID: transaction.txID || transaction.hash,
             cached: false,
             receipt: false,
             result: false
@@ -47,11 +47,10 @@ const TransactionMapper = {
                 break;
             }
             case 'TransferAssetContract': {
-                const tokenID = Buffer.from(
-                    parameter.value.asset_name,
-                    'hex'
+                const tokenID = parameter.value.tokenID ? parameter.value.tokenID : Buffer.from(
+                     parameter.value.asset_name,
+                     'hex'
                 ).toString('utf8');
-
                 if(!StorageService.tokenCache.hasOwnProperty(tokenID))
                     await StorageService.cacheToken(tokenID);
 

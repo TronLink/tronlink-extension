@@ -23,7 +23,7 @@
                 color: #f05252;
             }
 
-            &.type-TriggerSmartContract {
+            &.type-TriggerSmartContract, &.type-FreezeBalanceContract {
                 color: #2196f3;
             }
         }
