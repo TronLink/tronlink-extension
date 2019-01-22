@@ -126,8 +126,11 @@
                     padding: 0 15px;
                     line-height: 40px;
                 }
-
+                .dropdown{
+                    left: -30px;
+                }
                 .dropdown .Dropdown-control {
+                    width:200px;
                     height: 40px;
                     background: #f8f8f8;
                     line-height: 40px;
@@ -138,7 +141,9 @@
                     box-shadow: none !important;
                     border: 1px solid #F8F8F8 !important;
                     border-bottom: none !important;
-
+                    .Dropdown-placeholder{
+                        white-space: nowrap;
+                    }
                     &.Dropdown-disabled {
                         color: #999 !important;
                     }
@@ -173,10 +178,11 @@
                         background: #EEEEEE;
                         box-shadow: none;
                         margin-top: 0;
-                        max-height: 120px;
+                        height: 150px;
                         border: 1px solid #DDDDDD;
                         box-sizing: border-box;
                         border-top: none;
+                        overflow-y:scroll;
 
                         .Dropdown-option {
                             height: 40px;

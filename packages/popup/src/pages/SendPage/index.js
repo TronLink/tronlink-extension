@@ -91,15 +91,26 @@ class SendPage extends React.Component {
     onTokenChange({ value: token }) {
         const { mode } = this.state.token;
 
-        if(mode === TOKEN_MODE.TRC10)
-            return this.setState({ token: { mode, name: token } });
+        const {
+            basic,
+            smart
+        } = this.props.tokens;
 
-        const { decimals } = this.props.tokens.smart[ token ];
+        if(mode === TOKEN_MODE.TRC10) {
+            return this.setState({
+                token: {
+                    tokenID: token,
+                    decimals: basic [ token ].decimals,
+                    name: basic[ token ].name,
+                    mode
+                }
+            },() => this.validateAmount());
+        }
 
         this.setState({
             token: {
                 address: token,
-                decimals,
+                decimals: smart[ token ].decimals,
                 mode
             }
         }, () => this.validateAmount());
@@ -121,8 +132,11 @@ class SendPage extends React.Component {
         if(mode === TOKEN_MODE.TRC20 && !Object.keys(smart).length)
             return;
 
-        if(mode === TOKEN_MODE.TRC10)
-            token.name = Object.keys(basic)[ 0 ];
+        if(mode === TOKEN_MODE.TRC10) {
+            token.tokenID = Object.keys(basic)[ 0 ];
+            token.decimals = basic [ token.tokenID ].decimals;
+            token.name = basic[ token.tokenID ].name;
+        }
 
         if(mode === TOKEN_MODE.TRC20) {
             token.address = Object.keys(smart)[ 0 ];
@@ -137,10 +151,10 @@ class SendPage extends React.Component {
     validateAmount() {
         const {
             mode,
-            name,
-            address
+            tokenID,
+            address,
+            decimals
         } = this.state.token;
-
         const {
             basic,
             smart
@@ -153,7 +167,7 @@ class SendPage extends React.Component {
             amount.isNaN() ||
             amount.lte(0) ||
             (
-                mode === TOKEN_MODE.TRC10 &&
+                mode === TOKEN_MODE.TRC10 && decimals == 0 &&
                 !amount.isInteger()
             )
         ) {
@@ -170,14 +184,18 @@ class SendPage extends React.Component {
         if(mode === TOKEN_MODE.TRX)
             balance = new BigNumber(this.props.account.balance).shiftedBy(-6);
 
-        if(mode === TOKEN_MODE.TRC10)
-            balance = new BigNumber(basic[ name ]);
+        if(mode === TOKEN_MODE.TRC10) {
+            const token = basic[ tokenID ];
+
+            balance = new BigNumber(token.balance)
+                .shiftedBy(decimals);
+        }
 
         if(mode === TOKEN_MODE.TRC20) {
             const token = smart[ address ];
 
             balance = new BigNumber(token.balance)
-                .shiftedBy(-token.decimals);
+                .shiftedBy(-decimals);
         }
 
         this.setState({
@@ -201,7 +219,7 @@ class SendPage extends React.Component {
 
         const {
             mode,
-            name,
+            tokenID,
             address,
             decimals
         } = this.state.token;
@@ -215,8 +233,13 @@ class SendPage extends React.Component {
             );
         }
 
-        if(mode === TOKEN_MODE.TRC10)
-            func = PopupAPI.sendBasicToken(recipient, amount, name);
+        if(mode === TOKEN_MODE.TRC10) {
+            func = PopupAPI.sendBasicToken(
+                recipient,
+                new BigNumber(amount).shiftedBy(decimals).toString(),
+                tokenID
+            );
+        }
 
         if(mode === TOKEN_MODE.TRC20) {
             func = PopupAPI.sendSmartToken(
@@ -271,23 +294,28 @@ class SendPage extends React.Component {
 
     renderBasicDropdown() {
         const { basic } = this.props.tokens;
-        const { name } = this.state.token;
         const { formatNumber } = this.props.intl;
         const { isLoading } = this.state;
 
-        const options = Object.entries(basic).map(([ token, balance ]) => ({
-            value: token,
-            label: `${ token } (${ formatNumber(balance) })`
+        const {
+            tokenID,
+            name,
+            decimals
+        } = this.state.token;
+
+        const options = Object.entries(basic).map(([ tokenID, token ]) => ({
+            value: tokenID,
+            label: `${ token.name } (${ formatNumber(new BigNumber(token.balance).shiftedBy(-token.decimals)) })${tokenID}`
         }));
 
-        if(!basic[ name ]) {
+        if(!basic[ tokenID ]) {
             this.reset();
             return null;
         }
 
         const selected = {
-            value: name,
-            label: `${ name } (${ formatNumber(basic[ name ]) })`
+            value: tokenID,
+            label: `${ name } (${ formatNumber(new BigNumber(basic[ tokenID ].balance).shiftedBy(-decimals)) })${tokenID}`
         };
 
         return (
@@ -339,8 +367,6 @@ class SendPage extends React.Component {
         const { mode } = this.state.token;
         const { value } = this.state.amount;
         const { isLoading } = this.state;
-
-        // Move the tabs into their own component
 
         return (
             <div className='tokens'>

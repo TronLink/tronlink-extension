@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import TronWeb from 'tronweb';
+import BigNumber from 'bignumber.js';
 
 import { SUPPORTED_CONTRACTS } from '@tronlink/lib/constants';
 
@@ -27,10 +28,20 @@ const renderAmount = (type, transaction, direction) => {
         case 'TransferContract':
             amount = transaction.amount / 1000000;
             break;
-        case 'TransferAssetContract':
-            amount = transaction.amount;
+        case 'TransferAssetContract': {
+            const { decimals } = transaction;
+
+            const BN = BigNumber.clone({
+                DECIMAL_PLACES: decimals,
+                ROUNDING_MODE: Math.min(8, decimals)
+            });
+
+            amount = new BN(transaction.amount)
+                .shiftedBy(-decimals)
+                .toString();
+
             break;
-        default: break;
+        } default: break;
     }
 
     if(amount === false)
@@ -126,7 +137,21 @@ const renderDetails = (type, transaction) => {
                     }}
                 />
             );
-        case 'TransferAssetContract':
+        case 'TransferAssetContract': {
+            const {
+                decimals,
+                tokenName
+            } = transaction;
+
+            const BN = BigNumber.clone({
+                DECIMAL_PLACES: decimals,
+                ROUNDING_MODE: Math.min(8, decimals)
+            });
+
+            const amount = new BN(transaction.amount)
+                .shiftedBy(-decimals)
+                .toString();
+
             return (
                 <React.Fragment>
                     <FormattedMessage
@@ -136,9 +161,9 @@ const renderDetails = (type, transaction) => {
                                 'TRANSACTIONS.RECEIVED_TOKEN'
                         }
                         values={{
-                            token: transaction.token,
-                            amount: transaction.amount,
-                            address: transformAddress(recipient)
+                            token: tokenName,
+                            address: transformAddress(recipient),
+                            amount
                         }}
                         children={ string => (
                             <div className='transactionAddress mono'>
@@ -148,7 +173,7 @@ const renderDetails = (type, transaction) => {
                     />
                 </React.Fragment>
             );
-        default:
+        } default:
             return null;
     }
 };

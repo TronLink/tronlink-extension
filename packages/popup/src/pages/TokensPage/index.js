@@ -144,22 +144,36 @@ class TokensPage extends React.Component {
                     )}
                     />
                     <div className='tokenGroup basicTokens'>
-                        { Object.entries(basic).map(([ tokenName, amount ]) => (
-                            <div className='token basicToken' key={ tokenName }>
-                                <FormattedNumber
-                                    value={ amount }
-                                    maximumFractionDigits={ 0 }
-                                    children={ amount => (
-                                        <span className='tokenAmount mono'>
-                                            { amount }
-                                        </span>
-                                    )}
-                                />
-                                <span className='tokenSymbol'>
-                                    { tokenName }
-                                </span>
-                            </div>
-                        )) }
+                        { Object.entries(basic).map(([ tokenID, token ]) => {
+                            const BN = BigNumber.clone({
+                                DECIMAL_PLACES: token.decimals,
+                                ROUNDING_MODE: Math.min(8, token.decimals)
+                            });
+
+                            const amount = new BN(token.balance)
+                                .shiftedBy(-token.decimals)
+                                .toString();
+
+                            return (
+                                <div className='token basicToken' key={ tokenID }>
+                                    <FormattedNumber
+                                        value={ amount }
+                                        maximumFractionDigits={ token.decimals }
+                                        children={ amount => (
+                                            <span className='tokenAmount mono'>
+                                                { amount }
+                                            </span>
+                                        )}
+                                    />
+                                    <span className='tokenSymbol'>
+                                        { token.name }
+                                    </span>
+                                    <span className="show_id">
+                                        id:{tokenID}
+                                    </span>
+                                </div>
+                            );
+                        }) }
                     </div>
                 </CustomScroll>
             </div>
