@@ -20,7 +20,7 @@ import 'assets/styles/global.scss';
 class App extends React.Component {
     render() {
         const { appState } = this.props;
-
+        console.log(appState);
         switch(appState) {
             case APP_STATE.UNINITIALISED:
                 return <RegistrationController />;

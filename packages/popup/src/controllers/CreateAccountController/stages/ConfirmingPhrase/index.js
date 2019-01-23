@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from 'components/Button';
+import WarningComponent from 'components/WarningComponent';
 
 import { FormattedMessage } from 'react-intl';
 import { BUTTON_TYPE } from '@tronlink/lib/constants';
@@ -11,25 +12,28 @@ class ConfirmingPhrase extends React.Component {
         correctOrder: [],
         selected: [],
         words: [],
-        isValid: false
+        isValid: false,
+        showWarning:false
     };
 
-    onClick(wordIndex) {
+    onClick(wordIndex,word) {
         const {
             correctOrder,
             selected
         } = this.state;
 
-        if(selected.includes(wordIndex))
-            return;
+        // if(selected.includes(wordIndex))
+        //     return;
 
         const nextIndex = selected.length;
 
-        if(correctOrder[ nextIndex ] !== wordIndex)
-            return;
-
-        selected.push(wordIndex);
-
+        // if(correctOrder[ nextIndex ] !== wordIndex)
+        //     return;
+        if(selected.map((v)=>v.word).includes(word)){
+            selected.splice(selected.map((v)=>v.word).indexOf(word),1);
+        }else{
+            selected.push({wordIndex,word});
+        }
         this.setState({
             isValid: nextIndex === 11,
             selected
@@ -62,8 +66,8 @@ class ConfirmingPhrase extends React.Component {
             <div className='options'>
                 { words.map(({ word, index }) => (
                     <div
-                        className={ `word ${ selected.includes(index) ? 'correct' : '' }` }
-                        onClick={ () => this.onClick(index) }
+                        className={ `word ${ selected.map(v=>v.wordIndex).includes(index) ? 'correct' : '' }` }
+                        onClick={ () => this.onClick(index,word) }
                         key={ index }
                     >
                         { word }
@@ -72,36 +76,56 @@ class ConfirmingPhrase extends React.Component {
             </div>
         );
     }
-
+    onSubmit(selected,correctOrder){
+        const {onSubmit} = this.props;
+        const selected2 = selected.map(v=>v.wordIndex);
+        for(let v of correctOrder){
+            if(v !== selected2[v]){
+                this.setState({showWarning:true},()=>{
+                    setTimeout(()=>{
+                        this.setState({showWarning:false});
+                    },3000)
+                })
+                return;
+            }
+        }
+        onSubmit();
+    }
     render() {
         const {
-            onSubmit,
             onCancel
         } = this.props;
 
-        const { isValid } = this.state;
+        const { isValid,selected,correctOrder,showWarning } = this.state;
 
         return (
             <div className='insetContainer confirmingPhrase'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ onCancel }></div>
+                    <FormattedMessage id='CREATION.CREATE.CONFIRM.MNEMONIC.TITLE' />
                 </div>
                 <div className='greyModal'>
+                    <WarningComponent show={ showWarning } id="CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG" />
                     <div className='modalDesc'>
                         <FormattedMessage id='CONFIRMING_PHRASE' />
                     </div>
+                    <div className="wordList">
+                        {
+                            selected.map(v=><div className="word">{v.word}</div>)
+                        }
+                    </div>
                     { this.renderOptions() }
                     <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ onCancel }
-                            tabIndex={ 2 }
-                        />
+                        {/*<Button*/}
+                            {/*id='BUTTON.GO_BACK'*/}
+                            {/*type={ BUTTON_TYPE.DANGER }*/}
+                            {/*onClick={ onCancel }*/}
+                            {/*tabIndex={ 2 }*/}
+                        {/*/>*/}
                         <Button
                             id='BUTTON.CONFIRM'
                             isValid={ isValid }
-                            onClick={ () => isValid && onSubmit() }
+                            onClick={ () => isValid && this.onSubmit(selected,correctOrder) }
                             tabIndex={ 1 }
                         />
                     </div>

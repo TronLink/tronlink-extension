@@ -16,31 +16,35 @@ const ChoosingType = props => {
     } = props;
 
     return (
-        <div className='insetContainer mnemonicImport'>
+        <div className='insetContainer createOrImportWallet'>
             <div className='pageHeader'>
-                TronLink
+                <div className="back" onClick={ onCancel }></div>
+                <div className="logo1"></div>
+                <div className="logo2"></div>
             </div>
             <div className='greyModal'>
                 <div className='modalDesc hasBottomMargin'>
                     <FormattedMessage id='CHOOSING_TYPE' />
                 </div>
-                <WalletOption
-                    tabIndex={ 1 }
-                    className='hasBottomMargin'
-                    name='CHOOSING_TYPE.MNEMONIC'
-                    onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_MNEMONIC) }
-                />
-                <WalletOption
-                    tabIndex={ 2 }
-                    className='hasBottomMargin'
-                    name='CHOOSING_TYPE.PRIVATE_KEY'
-                    onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_PRIVATE_KEY) }
-                />
-                <Button
-                    id='BUTTON.GO_BACK'
-                    type={ BUTTON_TYPE.DANGER }
-                    onCLick={ onCancel }
-                />
+                <div className="walletOptions">
+                    <WalletOption
+                        tabIndex={ 1 }
+                        className='hasBottomMargin'
+                        name='CHOOSING_TYPE.MNEMONIC'
+                        onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_MNEMONIC) }
+                    />
+                    <WalletOption
+                        tabIndex={ 2 }
+                        className='hasBottomMargin'
+                        name='CHOOSING_TYPE.PRIVATE_KEY'
+                        onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_PRIVATE_KEY) }
+                    />
+                </div>
+                {/*<Button*/}
+                    {/*id='BUTTON.GO_BACK'*/}
+                    {/*type={ BUTTON_TYPE.DANGER }*/}
+                    {/*onClick={ onCancel }*/}
+                {/*/>*/}
             </div>
         </div>
     );

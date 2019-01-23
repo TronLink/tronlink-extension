@@ -5,22 +5,6 @@
     transition: all 200ms ease;
     cursor: pointer;
     position: relative;
-
-    span {
-        font-size: 13px;
-        line-height: 15px;
-        display: block;
-    }
-
-    span:first-of-type {
-        font-weight: 500;
-        color: #2196F3;
-    }
-
-    span:last-of-type {
-        margin-top: 5px;
-    }
-
     &:hover {
         box-shadow: 0px 1px 12px 0px rgba(0, 0, 0, 0.1);
     }

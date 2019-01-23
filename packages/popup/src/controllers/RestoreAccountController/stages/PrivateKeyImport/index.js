@@ -63,7 +63,8 @@ class PrivateKeyImport extends React.Component {
         return (
             <div className='insetContainer privateKeyImport'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ onCancel }></div>
+                    <FormattedMessage id="CREATION.RESTORE.PRIVATE_KEY.TITLE" />
                 </div>
                 <div className='greyModal'>
                     <div className='modalDesc hasBottomMargin'>
@@ -78,12 +79,12 @@ class PrivateKeyImport extends React.Component {
                         tabIndex={ 1 }
                     />
                     <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ onCancel }
-                            tabIndex={ 3 }
-                        />
+                        {/*<Button*/}
+                            {/*id='BUTTON.GO_BACK'*/}
+                            {/*type={ BUTTON_TYPE.DANGER }*/}
+                            {/*onClick={ onCancel }*/}
+                            {/*tabIndex={ 3 }*/}
+                        {/*/>*/}
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }

@@ -9,21 +9,24 @@ const onCreationSelect = () => PopupAPI.changeState(APP_STATE.CREATING);
 const onRestoreSelect = () => PopupAPI.changeState(APP_STATE.RESTORING);
 
 const WalletCreationController = () => (
-    <div className='insetContainer'>
+    <div className='insetContainer createOrImportWallet'>
         <div className='pageHeader'>
-            TronLink
+            <div className="logo1"></div>
+            <div className="logo2"></div>
         </div>
         <div className='greyModal'>
-            <FormattedMessage
-                id='CREATION'
-                children={ text => (
-                    <div className='modalDesc hasBottomMargin'>
-                        { text }
-                    </div>
-                ) }
-            />
-            <WalletOption tabIndex={ 1 } className='hasBottomMargin' name='CREATION.CREATE' onClick={ onCreationSelect } />
-            <WalletOption tabIndex={ 2 } name='CREATION.RESTORE' onClick={ onRestoreSelect } />
+            {/*<FormattedMessage*/}
+                {/*id='CREATION'*/}
+                {/*children={ text => (*/}
+                    {/*<div className='modalDesc hasBottomMargin'>*/}
+                        {/*{ text }*/}
+                    {/*</div>*/}
+                {/*) }*/}
+            {/*/>*/}
+            <div className="walletOptions">
+                <WalletOption tabIndex={ 1 } name='CREATION.CREATE' onClick={ onCreationSelect } />
+                <WalletOption tabIndex={ 2 } name='CREATION.RESTORE' onClick={ onRestoreSelect } />
+            </div>
         </div>
     </div>
 );

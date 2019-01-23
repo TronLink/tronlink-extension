@@ -60,7 +60,13 @@ class LoginController extends React.Component {
         return (
             <div className='insetContainer'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="pageHeaderLogoWrap">
+                        <div className="logo1"></div>
+                        <div className="logo2"></div>
+                    </div>
+                    <div className="pageHeaderText">
+                        <FormattedMessage id='LOGIN.PASSWORD.BACK' />
+                    </div>
                 </div>
                 { error ? (
                     <div className='errorModal hasBottomMargin'>
@@ -68,9 +74,8 @@ class LoginController extends React.Component {
                         <FormattedMessage className='modalBody' id={ error } />
                     </div>
                 ) : '' }
-                <div className='greyModal'>
+                <div className='greyModal loginModel'>
                     <Input
-                        icon='lock'
                         type='password'
                         className='hasBottomMargin'
                         placeholder='INPUT.PASSWORD'

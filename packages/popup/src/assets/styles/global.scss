@@ -12,7 +12,7 @@
 
 html, body, #root {
     height: 600px;
-    width: 420px;
+    width: 360px;
     font-family: 'Rubik', sans-serif;
     cursor: default;
     user-select: none;
@@ -29,10 +29,11 @@ html, body {
     display: flex;
     flex: 1;
     flex-direction: column;
-    background: url('../images/backgroundPattern.png');
-    background-repeat: repeat;
-    background-size: 200px;
-    background-position: center;
+    //background: url('../images/backgroundPattern.png');
+    //background-repeat: repeat;
+    //background-size: 200px;
+    //background-position: center;
+    background:#fff;
 }
 
 :focus {
@@ -43,18 +44,153 @@ html, body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 30px;
+    padding: 20px;
     align-items: center;
     justify-content: center;
-
+    &.createOrImportWallet,&.writingPhrase,&.confirmingPhrase,&.mnemonicImport,&.privateKeyImport{
+        justify-content: flex-start;
+        padding:0;
+        .pageHeader{
+            position: relative;
+            height: 56px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin:0;
+            .back{
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 40px;
+                height: 56px;
+                background-image: url('../images/new/icon-back.svg');
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+            .logo1{
+                width: 25px;
+                height: 25px;
+                background-image: url('../images/new/logo.svg');
+                background-repeat: no-repeat;
+                background-size:100% auto;
+            }
+            .logo2{
+                width: 73px;
+                height: 13px;
+                background-image: url('../images/new/logo2.svg');
+                background-repeat: no-repeat;
+                background-size:auto 100%;
+                margin-left: 10px;
+            }
+        }
+        .greyModal{
+            position: relative;
+            flex:1;
+            padding:24px;
+            display: flex;
+            flex-direction:column;
+            background-color: #F7F8FA;
+            .warning{
+                z-index:100;
+                position: absolute;
+                background: rgba(80,81,96,0.80);
+                border-radius: 2px;
+                color: #fff;
+                font-size: 14px;
+                top:50%;
+                left:50%;
+                padding:10px;
+                transform: translate(-50%,-50%);
+                transition:all 1s ease-in-out;
+                opacity:0;
+                display: none;
+                &.show{
+                    opacity:1;
+                    display: block;
+                }
+            }
+            .modalDesc {
+                font-size: 12px;
+                color:#888998;
+            }
+            & > .walletOptions{
+                flex:1;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                .walletOption{
+                    margin:0;
+                    flex:1;
+                    padding:24px 24px 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    .tip{
+                        font-size: 12px;
+                        margin-top: 10px;
+                        text-align: center;
+                    }
+                    .iconWrap{
+                        margin-bottom: 35px;
+                    }
+                    &:first-child{
+                        .iconWrap{
+                            width: 90px;
+                            height: 72px;
+                            background-image: url('../images/new/icon-create-account.png');
+                        }
+                    }
+                    &:last-child{
+                        margin-top: 16px;
+                        .iconWrap{
+                            width: 90px;
+                            height: 70px;
+                            background-image: url('../images/new/icon-import-account.png');
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &.writingPhrase,&.confirmingPhrase{
+        .greyModal{
+            background-color: #fff;
+        }
+    }
     .pageHeader {
         text-align: center;
         font-weight: 400;
-        font-size: 25px;
-        line-height: 25px;
-        margin-bottom: 20px;
-        color: #FFFFFF;
+        font-size: 18px;
+        color: #505160;
         width: 100%;
+        &LogoWrap{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .logo1{
+                width: 65px;
+                height: 65px;
+                background-image: url('../images/new/logo.svg');
+                background-repeat: no-repeat;
+            }
+            .logo2{
+                margin-top: 10px;
+                width: 100px;
+                height: 20px;
+                background-image: url('../images/new/logo2.svg');
+                background-repeat: no-repeat;
+            }
+        }
+        &Text{
+            height: 65px;
+            line-height: 65px;
+            font-size: 20px;
+            color: #515060;
+        }
     }
 
     .greyModal {
@@ -62,9 +198,54 @@ html, body {
         border-radius: 5px;
         padding: 25px;
         width: 100%;
-
+        ::-webkit-input-placeholder {
+             color: #C2C2D5;
+        }
         .modalDesc {
             font-size: 13px;
+        }
+        &.loginModel,&.registrationModel{
+            background: transparent;
+            padding:0;
+            input,button,.customInput{
+                height: 46px;
+                line-height: 46px;
+            }
+            .customInput{
+                background: #F7F8FA;
+                border-radius: 2px;
+                input{
+                    text-align: center;
+                }
+            }
+            .customButton{
+                background-color: #636ACC;
+                border-radius: 2px;
+            }
+        }
+        &.registrationModel{
+            .customInput{
+                background: #fff;
+                border-bottom:1px solid #F0F0F0;
+                border-radius: 2px;
+                input{
+                    text-align: left;
+                }
+            }
+            .passwordNotForgot{
+                margin-top: 20px;
+                font-size: 12px;
+                color: #888998;
+                letter-spacing: 0;
+                text-align:center;
+            }
+            .criteria{
+                background-color: #fff;
+                padding:4px 0;
+                .statusIcon{
+                    width: 20px;
+                }
+            }
         }
     }
 

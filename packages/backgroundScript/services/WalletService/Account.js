@@ -206,22 +206,22 @@ class Account {
             transactions.push(...newTransactions);
             return transactions;
         }else{
-            let hasMoreTransactions = true;
-            let offset = 0;
-            while(hasMoreTransactions) {
-                const newTransactions = (await NodeService.tronWeb.trx
-                    .getTransactionsRelated(this.address, 'all', 90, offset))
-                    .map(transaction => {
-                        transaction.offset = offset;
-                        return transaction;
-                    });
-
-                if(!newTransactions.length)
-                    hasMoreTransactions = false;
-                else offset += 90;
-
-                transactions.push(...newTransactions);
-            }
+            // let hasMoreTransactions = true;
+            // let offset = 0;
+            // while(hasMoreTransactions) {
+            //     const newTransactions = (await NodeService.tronWeb.trx
+            //         .getTransactionsRelated(this.address, 'all', 90, offset))
+            //         .map(transaction => {
+            //             transaction.offset = offset;
+            //             return transaction;
+            //         });
+            //
+            //     if(!newTransactions.length)
+            //         hasMoreTransactions = false;
+            //     else offset += 90;
+            //
+            //     transactions.push(...newTransactions);
+            // }
             return transactions;
         }
     }

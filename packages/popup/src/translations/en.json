@@ -42,6 +42,8 @@
 
     "PASSWORD_CRITERIA.HAS_LENGTH": "Contains at least <strong>eight</strong> characters",
     "PASSWORD_CRITERIA.HAS_SPECIAL": "Contains either a <strong>symbol</strong> or <strong>number</strong>",
+    "PASSWORD_CRITERIA.NO_REPEAT": "The two <strong>passwords</strong> you entered did not <strong>match</strong>",
+    "PASSWORD_TIP.NOT_FORGOT":"Keep your password in mind, you can't retrieve it if you forget it.",
 
     "INPUT.PASSWORD": "Password",
     "INPUT.REPEAT_PASSWORD": "Repeat password",
@@ -50,9 +52,16 @@
 
     "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
     "CREATION.CREATE.TITLE": "Create wallet",
+    "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "Confirm mnemonic phrase",
+    "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "Mnemonic error",
     "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
+    "CREATION.CREATE.TIP":"Recommend it to new users",
     "CREATION.RESTORE.TITLE": "Restore wallet",
     "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
+    "CREATION.RESTORE.TIP":"Recommended for users with existing Tron accounts",
+    "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
+    "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
+    "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Choose related to accounts",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "Mnemonic phrase",
@@ -180,5 +189,8 @@
 
     "ACCOUNTS.EXPORT": "Export Account",
     "ACCOUNTS.EXPORT.MNEMONIC": "Mnemonic Phrase",
-    "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key"
+    "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key",
+
+
+    "LOGIN.PASSWORD.BACK":"Welcome to back!"
 }

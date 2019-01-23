@@ -22,7 +22,8 @@ class CreateAccountController extends React.Component {
     };
 
     state = {
-        stage: CREATION_STAGE.SETTING_NAME,
+        //stage: CREATION_STAGE.SETTING_NAME,
+        stage: CREATION_STAGE.WRITING_PHRASE,
         walletName: false
     };
 

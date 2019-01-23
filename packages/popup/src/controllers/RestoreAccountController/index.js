@@ -41,7 +41,7 @@ class RestoreAccountController extends React.Component {
             stage,
             walletName
         } = this.state;
-
+        console.log(stage);
         switch(stage) {
             case RESTORATION_STAGE.SETTING_NAME:
                 return (

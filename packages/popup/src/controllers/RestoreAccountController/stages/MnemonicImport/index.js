@@ -126,7 +126,8 @@ class MnemonicImport extends React.Component {
         return (
             <div className='insetContainer mnemonicImport'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }></div>
+                    <FormattedMessage id="CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE" />
                 </div>
                 <div className='greyModal'>
                     <div className='modalDesc hasBottomMargin'>
@@ -157,13 +158,13 @@ class MnemonicImport extends React.Component {
                         }) }
                     </div>
                     <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }
-                            tabIndex={ addresses.length + 2 }
-                            isLoading={ isLoading }
-                        />
+                        {/*<Button*/}
+                            {/*id='BUTTON.GO_BACK'*/}
+                            {/*type={ BUTTON_TYPE.DANGER }*/}
+                            {/*onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }*/}
+                            {/*tabIndex={ addresses.length + 2 }*/}
+                            {/*isLoading={ isLoading }*/}
+                        {/*/>*/}
                         <Button
                             id='BUTTON.IMPORT'
                             isValid={ isValid }
@@ -189,7 +190,8 @@ class MnemonicImport extends React.Component {
         return (
             <div className='insetContainer mnemonicImport'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ onCancel }></div>
+                    <FormattedMessage id="CREATION.RESTORE.MNEMONIC.TITLE" />
                 </div>
                 <div className='greyModal'>
                     <div className='modalDesc hasBottomMargin'>
@@ -205,13 +207,13 @@ class MnemonicImport extends React.Component {
                         disabled={ isLoading }
                     />
                     <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ onCancel }
-                            tabIndex={ 3 }
-                            isLoading={ isLoading }
-                        />
+                        {/*<Button*/}
+                            {/*id='BUTTON.GO_BACK'*/}
+                            {/*type={ BUTTON_TYPE.DANGER }*/}
+                            {/*onClick={ onCancel }*/}
+                            {/*tabIndex={ 3 }*/}
+                            {/*isLoading={ isLoading }*/}
+                        {/*/>*/}
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }
