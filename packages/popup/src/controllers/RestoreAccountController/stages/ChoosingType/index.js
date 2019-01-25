@@ -16,35 +16,18 @@ const ChoosingType = props => {
     } = props;
 
     return (
-        <div className='insetContainer createOrImportWallet'>
+        <div className='insetContainer choosingType'>
             <div className='pageHeader'>
                 <div className="back" onClick={ onCancel }></div>
-                <div className="logo1"></div>
-                <div className="logo2"></div>
+                <FormattedMessage id="CHOOSING_TYPE.TITLE" />
             </div>
             <div className='greyModal'>
-                <div className='modalDesc hasBottomMargin'>
-                    <FormattedMessage id='CHOOSING_TYPE' />
+                <div className="option" onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_MNEMONIC) }>
+                    <FormattedMessage id="CHOOSING_TYPE.MNEMONIC.TITLE" />
                 </div>
-                <div className="walletOptions">
-                    <WalletOption
-                        tabIndex={ 1 }
-                        className='hasBottomMargin'
-                        name='CHOOSING_TYPE.MNEMONIC'
-                        onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_MNEMONIC) }
-                    />
-                    <WalletOption
-                        tabIndex={ 2 }
-                        className='hasBottomMargin'
-                        name='CHOOSING_TYPE.PRIVATE_KEY'
-                        onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_PRIVATE_KEY) }
-                    />
+                <div className="option" onClick={ () => onSubmit(RESTORATION_STAGE.IMPORT_PRIVATE_KEY) }>
+                    <FormattedMessage id="CHOOSING_TYPE.PRIVATE_KEY.TITLE" />
                 </div>
-                {/*<Button*/}
-                    {/*id='BUTTON.GO_BACK'*/}
-                    {/*type={ BUTTON_TYPE.DANGER }*/}
-                    {/*onClick={ onCancel }*/}
-                {/*/>*/}
             </div>
         </div>
     );

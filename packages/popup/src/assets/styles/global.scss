@@ -47,7 +47,19 @@ html, body {
     padding: 20px;
     align-items: center;
     justify-content: center;
-    &.createOrImportWallet,&.writingPhrase,&.confirmingPhrase,&.mnemonicImport,&.privateKeyImport{
+    position: relative;
+    .back{
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 40px;
+        height: 56px;
+        background-image: url('../images/new/icon-back.svg');
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+    &.createOrImportWallet,&.writingPhrase,&.confirmingPhrase,&.mnemonicImport,&.privateKeyImport,&.choosingType{
         justify-content: flex-start;
         padding:0;
         .pageHeader{
@@ -60,15 +72,7 @@ html, body {
             justify-content: center;
             margin:0;
             .back{
-                cursor: pointer;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 40px;
-                height: 56px;
-                background-image: url('../images/new/icon-back.svg');
-                background-repeat: no-repeat;
-                background-position: center center;
+                @extend .back;
             }
             .logo1{
                 width: 25px;
@@ -156,9 +160,28 @@ html, body {
             }
         }
     }
-    &.writingPhrase,&.confirmingPhrase{
+    &.writingPhrase,&.confirmingPhrase,&.choosingType,&.mnemonicImport{ .greyModal{background-color: #fff;} }
+    &.choosingType{
         .greyModal{
-            background-color: #fff;
+            padding:0 0 0 24px;
+            .option{
+                display: flex;
+                justify-content: space-between;
+                height: 52px;
+                line-height: 52px;
+                color: #515060;
+                cursor: pointer;
+                font-size: 16px;
+                border-bottom: 1px solid #EFEFEF;
+                &:after{
+                    width: 40px;
+                    height: 52px;
+                    content: '';
+                    background-image: url('../images/new/icon-enter.svg');
+                    background-repeat: no-repeat;
+                    background-position:center;
+                }
+            }
         }
     }
     .pageHeader {
@@ -192,7 +215,6 @@ html, body {
             color: #515060;
         }
     }
-
     .greyModal {
         background: #EEEEEE;
         border-radius: 5px;
@@ -218,7 +240,7 @@ html, body {
                     text-align: center;
                 }
             }
-            .customButton{
+            .customButton.primary{
                 background-color: #636ACC;
                 border-radius: 2px;
             }

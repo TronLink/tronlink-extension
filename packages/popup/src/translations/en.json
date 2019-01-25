@@ -64,7 +64,9 @@
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Choose related to accounts",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
+    "CHOOSING_TYPE.TITLE":"Choosing type",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "Mnemonic phrase",
+    "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "All your accounts have been imported.",
     "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "Private key",
     "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
@@ -192,5 +194,7 @@
     "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key",
 
 
-    "LOGIN.PASSWORD.BACK":"Welcome to back!"
+    "LOGIN.PASSWORD.BACK":"Welcome to back!",
+
+    "COMMON.BALANCE":"Balance"
 }

@@ -137,7 +137,13 @@ class AccountsPage extends React.Component {
             </div>
         );
     }
-
+    renderAccountInfo(){
+        const { accounts } = this.props;
+        console.log(accounts);
+        return (
+            <div className="accountInfo"></div>
+        )
+    }
     renderAccounts() {
         const {
             accounts,
@@ -191,6 +197,7 @@ class AccountsPage extends React.Component {
     render() {
         return (
             <div className='accountsPage'>
+                { this.renderAccountInfo() }
                 { this.renderOptions() }
                 <div className='accountsList'>
                     <CustomScroll heightRelativeToParent='100%'>

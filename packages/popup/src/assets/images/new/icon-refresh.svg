@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_refresh_24px</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M13.65,2.35 C12.2,0.9 10.21,0 8,0 C3.58,0 0.01,3.58 0.01,8 C0.01,12.42 3.58,16 8,16 C11.73,16 14.84,13.45 15.73,10 L13.65,10 C12.83,12.33 10.61,14 8,14 C4.69,14 2,11.31 2,8 C2,4.69 4.69,2 8,2 C9.66,2 11.14,2.69 12.22,3.78 L9,7 L16,7 L16,0 L13.65,2.35 Z" id="path-1"></path>
+    </defs>
+    <g id="方案1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.1首页-账户-方案二" transform="translate(-18.000000, -21.000000)">
+            <g id="导航" transform="translate(18.000000, 15.000000)">
+                <g id="ic_refresh_24px" transform="translate(0.000000, 6.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Shape" fill="#4E5383" fill-rule="nonzero" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

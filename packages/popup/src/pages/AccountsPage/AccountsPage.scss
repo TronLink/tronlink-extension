@@ -2,9 +2,14 @@
     flex: 1;
     flex-direction: column;
     overflow: hidden;
-    padding: 20px;
     display: flex;
-
+    .accountInfo{
+        position: relative;
+        width: 360px;
+        height: 150px;
+        background-image: url('../../assets/images/new/bg.png');
+        display: flex;
+    }
     .accountOptions {
         display: flex;
         flex-direction: row;

@@ -1,9 +1,8 @@
 import React from 'react';
-import Button from 'components/Button';
-import WarningComponent from 'components/WarningComponent';
+import Button from '@tronlink/popup/src/components/Button';
+import WarningComponent from '@tronlink/popup/src/components/WarningComponent';
 
 import { FormattedMessage } from 'react-intl';
-import { BUTTON_TYPE } from '@tronlink/lib/constants';
 
 import './ConfirmingPhrase.scss';
 
@@ -116,12 +115,6 @@ class ConfirmingPhrase extends React.Component {
                     </div>
                     { this.renderOptions() }
                     <div className='buttonRow'>
-                        {/*<Button*/}
-                            {/*id='BUTTON.GO_BACK'*/}
-                            {/*type={ BUTTON_TYPE.DANGER }*/}
-                            {/*onClick={ onCancel }*/}
-                            {/*tabIndex={ 2 }*/}
-                        {/*/>*/}
                         <Button
                             id='BUTTON.CONFIRM'
                             isValid={ isValid }

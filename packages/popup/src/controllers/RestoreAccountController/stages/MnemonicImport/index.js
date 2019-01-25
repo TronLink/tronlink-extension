@@ -1,15 +1,15 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 import Utils from '@tronlink/lib/utils';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { BUTTON_TYPE } from '@tronlink/lib/constants';
+import NodeService from '@tronlink/backgroundScript/services/NodeService';
+import WarningComponent from '@tronlink/popup/src/components/WarningComponent';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import './MnemonicImport.scss';
-
+NodeService.init();
 const IMPORT_STAGE = {
     ENTERING_MNEMONIC: 0,
     SELECTING_ACCOUNTS: 1
@@ -22,7 +22,8 @@ class MnemonicImport extends React.Component {
         subStage: IMPORT_STAGE.ENTERING_MNEMONIC,
         mnemonic: '',
         isValid: false,
-        isLoading: false
+        isLoading: false,
+        showWarning:false
     };
 
     constructor() {
@@ -41,16 +42,21 @@ class MnemonicImport extends React.Component {
         });
     }
 
-    changeStage(newStage) {
-        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS)
-            this.generateAccounts();
+    async changeStage(newStage) {
+        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS){
+            const res = await this.generateAccounts();
+            if(!res){
+                return false;
+            }
+        }
+
 
         this.setState({
             subStage: newStage
         });
     }
 
-    generateAccounts() {
+    async generateAccounts() {
         // Move this to Utils (generateXAccounts)
 
         this.setState({
@@ -59,21 +65,37 @@ class MnemonicImport extends React.Component {
 
         const { mnemonic } = this.state;
         const addresses = [];
-
         for(let i = 0; i < 5; i++) {
-            const account = Utils.getAccountAtIndex(
+
+            let account = Utils.getAccountAtIndex(
                 mnemonic,
                 i
             );
-
-            if(!(account.address in this.props.accounts))
+            if(!(account.address in this.props.accounts)){
+                let { balance } = await NodeService.tronWeb.trx.getAccount(account.address);
+                balance = balance ? balance:0;
+                account.balance = balance;
                 addresses.push(account);
-        }
+            }
 
-        this.setState({
-            addresses,
-            isLoading: false
-        });
+        }
+        if(addresses.length===0){
+            this.setState({
+                isLoading: false,
+                showWarning:true
+            },()=>{
+                setTimeout(()=>{
+                    this.setState({showWarning:false})
+                },3000);
+            });
+            return false;
+        }else{
+            this.setState({
+                addresses,
+                isLoading: false
+            });
+            return true;
+        }
     }
 
     toggleAddress(index) {
@@ -134,7 +156,7 @@ class MnemonicImport extends React.Component {
                         <FormattedMessage id='MNEMONIC_IMPORT.SELECTION' />
                     </div>
                     <div className='addressList'>
-                        { addresses.map(({ address }, index) => {
+                        { addresses.map(({ address,balance }, index) => {
                             const isSelected = selected.includes(index);
                             const icon = isSelected ? 'dot-circle' : 'circle';
                             const className = `addressOption ${ isSelected ? 'isSelected' : '' } ${ isLoading ? 'isLoading' : '' }`;
@@ -146,12 +168,10 @@ class MnemonicImport extends React.Component {
                                     tabIndex={ index + 1 }
                                     onClick={ () => !isLoading && this.toggleAddress(index) }
                                 >
-                                    <FontAwesomeIcon
-                                        icon={ icon }
-                                        className={ `checkbox ${ isSelected ? 'isSelected' : '' }` }
-                                    />
-                                    <span className='address mono'>
-                                        { address }
+                                    <div className={ `checkbox ${ isSelected ? 'isSelected' : '' }` }>&nbsp;</div>
+                                    <span className="address">
+                                        <span className="mono">{ `${address.substr(0,10)}...${address.substr(-10)}` }</span>
+                                        <span><FormattedMessage id="COMMON.BALANCE" /> <FormattedMessage id="ACCOUNT.BALANCE" values={{amount:balance/1000000}} /></span>
                                     </span>
                                 </div>
                             );
@@ -184,7 +204,8 @@ class MnemonicImport extends React.Component {
         const {
             mnemonic,
             isValid,
-            isLoading
+            isLoading,
+            showWarning
         } = this.state;
 
         return (
@@ -194,6 +215,7 @@ class MnemonicImport extends React.Component {
                     <FormattedMessage id="CREATION.RESTORE.MNEMONIC.TITLE" />
                 </div>
                 <div className='greyModal'>
+                    <WarningComponent show={ showWarning } id="CHOOSING_TYPE.MNEMONIC.NO_OPTIONS" />
                     <div className='modalDesc hasBottomMargin'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>

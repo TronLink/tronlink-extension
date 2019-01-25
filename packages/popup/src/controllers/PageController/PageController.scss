@@ -5,7 +5,50 @@
     display: flex;
     flex-direction: column;
     background: #F2F2F2;
-
+    .dropList{
+        cursor: pointer;
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity:0;
+        top: 40px;
+        left: 0;
+        z-index:100;
+        background: rgba(80,81,96,0.90);
+        border-radius: 4px;
+        transition: all ease-in-out .2s;
+        overflow:hidden;
+        .item{
+            display: flex;
+            flex-direction: row;
+            padding-left: 8px;
+            align-items: center;
+            height: 30px;
+            color: #fff;
+            cursor: pointer;
+            &:hover{
+                background-color: #888998;
+            }
+            .dot{
+                width: 12px;
+                height: 12px;
+                border-radius:100%;
+                margin-right: 10px;
+            }
+            &:first-child{
+                border-radius:4px 4px 0 0;
+            }
+            &:last-child{
+                border-radius:0 0 4px 4px;
+            }
+            span:nth-child(2){
+                flex: 1;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+    }
     .pageView {
         flex: 1;
         position: relative;

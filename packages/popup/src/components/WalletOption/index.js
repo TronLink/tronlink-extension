@@ -19,10 +19,7 @@ const WalletOption = props => {
         <div className={ `walletOption ${ className }`} >
             <div className="iconWrap"></div>
             <Button id={titleKey} onClick={ onClick } />
-            {
-                name.match(/^CREATION\./) ?
-                    <div className="tip"><FormattedMessage id={descKey}/></div>:null
-            }
+            <div className="tip"><FormattedMessage id={descKey}/></div>
         </div>
     );
 };
