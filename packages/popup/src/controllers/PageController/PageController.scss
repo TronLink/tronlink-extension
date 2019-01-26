@@ -18,23 +18,71 @@
         border-radius: 4px;
         transition: all ease-in-out .2s;
         overflow:hidden;
+        &.accountList{
+            top: 30px;
+        }
+        &.menuList{
+            transform: translateX(-100%);
+            top: 30px;
+            left:100%;
+        }
         .item{
             display: flex;
             flex-direction: row;
-            padding-left: 8px;
+            padding-right:8px;
             align-items: center;
             height: 30px;
             color: #fff;
+            font-size: 12px;
             cursor: pointer;
             &:hover{
                 background-color: #888998;
+            }
+            span{
+                &:nth-child(2){
+                    flex:1;
+                }
+                &.selected{
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 100%;
+                    background: #DB705C;
+                }
             }
             .dot{
                 width: 12px;
                 height: 12px;
                 border-radius:100%;
-                margin-right: 10px;
+                margin:0 10px;
             }
+            .icon{
+                width: 30px;
+                height: 30px;
+                background-position: center;
+                background-repeat: no-repeat;
+                &.account{
+                    background-image: url('../../assets/images/new/icon-user.svg');
+                }
+                &.create{
+                    background-image: url('../../assets/images/new/icon-create.svg');
+                }
+                &.import{
+                    background-image: url('../../assets/images/new/icon-import.svg');
+                }
+                &.backup{
+                    background-image: url('../../assets/images/new/icon-backup.svg');
+                }
+                &.whitelist{
+                    background-image: url('../../assets/images/new/icon-white-list.svg');
+                }
+                &.delete{
+                    background-image: url('../../assets/images/new/icon-delete.svg');
+                }
+                &.accountInfo{
+                    background-image: url('../../assets/images/new/icon-account-info.svg');
+                }
+            }
+
             &:first-child{
                 border-radius:4px 4px 0 0;
             }

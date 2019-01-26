@@ -24,8 +24,10 @@ class Account {
         this.updatingTransactions = false;
 
         this.energy = 0;
+        this.energyUsed = 0;
         this.balance = 0;
-        this.bandwidth = 0;
+        this.netUsed = 0;
+        this.netLimit = 5000;
         this.lastUpdated = 0;
 
         this.ignoredTransactions = [];
@@ -131,8 +133,10 @@ class Account {
             balance,
             transactions,
             tokens,
-            bandwidth,
+            netLimit,
+            netUsed,
             energy,
+            energyUsed,
             lastUpdated
         } = StorageService.getAccount(this.address);
 
@@ -157,8 +161,10 @@ class Account {
         this.balance = balance;
         this.transactions = transactions;
         this.tokens = tokens;
-        this.bandwidth = bandwidth;
         this.energy = energy;
+        this.energyUsed = energyUsed;
+        this.netLimit = netLimit;
+        this.netUsed = netUsed;
         this.lastUpdated = lastUpdated;
     }
 
@@ -243,7 +249,8 @@ class Account {
         this.balance = 0;
         this.energy = 0;
         this.bandwidth = 0;
-
+        this.energyUsed = 0;
+        this.bandwidthUsed = 0;
         this.transactions = {};
         this.ignoredTransactions = [];
 
@@ -351,15 +358,16 @@ class Account {
     async updateBalance() {
         const { address } = this;
 
-        await NodeService.tronWeb.trx.getBandwidth(address)
-            .then((bandwidth = 0) => (
-                this.bandwidth = bandwidth
-            ));
+        // await NodeService.tronWeb.trx.getBandwidth(address)
+        //     .then((bandwidth = 0) => (
+        //         this.bandwidth = bandwidth
+        //     ));
 
-        await NodeService.tronWeb.trx.getAccountResources(address)
-            .then(({ EnergyLimit = 0 }) => (
-                this.energy = EnergyLimit
-            ));
+        const { EnergyLimit=0,EnergyUsed=0,freeNetLimit,NetLimit=0,freeNetUsed=0,NetUsed=0} = await NodeService.tronWeb.trx.getAccountResources(address);
+        this.energy = EnergyLimit;
+        this.energyUsed = EnergyUsed;
+        this.netLimit = freeNetLimit + NetLimit;
+        this.netUsed =  NetUsed + freeNetUsed;
     }
 
     async updateTransactions() {

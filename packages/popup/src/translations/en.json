@@ -93,6 +93,8 @@
     "ACCOUNT.NO_BANDWIDTH": "No Bandwidth",
     "ACCOUNT.ENERGY": "{amount, number} Energy",
     "ACCOUNT.NO_ENERGY": "No Energy",
+    "ACCOUNT.RECEIVE":"Receive",
+    "ACCOUNT.SEND":"Send",
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -196,5 +198,10 @@
 
     "LOGIN.PASSWORD.BACK":"Welcome to back!",
 
-    "COMMON.BALANCE":"Balance"
+    "COMMON.BALANCE":"Balance",
+
+    "MENU.BACKUP":"Back up",
+    "MENU.ACCOUNT_DETAIL":"Account detail",
+    "MENU.WHITE_LIST":"White list manage",
+    "MENU.DELETE_WALLET":"Delete wallet"
 }

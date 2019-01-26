@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 import CustomScroll from 'react-custom-scroll';
 import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -28,6 +28,10 @@ class AccountsPage extends React.Component {
         this.onClick = this.onClick.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
+        this.state = {
+            showAccountList:false,
+            showMenuList:false
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -137,11 +141,83 @@ class AccountsPage extends React.Component {
             </div>
         );
     }
-    renderAccountInfo(){
-        const { accounts } = this.props;
-        console.log(accounts);
+    renderAccountInfo(accounts,prices){
+        const {showAccountList,showMenuList} = this.state;
+
+        const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
+        const p = (prices.priceList[prices.selected] * accounts.selected.balance / Math.pow(10,6)).toFixed(2);
         return (
-            <div className="accountInfo"></div>
+            <div className="accountInfo">
+                <div className="row1">
+                    <div className="menu" onClick={()=>{this.setState({showMenuList:!showMenuList,showAccountList:false})}}>
+                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
+                            <div onClick={()=>{ }} className="item">
+                                <span className="icon backup"></span>
+                                <FormattedMessage id="MENU.BACKUP" />
+                            </div>
+                            <div onClick={()=>{ }} className="item">
+                                <span className="icon accountInfo"></span>
+                                <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
+                            </div>
+                            <div className="item" onClick={ () => {} }>
+                                <span className="icon whitelist"></span>
+                                <FormattedMessage id="MENU.WHITE_LIST" />
+                            </div>
+                            <div className="item" onClick={ () => {} }>
+                                <span className="icon delete"></span>
+                                <FormattedMessage id="MENU.DELETE_WALLET" />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="accountWrap" onClick={()=>{this.setState({showAccountList:!showAccountList,showMenuList:false})}}>
+                        <span>{accounts.selected.name}</span>
+                        <div className="dropList accountList" style={showAccountList?{width:'100%',height:30*(addresses.length+2),opacity:1}:{}}>
+                            {
+                                addresses.map(
+                                    v => (
+                                        <div onClick={()=>{ this.onClick(v.address) }} className="item" key={v.address}>
+                                            <span className="icon account"></span>
+                                            <span>{v.name}</span>
+                                            {
+                                                v.address === accounts.selected.address
+                                                    ?
+                                                    <span className="selected"></span>
+                                                    :
+                                                    null
+                                            }
+                                        </div>
+                                    )
+                                )
+                            }
+                            <div className="item" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
+                                <span className="icon create"></span>
+                                <FormattedMessage id="CREATION.CREATE.TITLE" />
+                            </div>
+                            <div className="item" onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
+                                <span className="icon import"></span>
+                                <FormattedMessage id="CREATION.RESTORE.TITLE" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row2">
+                    <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
+                    <span className="copy"></span>
+                </div>
+                <div className="row3">
+                    ≈ {p} {prices.selected}
+                </div>
+                <div className="row4">
+                    <div>
+                        <span></span>
+                        <FormattedMessage id="ACCOUNT.RECEIVE" />
+                    </div>
+                    <div>
+                        <span></span>
+                        <FormattedMessage id="ACCOUNT.SEND" />
+                    </div>
+                </div>
+            </div>
         )
     }
     renderAccounts() {
@@ -193,15 +269,44 @@ class AccountsPage extends React.Component {
             </div>
         ));
     }
+    renderResource(account){
+        console.log(account);
+        return (
+            <div className="resource">
+                <div className="cell">
+                    <div className="icon icon-bandwidth"></div>
+                    <div className="info">
+                        <FormattedMessage id='CONFIRMATIONS.RESOURCE.BANDWIDTH' />
+                        <span>{account.netUsed}/{account.netLimit}</span>
+                    </div>
+                </div>
+                <div className="cell">
+                    <div className="icon icon-energy"></div>
+                    <div className="info">
+                        <FormattedMessage id='TRANSACTIONS.ENERGY' />
+                        <span>{account.energyUsed}/{account.energy}</span>
+                    </div>
+                </div>
+            </div>
+        )
 
+    }
+    renderTokens(){
+        return (
+            <div className="tokens"></div>
+        )
+    }
     render() {
+        const { accounts,prices } = this.props;
+        console.log(accounts);
         return (
             <div className='accountsPage'>
-                { this.renderAccountInfo() }
-                { this.renderOptions() }
-                <div className='accountsList'>
-                    <CustomScroll heightRelativeToParent='100%'>
-                        { this.renderAccounts() }
+                { this.renderAccountInfo(accounts,prices) }
+                {/*{ this.renderOptions() }*/}
+                <div class="listWrap">
+                    { this.renderResource(accounts.accounts[accounts.selected.address]) }
+                    <CustomScroll>
+                        { this.renderTokens() }
                     </CustomScroll>
                 </div>
             </div>
@@ -211,6 +316,7 @@ class AccountsPage extends React.Component {
 
 export default injectIntl(
     connect(state => ({
-        accounts: state.accounts
+        accounts: state.accounts,
+        prices: state.app.prices
     }))(AccountsPage)
 );

@@ -70,3 +70,4 @@ export const CONFIRMATION_TYPE = {
     STRING: 0,
     TRANSACTION: 1
 };
+

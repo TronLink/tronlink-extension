@@ -564,8 +564,10 @@ class Wallet extends EventEmitter {
             accounts[ address ] = {
                 name: account.name,
                 balance: account.balance,
-                bandwidth: account.bandwidth,
+                energyUsed:account.energyUsed,
                 energy: account.energy,
+                netUsed:account.netUsed,
+                netLimit:account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length
             };
 

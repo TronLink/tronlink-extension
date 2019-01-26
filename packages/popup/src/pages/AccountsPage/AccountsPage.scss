@@ -3,12 +3,108 @@
     flex-direction: column;
     overflow: hidden;
     display: flex;
+    background-color: #F7F8FA;
     .accountInfo{
+        font-size: 14px;
         position: relative;
         width: 360px;
         height: 150px;
         background-image: url('../../assets/images/new/bg.png');
         display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #fff;
+        .row1{
+            width: 100%;
+            height: 20px;
+            margin-top: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            .menu{
+                cursor: pointer;
+                position:absolute;
+                top: 3px;
+                right: 20px;
+                width: 18px;
+                height: 13px;
+                background-image: url('../../assets/images/new/icon-more.svg');
+            }
+            .accountWrap{
+                position: relative;
+                width: 140px;
+                height: 25px;
+                line-height: 25px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                &:after{
+                    margin-left: 8px;
+                    content:'';
+                    width: 0;
+                    height: 0;
+                    border: 4px solid transparent;
+                    border-top-color: #fff;
+                }
+            }
+        }
+        .row2{
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            margin-top: 14px;
+            height: 25px;
+            .copy{
+                width: 13px;
+                height: 13px;
+                cursor: pointer;
+                margin-left: 6px;
+                background-image: url('../../assets/images/new/icon-copy.svg');
+            }
+        }
+        .row3{
+            margin-top: 8px;
+            color: rgba(255,255,255,0.80);
+        }
+        .row4{
+            width: 320px;
+            height: 38px;
+            border-top:1px solid rgba(247,248,250,0.30);
+            margin-top: 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            & > div{
+                cursor: pointer;
+                flex:1;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                span:last-child{
+                    margin-left: 6px;
+                }
+                &:first-child{
+                    border-right:1px solid rgba(247,248,250,0.30);
+                    span:first-child{
+                        width: 14px;
+                        height: 14px;
+                        background-image: url('../../assets/images/new/icon-receive.svg');
+                    }
+                }
+                &:last-child{
+                    span:first-child{
+                        width: 16px;
+                        height: 14px;
+                        background-image: url('../../assets/images/new/icon-transfer.svg');
+                    }
+                }
+
+            }
+        }
     }
     .accountOptions {
         display: flex;
@@ -105,5 +201,54 @@
                 margin-right: -3px;
             }
         }
+    }
+    .listWrap{
+        flex:1;
+        display: flex;
+        flex-direction: column;
+        padding:12px 20px 0;
+        .resource{
+            display: flex;
+            flex-direction: row;
+            .cell{
+                border-radius: 2px;
+                flex:1;
+                padding:6px 14px;
+                background-color: #fff;
+                display: flex;
+                flex-direction: row;
+                .icon{
+                    width: 24px;
+                    height: 24px;
+                    &.icon-energy{
+                        background-image: url('../../assets/images/new/icon-energy.svg');
+                    }
+                    &.icon-bandwidth{
+                        background-image: url('../../assets/images/new/icon-bandwidth.svg');
+                    }
+                }
+                .info{
+                    margin-left: 14px;
+                    display: flex;
+                    flex-direction: column;
+                    & > span{
+                        &:first-child {
+                            font-size: 12px;
+                            color: #888998;
+                        }
+                        &:last-child {
+                            color: #505160;
+                        }
+                    }
+                }
+                &:first-child{
+
+                }
+                &:last-child{
+                    margin-left: 12px;
+                }
+            }
+        }
+        &>div:last-child{flex:1}
     }
 }
