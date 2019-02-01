@@ -128,5 +128,9 @@ export default {
 
     selectCurrency(currency) {
         this.duplex.send('selectCurrency', currency, false);
+    },
+
+    selectTokenId(tokenId) {
+        this.duplex.send('selectTokenId', tokenId, false);
     }
 };

@@ -2,7 +2,7 @@ import extensionizer from 'extensionizer';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-
+import axios from "axios";
 const logger = new Logger('StorageService');
 
 const StorageService = {
@@ -38,7 +38,7 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-
+    selectedTokenId:'_',
     ready: false,
     password: false,
 
@@ -179,6 +179,12 @@ const StorageService = {
         this.save('transactions', 'accounts');
     },
 
+    selectTokenId(tokenId) {
+        logger.info('Saving tokenId', tokenId);
+        this.selectedTokenId = tokenId;
+        this.save('selectedTokenId');
+    },
+
     migrate() {
         try {
             const storage = localStorage.getItem('TronLink_WALLET');
@@ -292,17 +298,45 @@ const StorageService = {
     },
 
     async cacheToken(tokenID) {
-        const {
-            name,
-            abbr,
-            precision: decimals = 0
-        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
 
-        this.tokenCache[ tokenID ] = {
-            name,
-            abbr,
-            decimals
-        };
+        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            if(!tokenID.match(/^T/)){
+                const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
+                const {
+                    name,
+                    abbr,
+                    precision: decimals = 0,
+                    imgUrl=false
+                } = data.data[0];
+                this.tokenCache[ tokenID ] = {
+                    name,
+                    abbr,
+                    decimals,
+                    imgUrl
+                };
+            }else{
+                const {data:{trc20_tokens:[{icon_url:imgUrl,decimals,name,symbol:abbr}]}} = await axios.get('https://apilist.tronscan.org/api/token_trc20',{params:{contract:tokenID}});
+                this.tokenCache[ tokenID ] = {
+                    name,
+                    abbr,
+                    decimals,
+                    imgUrl
+                };
+            }
+
+        }else{
+            const {
+                name,
+                abbr,
+                precision: decimals = 0
+            } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+            this.tokenCache[ tokenID ] = {
+                name,
+                abbr,
+                decimals
+            };
+        }
+
 
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
 

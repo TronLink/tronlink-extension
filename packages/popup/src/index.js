@@ -24,7 +24,8 @@ import {
 
 import {
     setAccount,
-    setAccounts
+    setAccounts,
+    setTokenId
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -130,6 +131,7 @@ export const app = {
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
+
         logger.info('Set application state');
     },
 
@@ -165,6 +167,11 @@ export const app = {
         this.duplex.on('setCurrency', currency => this.store.dispatch(
             setCurrency(currency)
         ));
+
+        this.duplex.on('setTokenId', tokenId => this.store.dispatch(
+            setTokenId(tokenId)
+        ));
+
     },
 
     render() {

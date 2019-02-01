@@ -94,7 +94,16 @@
     "ACCOUNT.ENERGY": "{amount, number} Energy",
     "ACCOUNT.NO_ENERGY": "No Energy",
     "ACCOUNT.RECEIVE":"Receive",
+    "ACCOUNT.RECEIVE.DESC":"This address supports transferring to TRX and its token",
+    "ACCOUNT.RECEIVE.BUTTON":"Copy address",
     "ACCOUNT.SEND":"Send",
+    "ACCOUNT.ALL":"All",
+    "ACCOUNT.SEND.PAY_ACCOUNT":"Payment Account",
+    "ACCOUNT.SEND.RECEIVE_ADDRESS":"Receive Address",
+    "ACCOUNT.SEND.CHOOSE_TOKEN":"Choose Token",
+    "ACCOUNT.SEND.TRANSFER_AMOUNT":"Transfer Amount",
+
+
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",

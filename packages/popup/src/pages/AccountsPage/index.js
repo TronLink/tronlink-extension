@@ -1,9 +1,10 @@
 import React from 'react';
+
 import Button from '@tronlink/popup/src/components/Button';
 import CustomScroll from 'react-custom-scroll';
 import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-
+import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
 
@@ -18,6 +19,10 @@ import {
 } from '@tronlink/lib/constants';
 
 import './AccountsPage.scss';
+
+const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
+const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
+
 
 const ReactSwal = withReactContent(swal);
 
@@ -143,7 +148,6 @@ class AccountsPage extends React.Component {
     }
     renderAccountInfo(accounts,prices){
         const {showAccountList,showMenuList} = this.state;
-
         const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
         const p = (prices.priceList[prices.selected] * accounts.selected.balance / Math.pow(10,6)).toFixed(2);
         return (
@@ -151,7 +155,7 @@ class AccountsPage extends React.Component {
                 <div className="row1">
                     <div className="menu" onClick={()=>{this.setState({showMenuList:!showMenuList,showAccountList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
-                            <div onClick={()=>{ }} className="item">
+                            <div onClick={ this.onExport } className="item">
                                 <span className="icon backup"></span>
                                 <FormattedMessage id="MENU.BACKUP" />
                             </div>
@@ -208,11 +212,11 @@ class AccountsPage extends React.Component {
                     ≈ {p} {prices.selected}
                 </div>
                 <div className="row4">
-                    <div>
+                    <div onClick={ () => PopupAPI.changeState(APP_STATE.RECEIVE) }>
                         <span></span>
                         <FormattedMessage id="ACCOUNT.RECEIVE" />
                     </div>
-                    <div>
+                    <div onClick={ () => PopupAPI.changeState(APP_STATE.SEND) }>
                         <span></span>
                         <FormattedMessage id="ACCOUNT.SEND" />
                     </div>
@@ -270,8 +274,8 @@ class AccountsPage extends React.Component {
         ));
     }
     renderResource(account){
-        console.log(account);
         return (
+            account?
             <div className="resource">
                 <div className="cell">
                     <div className="icon icon-bandwidth"></div>
@@ -288,25 +292,59 @@ class AccountsPage extends React.Component {
                     </div>
                 </div>
             </div>
+                :
+            null
         )
 
     }
-    renderTokens(){
+    renderTokens(account,prices){
+        const trx_price = prices.priceList[prices.selected];
+        const trx = ["_",{name:"TRX",balance:account.balance,abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price}];
+        const tokens = {...account.tokens.basic,...account.tokens.smart};
         return (
-            <div className="tokens"></div>
+            <div className="tokens">
+                {
+                    [trx,...Object.entries(tokens).sort((a,b)=>b[1].balance/Math.pow(10,b[1].decimals) - a[1].balance/Math.pow(10,a[1].decimals))].map(([tokenId,token])=>{
+                        const BN = BigNumber.clone({
+                            DECIMAL_PLACES: token.decimals,
+                            ROUNDING_MODE: Math.min(8, token.decimals)
+                        });
+
+                        const amount = new BN(token.balance)
+                            .shiftedBy(-token.decimals)
+                            .toString();
+                            return (
+                                <div className="tokenItem" onClick={ ()=>{
+                                        if(tokenId.match(/^T/))
+                                            return;
+                                        PopupAPI.selectTokenId({id:tokenId,name:token.name,decimals:token.decimals});
+                                        PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+                                    }}>
+                                    <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
+                                    <div className="name">
+                                        {token.name}
+                                    </div>
+                                    <div className="worth">
+                                        <span>{amount}</span>
+                                        <span>≈ {tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*trx_price).toFixed(2)} {prices.selected}</span>
+                                    </div>
+                                </div>
+                            )
+                    })
+                }
+            </div>
         )
     }
     render() {
         const { accounts,prices } = this.props;
-        console.log(accounts);
         return (
             <div className='accountsPage'>
-                { this.renderAccountInfo(accounts,prices) }
+                { accounts.selected.address ? this.renderAccountInfo(accounts,prices):null }
                 {/*{ this.renderOptions() }*/}
                 <div class="listWrap">
                     { this.renderResource(accounts.accounts[accounts.selected.address]) }
-                    <CustomScroll>
-                        { this.renderTokens() }
+                    <CustomScroll heightRelativeToParent="100%">
+                        { this.renderTokens(accounts.selected,prices) }
                     </CustomScroll>
                 </div>
             </div>

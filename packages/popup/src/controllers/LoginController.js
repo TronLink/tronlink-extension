@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from 'components/Input';
+import Input from '@tronlink/popup/src/components/Input';
 import Button from 'components/Button';
 
 import { FormattedMessage } from 'react-intl';

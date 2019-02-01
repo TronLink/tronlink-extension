@@ -79,6 +79,8 @@ const backgroundScript = {
         duplex.on('requestState', ({ resolve }) => resolve(
             this.walletService.state
         ));
+        //get the transaction records of token that need to selected
+        duplex.on('selectTokenId', this.walletService.selectTokenId);
 
         // WalletService: Confirmation responses
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
@@ -290,6 +292,10 @@ const backgroundScript = {
 
         this.walletService.on('setCurrency', currency => (
             BackgroundAPI.setCurrency(currency)
+        ));
+
+        this.walletService.on('setTokenId', tokenId => (
+            BackgroundAPI.setTokenId(tokenId)
         ));
     }
 };

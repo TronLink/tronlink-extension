@@ -237,7 +237,7 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.RESTORING, APP_STATE.CREATING ].includes(appState))
+        if(![ APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.READY].includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
@@ -531,6 +531,11 @@ class Wallet extends EventEmitter {
         this.selectedAccount = address;
 
         this.emit('setAccount', address);
+    }
+
+    selectTokenId(tokenId) {
+        StorageService.selectTokenId(tokenId);
+        this.emit('setTokenId', tokenId);
     }
 
     selectNode(nodeID) {

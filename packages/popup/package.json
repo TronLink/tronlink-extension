@@ -3,7 +3,7 @@
   "main": "index.js",
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
-  "version": "2.0.14",
+  "version": "2.1.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
@@ -27,7 +27,8 @@
     "redux-starter-kit": "^0.2.0",
     "sweetalert2": "^7.29.2",
     "sweetalert2-react-content": "^1.0.1",
-    "tronweb": "^2.1.30"
+    "tronweb": "^2.1.30",
+    "qrcode-react":"^0.1.16"
   },
   "scripts": {
     "start": "react-scripts start",

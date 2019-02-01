@@ -10,8 +10,10 @@ export const APP_STATE = {
 
     // Wallet is functional
     READY: 5, // [x] User is logged in (and at least 1 account exists)
-    REQUESTING_CONFIRMATION: 6 // [x] Shown if confirmations are queued
-
+    REQUESTING_CONFIRMATION: 6, // [x] Shown if confirmations are queued
+    RECEIVE: 7, //[x] Show if need to accept trx or tokens
+    SEND: 8,  //[x] Show if need to send trx or tokens
+    TRANSACTIONS: 9  //[x] Show transactions record
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {

@@ -15,9 +15,9 @@ const TransactionsPage = ({ account }) => {
             <AccountDetails />
             <div className='transactions'>
                 <CustomScroll heightRelativeToParent='100%'>
-                    { transactions.cached.map(transaction => (
-                        <Transaction transaction={ transaction } key={ transaction.txID } />
-                    )) }
+                    {/*{ transactions.map(transaction => (*/}
+                        {/*<Transaction transaction={ transaction } key={ transaction.txID } />*/}
+                    {/*)) }*/}
                 </CustomScroll>
             </div>
         </div>

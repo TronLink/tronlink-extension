@@ -178,13 +178,6 @@ class MnemonicImport extends React.Component {
                         }) }
                     </div>
                     <div className='buttonRow'>
-                        {/*<Button*/}
-                            {/*id='BUTTON.GO_BACK'*/}
-                            {/*type={ BUTTON_TYPE.DANGER }*/}
-                            {/*onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }*/}
-                            {/*tabIndex={ addresses.length + 2 }*/}
-                            {/*isLoading={ isLoading }*/}
-                        {/*/>*/}
                         <Button
                             id='BUTTON.IMPORT'
                             isValid={ isValid }
@@ -229,13 +222,6 @@ class MnemonicImport extends React.Component {
                         disabled={ isLoading }
                     />
                     <div className='buttonRow'>
-                        {/*<Button*/}
-                            {/*id='BUTTON.GO_BACK'*/}
-                            {/*type={ BUTTON_TYPE.DANGER }*/}
-                            {/*onClick={ onCancel }*/}
-                            {/*tabIndex={ 3 }*/}
-                            {/*isLoading={ isLoading }*/}
-                        {/*/>*/}
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }

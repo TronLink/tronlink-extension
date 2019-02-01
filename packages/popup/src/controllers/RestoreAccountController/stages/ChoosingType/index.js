@@ -1,12 +1,9 @@
 import React from 'react';
-import WalletOption from 'components/WalletOption';
-import Button from 'components/Button';
 
 import { FormattedMessage } from 'react-intl';
 
 import {
-    RESTORATION_STAGE,
-    BUTTON_TYPE
+    RESTORATION_STAGE
 } from '@tronlink/lib/constants';
 
 const ChoosingType = props => {

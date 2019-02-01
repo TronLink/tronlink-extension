@@ -9,7 +9,7 @@ import { CREATION_STAGE } from '@tronlink/lib/constants';
 import WritingPhrase from './stages/WritingPhrase';
 import ConfirmingPhrase from './stages/ConfirmingPhrase';
 
-import * as checkmark from 'assets/animations/checkmark.json';
+import * as checkmark from '@tronlink/popup/src/assets/animations/checkmark.json';
 
 class CreateAccountController extends React.Component {
     animationOptions = {
@@ -22,8 +22,7 @@ class CreateAccountController extends React.Component {
     };
 
     state = {
-        //stage: CREATION_STAGE.SETTING_NAME,
-        stage: CREATION_STAGE.WRITING_PHRASE,
+        stage: CREATION_STAGE.SETTING_NAME,
         walletName: false
     };
 

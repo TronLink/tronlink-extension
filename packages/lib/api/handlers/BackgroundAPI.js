@@ -44,5 +44,12 @@ export default {
 
     setCurrency(currency) {
         this.duplex.send('popup', 'setCurrency', currency, false);
+    },
+
+    setTokenId(tokenId) {
+        this.duplex.send('popup', 'setTokenId', tokenId, false);
     }
+
+
+
 };
