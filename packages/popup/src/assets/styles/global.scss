@@ -180,6 +180,12 @@ html, body {
                     background-image: url('../images/new/icon-enter.svg');
                     background-repeat: no-repeat;
                     background-position:center;
+                    transition: all .4s ease-in-out;
+                }
+                &.active{
+                    &:after{
+                        transform: rotateX(90deg);
+                    }
                 }
             }
         }
@@ -215,7 +221,6 @@ html, body {
                 .lists{
                     flex-direction: column;
                     align-items: center;
-                    overflow-y:scroll;
                     padding:0 14px 36px 0;
                     .item{
                         margin:9px 0;

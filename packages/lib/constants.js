@@ -13,7 +13,9 @@ export const APP_STATE = {
     REQUESTING_CONFIRMATION: 6, // [x] Shown if confirmations are queued
     RECEIVE: 7, //[x] Show if need to accept trx or tokens
     SEND: 8,  //[x] Show if need to send trx or tokens
-    TRANSACTIONS: 9  //[x] Show transactions record
+    TRANSACTIONS: 9,  //[x] Show transactions record
+    SETTING: 10  //[x] Show setting
+
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {

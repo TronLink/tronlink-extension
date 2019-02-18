@@ -435,7 +435,8 @@ class Account {
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
-            lastUpdated: this.lastUpdated
+            lastUpdated: this.lastUpdated,
+            selectedToken:this.selectedToken
         };
     }
 

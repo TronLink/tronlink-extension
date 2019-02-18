@@ -24,7 +24,7 @@ export const accountsReducer = createReducer({
         selectedToken:{}
     },
     accounts: { },
-    selectedToken : {id:'_',name:'trx',decimals:6},
+    selectedToken : {id:'_',name:'TRX',decimals:6},
 }, {
     [ setAccount ]: (state, { payload: { transactions,...account } }) => {
         state.selected = account;

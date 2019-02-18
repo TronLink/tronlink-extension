@@ -186,6 +186,12 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER": "Event server",
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
+    "SETTING.TITLE":"Setting",
+    "SETTING.TITLE.NODE":"Custom Node",
+    "SETTING.TITLE.CURRENCY":"Setting Currency",
+    "SETTING.TITLE.LOCK":"Lock",
+
+
     "SEND.RECIPIENT": "Recipient's address",
     "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
     "SEND.TOKENS.TRX": "TRX",

@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/browser';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
+import StorageService from '@tronlink/backgroundScript/services/StorageService';
 import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -111,23 +112,25 @@ export const app = {
             accounts,
             selectedAccount,
             prices,
-            confirmations
+            confirmations,
+            //selectedToken
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
             PopupAPI.getAccounts(),
             PopupAPI.getSelectedAccount(),
             PopupAPI.getPrices(),
-            PopupAPI.getConfirmations()
+            PopupAPI.getConfirmations(),
+            //PopupAPI.getSelectedToken()
         ]);
-
+        //console.log(accounts,prices,PopupAPI.getSelectedToken(),'selectedToken');
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
         this.store.dispatch(setPriceList(prices.priceList));
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
-
+        //this.store.dispatch(setTokenId(selectedToken));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 

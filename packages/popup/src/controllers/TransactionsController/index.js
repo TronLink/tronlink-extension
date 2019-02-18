@@ -13,8 +13,9 @@ class  TransactionsController extends React.Component{
             accounts,
             onCancel,
         } = this.props;
+        console.log(accounts,PopupAPI.getSelectedToken());
         const {address} = accounts.selected;
-        const {id, name, decimals} = accounts.selectedToken;
+        const {id='_',name='TRX',decimals=6} = accounts.selectedToken;
         const transactionGroup = accounts.selected.transactions[id];
         return (
             <div className='insetContainer transactions'>

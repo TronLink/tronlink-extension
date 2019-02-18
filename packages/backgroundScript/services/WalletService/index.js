@@ -237,7 +237,7 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.READY].includes(appState))
+        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.READY].includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
@@ -322,7 +322,7 @@ class Wallet extends EventEmitter {
         // Bandage fix to change old ANTE to new ANTE
         Object.keys(this.accounts).forEach(address => {
             const account = this.accounts[ address ];
-            const tokens = account.tokens.smart;
+            const tokens = account.tokens;
 
             const oldAddress = 'TBHN6guS6ztVVXbFivajdG3PxFUZ5UXGxY';
             const newAddress = 'TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E';
@@ -346,7 +346,10 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccount', this.selectedAccount);
     }
-
+    async lockWallet(){
+        await StorageService.lock();
+        this._setState(APP_STATE.PASSWORD_SET);
+    }
     queueConfirmation(confirmation, uuid, callback) {
         this.confirmations.push({
             confirmation,
@@ -580,6 +583,10 @@ class Wallet extends EventEmitter {
         }, {});
 
         return accounts;
+    }
+
+    getSelectedToken() {
+        return StorageService.selectedTokenId;
     }
 
     getAccountDetails(address) {

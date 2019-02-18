@@ -14,7 +14,8 @@ const StorageService = {
         'selectedAccount',
         'prices',
         'pendingTransactions',
-        'tokenCache'
+        'tokenCache',
+        'selectedTokenId'
     ],
 
     storage: extensionizer.storage.local,
@@ -38,7 +39,7 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-    selectedTokenId:'_',
+    selectedTokenId:{},
     ready: false,
     password: false,
 
@@ -63,6 +64,10 @@ const StorageService = {
 
     async dataExists() {
         return !!(await this.getStorage('accounts'));
+    },
+
+    async lock(){
+        this.ready = false;
     },
 
     async unlock(password) {

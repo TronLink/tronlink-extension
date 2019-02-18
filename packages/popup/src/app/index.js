@@ -16,6 +16,7 @@ import ConfirmationController from '@tronlink/popup/src/controllers/Confirmation
 import ReceiveController from '@tronlink/popup/src/controllers/ReceiveController';
 import SendController from '@tronlink/popup/src/controllers/SendController';
 import TransactionsController from '@tronlink/popup/src/controllers/TransactionsController';
+import SettingController from '@tronlink/popup/src/controllers/SettingController';
 
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
@@ -23,7 +24,6 @@ import 'assets/styles/global.scss';
 class App extends React.Component {
     render() {
         const { appState,accounts } = this.props;
-        console.log(appState,accounts,'~~~~~~~~~~~~');
         switch(appState) {
             case APP_STATE.UNINITIALISED:
                 return <RegistrationController />;
@@ -45,6 +45,8 @@ class App extends React.Component {
                 return <SendController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
             case APP_STATE.TRANSACTIONS:
                 return <TransactionsController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+            case APP_STATE.SETTING:
+                return <SettingController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
             default:
                 return (
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState() }>

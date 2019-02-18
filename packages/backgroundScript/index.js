@@ -81,6 +81,7 @@ const backgroundScript = {
         ));
         //get the transaction records of token that need to selected
         duplex.on('selectTokenId', this.walletService.selectTokenId);
+        duplex.on('getSelectedToken', this.walletService.getSelectedToken);
 
         // WalletService: Confirmation responses
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
@@ -112,6 +113,7 @@ const backgroundScript = {
         // WalletService: Authentication
         duplex.on('setPassword', this.walletService.setPassword);
         duplex.on('unlockWallet', this.walletService.unlockWallet);
+        duplex.on('lockWallet', this.walletService.lockWallet);
 
         // NodeService: Node management
         duplex.on('selectNode', this.walletService.selectNode);
@@ -119,6 +121,7 @@ const backgroundScript = {
         // duplex.on('deleteNode', this.nodeService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
         duplex.on('getSmartToken', this.nodeService.getSmartToken);
+
     },
 
     bindTabDuplex() {

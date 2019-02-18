@@ -124,6 +124,11 @@ export default {
         return this.duplex.send('unlockWallet', password);
     },
 
+    lockWallet() {
+        return this.duplex.send('lockWallet');
+    },
+
+
     // Misc
 
     selectCurrency(currency) {
@@ -132,5 +137,9 @@ export default {
 
     selectTokenId(tokenId) {
         this.duplex.send('selectTokenId', tokenId, false);
+    },
+
+    getSelectedToken(){
+        this.duplex.send('getSelectedToken');
     }
 };

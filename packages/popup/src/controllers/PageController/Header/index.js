@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { app } from '@tronlink/popup/src/index';
 import './Header.scss';
 import {PopupAPI} from "@tronlink/lib/api";
+import {APP_STATE} from "@tronlink/lib/constants";
 const PageLink = props => {
     const {
         active = false,
@@ -73,7 +74,7 @@ class Header extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="fun"></div>
+                    <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
                 </div>
                 {/*<div className='pageLinks'>*/}
                     {/*{ pages.map(( pageKey, index) => (*/}
