@@ -236,6 +236,26 @@ class Wallet extends EventEmitter {
         this.shouldPoll = false;
     }
 
+    async refresh() {
+        const accounts = Object.values(this.accounts);
+        for(const account of accounts) {
+            await account.update();
+
+            account.updateTransactions()
+                .then(() => {
+                    if(account.address === this.selectedAccount)
+                        this.emit('setAccount', account.address);
+
+                    this.emit('setAccounts', this.getAccounts());
+                });
+
+            if(account.address === this.selectedAccount)
+                this.emit('setAccount', account.address);
+
+            this.emit('setAccounts', this.getAccounts());
+        }
+    }
+
     changeState(appState) {
         if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.READY].includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);

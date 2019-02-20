@@ -3,6 +3,10 @@ export default {
         this.duplex = duplex;
     },
 
+    //Data refresh
+    refresh(){
+        return this.duplex.send('refresh');
+    },
     // Data requesting
 
     requestState() {
@@ -142,4 +146,5 @@ export default {
     getSelectedToken(){
         this.duplex.send('getSelectedToken');
     }
+
 };

@@ -1,11 +1,11 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage,injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import {PopupAPI} from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
 import {VALIDATION_STATE} from "@tronlink/lib/constants";
 import TronWeb from "tronweb";
-import WarningComponent from '@tronlink/popup/src/components/WarningComponent';
+import swal from 'sweetalert2';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 class SendController extends React.Component {
     constructor(props){
@@ -21,7 +21,6 @@ class SendController extends React.Component {
                 amount:0,
                 decimals:6
             },
-            loading:false,
             recipient:{
                 value:'',
                 valid:false
@@ -30,14 +29,15 @@ class SendController extends React.Component {
                 value:0,
                 valid:false
             },
-            showWarning:false,
-            showWarningContent:'SEND.SUCCESS'
+            loading:false
         }
     }
     componentDidMount() {
         const {selectedToken} = this.state;
-        const {selected} = this.props.accounts;
-        selectedToken.amount = selected.balance / Math.pow(10, 6);
+        const {selected,selectedToken:token} = this.props.accounts;
+        selectedToken.id = token.id;
+        selectedToken.name = token.name;
+        selectedToken.amount = selected.balance / Math.pow(10, token.decimals);
         this.setState({selectedToken});
     }
     componentWillReceiveProps(nextProps){
@@ -54,12 +54,14 @@ class SendController extends React.Component {
         }
         this.setState({selectedToken});
     }
-    changeToken(selectedToken){
+    changeToken(selectedToken,e){
+        e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.token = !isOpen.token;
         this.setState({isOpen,selectedToken},() => this.validateAmount());
     }
-    changeAccount(address){
+    changeAccount(address,e){
+        e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.account = !isOpen.account;
         const { selected,accounts } = this.props.accounts;
@@ -138,7 +140,7 @@ class SendController extends React.Component {
             loading: true,
             success: false
         });
-
+        const { formatMessage } = this.props.intl;
         const { value: recipient } = this.state.recipient;
         const { value: amount } = this.state.amount;
 
@@ -177,29 +179,20 @@ class SendController extends React.Component {
         // }
         //
         func.then(() => {
+            swal(formatMessage({id:'SEND.SUCCESS'}),'','success');
             this.setState({
-                loading: false,
-                showWarning:true
-            },()=>{
-                setTimeout(()=>{
-                    this.setState({showWarning:false});
-                },3000)
-            });
+                loading: false
+            })
         }).catch(error => {
+            swal(error,'','error');
             this.setState({
-                loading: false,
-                showWarning: true,
-                showWarningContent: error
-            }, () => {
-                setTimeout(() => {
-                    this.setState({showWarning: false});
-                }, 3000)
+                loading: false
             })
         });
 
     }
     render() {
-        const { isOpen,selectedToken,loading,showWarning,showWarningContent,amount } = this.state;
+        const { isOpen,selectedToken,loading } = this.state;
         const {onCancel} = this.props;
         const {selected, accounts} = this.props.accounts;
         const trx = ["_",{name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg}];
@@ -211,14 +204,13 @@ class SendController extends React.Component {
                     <FormattedMessage id="ACCOUNT.SEND"/>
                 </div>
                 <div className='greyModal'>
-                    <WarningComponent show={showWarning} id={showWarningContent} />
                     <div className="input-group">
                         <label><FormattedMessage id="ACCOUNT.SEND.PAY_ACCOUNT"/></label>
-                        <div className={"input dropDown"+(isOpen.account?" isOpen":"")}>
-                            <div className="selected" onClick={ ()=>{isOpen.account = !isOpen.account; this.setState({isOpen})} }>{ selected.address }</div>
+                        <div className={"input dropDown"+(isOpen.account?" isOpen":"")} onClick={ ()=>{isOpen.account = !isOpen.account; this.setState({isOpen})} }>
+                            <div className="selected">{ selected.address }</div>
                             <div className="dropWrap" style={isOpen.account?(Object.entries(accounts).length<=5?{height:36*Object.entries(accounts).length}:{height:180,overflow:'scroll'}):{}}>
                                 {
-                                    Object.entries(accounts).map(([address])=><div onClick={()=>{this.changeAccount(address)}} className={"dropItem"+(address===selected.address?" selected":"")}>{address}</div>)
+                                    Object.entries(accounts).map(([address])=><div onClick={(e)=>{this.changeAccount(address,e)}} className={"dropItem"+(address===selected.address?" selected":"")}>{address}</div>)
                                 }
                             </div>
                         </div>
@@ -235,8 +227,8 @@ class SendController extends React.Component {
                     </div>
                     <div className="input-group">
                         <label><FormattedMessage id="ACCOUNT.SEND.CHOOSE_TOKEN"/></label>
-                        <div className={"input dropDown"+(isOpen.token?" isOpen":"")}>
-                            <div className="selected" onClick={ ()=>{isOpen.token = !isOpen.token; this.setState({isOpen})} }>{`${selectedToken.name}(${selectedToken.amount})${selectedToken.id!='_'?'id:'+selectedToken.id:''}`}</div>
+                        <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ ()=>{isOpen.token = !isOpen.token; this.setState({isOpen})} }>
+                            <div className="selected"><span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
                             <div className="dropWrap" style={isOpen.token?(tokens.length<=5?{height:36*tokens.length}:{height:180,overflow:'scroll'}):{}}>
                                 {
                                     tokens.map(([id,{balance,name,decimals}])=>{
@@ -248,7 +240,7 @@ class SendController extends React.Component {
                                             .shiftedBy(-decimals)
                                             .toString();
                                         return (
-                                            <div onClick={()=>{this.changeToken({id,amount,name,decimals})}} className={"dropItem"+(id===selectedToken.id?" selected":"")}>{`${name}(${amount})${id!='_'?'id:'+id:''}`}</div>
+                                            <div onClick={(e)=>{this.changeToken({id,amount,name,decimals},e)}} className={"dropItem"+(id===selectedToken.id?" selected":"")}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id!='_'?(<span>id:{id.length===7?id:id.substr(0,6)+'...'+id.substr(-6)}</span>):''}</div>
                                         )
                                     })
                                 }
@@ -276,4 +268,4 @@ class SendController extends React.Component {
     }
 };
 
-export default SendController;
+export default injectIntl(SendController);

@@ -23,7 +23,7 @@ import 'assets/styles/global.scss';
 
 class App extends React.Component {
     render() {
-        const { appState,accounts } = this.props;
+        const { appState,accounts,prices,nodes } = this.props;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
                 return <RegistrationController />;
@@ -46,7 +46,7 @@ class App extends React.Component {
             case APP_STATE.TRANSACTIONS:
                 return <TransactionsController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
             case APP_STATE.SETTING:
-                return <SettingController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+                return <SettingController prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
             default:
                 return (
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState() }>
@@ -59,5 +59,7 @@ class App extends React.Component {
 
 export default connect(state => ({
     appState: state.app.appState,
-    accounts: state.accounts
+    accounts: state.accounts,
+    nodes: state.app.nodes,
+    prices: state.app.prices
 }))(App);

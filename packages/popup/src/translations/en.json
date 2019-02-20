@@ -190,6 +190,7 @@
     "SETTING.TITLE.NODE":"Custom Node",
     "SETTING.TITLE.CURRENCY":"Setting Currency",
     "SETTING.TITLE.LOCK":"Lock",
+    "SETTING.SUCCESS.ADD_NODE":"Add Node Success!",
 
 
     "SEND.RECIPIENT": "Recipient's address",

@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { FormattedMessage } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import {APP_STATE} from "@tronlink/lib/constants";
@@ -13,10 +14,10 @@ class  TransactionsController extends React.Component{
             accounts,
             onCancel,
         } = this.props;
-        console.log(accounts,PopupAPI.getSelectedToken());
         const {address} = accounts.selected;
         const {id='_',name='TRX',decimals=6} = accounts.selectedToken;
         const transactionGroup = accounts.selected.transactions[id];
+        console.log(transactionGroup);
         return (
             <div className='insetContainer transactions'>
                 <div className='pageHeader'>
@@ -50,7 +51,7 @@ class  TransactionsController extends React.Component{
                                                     <div className="left">
                                                         <div
                                                             className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
-                                                        <div className="time">{v.timestamp}</div>
+                                                        <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                     </div>
                                                     <div className="right">
                                                         {v.amount / Math.pow(10, decimals)}

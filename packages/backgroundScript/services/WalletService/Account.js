@@ -124,7 +124,6 @@ class Account {
     }
 
     loadCache() {
-        console.log(StorageService.selectedTokenId,'~~~~~~~~~~~~~~~')
         if(!StorageService.hasAccount(this.address))
             return logger.warn('Attempted to load cache for an account that does not exist');
 
@@ -181,13 +180,10 @@ class Account {
                 } else {
                     params.token_id = key;
                 }
-                all =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}});
-                send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}});
-                receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}});
-                const [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]).catch(err => {
-                    logger.error(err);
-                    return {data:{data:[]}};
-                });
+                all =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+                send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+                receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
+                const [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
                 transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
             }
             return transactions;
@@ -266,7 +262,7 @@ class Account {
         for(const { key, value } of filteredTokens) {
             let token = this.tokens.basic[ key ] || false;
             const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id==key);
-            let {precision=0,price} = filter.length == 1 ? filter[0] : {price:0,precision:0};
+            let {precision=0,price} = filter.length ? filter[0] : {price:0,precision:0};
             price = price/Math.pow(10,precision);
             if(!token && !StorageService.tokenCache.hasOwnProperty(key))
                 await StorageService.cacheToken(key);
@@ -306,7 +302,7 @@ class Account {
                 balance = Number(number.toString());
             }
             const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
-            const price = filter[0].price/Math.pow(10,decimals);
+            const price = filter.length?filter[0].price/Math.pow(10,decimals):0;
             if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
                 await StorageService.cacheToken(contract_address);
 

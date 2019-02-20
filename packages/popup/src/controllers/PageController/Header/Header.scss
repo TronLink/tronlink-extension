@@ -16,6 +16,26 @@
             background-position: center;
             &:nth-child(1){
                 background-image: url('../../../assets/images/new/icon-refresh.svg');
+                &.refresh{
+                    animation: rotate .5s linear infinite;
+                }
+                @keyframes rotate{
+                    0%{
+                        transform: rotateZ(0);
+                    }
+                    25%{
+                        transform: rotateZ(90deg);
+                    }
+                    50%{
+                        transform: rotateZ(180deg);
+                    }
+                    75%{
+                        transform: rotateZ(270deg);
+                    }
+                    100%{
+                        transform: rotateZ(360deg);
+                    }
+                }
             }
             &:nth-child(3){
                 background-image: url('../../../assets/images/new/icon-setting.svg');

@@ -261,13 +261,13 @@ class ConfirmationController extends React.Component {
 
         return (
             <div className='insetContainer confirmationController'>
-                <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
-                    <div className='pageHeader'>
-                        { text }
-                    </div>
-                ) }
-                />
-                <div className='greyModal'>
+                <div className='greyModal confirmModal'>
+                    <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
+                        <div className='pageHeader hasBottomMargin'>
+                            { text }
+                        </div>
+                    ) }
+                    />
                     { type === CONFIRMATION_TYPE.STRING ?
                         this.renderMessage() :
                         this.renderTransaction()

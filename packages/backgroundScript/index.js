@@ -75,10 +75,15 @@ const backgroundScript = {
             this.walletService.stopPolling()
         ));
 
+        //refresh the wallet data
+        duplex.on('refresh', this.walletService.refresh);
+
         // Getter methods
         duplex.on('requestState', ({ resolve }) => resolve(
             this.walletService.state
         ));
+
+
         //get the transaction records of token that need to selected
         duplex.on('selectTokenId', this.walletService.selectTokenId);
         duplex.on('getSelectedToken', this.walletService.getSelectedToken);

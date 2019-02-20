@@ -37,7 +37,8 @@ class Header extends React.Component {
         this.onNodeChange = this.onNodeChange.bind(this);
         this.state={
             nodeIndex:0,
-            showNodeList:false
+            showNodeList:false,
+            refresh:false
         }
     }
     onNodeChange(nodeId,index) {
@@ -47,7 +48,7 @@ class Header extends React.Component {
     }
     render() {
         const colorArr = ['#B8E986','#F5A623','#F8E71C'];
-        const { nodeIndex,showNodeList } = this.state;
+        const { nodeIndex,showNodeList,refresh } = this.state;
         const {
             nodes,
             title,
@@ -62,7 +63,12 @@ class Header extends React.Component {
         return (
             <div className='header'>
                 <div className='titleContainer'>
-                    <div className="fun"></div>
+                    <div className={"fun"+(refresh?" refresh":"")} onClick={ ()=>{
+                        this.setState({refresh:true});
+                        if(!refresh)PopupAPI.refresh();
+                        setTimeout(()=>{console.log('************');this.setState({refresh:false})},3000);
+                    }}
+                    ></div>
                     <div className="nodesWrap">
                         <div className="nodes" onClick={ ()=>{this.setState({showNodeList:!showNodeList})} }>
                             <span className="dot" style={{backgroundColor:colorArr[nodeIndex]}}></span>

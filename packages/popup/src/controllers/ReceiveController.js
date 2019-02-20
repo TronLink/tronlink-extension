@@ -1,5 +1,7 @@
 import React from 'react';
 import QRCode  from 'qrcode-react';
+import CopyToClipboard from 'react-copy-to-clipboard'
+import swal from 'sweetalert2';
 import { FormattedMessage } from 'react-intl';
 
 
@@ -25,9 +27,12 @@ const ReceiveController = props => {
                 <div class="address">
                     {address}
                 </div>
-                <a className="copyAddressBtn">
-                    <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
-                </a>
+                <CopyToClipboard text={address}
+                                 onCopy={() => {swal('Copy Success!','','success');}}>
+                    <a className="copyAddressBtn">
+                        <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
+                    </a>
+                </CopyToClipboard>
             </div>
         </div>
     );

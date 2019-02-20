@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Button from '@tronlink/popup/src/components/Button';
 import CustomScroll from 'react-custom-scroll';
+import CopyToClipboard from 'react-copy-to-clipboard'
 import swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { BigNumber } from 'bignumber.js';
@@ -57,19 +57,21 @@ class AccountsPage extends React.Component {
     }
 
     async onDelete() {
-        const { formatMessage } = this.props.intl;
-
-        const { value } = await swal({
-            title: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE' }),
-            text: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE.BODY' }),
-            confirmButtonText: formatMessage({ id: 'BUTTON.CONFIRM' }),
-            cancelButtonText: formatMessage({ id: 'BUTTON.CANCEL' }),
-            showCancelButton: true
-        });
-
-        if(!value)
+        if(Object.keys(this.props.accounts.accounts).length === 1){
+            swal('At least one account is required','','warning');
             return;
-
+        } else {
+            const { formatMessage } = this.props.intl;
+            const { value } = await swal({
+                title: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE' }),
+                text: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE.BODY' }),
+                confirmButtonText: formatMessage({ id: 'BUTTON.CONFIRM' }),
+                cancelButtonText: formatMessage({ id: 'BUTTON.CANCEL' }),
+                showCancelButton: true
+            });
+            if(!value)
+                return;
+        }
         PopupAPI.deleteAccount();
     }
 
@@ -120,32 +122,6 @@ class AccountsPage extends React.Component {
         });
     }
 
-    renderOptions() {
-        return (
-            <div className='accountOptions'>
-                <Button
-                    type={ BUTTON_TYPE.WHITE }
-                    onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }
-                    id='BUTTON.CREATE'
-                />
-                <Button
-                    type={ BUTTON_TYPE.WHITE }
-                    onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }
-                    id='BUTTON.IMPORT'
-                />
-                <Button
-                    type={ BUTTON_TYPE.WHITE }
-                    id='BUTTON.EXPORT'
-                    onClick={ this.onExport }
-                />
-                <Button
-                    type={ BUTTON_TYPE.WHITE }
-                    id='BUTTON.DELETE'
-                    onClick={ this.onDelete }
-                />
-            </div>
-        );
-    }
     renderAccountInfo(accounts,prices){
         const {showAccountList,showMenuList} = this.state;
         const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
@@ -154,20 +130,20 @@ class AccountsPage extends React.Component {
             <div className="accountInfo">
                 <div className="row1">
                     <div className="menu" onClick={()=>{this.setState({showMenuList:!showMenuList,showAccountList:false})}}>
-                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
+                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>
                             <div onClick={ this.onExport } className="item">
                                 <span className="icon backup"></span>
                                 <FormattedMessage id="MENU.BACKUP" />
                             </div>
-                            <div onClick={()=>{ }} className="item">
-                                <span className="icon accountInfo"></span>
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
+                                <span className="icon link"></span>
                                 <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
                             </div>
-                            <div className="item" onClick={ () => {} }>
-                                <span className="icon whitelist"></span>
-                                <FormattedMessage id="MENU.WHITE_LIST" />
-                            </div>
-                            <div className="item" onClick={ () => {} }>
+                            {/*<div className="item" onClick={ () => {} }>*/}
+                                {/*<span className="icon whitelist"></span>*/}
+                                {/*<FormattedMessage id="MENU.WHITE_LIST" />*/}
+                            {/*</div>*/}
+                            <div className="item" onClick={ () => { this.onDelete() } }>
                                 <span className="icon delete"></span>
                                 <FormattedMessage id="MENU.DELETE_WALLET" />
                             </div>
@@ -206,7 +182,11 @@ class AccountsPage extends React.Component {
                 </div>
                 <div className="row2">
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
-                    <span className="copy"></span>
+                    <CopyToClipboard text={accounts.selected.address}
+                                    onCopy={() => {swal('Copy Success!','','success');}}>
+                        <span className='copy'></span>
+                    </CopyToClipboard>
+
                 </div>
                 <div className="row3">
                     ≈ {p} {prices.selected}
@@ -340,7 +320,6 @@ class AccountsPage extends React.Component {
         return (
             <div className='accountsPage'>
                 { accounts.selected.address ? this.renderAccountInfo(accounts,prices):null }
-                {/*{ this.renderOptions() }*/}
                 <div class="listWrap">
                     { this.renderResource(accounts.accounts[accounts.selected.address]) }
                     <CustomScroll heightRelativeToParent="100%">
