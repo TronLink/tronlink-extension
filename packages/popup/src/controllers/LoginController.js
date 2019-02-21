@@ -58,7 +58,7 @@ class LoginController extends React.Component {
         } = this.state;
 
         return (
-            <div className='insetContainer'>
+            <div className='insetContainer logoWrap'>
                 <div className='pageHeader'>
                     <div className="pageHeaderLogoWrap">
                         <div className="logo1"></div>

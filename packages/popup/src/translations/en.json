@@ -13,7 +13,7 @@
 
     "BUTTON.UNKNOWN": "Unknown button type",
     "BUTTON.CONTINUE": "Continue",
-    "BUTTON.CREATE_WALLET": "Create wallet",
+    "BUTTON.CREATE_WALLET": "Create Account",
     "BUTTON.CANCEL": "Cancel",
     "BUTTON.GO_BACK": "Go back",
     "BUTTON.CONFIRM": "Confirm",
@@ -43,7 +43,7 @@
     "PASSWORD_CRITERIA.HAS_LENGTH": "Contains at least <strong>eight</strong> characters",
     "PASSWORD_CRITERIA.HAS_SPECIAL": "Contains either a <strong>symbol</strong> or <strong>number</strong>",
     "PASSWORD_CRITERIA.NO_REPEAT": "The two <strong>passwords</strong> you entered did not <strong>match</strong>",
-    "PASSWORD_TIP.NOT_FORGOT":"Keep your password in mind, you can't retrieve it if you forget it.",
+    "PASSWORD_TIP.NOT_FORGOT":"Remember the password, you can't retrieve it if you forget it.",
 
     "INPUT.PASSWORD": "Password",
     "INPUT.REPEAT_PASSWORD": "Repeat password",
@@ -55,10 +55,10 @@
     "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "Confirm mnemonic phrase",
     "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "Mnemonic error",
     "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
-    "CREATION.CREATE.TIP":"Recommend it to new users",
-    "CREATION.RESTORE.TITLE": "Restore wallet",
+    "CREATION.CREATE.TIP":"Recommend new users to use",
+    "CREATION.RESTORE.TITLE": "Restore Account",
     "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
-    "CREATION.RESTORE.TIP":"Recommended for users with existing Tron accounts",
+    "CREATION.RESTORE.TIP":"Recommend for users with existing Tron accounts",
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
     "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Choose related to accounts",
@@ -124,7 +124,7 @@
     "TRANSACTIONS.TYPE.TriggerSmartContract": "Used smart contract",
     
     "CONFIRMATIONS.HEADER": "Confirmation Request",
-    "CONFIRMATIONS.BODY": "The website <strong>{hostname}</strong> is requesting your permission to <strong>{action}</strong>",
+    "CONFIRMATIONS.BODY": "The website {hostname} is requesting your permission to {action}",
     "CONFIRMATIONS.RESOURCE.BANDWIDTH": "Bandwidth",
     "CONFIRMATIONS.RESOURCE.ENERGY": "Energy",
     "CONFIRMATIONS.COST": "Cost",
@@ -187,9 +187,9 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"Setting",
-    "SETTING.TITLE.NODE":"Custom Node",
-    "SETTING.TITLE.CURRENCY":"Setting Currency",
-    "SETTING.TITLE.LOCK":"Lock",
+    "SETTING.TITLE.NODE":"Custom node",
+    "SETTING.TITLE.CURRENCY":"Setting currency",
+    "SETTING.TITLE.LOCK":"Log out",
     "SETTING.SUCCESS.ADD_NODE":"Add Node Success!",
 
 
@@ -212,7 +212,7 @@
     "ACCOUNTS.EXPORT.PRIVATE_KEY": "Private Key",
 
 
-    "LOGIN.PASSWORD.BACK":"Welcome to back!",
+    "LOGIN.PASSWORD.BACK":"Welcome to back",
 
     "COMMON.BALANCE":"Balance",
 

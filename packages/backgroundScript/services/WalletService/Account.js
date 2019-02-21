@@ -245,7 +245,7 @@ class Account {
 
         logger.info(`Requested update for ${ address }`);
         const account =  await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
-        const {data:{trc20token_balances:smart}} = await axios.get('https://apilist.tronscan.org/api/account', {params:{address}});
+        const {data:{trc20_tokens:smart}} = await axios.get('https://apilist.tronscan.org/api/token_trc20', {params:{sort:'issue_time',limit:100,start:0}});
         const {data:{data:basicTokenPriceList}} = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
         const {data:{data:{rows:smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(!account.address) {
@@ -291,7 +291,7 @@ class Account {
             };
         }
 
-        for(let {contract_address,decimals,name,symbol:abbr} of smart){
+        for(let {contract_address,decimals,name,symbol:abbr,icon_url} of smart){
             let balance;
             let token = this.tokens.smart[ contract_address ] || false;
             const contract = await NodeService.tronWeb.contract().at(contract_address);
@@ -301,34 +301,37 @@ class Account {
             } else {
                 balance = Number(number.toString());
             }
-            const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
-            const price = filter.length?filter[0].price/Math.pow(10,decimals):0;
-            if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
-                await StorageService.cacheToken(contract_address);
+            if(balance>0){
+                const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
+                const price = filter.length?filter[0].price/Math.pow(10,decimals):0;
+                if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
+                    await StorageService.cacheToken({contract_address,decimals,name,abbr,imgUrl:icon_url});
 
-            if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
-                const {
-                    name,
-                    abbr,
-                    decimals,
-                    imgUrl
-                } = StorageService.tokenCache[ contract_address ];
+                if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
+                    const {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl
+                    } = StorageService.tokenCache[ contract_address ];
 
-                token = {
-                    price:0,
-                    balance: 0,
-                    name,
-                    abbr,
-                    decimals,
-                    imgUrl,
+                    token = {
+                        price:0,
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl,
+                    };
+                }
+
+                this.tokens.smart[ contract_address ] = {
+                    ...token,
+                    balance,
+                    price
                 };
             }
 
-            this.tokens.smart[ contract_address ] = {
-                ...token,
-                balance,
-                price
-            };
 
         }
         this.balance = account.balance || 0;

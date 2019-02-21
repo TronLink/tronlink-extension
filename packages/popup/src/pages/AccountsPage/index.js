@@ -3,9 +3,12 @@ import React from 'react';
 import CustomScroll from 'react-custom-scroll';
 import CopyToClipboard from 'react-copy-to-clipboard'
 import swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Toast,{ T } from 'react-toast-mobile';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from '@tronlink/lib/api';
+import Utils  from '@tronlink/lib/utils';
+import Header from '@tronlink/popup/src/controllers/PageController/Header';
+import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
 
 import {
@@ -19,23 +22,26 @@ import {
 } from '@tronlink/lib/constants';
 
 import './AccountsPage.scss';
+import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 
 
-const ReactSwal = withReactContent(swal);
-
 class AccountsPage extends React.Component {
     constructor() {
         super();
-
         this.onClick = this.onClick.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
         this.state = {
+            mnemonic:false,
+            privateKey:false,
             showAccountList:false,
-            showMenuList:false
+            showMenuList:false,
+            showNodeList:false,
+            showBackUp:false,
+            showDelete:false
         }
     }
 
@@ -57,68 +63,33 @@ class AccountsPage extends React.Component {
     }
 
     async onDelete() {
+
         if(Object.keys(this.props.accounts.accounts).length === 1){
             swal('At least one account is required','','warning');
-            return;
         } else {
-            const { formatMessage } = this.props.intl;
-            const { value } = await swal({
-                title: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE' }),
-                text: formatMessage({ id: 'ACCOUNTS.CONFIRM_DELETE.BODY' }),
-                confirmButtonText: formatMessage({ id: 'BUTTON.CONFIRM' }),
-                cancelButtonText: formatMessage({ id: 'BUTTON.CANCEL' }),
-                showCancelButton: true
+            this.setState({
+                showDelete:true
             });
-            if(!value)
-                return;
         }
-        PopupAPI.deleteAccount();
+
     }
 
     async onExport() {
-        const { formatMessage } = this.props.intl;
-
         const {
             mnemonic,
             privateKey
         } = await PopupAPI.exportAccount();
-
-        const swalContent = [];
-
-        if(mnemonic) {
-            swalContent.push(
-                <div className='export'>
-                    <span className='header'>
-                        { formatMessage({ id: 'ACCOUNTS.EXPORT.MNEMONIC' }) }
-                    </span>
-                    <span className='content'>
-                        { mnemonic }
-                    </span>
-                </div>
-            );
-        }
-
-        swalContent.push(
-            <div className='export'>
-                <span className='header'>
-                    { formatMessage({ id: 'ACCOUNTS.EXPORT.PRIVATE_KEY' }) }
-                </span>
-                <span className='content'>
-                    { privateKey }
-                </span>
-            </div>
-        );
-
-        ReactSwal.fire({
-            title: formatMessage({ id: 'ACCOUNTS.EXPORT' }),
-            cancelButtonText: formatMessage({ id: 'BUTTON.CLOSE' }),
-            showCancelButton: true,
-            showConfirmButton: false,
-            html: (
-                <div className='exportDetails'>
-                    { swalContent }
-                </div>
-            )
+        this.setState({
+            mnemonic,
+            privateKey,
+            showBackUp:true
+        })
+    }
+    handleShowNodeList(){
+        this.setState({
+            showAccountList:false,
+            showMenuList:false,
+            showNodeList:!this.state.showNodeList
         });
     }
 
@@ -129,7 +100,7 @@ class AccountsPage extends React.Component {
         return (
             <div className="accountInfo">
                 <div className="row1">
-                    <div className="menu" onClick={()=>{this.setState({showMenuList:!showMenuList,showAccountList:false})}}>
+                    <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>
                             <div onClick={ this.onExport } className="item">
                                 <span className="icon backup"></span>
@@ -149,7 +120,7 @@ class AccountsPage extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="accountWrap" onClick={()=>{this.setState({showAccountList:!showAccountList,showMenuList:false})}}>
+                    <div className="accountWrap" onClick={(e)=>{e.stopPropagation();this.setState({showAccountList:!showAccountList,showMenuList:false,showNodeList:false})}}>
                         <span>{accounts.selected.name}</span>
                         <div className="dropList accountList" style={showAccountList?{width:'100%',height:30*(addresses.length+2),opacity:1}:{}}>
                             {
@@ -169,7 +140,7 @@ class AccountsPage extends React.Component {
                                     )
                                 )
                             }
-                            <div className="item" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
+                            <div className="item gap" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
                                 <span className="icon create"></span>
                                 <FormattedMessage id="CREATION.CREATE.TITLE" />
                             </div>
@@ -183,7 +154,7 @@ class AccountsPage extends React.Component {
                 <div className="row2">
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
                     <CopyToClipboard text={accounts.selected.address}
-                                    onCopy={() => {swal('Copy Success!','','success');}}>
+                                    onCopy={() => {T.notify('Copied success')} }>
                         <span className='copy'></span>
                     </CopyToClipboard>
 
@@ -279,12 +250,13 @@ class AccountsPage extends React.Component {
     }
     renderTokens(account,prices){
         const trx_price = prices.priceList[prices.selected];
-        const trx = ["_",{name:"TRX",balance:account.balance,abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price}];
-        const tokens = {...account.tokens.basic,...account.tokens.smart};
+        const trx = {tokenId:"_",name:"TRX",balance:account.balance,abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        let tokens = {...account.tokens.basic,...account.tokens.smart};
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
         return (
             <div className="tokens">
                 {
-                    [trx,...Object.entries(tokens).sort((a,b)=>b[1].balance/Math.pow(10,b[1].decimals) - a[1].balance/Math.pow(10,a[1].decimals))].map(([tokenId,token])=>{
+                    [trx,...tokens].map(({tokenId,...token})=>{
                         const BN = BigNumber.clone({
                             DECIMAL_PLACES: token.decimals,
                             ROUNDING_MODE: Math.min(8, token.decimals)
@@ -297,7 +269,7 @@ class AccountsPage extends React.Component {
                                 <div className="tokenItem" onClick={ ()=>{
                                         if(tokenId.match(/^T/))
                                             return;
-                                        PopupAPI.selectTokenId({id:tokenId,name:token.name,decimals:token.decimals});
+                                        PopupAPI.selectTokenId({id:tokenId,name:token.name,decimals:token.decimals,amount});
                                         PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
@@ -315,10 +287,105 @@ class AccountsPage extends React.Component {
             </div>
         )
     }
+    renderDeleteAccount(){
+        const { showDelete } = this.state;
+        const dom = showDelete
+                    ?
+                    <div className="popUp">
+                        <div className="deleteAccount">
+                            <div className="title">
+                                <FormattedMessage id="ACCOUNTS.CONFIRM_DELETE" />
+                            </div>
+                            <div className="img"></div>
+                            <div className="txt">
+                                <FormattedMessage id="ACCOUNTS.CONFIRM_DELETE.BODY" />
+                            </div>
+                            <div className='buttonRow'>
+                                <Button
+                                    id='BUTTON.CANCEL'
+                                    type={ BUTTON_TYPE.DANGER }
+                                    onClick={ () => {this.setState({showDelete:false})} }
+                                    tabIndex={ 1 }
+                                />
+                                <Button
+                                    id='BUTTON.CONFIRM'
+                                    onClick={()=>{PopupAPI.deleteAccount();this.setState({showDelete:false});}}
+                                    tabIndex={ 1 }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    null
+        return dom;
+    }
+    renderBackup(mnemonic,privateKey){
+        const { showBackUp } = this.state;
+        const dom = showBackUp
+                    ?
+                    <div className="popUp">
+                        <div className="backUp">
+                            <div className="title">
+                                <FormattedMessage id="ACCOUNTS.EXPORT" />
+                            </div>
+                            {
+                                mnemonic
+                                    ?
+                                    <div className="option">
+                                        <FormattedMessage id="ACCOUNTS.EXPORT.MNEMONIC" />
+                                        <div className="block">
+                                            {
+                                                mnemonic.split(' ').map(v => <div className="cell">{v}</div>)
+                                            }
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                privateKey
+                                    ?
+                                    <div className="option" style={{marginBottom:20}}>
+                                        <FormattedMessage id="ACCOUNTS.EXPORT.PRIVATE_KEY" />
+                                        <div className="block">
+                                            { privateKey }
+                                        </div>
+                                    </div>
+                                    :
+                                    null
+                            }
+                            <div className='buttonRow'>
+                                <Button
+                                    id='BUTTON.CLOSE'
+                                    onClick={ () => {this.setState({showBackUp:false})} }
+                                    tabIndex={ 1 }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    :null
+
+        return dom;
+    }
     render() {
-        const { accounts,prices } = this.props;
+        const {showNodeList,mnemonic,privateKey}  = this.state;
+        const { accounts,prices,nodes } = this.props;
         return (
-            <div className='accountsPage'>
+            <div className='accountsPage' onClick={()=>{
+                this.setState({
+                    showAccountList:false,
+                    showMenuList:false,
+                    showNodeList:false
+                })
+            }}>
+                <Toast />
+                {
+                    this.renderBackup(mnemonic,privateKey)
+                }
+                {
+                    this.renderDeleteAccount()
+                }
+                <Header showNodeList={showNodeList} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
                 { accounts.selected.address ? this.renderAccountInfo(accounts,prices):null }
                 <div class="listWrap">
                     { this.renderResource(accounts.accounts[accounts.selected.address]) }
@@ -334,6 +401,7 @@ class AccountsPage extends React.Component {
 export default injectIntl(
     connect(state => ({
         accounts: state.accounts,
-        prices: state.app.prices
+        prices: state.app.prices,
+        nodes:state.app.nodes
     }))(AccountsPage)
 );

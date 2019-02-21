@@ -305,7 +305,7 @@ const StorageService = {
     async cacheToken(tokenID) {
 
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            if(!tokenID.match(/^T/)){
+            if(typeof tokenID === 'string' ){
                 const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
                 const {
                     name,
@@ -320,8 +320,8 @@ const StorageService = {
                     imgUrl
                 };
             }else{
-                const {data:{trc20_tokens:[{icon_url:imgUrl,decimals,name,symbol:abbr}]}} = await axios.get('https://apilist.tronscan.org/api/token_trc20',{params:{contract:tokenID}});
-                this.tokenCache[ tokenID ] = {
+                const {contract_address,decimals,name,abbr,imgUrl} = tokenID;
+                this.tokenCache[ contract_address ] = {
                     name,
                     abbr,
                     decimals,

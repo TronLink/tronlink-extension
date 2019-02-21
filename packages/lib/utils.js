@@ -156,6 +156,26 @@ const Utils = {
 
     isFunction(obj) {
         return typeof obj === 'function';
+    },
+
+
+    dataLetterSort (data, field) {
+        let needArray = [];
+        let list = {};
+        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+        for (let i = 0; i < data.length; i++) {
+            let letter = (data[i][field]).substr(0, 1).toUpperCase();
+            if(!list[letter]){
+                list[letter] = [];
+            }
+            list[letter].push(data[i]);
+        }
+        LetterArray.forEach(v=>{
+            if(list[v]){
+                needArray = needArray.concat(list[v])
+            }
+        });
+        return needArray;
     }
 };
 

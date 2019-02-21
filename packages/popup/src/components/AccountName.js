@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from 'components/Input';
-import Button from 'components/Button';
-import InputCriteria from 'components/InputCriteria';
+import Input from '@tronlink/popup/src/components/Input';
+import Button from '@tronlink/popup/src/components/Button';
+import InputCriteria from '@tronlink/popup/src/components/InputCriteria';
 
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
@@ -78,7 +78,7 @@ class AccountName extends React.Component {
         const isNameValid = isValid === VALIDATION_STATE.VALID;
 
         return (
-            <div className='insetContainer'>
+            <div className='insetContainer logoWrap'>
                 <div className="back" onClick={ onCancel }></div>
                 <div className='pageHeader'>
                     <div className="pageHeaderLogoWrap hasBottomMargin">

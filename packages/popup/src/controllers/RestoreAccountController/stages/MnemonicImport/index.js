@@ -152,7 +152,7 @@ class MnemonicImport extends React.Component {
                     <FormattedMessage id="CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE" />
                 </div>
                 <div className='greyModal'>
-                    <div className='modalDesc hasBottomMargin'>
+                    <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.SELECTION' />
                     </div>
                     <div className='addressList'>
@@ -170,7 +170,7 @@ class MnemonicImport extends React.Component {
                                 >
                                     <div className={ `checkbox ${ isSelected ? 'isSelected' : '' }` }>&nbsp;</div>
                                     <span className="address">
-                                        <span className="mono">{ `${address.substr(0,10)}...${address.substr(-10)}` }</span>
+                                        <span>{ `${address.substr(0,10)}...${address.substr(-10)}` }</span>
                                         <span><FormattedMessage id="COMMON.BALANCE" /> <FormattedMessage id="ACCOUNT.BALANCE" values={{amount:balance/1000000}} /></span>
                                     </span>
                                 </div>
@@ -209,12 +209,12 @@ class MnemonicImport extends React.Component {
                 </div>
                 <div className='greyModal'>
                     <WarningComponent show={ showWarning } id="CHOOSING_TYPE.MNEMONIC.NO_OPTIONS" />
-                    <div className='modalDesc hasBottomMargin'>
+                    <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>
                     <textarea
                         placeholder='Mnemonic Import'
-                        className='phraseInput mono'
+                        className='phraseInput'
                         rows={ 5 }
                         value={ mnemonic }
                         onChange={ this.onChange }

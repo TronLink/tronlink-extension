@@ -1,9 +1,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import Toast,{ T } from 'react-toast-mobile';
 import { PAGES } from '@tronlink/lib/constants';
-import { connect } from 'react-redux';
 import { app } from '@tronlink/popup/src/index';
-import './Header.scss';
 import {PopupAPI} from "@tronlink/lib/api";
 import {APP_STATE} from "@tronlink/lib/constants";
 const PageLink = props => {
@@ -37,7 +36,7 @@ class Header extends React.Component {
         this.onNodeChange = this.onNodeChange.bind(this);
         this.state={
             nodeIndex:0,
-            showNodeList:false,
+            //showNodeList:false,
             refresh:false
         }
     }
@@ -48,29 +47,32 @@ class Header extends React.Component {
     }
     render() {
         const colorArr = ['#B8E986','#F5A623','#F8E71C'];
-        const { nodeIndex,showNodeList,refresh } = this.state;
+        const { nodeIndex,refresh } = this.state;
         const {
-            nodes,
-            title,
-            currentPage,
-            changePage,
-            selectedAccount
+            nodes,showNodeList
         } = this.props;
         const ns = Object.entries(nodes.nodes);
         const name = ns.filter(v => v[0] === nodes.selected)[0][1].name;
-        const pages = Object.keys(PAGES);
 
         return (
             <div className='header'>
+                <Toast />
                 <div className='titleContainer'>
-                    <div className={"fun"+(refresh?" refresh":"")} onClick={ ()=>{
-                        this.setState({refresh:true});
-                        if(!refresh)PopupAPI.refresh();
-                        setTimeout(()=>{console.log('************');this.setState({refresh:false})},3000);
+                    <div className="fun" onClick={ ()=>{
+                        if(!refresh){
+                            this.setState({refresh:true});
+                            PopupAPI.refresh();
+                            T.loading();
+                            setTimeout(()=>{
+                                this.setState({refresh:false});
+                                T.loaded()
+                            },3000);
+                        }
+
                     }}
                     ></div>
                     <div className="nodesWrap">
-                        <div className="nodes" onClick={ ()=>{this.setState({showNodeList:!showNodeList})} }>
+                        <div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>
                             <span className="dot" style={{backgroundColor:colorArr[nodeIndex]}}></span>
                             <div className="name">{name}</div>
                             <div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>
@@ -82,22 +84,9 @@ class Header extends React.Component {
                     </div>
                     <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
                 </div>
-                {/*<div className='pageLinks'>*/}
-                    {/*{ pages.map(( pageKey, index) => (*/}
-                        {/*<PageLink*/}
-                            {/*page={ pageKey }*/}
-                            {/*changePage={ changePage }*/}
-                            {/*active={ currentPage === index }*/}
-                            {/*key={ pageKey }*/}
-                        {/*/>*/}
-                    {/*)) }*/}
-                {/*</div>*/}
             </div>
         );
     }
 }
 
-export default connect(state => ({
-    selectedAccount: state.accounts.selected.name,
-    nodes:state.app.nodes
-}))(Header);
+export default Header;

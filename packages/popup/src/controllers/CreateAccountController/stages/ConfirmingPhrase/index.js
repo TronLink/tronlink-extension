@@ -1,8 +1,7 @@
 import React from 'react';
 import Button from '@tronlink/popup/src/components/Button';
-import WarningComponent from '@tronlink/popup/src/components/WarningComponent';
-
-import { FormattedMessage } from 'react-intl';
+import Toast,{ T } from 'react-toast-mobile';
+import { FormattedMessage, injectIntl} from 'react-intl';
 
 import './ConfirmingPhrase.scss';
 
@@ -11,8 +10,7 @@ class ConfirmingPhrase extends React.Component {
         correctOrder: [],
         selected: [],
         words: [],
-        isValid: false,
-        showWarning:false
+        isValid: false
     };
 
     onClick(wordIndex,word) {
@@ -76,15 +74,12 @@ class ConfirmingPhrase extends React.Component {
         );
     }
     onSubmit(selected,correctOrder){
-        const {onSubmit} = this.props;
+        const { formatMessage } = this.props.intl;
+        const { onSubmit } = this.props;
         const selected2 = selected.map(v=>v.wordIndex);
         for(let v of correctOrder){
             if(v !== selected2[v]){
-                this.setState({showWarning:true},()=>{
-                    setTimeout(()=>{
-                        this.setState({showWarning:false});
-                    },3000)
-                })
+                T.notify(formatMessage({id:'CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG'}));
                 return;
             }
         }
@@ -95,7 +90,7 @@ class ConfirmingPhrase extends React.Component {
             onCancel
         } = this.props;
 
-        const { isValid,selected,correctOrder,showWarning } = this.state;
+        const { isValid,selected,correctOrder } = this.state;
 
         return (
             <div className='insetContainer confirmingPhrase'>
@@ -104,7 +99,7 @@ class ConfirmingPhrase extends React.Component {
                     <FormattedMessage id='CREATION.CREATE.CONFIRM.MNEMONIC.TITLE' />
                 </div>
                 <div className='greyModal'>
-                    <WarningComponent show={ showWarning } id="CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG" />
+                    <Toast />
                     <div className='modalDesc'>
                         <FormattedMessage id='CONFIRMING_PHRASE' />
                     </div>
@@ -128,4 +123,4 @@ class ConfirmingPhrase extends React.Component {
     }
 }
 
-export default ConfirmingPhrase;
+export default injectIntl(ConfirmingPhrase);

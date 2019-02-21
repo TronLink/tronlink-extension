@@ -1,7 +1,7 @@
 import React from 'react';
 import QRCode  from 'qrcode-react';
-import CopyToClipboard from 'react-copy-to-clipboard'
-import swal from 'sweetalert2';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import Toast,{ T } from 'react-toast-mobile';
 import { FormattedMessage } from 'react-intl';
 
 
@@ -18,6 +18,7 @@ const ReceiveController = props => {
                 <FormattedMessage id="ACCOUNT.RECEIVE" />
             </div>
             <div className='greyModal'>
+                <Toast />
                 <div className="desc">
                     <FormattedMessage id="ACCOUNT.RECEIVE.DESC" />
                 </div>
@@ -28,7 +29,7 @@ const ReceiveController = props => {
                     {address}
                 </div>
                 <CopyToClipboard text={address}
-                                 onCopy={() => {swal('Copy Success!','','success');}}>
+                                 onCopy={ ()=>{T.notify('Copied success')}}>
                     <a className="copyAddressBtn">
                         <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
                     </a>

@@ -20,6 +20,7 @@ import SettingController from '@tronlink/popup/src/controllers/SettingController
 
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
+import 'react-toast-mobile/lib/react-toast-mobile.css'
 
 class App extends React.Component {
     render() {

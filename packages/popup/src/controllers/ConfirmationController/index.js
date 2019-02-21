@@ -198,7 +198,7 @@ class ConfirmationController extends React.Component {
 
         return (
             <React.Fragment>
-                <div className='modalDesc hasBottomMargin'>
+                <div className='modalDesc'>
                     <FormattedHTMLMessage
                         id='CONFIRMATIONS.BODY'
                         values={{

@@ -195,7 +195,9 @@ class SettingController extends  React.Component {
                 <div className='greyModal' ref="cell">
                     <div className="option" onClick={ ()=>{this.setting(0)} }>
                         <div className="txt">
-                            <FormattedMessage id="SETTING.TITLE.NODE" />
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.NODE" />
+                            </div>
                             <div className="settingWrap">
                                 <div className="input-group">
                                     <label>
@@ -239,10 +241,13 @@ class SettingController extends  React.Component {
                     </div>
                     <div className="option" onClick={ ()=>{this.setting(1)} }>
                         <div className="txt">
-                            <FormattedMessage id="SETTING.TITLE.CURRENCY" />
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.CURRENCY" />
+                                <div className="unit">{prices.selected}</div>
+                            </div>
                             <div className="settingWrap">
                                 {
-                                    Object.entries(prices.priceList).map(([key,val])=><div key={key} onClick={(e)=>{e.stopPropagation();PopupAPI.selectCurrency(key);}} className={"unit"+(key === prices.selected?" selected":"")}>{key}({val})</div>)
+                                    Object.entries(prices.priceList).map(([key,val])=><div key={key} onClick={(e)=>{e.stopPropagation();PopupAPI.selectCurrency(key);}} className={"unit"+(key === prices.selected?" selected":"")}>{key} ({val})</div>)
                                 }
                             </div>
                         </div>

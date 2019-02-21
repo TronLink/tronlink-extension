@@ -107,7 +107,7 @@ class RegistrationController extends React.Component {
             repeatPassword.isValid === VALIDATION_STATE.VALID;
 
         return (
-            <div className='insetContainer'>
+            <div className='insetContainer logoWrap'>
                 <div className='pageHeader'>
                     <div className="pageHeaderLogoWrap">
                         <div className="logo1"></div>
@@ -121,7 +121,7 @@ class RegistrationController extends React.Component {
                     </div>
                 ) : '' }
                 <div className='greyModal registrationModel'>
-                    <div className='inputGroup hasBottomMargin'>
+                    <div className='inputGroup'>
                         <Input
                             type='password'
                             placeholder='INPUT.PASSWORD'
@@ -141,7 +141,7 @@ class RegistrationController extends React.Component {
                                 null
                         }
                     </div>
-                    <div className='inputGroup hasBottomMargin'>
+                    <div className='inputGroup'>
                         <Input
                             type='password'
                             placeholder='INPUT.REPEAT_PASSWORD'

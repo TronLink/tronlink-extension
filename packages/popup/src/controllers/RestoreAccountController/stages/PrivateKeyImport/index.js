@@ -4,7 +4,6 @@ import TronWeb from 'tronweb';
 
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { BUTTON_TYPE } from '@tronlink/lib/constants';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import './PrivateKeyImport.scss';
@@ -72,19 +71,13 @@ class PrivateKeyImport extends React.Component {
                     </div>
                     <textarea
                         placeholder='Private Key Import'
-                        className='privateKeyInput mono'
+                        className='privateKeyInput'
                         rows={ 5 }
                         value={ privateKey }
                         onChange={ this.onChange }
                         tabIndex={ 1 }
                     />
                     <div className='buttonRow'>
-                        {/*<Button*/}
-                            {/*id='BUTTON.GO_BACK'*/}
-                            {/*type={ BUTTON_TYPE.DANGER }*/}
-                            {/*onClick={ onCancel }*/}
-                            {/*tabIndex={ 3 }*/}
-                        {/*/>*/}
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }

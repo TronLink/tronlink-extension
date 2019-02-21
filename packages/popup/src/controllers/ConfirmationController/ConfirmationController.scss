@@ -1,6 +1,7 @@
 .confirmationController {
     padding:0 30px !important;
     background-color: #505160;
+    justify-content: center !important;
     .greyModal{
         &.confirmModal{
             background-color: #fff;
@@ -8,6 +9,7 @@
             padding: 20px;
             .modalDesc{
                 color: #505160;
+                margin-bottom: 4px;
                 strong{
                     color: #636ACC;
                     font-weight:normal;

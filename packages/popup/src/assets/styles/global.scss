@@ -9,16 +9,11 @@
 .mono {
     font-family: 'Ubuntu Mono', monospace;
 }
-html,body{
-    margin: 0;
-    padding:0;
+html,body,#root {
     height: 600px;
     width: 360px;
-}
-#root {
-    height: 600px;
-    width: 360px;
-    font-family: 'Rubik', sans-serif;
+    //font-family: 'Rubik', sans-serif;
+    font-family: sans-serif;
     cursor: default;
     user-select: none;
     margin: 0;
@@ -34,10 +29,6 @@ html, body {
     display: flex;
     flex: 1;
     flex-direction: column;
-    //background: url('../images/backgroundPattern.png');
-    //background-repeat: repeat;
-    //background-size: 200px;
-    //background-position: center;
     background:#fff;
 }
 
@@ -51,8 +42,11 @@ html, body {
     flex-direction: column;
     padding: 20px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
+    &.logoWrap{
+        padding-top: 93px;
+    }
     .back{
         cursor: pointer;
         position: absolute;
@@ -124,6 +118,7 @@ html, body {
             .modalDesc {
                 font-size: 12px;
                 color:#888998;
+                margin-bottom: 14px;
             }
             & > .walletOptions{
                 flex:1;
@@ -142,6 +137,7 @@ html, body {
                         font-size: 12px;
                         margin-top: 10px;
                         text-align: center;
+                        width: 300px;
                     }
                     .iconWrap{
                         margin-bottom: 35px;
@@ -165,7 +161,7 @@ html, body {
             }
         }
     }
-    &.writingPhrase,&.confirmingPhrase,&.choosingType,&.choosingType2,&.mnemonicImport,&.receive,&.send,&.transactions{ .greyModal{background-color: #fff;} }
+    &.writingPhrase,&.confirmingPhrase,&.choosingType,&.choosingType2,&.mnemonicImport,&.privateKeyImport,&.receive,&.send,&.transactions{ .greyModal{background-color: #fff;} }
     &.choosingType{
         .greyModal{
             padding:0 0 0 24px;
@@ -197,7 +193,7 @@ html, body {
     }
     &.choosingType2{
         .greyModal{
-            padding:0 0 0 24px;
+            padding:0;
             .option{
                 display: flex;
                 justify-content: space-between;
@@ -213,10 +209,22 @@ html, body {
                     border-bottom: 1px solid #EFEFEF;
                     justify-content: space-between;
                     & > span{
+                        font-size: 14px;
+                        color: #515060;
+                    }
+                    & > .span{
                         display: flex;
                         justify-content: space-between;
+                        font-size: 14px;
+                        color: #515060;
+                        .unit{
+                            font-size: 14px;
+                            color: #888998;
+                            flex:1;
+                            text-align: right;
+                        }
                         &:after{
-                            width: 40px;
+                            width: 52px;
                             height: 52px;
                             content: '';
                             background-image: url('../images/new/icon-enter.svg');
@@ -238,6 +246,7 @@ html, body {
                         align-items: center;
                         justify-content: flex-start;
                         margin-top: 10px;
+                        font-size: 14px;
                         &:first-child{
                             margin-top: 0;
                         }
@@ -272,9 +281,10 @@ html, body {
                         label{
                             height: 20px;
                             line-height: 20px;
+                            font-size: 14px;
+                            color: #888998;
                         }
                         .input{
-                            font-size: 14px;
                             height: 36px;
                             line-height:36px;
                             margin-top: 10px;
@@ -283,7 +293,7 @@ html, body {
                             input{
                                 width: 100%;
                                 height: 100%;
-
+                                font-size: 14px;
                                 padding:0 8px;
                                 border:none;
                                 background-color: transparent;
@@ -292,7 +302,7 @@ html, body {
                     }
                 }
                 &:before{
-                    width: 40px;
+                    width: 52px;
                     height: 52px;
                     content: '';
                     background-repeat: no-repeat;
@@ -305,7 +315,7 @@ html, body {
                 }
                 &:nth-child(2){
                     &:before{
-                        background-image: url('../images/new/icon-lock.svg');
+                        background-image: url('../images/new/icon-currency.svg');
                     }
                 }
                 &:nth-child(3){
@@ -315,7 +325,7 @@ html, body {
                 }
                 &.active{
                     .txt{
-                        & > span{
+                        & > .span{
                             &:after{
                                 transform: rotateZ(90deg);
                             }
@@ -325,7 +335,7 @@ html, body {
                 &:first-child{
                     &.active{
                         .settingWrap{
-                            height: 346px;
+                            height: 360px;
                         }
                     }
                 }
@@ -372,7 +382,7 @@ html, body {
                     align-items: center;
                     padding:0 14px 36px 0;
                     .item{
-                        margin:9px 0;
+                        margin-top:18px;
                         width: 100%;
                         height: 40px;
                         display: flex;
@@ -484,14 +494,24 @@ html, body {
                 font-size: 14px;
                 color: #505160;
                 margin-top: 14px;
+                &:before{
+                    height: 14px;
+                    width: 14px;
+                    background-image: url('../images/new/icon-copy2.svg');
+                    content: "";
+                    margin-right: 4px;
+                }
             }
             .input-group{
                 display: flex;
                 flex-direction: column;
                 width: 100%;
+                margin-bottom: 10px;
                 label{
                     height: 40px;
                     line-height: 40px;
+                    font-size: 14px;
+                    color: #888998;
                 }
                 .otherInfo{
                     text-align: right;
@@ -563,6 +583,7 @@ html, body {
                             span{
                                 &:first-child{
                                     flex:1;
+                                    width:154px;
                                     overflow: hidden;
                                     white-space: nowrap;
                                     text-overflow: ellipsis;
@@ -664,6 +685,11 @@ html, body {
                 padding:4px 0;
                 .statusIcon{
                     width: 20px;
+                }
+            }
+            & > .inputGroup{
+                &:nth-child(2){
+                    margin:8px 0 30px 0;
                 }
             }
         }

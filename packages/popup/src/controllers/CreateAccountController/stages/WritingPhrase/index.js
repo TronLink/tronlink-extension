@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 
 import { FormattedMessage } from 'react-intl';
 import { BUTTON_TYPE } from '@tronlink/lib/constants';
@@ -23,7 +23,7 @@ const WritingPhrase = props => {
                 <div className='modalDesc'>
                     <FormattedMessage id='WRITING_PHRASE' />
                 </div>
-                <div className='wordList mono'>
+                <div className='wordList'>
                     { mnemonic.split(' ').map((word, index) => (
                         <div className='word' key={ index }>
                             { word.trim() }

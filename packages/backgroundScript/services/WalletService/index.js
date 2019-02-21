@@ -191,8 +191,8 @@ class Wallet extends EventEmitter {
             return extensionizer.windows.create({
                 url: 'packages/popup/build/index.html',
                 type: 'popup',
-                width: 436,
-                height: 636,
+                width: 360,
+                height: 600,
                 left: 25,
                 top: 25
             }, window => this.popup = window);
@@ -201,8 +201,8 @@ class Wallet extends EventEmitter {
         this.popup = await extensionizer.windows.create({
             url: 'packages/popup/build/index.html',
             type: 'popup',
-            width: 436,
-            height: 636,
+            width: 360,
+            height: 600,
             left: 25,
             top: 25
         });
@@ -223,7 +223,7 @@ class Wallet extends EventEmitter {
         if(this.isPolling && this.shouldPoll)
             return; // Don't poll if already polling
 
-        if(this.pollg && !this.shouldPoll)
+        if(this.polling && !this.shouldPoll)
             return this.shouldPoll = true;
 
         logger.info('Started polling');
@@ -239,20 +239,25 @@ class Wallet extends EventEmitter {
     async refresh() {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
-            await account.update();
-
-            account.updateTransactions()
-                .then(() => {
-                    if(account.address === this.selectedAccount)
-                        this.emit('setAccount', account.address);
-
-                    this.emit('setAccounts', this.getAccounts());
-                });
-
-            if(account.address === this.selectedAccount)
+            if(account.address === this.selectedAccount) {
+                await account.update();
+                await account.updateTransactions();
                 this.emit('setAccount', account.address);
-
-            this.emit('setAccounts', this.getAccounts());
+                this.emit('setAccounts', this.getAccounts());
+            }
+            // await account.update();
+            // account.updateTransactions()
+            //     .then(() => {
+            //         if(account.address === this.selectedAccount)
+            //             this.emit('setAccount', account.address);
+            //
+            //         this.emit('setAccounts', this.getAccounts());
+            //     });
+            //
+            // if(account.address === this.selectedAccount)
+            //     this.emit('setAccount', account.address);
+            //
+            // this.emit('setAccounts', this.getAccounts());
         }
     }
 

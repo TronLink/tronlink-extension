@@ -6,6 +6,7 @@ import Button from '@tronlink/popup/src/components/Button';
 import {VALIDATION_STATE} from "@tronlink/lib/constants";
 import TronWeb from "tronweb";
 import swal from 'sweetalert2';
+import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 class SendController extends React.Component {
     constructor(props){
@@ -33,11 +34,8 @@ class SendController extends React.Component {
         }
     }
     componentDidMount() {
-        const {selectedToken} = this.state;
-        const {selected,selectedToken:token} = this.props.accounts;
-        selectedToken.id = token.id;
-        selectedToken.name = token.name;
-        selectedToken.amount = selected.balance / Math.pow(10, token.decimals);
+        let {selectedToken,selected} = this.props.accounts;
+        selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 , 6) : selectedToken.amount;
         this.setState({selectedToken});
     }
     componentWillReceiveProps(nextProps){
@@ -195,10 +193,13 @@ class SendController extends React.Component {
         const { isOpen,selectedToken,loading } = this.state;
         const {onCancel} = this.props;
         const {selected, accounts} = this.props.accounts;
-        const trx = ["_",{name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg}];
-        const tokens = [trx,...Object.entries({...selected.tokens.basic,...selected.tokens.smart}).sort((a,b)=>b[1].balance/Math.pow(10,b[1].decimals) - a[1].balance/Math.pow(10,a[1].decimals))];
+        const trx = {tokenId:'_',name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg};
+        let tokens = {...selected.tokens.basic,...selected.tokens.smart};
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
+        tokens = [trx,...tokens];
+        console.log(tokens);
         return (
-            <div className='insetContainer send'>
+            <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
                 <div className='pageHeader'>
                     <div className="back" onClick={onCancel}></div>
                     <FormattedMessage id="ACCOUNT.SEND"/>
@@ -206,7 +207,7 @@ class SendController extends React.Component {
                 <div className='greyModal'>
                     <div className="input-group">
                         <label><FormattedMessage id="ACCOUNT.SEND.PAY_ACCOUNT"/></label>
-                        <div className={"input dropDown"+(isOpen.account?" isOpen":"")} onClick={ ()=>{isOpen.account = !isOpen.account; this.setState({isOpen})} }>
+                        <div className={"input dropDown"+(isOpen.account?" isOpen":"")} onClick={ (e)=>{e.stopPropagation();isOpen.token =false ;isOpen.account = !isOpen.account; this.setState({isOpen})} }>
                             <div className="selected">{ selected.address }</div>
                             <div className="dropWrap" style={isOpen.account?(Object.entries(accounts).length<=5?{height:36*Object.entries(accounts).length}:{height:180,overflow:'scroll'}):{}}>
                                 {
@@ -227,11 +228,11 @@ class SendController extends React.Component {
                     </div>
                     <div className="input-group">
                         <label><FormattedMessage id="ACCOUNT.SEND.CHOOSE_TOKEN"/></label>
-                        <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ ()=>{isOpen.token = !isOpen.token; this.setState({isOpen})} }>
+                        <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ (e)=>{e.stopPropagation();isOpen.account=false;isOpen.token = !isOpen.token; this.setState({isOpen})} }>
                             <div className="selected"><span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
                             <div className="dropWrap" style={isOpen.token?(tokens.length<=5?{height:36*tokens.length}:{height:180,overflow:'scroll'}):{}}>
                                 {
-                                    tokens.map(([id,{balance,name,decimals}])=>{
+                                    tokens.map(({tokenId:id,balance,name,decimals})=>{
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)

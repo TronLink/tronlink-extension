@@ -1,10 +1,10 @@
 .writingPhrase .wordList {
-    margin: 20px 0;
+    margin-bottom: 30px;
     background: #F7F8FA;
     border-radius: 2px;
     padding: 15px;
     text-align: center;
-    font-size: 17px;
+    font-size: 14px;
     line-height: 25px;
     display: flex;
     flex-wrap: wrap;
@@ -16,6 +16,7 @@
         background-color: #fff;
         padding:2px 0;
         margin:0 5% 8px 0;
+        color: #505160;
         &:nth-child(3n){
             margin-right:0;
         }
