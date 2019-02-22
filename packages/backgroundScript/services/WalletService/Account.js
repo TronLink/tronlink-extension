@@ -141,7 +141,7 @@ class Account {
         } = StorageService.getAccount(this.address);
 
         // Old TRC10 structure are no longer compatible
-        tokens.basic = {};
+        //tokens.basic = {};
 
         // Remove old token transfers so they can be fetched again
         Object.keys(this.transactions).forEach(txID => {

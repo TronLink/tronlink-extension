@@ -17,7 +17,6 @@ class  TransactionsController extends React.Component{
         const {address} = accounts.selected;
         const {id='_',name='TRX',decimals=6} = accounts.selectedToken;
         const transactionGroup = accounts.selected.transactions[id];
-        console.log(transactionGroup);
         return (
             <div className='insetContainer transactions'>
                 <div className='pageHeader'>
@@ -38,35 +37,37 @@ class  TransactionsController extends React.Component{
                             <FormattedMessage id="ACCOUNT.SEND"  />
                         </div>
                     </div>
-                    <div className="transaction">
+                    <div className="transaction scroll">
                         {
-                            Object.entries(transactionGroup).map(([v, transactions], i) =>
-                                <div className="lists" style={i == index ? {display: 'flex'} : {display: 'none'}}>
-                                    {
-                                        transactions.map(v => {
-                                            const direction = v.transferToAddress === address ? 'receive' : 'send';
-                                            const addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
-                                            return (
-                                                <div className={"item " + direction}>
-                                                    <div className="left">
-                                                        <div
-                                                            className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
-                                                        <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
+                            transactionGroup ?
+                                Object.entries(transactionGroup).map(([v, transactions], i) =>
+                                    <div className="lists" style={i == index ? {display: 'flex'} : {display: 'none'}}>
+                                        {
+                                            transactions.map(v => {
+                                                const direction = v.transferToAddress === address ? 'receive' : 'send';
+                                                const addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
+                                                return (
+                                                    <div className={"item " + direction}>
+                                                        <div className="left">
+                                                            <div
+                                                                className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
+                                                            <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
+                                                        </div>
+                                                        <div className="right">
+                                                            {v.amount / Math.pow(10, decimals)}
+                                                        </div>
                                                     </div>
-                                                    <div className="right">
-                                                        {v.amount / Math.pow(10, decimals)}
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    }
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                )
+                                :
+                                <div className="noData">
+                                    <FormattedMessage id="TRANSACTIONS.NO_DATA"  />
                                 </div>
-                            )
-
                         }
-
-
-                    </div>
+                        </div>
                 </div>
                 <div className="buttonGroup">
                     <button className="receive" onClick={ () => PopupAPI.changeState(APP_STATE.RECEIVE) }>

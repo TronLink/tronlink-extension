@@ -389,9 +389,9 @@ class AccountsPage extends React.Component {
                 { accounts.selected.address ? this.renderAccountInfo(accounts,prices):null }
                 <div class="listWrap">
                     { this.renderResource(accounts.accounts[accounts.selected.address]) }
-                    <CustomScroll heightRelativeToParent="100%">
+                    <div className="scroll">
                         { this.renderTokens(accounts.selected,prices) }
-                    </CustomScroll>
+                    </div>
                 </div>
             </div>
         );

@@ -108,6 +108,7 @@
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",
 
+    "TRANSACTIONS.NO_DATA": "No data",
     "TRANSACTIONS.CURRENCY": "{amount, number} {currency}",
     "TRANSACTIONS.BANDWIDTH": "Bandwidth",
     "TRANSACTIONS.ENERGY": "Energy",

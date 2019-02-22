@@ -377,6 +377,12 @@ html, body {
                 flex:1;
                 width: 100%;
                 overflow: auto;
+                .noData{
+                    height: 50px;
+                    text-align: center;
+                    line-height: 50px;
+                    color: #888998;
+                }
                 .lists{
                     flex-direction: column;
                     align-items: center;
@@ -593,7 +599,7 @@ html, body {
                         }
                         &:after{
                             content: '';
-                            transition:all .2s ease-in-out; 
+                            transition:all .2s ease-in-out;
                             width: 12px;
                             height: 8px;
                             background-image: url('../../assets/images/new/icon-drop-down.svg');
@@ -701,7 +707,7 @@ html, body {
         border-radius: 4px;
         padding: 20px 15px;
         color: #FFFFFF;
-    
+
         span:first-of-type {
             display: block;
             text-align: center;
@@ -783,5 +789,21 @@ html, body {
             text-decoration: none !important;
             display: inline !important;
         }
+    }
+}
+.scroll{
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background: #C2C8D5;
+        position:relative;
+        left:-5px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
     }
 }

@@ -121,29 +121,27 @@ class Wallet extends EventEmitter {
 
         this.isPolling = true;
         const accounts = Object.values(this.accounts);
-
         for(const account of accounts) {
-            await account.update();
+            if(account.address === this.selectedAccount){
+                await account.update();
+                account.updateTransactions()
+                    .then(() => {
+                        if(account.address === this.selectedAccount)
+                            this.emit('setAccount', this.selectedAccount);
 
-            account.updateTransactions()
-                .then(() => {
-                    if(account.address === this.selectedAccount)
-                        this.emit('setAccount', account.address);
-
-                    this.emit('setAccounts', this.getAccounts());
-                });
-
-            if(account.address === this.selectedAccount)
-                this.emit('setAccount', account.address);
-
-            this.emit('setAccounts', this.getAccounts());
+                        this.emit('setAccounts', this.getAccounts());
+                    });
+            }
+            // if(account.address === this.selectedAccount)
+            //     this.emit('setAccount', account.address);
+            //
+            // this.emit('setAccounts', this.getAccounts());
         }
-
         this.isPolling = false;
-
         setTimeout(() => (
             this._pollAccounts()
         ), 10 * 1000);
+
     }
 
     async _updatePrice() {
@@ -152,7 +150,7 @@ class Wallet extends EventEmitter {
 
         const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH')
             .then(res => res.data)
-            .catch(err => logger.error(err), false);
+            .catch(err => {logger.error(err)});
 
         if(!prices)
             return logger.warn('Failed to update prices');
@@ -223,7 +221,7 @@ class Wallet extends EventEmitter {
         if(this.isPolling && this.shouldPoll)
             return; // Don't poll if already polling
 
-        if(this.polling && !this.shouldPoll)
+        if(this.isPolling && !this.shouldPoll)
             return this.shouldPoll = true;
 
         logger.info('Started polling');
