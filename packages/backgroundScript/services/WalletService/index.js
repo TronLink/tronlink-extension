@@ -124,13 +124,18 @@ class Wallet extends EventEmitter {
         for(const account of accounts) {
             if(account.address === this.selectedAccount){
                 await account.update();
-                account.updateTransactions()
-                    .then(() => {
-                        if(account.address === this.selectedAccount)
-                            this.emit('setAccount', this.selectedAccount);
 
-                        this.emit('setAccounts', this.getAccounts());
-                    });
+                if(account.address === this.selectedAccount)
+                    this.emit('setAccount', this.selectedAccount);
+
+                this.emit('setAccounts', this.getAccounts());
+                // account.updateTransactions()
+                //     .then(() => {
+                //         if(account.address === this.selectedAccount)
+                //             this.emit('setAccount', this.selectedAccount);
+                //
+                //         this.emit('setAccounts', this.getAccounts());
+                //     });
             }
             // if(account.address === this.selectedAccount)
             //     this.emit('setAccount', account.address);

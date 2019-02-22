@@ -26,7 +26,7 @@ import {
 import {
     setAccount,
     setAccounts,
-    setTokenId
+    setToken
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -113,7 +113,7 @@ export const app = {
             selectedAccount,
             prices,
             confirmations,
-            //selectedToken
+            selectedToken
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -121,16 +121,16 @@ export const app = {
             PopupAPI.getSelectedAccount(),
             PopupAPI.getPrices(),
             PopupAPI.getConfirmations(),
-            //PopupAPI.getSelectedToken()
+            PopupAPI.getSelectedToken()
         ]);
-        //console.log(accounts,prices,PopupAPI.getSelectedToken(),'selectedToken');
+
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
         this.store.dispatch(setPriceList(prices.priceList));
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
-        //this.store.dispatch(setTokenId(selectedToken));
+        this.store.dispatch(setToken(selectedToken));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -172,7 +172,7 @@ export const app = {
         ));
 
         this.duplex.on('setTokenId', tokenId => this.store.dispatch(
-            setTokenId(tokenId)
+            setToken(tokenId)
         ));
 
     },

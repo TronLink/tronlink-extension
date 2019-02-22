@@ -144,7 +144,7 @@ export default {
     },
 
     getSelectedToken(){
-        this.duplex.send('getSelectedToken');
+        return this.duplex.send('getSelectedToken');
     }
 
 };

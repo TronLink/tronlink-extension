@@ -42,7 +42,7 @@ class Account {
         else this._importPrivateKey(importData);
 
         this.loadCache();
-        this._cacheTransactions();
+        //this._cacheTransactions();
     }
 
     static generateAccount() {

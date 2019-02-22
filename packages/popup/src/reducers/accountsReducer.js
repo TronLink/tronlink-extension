@@ -4,7 +4,7 @@ import {
 } from 'redux-starter-kit';
 
 export const setAccount = createAction('setAccount');
-export const setTokenId = createAction('setTokenId');
+export const setToken = createAction('setToken');
 export const setAccounts = createAction('setAccounts');
 
 export const accountsReducer = createReducer({
@@ -51,7 +51,7 @@ export const accountsReducer = createReducer({
     [ setAccounts ]: (state, { payload }) => {
         state.accounts = payload;
     },
-    [ setTokenId ]: (state, { payload }) => {
+    [ setToken ]: (state, { payload }) => {
         state.selectedToken = payload;
     }
 });
