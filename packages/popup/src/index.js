@@ -11,7 +11,6 @@ import * as Sentry from '@sentry/browser';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
-import StorageService from '@tronlink/backgroundScript/services/StorageService';
 import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';

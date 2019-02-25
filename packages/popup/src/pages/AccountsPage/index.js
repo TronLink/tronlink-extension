@@ -94,6 +94,7 @@ class AccountsPage extends React.Component {
     }
 
     renderAccountInfo(accounts,prices){
+        const { formatMessage } = this.props.intl;
         const {showAccountList,showMenuList} = this.state;
         const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
         const p = (prices.priceList[prices.selected] * accounts.selected.balance / Math.pow(10,6)).toFixed(2);
@@ -104,7 +105,7 @@ class AccountsPage extends React.Component {
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>
                             <div onClick={ this.onExport } className="item">
                                 <span className="icon backup"></span>
-                                <FormattedMessage id="MENU.BACKUP" />
+                                <FormattedMessage id="ACCOUNTS.EXPORT" />
                             </div>
                             <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
                                 <span className="icon link"></span>
@@ -154,7 +155,7 @@ class AccountsPage extends React.Component {
                 <div className="row2">
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
                     <CopyToClipboard text={accounts.selected.address}
-                                    onCopy={() => {T.notify('Copied success')} }>
+                                    onCopy={() => {T.notify(formatMessage({id:'TOAST.COPY'}))} }>
                         <span className='copy'></span>
                     </CopyToClipboard>
 

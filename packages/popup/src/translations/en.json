@@ -51,7 +51,7 @@
     "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
     "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
-    "CREATION.CREATE.TITLE": "Create wallet",
+    "CREATION.CREATE.TITLE": "Create Account",
     "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "Confirm mnemonic phrase",
     "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "Mnemonic error",
     "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
@@ -218,7 +218,9 @@
     "COMMON.BALANCE":"Balance",
 
     "MENU.BACKUP":"Back up",
-    "MENU.ACCOUNT_DETAIL":"Account detail",
+    "MENU.ACCOUNT_DETAIL":"Account Detail",
     "MENU.WHITE_LIST":"White list manage",
-    "MENU.DELETE_WALLET":"Delete wallet"
+    "MENU.DELETE_WALLET":"Delete Account",
+
+    "TOAST.COPY":"Copied"
 }

@@ -134,6 +134,7 @@ class SendController extends React.Component {
         });
     }
     onSend(){
+        BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
         this.setState({
             loading: true,
             success: false
@@ -182,7 +183,7 @@ class SendController extends React.Component {
                 loading: false
             })
         }).catch(error => {
-            swal(error,'','error');
+            swal(JSON.stringify(error),'','error');
             this.setState({
                 loading: false
             })
@@ -197,7 +198,6 @@ class SendController extends React.Component {
         let tokens = {...selected.tokens.basic,...selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
         tokens = [trx,...tokens];
-        console.log(tokens);
         return (
             <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
                 <div className='pageHeader'>
@@ -229,7 +229,8 @@ class SendController extends React.Component {
                     <div className="input-group">
                         <label><FormattedMessage id="ACCOUNT.SEND.CHOOSE_TOKEN"/></label>
                         <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ (e)=>{e.stopPropagation();isOpen.account=false;isOpen.token = !isOpen.token; this.setState({isOpen})} }>
-                            <div className="selected"><span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
+                            <div className="selected">
+                                <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
                             <div className="dropWrap" style={isOpen.token?(tokens.length<=5?{height:36*tokens.length}:{height:180,overflow:'scroll'}):{}}>
                                 {
                                     tokens.map(({tokenId:id,balance,name,decimals})=>{

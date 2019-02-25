@@ -129,13 +129,13 @@ class Wallet extends EventEmitter {
                     this.emit('setAccount', this.selectedAccount);
 
                 this.emit('setAccounts', this.getAccounts());
-                // account.updateTransactions()
-                //     .then(() => {
-                //         if(account.address === this.selectedAccount)
-                //             this.emit('setAccount', this.selectedAccount);
-                //
-                //         this.emit('setAccounts', this.getAccounts());
-                //     });
+                account.updateTransactions()
+                    .then(() => {
+                        if(account.address === this.selectedAccount)
+                            this.emit('setAccount', this.selectedAccount);
+
+                        this.emit('setAccounts', this.getAccounts());
+                    });
             }
             // if(account.address === this.selectedAccount)
             //     this.emit('setAccount', account.address);
@@ -240,28 +240,26 @@ class Wallet extends EventEmitter {
     }
 
     async refresh() {
+        let res;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                await account.update();
-                await account.updateTransactions();
-                this.emit('setAccount', account.address);
-                this.emit('setAccounts', this.getAccounts());
+                const  r = await Promise.all([
+                    account.update(),
+                    //account.updateTransactions()
+                ]).catch(e=>false);
+                if(r){
+                    res = true;
+                    this.emit('setAccount', account.address);
+                    this.emit('setAccounts', this.getAccounts());
+                }else{
+                    res = false;
+                }
+            }else{
+                continue;
             }
-            // await account.update();
-            // account.updateTransactions()
-            //     .then(() => {
-            //         if(account.address === this.selectedAccount)
-            //             this.emit('setAccount', account.address);
-            //
-            //         this.emit('setAccounts', this.getAccounts());
-            //     });
-            //
-            // if(account.address === this.selectedAccount)
-            //     this.emit('setAccount', account.address);
-            //
-            // this.emit('setAccounts', this.getAccounts());
         }
+        return res;
     }
 
     changeState(appState) {
@@ -614,7 +612,7 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return StorageService.selectedTokenId;
+        return JSON.stringify(StorageService.selectedTokenId) === '{}' ? {id:'_',name:'TRX',amount:0,decimals:6}:StorageService.selectedTokenId;
     }
 
     getAccountDetails(address) {

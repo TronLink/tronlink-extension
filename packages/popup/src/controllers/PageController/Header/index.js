@@ -58,15 +58,16 @@ class Header extends React.Component {
             <div className='header'>
                 <Toast />
                 <div className='titleContainer'>
-                    <div className="fun" onClick={ ()=>{
+                    <div className="fun" onClick={()=>{
                         if(!refresh){
-                            this.setState({refresh:true});
-                            PopupAPI.refresh();
-                            T.loading();
-                            setTimeout(()=>{
-                                this.setState({refresh:false});
-                                T.loaded()
-                            },3000);
+                            this.setState({refresh:true}, async()=>{
+                                T.loading();
+                                const r = await PopupAPI.refresh();
+                                if(r){
+                                    this.setState({refresh:false});
+                                    T.loaded()
+                                }
+                            });
                         }
 
                     }}
