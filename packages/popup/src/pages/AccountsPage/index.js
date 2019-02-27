@@ -7,6 +7,7 @@ import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from '@tronlink/lib/api';
 import Utils  from '@tronlink/lib/utils';
 import Header from '@tronlink/popup/src/controllers/PageController/Header';
+import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
 
@@ -44,7 +45,8 @@ class AccountsPage extends React.Component {
         }
     }
     componentDidMount(){
-        const t = {name:'TRX',id:'_',amount:0,decimals:6};
+        const { prices } = this.props;
+        const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
     }
     componentDidUpdate() {
@@ -100,7 +102,7 @@ class AccountsPage extends React.Component {
         const { formatMessage } = this.props.intl;
         const {showAccountList,showMenuList} = this.state;
         const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
-        const p = (prices.priceList[prices.selected] * accounts.selected.balance / Math.pow(10,6)).toFixed(2);
+        const p = (prices.priceList[prices.selected] * (accounts.selected.balance + accounts.selected.frozenBalance) / Math.pow(10,6)).toFixed(2);
         return (
             <div className="accountInfo">
                 <div className="row1">
@@ -233,18 +235,23 @@ class AccountsPage extends React.Component {
             account?
             <div className="resource">
                 <div className="cell">
-                    <div className="icon icon-bandwidth"></div>
-                    <div className="info">
+                    <div className="title">
                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.BANDWIDTH' />
-                        <span>{account.netUsed}/{account.netLimit}</span>
+                        <div className="num">
+                            {account.netLimit - account.netUsed}<span>/{account.netLimit}</span>
+                        </div>
                     </div>
+                    <ProcessBar percentage={(account.netLimit - account.netUsed)/account.netLimit} />
                 </div>
+                <div className="line"></div>
                 <div className="cell">
-                    <div className="icon icon-energy"></div>
-                    <div className="info">
-                        <FormattedMessage id='TRANSACTIONS.ENERGY' />
-                        <span>{account.energyUsed}/{account.energy}</span>
+                    <div className="title">
+                        <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
+                        <div className="num">
+                            {account.energy - account.energyUsed}<span>/{account.energy}</span>
+                        </div>
                     </div>
+                    <ProcessBar percentage={(account.energy - account.energyUsed)/account.energy} />
                 </div>
             </div>
                 :
@@ -255,7 +262,7 @@ class AccountsPage extends React.Component {
     renderTokens(account,prices){
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         const trx_price = prices.priceList[prices.selected];
-        const trx = {tokenId:"_",name:"TRX",balance:account.balance,abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = {tokenId:"_",name:"TRX",balance:(account.balance + account.frozenBalance),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...account.tokens.basic,...account.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
         return (
@@ -267,9 +274,16 @@ class AccountsPage extends React.Component {
                             .toString();
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
-                                        if(tokenId.match(/^T/))
-                                            return;
-                                        PopupAPI.setSelectedToken({id:tokenId,name:token.name,decimals:token.decimals,amount});
+                                        let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                        if(tokenId === '_'){
+                                            o.frozenBalance = new BigNumber(account.frozenBalance)
+                                                .shiftedBy(-token.decimals)
+                                                .toString();
+                                            o.balance = new BigNumber(account.balance)
+                                                .shiftedBy(-token.decimals)
+                                                .toString();
+                                        }
+                                        PopupAPI.setSelectedToken(o);
                                         PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>

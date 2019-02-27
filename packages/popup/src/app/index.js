@@ -34,7 +34,6 @@ class App extends React.Component {
     }
     render() {
         const { appState,accounts,prices,nodes,language } = this.props;
-        console.log(appState,language,this.messages[language]);
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -65,7 +64,7 @@ class App extends React.Component {
                 dom =  <SendController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.TRANSACTIONS:
-                dom = <TransactionsController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.SETTING:
                 dom = <SettingController language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />

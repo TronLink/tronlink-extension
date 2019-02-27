@@ -126,8 +126,8 @@
 
   "CONFIRMATIONS.HEADER": "确认请求",
   "CONFIRMATIONS.BODY": "The website {hostname} is requesting your permission to {action}",
-  "CONFIRMATIONS.RESOURCE.BANDWIDTH": "带宽",
-  "CONFIRMATIONS.RESOURCE.ENERGY": "能量",
+  "CONFIRMATIONS.RESOURCE.BANDWIDTH": "Bandwidth",
+  "CONFIRMATIONS.RESOURCE.ENERGY": "Energy",
   "CONFIRMATIONS.COST": "Cost",
   "CONFIRMATIONS.TOKEN": "Token名称",
   "CONFIRMATIONS.RECIPIENT": "接收地址",
@@ -223,5 +223,10 @@
   "MENU.DELETE_WALLET":"アカウントを削除する",
 
   "TOAST.COPY":"コピー済み",
-  "ALERT.DELETE_ACCOUNT.ONLY_ONE":"少なくとも1つ以上のアカウントを保管してください"
+  "ALERT.DELETE_ACCOUNT.ONLY_ONE":"少なくとも1つ以上のアカウントを保管してください",
+
+  "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"Available balance",
+  "TRANSACTION.TOKEN_INFO.FROZEN_BALANCE":"Frozen balance",
+  "TRANSACTION.TOKEN_INFO.CONTRACT":"Contract",
+  "TRANSACTION.TOKEN_INFO.DETAIL":"Detail"
 }

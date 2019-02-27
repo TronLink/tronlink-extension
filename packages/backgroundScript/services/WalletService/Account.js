@@ -26,6 +26,7 @@ class Account {
         this.energy = 0;
         this.energyUsed = 0;
         this.balance = 0;
+        this.frozenBalance = 0;
         this.netUsed = 0;
         this.netLimit = 5000;
         this.lastUpdated = 0;
@@ -130,6 +131,7 @@ class Account {
             type,
             name,
             balance,
+            frozenBalance,
             transactions,
             tokens,
             netLimit,
@@ -158,6 +160,7 @@ class Account {
         this.type = type;
         this.name = name;
         this.balance = balance;
+        this.frozenBalance = frozenBalance;
         this.transactions = transactions;
         this.tokens = tokens;
         this.energy = energy;
@@ -330,9 +333,8 @@ class Account {
                     price
                 };
             }
-
-
         }
+        this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
         this.balance = account.balance || 0;
         this.lastUpdated = Date.now();
 
@@ -429,6 +431,7 @@ class Account {
             name: this.name,
             address: this.address,
             balance: this.balance,
+            frozenBalance: this.frozenBalance,
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
