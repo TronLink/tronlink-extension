@@ -22,7 +22,12 @@ class RegistrationController extends React.Component {
             showCriteria:false
         },
         loading: false,
-        error: false
+        error: false,
+        languages:[
+            {name:'English',key:'en',selected:true},
+            {name:'中文',key:'zh',selected:false},
+            {name:'日本語',key:'ja',selected:false},
+        ]
     };
 
     constructor() {
@@ -99,16 +104,29 @@ class RegistrationController extends React.Component {
             password,
             repeatPassword,
             loading,
-            error
+            error,
+            languages
         } = this.state;
-
+        const { language } = this.props;
         const arePasswordsValid =
             password.isValid === VALIDATION_STATE.VALID &&
             repeatPassword.isValid === VALIDATION_STATE.VALID;
-
+        const fliterLanguage = languages.filter(v=>v.key===language)[0];
         return (
             <div className='insetContainer logoWrap'>
-                <div className='pageHeader'>
+                <div className="setLanguage">
+                    <div className={"language "+fliterLanguage.key}>
+                        {
+                            fliterLanguage.name
+                        }
+                        <div className="drop">
+                            {
+                                languages.map(({key,name})=><div onClick={ ()=>PopupAPI.setLanguage(key) } className={"item "+key}>{name}</div>)
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div className='pageHeader hasBottomMargin'>
                     <div className="pageHeaderLogoWrap">
                         <div className="logo1"></div>
                         <div className="logo2"></div>

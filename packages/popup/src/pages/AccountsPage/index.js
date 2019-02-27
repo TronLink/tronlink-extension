@@ -1,6 +1,5 @@
 import React from 'react';
 
-import CustomScroll from 'react-custom-scroll';
 import CopyToClipboard from 'react-copy-to-clipboard'
 import swal from 'sweetalert2';
 import Toast,{ T } from 'react-toast-mobile';
@@ -44,13 +43,17 @@ class AccountsPage extends React.Component {
             showDelete:false
         }
     }
+    componentDidMount(){
+        const t = {name:'TRX',id:'_',amount:0,decimals:6};
+        PopupAPI.setSelectedToken(t);
+    }
+    componentDidUpdate() {
 
-    componentDidUpdate(prevProps) {
-        const { selected: previous } = prevProps.accounts;
-        const { selected } = this.props.accounts;
-
-        if(selected.name !== previous.name)
-            this.props.setSubTitle(selected.name);
+        // const { selected: previous } = prevProps.accounts;
+        // const { selected } = this.props.accounts;
+        //
+        // if(selected.name !== previous.name)
+        //     this.props.setSubTitle(selected.name);
     }
 
     onClick(address) {
@@ -63,9 +66,9 @@ class AccountsPage extends React.Component {
     }
 
     async onDelete() {
-
+        const { formatMessage } = this.props.intl;
         if(Object.keys(this.props.accounts.accounts).length === 1){
-            swal('At least one account is required','','warning');
+            swal(formatMessage({id:'At least one account is required'}),'','warning');
         } else {
             this.setState({
                 showDelete:true
@@ -250,6 +253,7 @@ class AccountsPage extends React.Component {
 
     }
     renderTokens(account,prices){
+        BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         const trx_price = prices.priceList[prices.selected];
         const trx = {tokenId:"_",name:"TRX",balance:account.balance,abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...account.tokens.basic,...account.tokens.smart};
@@ -258,19 +262,14 @@ class AccountsPage extends React.Component {
             <div className="tokens">
                 {
                     [trx,...tokens].map(({tokenId,...token})=>{
-                        const BN = BigNumber.clone({
-                            DECIMAL_PLACES: token.decimals,
-                            ROUNDING_MODE: Math.min(8, token.decimals)
-                        });
-
-                        const amount = new BN(token.balance)
+                        const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
                                         if(tokenId.match(/^T/))
                                             return;
-                                        PopupAPI.selectTokenId({id:tokenId,name:token.name,decimals:token.decimals,amount});
+                                        PopupAPI.setSelectedToken({id:tokenId,name:token.name,decimals:token.decimals,amount});
                                         PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>

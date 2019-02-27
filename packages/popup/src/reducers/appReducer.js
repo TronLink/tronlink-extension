@@ -13,6 +13,7 @@ export const setNodes = createAction('setNodes');
 export const setPage = createAction('setPage');
 export const setPriceList = createAction('setPriceList');
 export const setCurrency = createAction('setCurrency');
+export const setLanguage = createAction('setLanguage');
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
@@ -24,7 +25,8 @@ export const appReducer = createReducer({
     prices: {
         priceList: {},
         selected: false
-    }
+    },
+    language:'en',
 }, {
     [ setAppState ]: (state, { payload }) => {
         state.appState = payload;
@@ -40,5 +42,8 @@ export const appReducer = createReducer({
     },
     [ setPage ]: (state, { payload }) => {
         state.currentPage = payload;
+    },
+    [ setLanguage ]: (state, { payload }) => {
+        state.language = payload;
     }
 });

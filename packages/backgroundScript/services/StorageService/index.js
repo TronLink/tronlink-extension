@@ -15,7 +15,7 @@ const StorageService = {
         'prices',
         'pendingTransactions',
         'tokenCache',
-        'selectedTokenId'
+        'selectedToken'
     ],
 
     storage: extensionizer.storage.local,
@@ -39,7 +39,8 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-    selectedTokenId:{},
+    selectedToken:{},
+    language: 'en',
     ready: false,
     password: false,
 
@@ -184,10 +185,16 @@ const StorageService = {
         this.save('transactions', 'accounts');
     },
 
-    selectTokenId(tokenId) {
-        logger.info('Saving tokenId', tokenId);
-        this.selectedTokenId = tokenId;
-        this.save('selectedTokenId');
+    setSelectedToken(token) {
+        logger.info('Saving selectedToken', token);
+        this.selectedToken = token;
+        this.save('selectedToken');
+    },
+
+    setLanguage(language){
+        logger.info('Saving language', language);
+        this.language = language;
+        this.save('language');
     },
 
     migrate() {

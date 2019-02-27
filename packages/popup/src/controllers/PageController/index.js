@@ -88,9 +88,9 @@ class PageController extends React.Component {
                                 }}
                             >
                                 <Page
-                                    changePage={ this.changePage }
-                                    setSubTitle={ this.setSubTitle }
-                                    onPageChange={ callback => this.onPageChange(index, callback) }
+                                    //changePage={ this.changePage }
+                                    //setSubTitle={ this.setSubTitle }
+                                    //onPageChange={ callback => this.onPageChange(index, callback) }
                                 />
                             </div>
                         );

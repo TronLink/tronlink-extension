@@ -139,12 +139,24 @@ export default {
         this.duplex.send('selectCurrency', currency, false);
     },
 
-    selectTokenId(tokenId) {
-        this.duplex.send('selectTokenId', tokenId, false);
+    setSelectedToken(token) {
+        this.duplex.send('setSelectedToken', token, false);
     },
 
     getSelectedToken(){
         return this.duplex.send('getSelectedToken');
+    },
+
+    //get type of language package
+
+    getLanguage(){
+        return this.duplex.send('getLanguage');
+    },
+
+    setLanguage(language){
+        this.duplex.send('setLanguage',language,false);
     }
+
+
 
 };

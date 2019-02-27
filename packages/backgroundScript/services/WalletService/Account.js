@@ -12,8 +12,8 @@ import {
     SUPPORTED_CONTRACTS
 } from '@tronlink/lib/constants';
 import axios from "axios";
+BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
 const logger = new Logger('WalletService/Account');
-
 class Account {
     constructor(accountType, importData, accountIndex = 0) {
         this.type = accountType;
@@ -36,7 +36,6 @@ class Account {
             basic: {},
             smart: {}
         };
-        this.selectedToken = {};
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
@@ -245,7 +244,7 @@ class Account {
 
         logger.info(`Requested update for ${ address }`);
         const account =  await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
-        const {data:{trc20_tokens:smart}} = await axios.get('https://apilist.tronscan.org/api/token_trc20', {params:{sort:'issue_time',limit:100,start:0}});
+        const {data:{trc20_tokens:smart}} = await axios.get('https://apilist.tronscan.org/api/token_trc20', {params:{showAll:1,sort:'issue_time',limit:100,start:0}});
         const {data:{data:basicTokenPriceList}} = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
         const {data:{data:{rows:smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(!account.address) {
@@ -254,8 +253,8 @@ class Account {
             this.reset();
             return false;
         }
-        this.tokens.basic = {};
-        this.tokens.smart = {};
+        //this.tokens.basic = {};
+        //this.tokens.smart = {};
         const filteredTokens = (account.assetV2 || []).filter(({ value }) => {
             return value > 0;
         });
@@ -297,9 +296,9 @@ class Account {
             const contract = await NodeService.tronWeb.contract().at(contract_address);
             const number = await contract.balanceOf(address).call();
             if (number.balance) {
-                balance = Number(number.balance.toString());
+                balance = new BigNumber(number.balance).toString();
             } else {
-                balance = Number(number.toString());
+                balance = new BigNumber(number).toString();
             }
             if(balance>0){
                 const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
@@ -341,7 +340,6 @@ class Account {
             this.updateBalance(),
             //this.updateTokens(tokens.smart)
         ]);
-        this.selectedToken = StorageService.selectedTokenId;
         logger.info(`Account ${ address } successfully updated`);
         this.save();
     }
@@ -434,8 +432,7 @@ class Account {
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
-            lastUpdated: this.lastUpdated,
-            selectedToken:this.selectedToken
+            lastUpdated: this.lastUpdated
         };
     }
 

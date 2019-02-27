@@ -46,10 +46,13 @@ export default {
         this.duplex.send('popup', 'setCurrency', currency, false);
     },
 
-    setTokenId(tokenId) {
-        this.duplex.send('popup', 'setTokenId', tokenId, false);
-    }
+    setSelectedToken(token) {
+        this.duplex.send('popup', 'setSelectedToken', token, false);
+    },
 
+    setLanguage(language) {
+        this.duplex.send('popup', 'setLanguage', language, false);
+    }
 
 
 };

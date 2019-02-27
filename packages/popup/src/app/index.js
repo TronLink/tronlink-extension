@@ -1,7 +1,6 @@
 import React from 'react';
-
+import { IntlProvider,FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import { APP_STATE } from '@tronlink/lib/constants';
@@ -22,43 +21,72 @@ import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
 import 'react-toast-mobile/lib/react-toast-mobile.css'
 
+import enMessages from '@tronlink/popup/src/translations/en.json';
+import zhMessages from '@tronlink/popup/src/translations/zh.json';
+import jaMessages from '@tronlink/popup/src/translations/ja.json';
+
+
 class App extends React.Component {
+    messages = {
+        en:enMessages,
+        zh:zhMessages,
+        ja:jaMessages
+    }
     render() {
-        const { appState,accounts,prices,nodes } = this.props;
+        const { appState,accounts,prices,nodes,language } = this.props;
+        console.log(appState,language,this.messages[language]);
+        let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
-                return <RegistrationController />;
+                dom = <RegistrationController language={language} />
+                break;
             case APP_STATE.PASSWORD_SET:
-                return <LoginController />;
+                dom = <LoginController />
+                break;
             case APP_STATE.UNLOCKED:
-                return <WalletCreationController />;
+                dom = <WalletCreationController />
+                break;
             case APP_STATE.CREATING:
-                return <CreateAccountController />;
+                dom = <CreateAccountController />
+                break;
             case APP_STATE.RESTORING:
-                return <RestoreAccountController />;
+                dom = <RestoreAccountController />
+                break;
             case APP_STATE.READY:
-                return <PageController />;
+                dom = <PageController />
+                break;
             case APP_STATE.REQUESTING_CONFIRMATION:
-                return <ConfirmationController />;
+                dom = <ConfirmationController />
+                break;
             case APP_STATE.RECEIVE:
-                return <ReceiveController address={accounts.selected.address} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+                dom  = <ReceiveController address={accounts.selected.address} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                break;
             case APP_STATE.SEND:
-                return <SendController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+                dom =  <SendController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                break;
             case APP_STATE.TRANSACTIONS:
-                return <TransactionsController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <TransactionsController accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                break;
             case APP_STATE.SETTING:
-                return <SettingController prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <SettingController language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                break;
             default:
-                return (
+                dom =
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState() }>
                         <FormattedMessage id='ERRORS.UNSUPPORTED_STATE' values={{ appState }} />
                     </div>
-                );
+
         }
+        return (
+            <IntlProvider locale={ language } messages={ this.messages[ language ] }>
+                { dom }
+            </IntlProvider>
+        )
     }
 }
 
 export default connect(state => ({
+    language:state.app.language,
     appState: state.app.appState,
     accounts: state.accounts,
     nodes: state.app.nodes,

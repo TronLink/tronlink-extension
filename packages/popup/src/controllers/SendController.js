@@ -57,6 +57,7 @@ class SendController extends React.Component {
         const {isOpen} = this.state;
         isOpen.token = !isOpen.token;
         this.setState({isOpen,selectedToken},() => this.validateAmount());
+        PopupAPI.setSelectedToken(selectedToken);
     }
     changeAccount(address,e){
         e.stopPropagation();

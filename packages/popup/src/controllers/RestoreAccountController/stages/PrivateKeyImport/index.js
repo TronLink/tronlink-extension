@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 
 import { connect } from 'react-redux';

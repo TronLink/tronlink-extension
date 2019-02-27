@@ -85,7 +85,7 @@ const backgroundScript = {
 
 
         //get the transaction records of token that need to selected
-        duplex.on('selectTokenId', this.walletService.selectTokenId);
+        duplex.on('setSelectedToken', this.walletService.setSelectedToken);
         duplex.on('getSelectedToken', this.walletService.getSelectedToken);
 
         // WalletService: Confirmation responses
@@ -126,6 +126,10 @@ const backgroundScript = {
         // duplex.on('deleteNode', this.nodeService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
         duplex.on('getSmartToken', this.nodeService.getSmartToken);
+
+        // language
+        duplex.on('getLanguage', this.walletService.getLanguage);
+        duplex.on('setLanguage', this.walletService.setLanguage);
 
     },
 
@@ -302,8 +306,12 @@ const backgroundScript = {
             BackgroundAPI.setCurrency(currency)
         ));
 
-        this.walletService.on('setTokenId', tokenId => (
-            BackgroundAPI.setTokenId(tokenId)
+        this.walletService.on('setSelectedToken', token => (
+            BackgroundAPI.setSelectedToken(token)
+        ));
+
+        this.walletService.on('setLanguage', language => (
+            BackgroundAPI.setLanguage(language)
         ));
     }
 };

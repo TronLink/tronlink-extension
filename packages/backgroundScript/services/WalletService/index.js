@@ -562,10 +562,6 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', address);
     }
 
-    selectTokenId(tokenId) {
-        StorageService.selectTokenId(tokenId);
-        this.emit('setTokenId', tokenId);
-    }
 
     selectNode(nodeID) {
         NodeService.selectNode(nodeID);
@@ -611,8 +607,22 @@ class Wallet extends EventEmitter {
         return accounts;
     }
 
+    setSelectedToken(token) {
+        StorageService.setSelectedToken(token);
+        this.emit('setSelectedToken', token);
+    }
+
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedTokenId) === '{}' ? {id:'_',name:'TRX',amount:0,decimals:6}:StorageService.selectedTokenId;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? {id:'_',name:'TRX',amount:0,decimals:6}:StorageService.selectedToken;
+    }
+
+    setLanguage(language) {
+        StorageService.setLanguage(language);
+        this.emit('setLanguage', language);
+    }
+
+    getLanguage() {
+        return StorageService.language;
     }
 
     getAccountDetails(address) {

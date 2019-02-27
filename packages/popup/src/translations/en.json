@@ -190,6 +190,7 @@
     "SETTING.TITLE":"Setting",
     "SETTING.TITLE.NODE":"Custom node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
+    "SETTING.TITLE.LANGUAGE":"Language",
     "SETTING.TITLE.LOCK":"Log out",
     "SETTING.SUCCESS.ADD_NODE":"Add Node Success!",
 
@@ -217,10 +218,10 @@
 
     "COMMON.BALANCE":"Balance",
 
-    "MENU.BACKUP":"Back up",
     "MENU.ACCOUNT_DETAIL":"Account Detail",
     "MENU.WHITE_LIST":"White list manage",
     "MENU.DELETE_WALLET":"Delete Account",
 
-    "TOAST.COPY":"Copied"
+    "TOAST.COPY":"Copied",
+    "ALERT.DELETE_ACCOUNT.ONLY_ONE":"At least one account is required"
 }

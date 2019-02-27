@@ -1,12 +1,12 @@
 import React from 'react';
 import Button from '@tronlink/popup/src/components/Button';
 import Utils from '@tronlink/lib/utils';
-
+import Toast,{ T } from 'react-toast-mobile';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage,injectIntl } from 'react-intl';
 import NodeService from '@tronlink/backgroundScript/services/NodeService';
-import WarningComponent from '@tronlink/popup/src/components/WarningComponent';
 import { PopupAPI } from '@tronlink/lib/api';
+
 
 import './MnemonicImport.scss';
 NodeService.init();
@@ -22,8 +22,7 @@ class MnemonicImport extends React.Component {
         subStage: IMPORT_STAGE.ENTERING_MNEMONIC,
         mnemonic: '',
         isValid: false,
-        isLoading: false,
-        showWarning:false
+        isLoading: false
     };
 
     constructor() {
@@ -64,6 +63,7 @@ class MnemonicImport extends React.Component {
         });
 
         const { mnemonic } = this.state;
+        const {formatMessage} = this.props.intl;
         const addresses = [];
         for(let i = 0; i < 5; i++) {
 
@@ -81,13 +81,9 @@ class MnemonicImport extends React.Component {
         }
         if(addresses.length===0){
             this.setState({
-                isLoading: false,
-                showWarning:true
-            },()=>{
-                setTimeout(()=>{
-                    this.setState({showWarning:false})
-                },3000);
+                isLoading: false
             });
+            T.notify(formatMessage({id:'CHOOSING_TYPE.MNEMONIC.NO_OPTIONS'}))
             return false;
         }else{
             this.setState({
@@ -193,7 +189,7 @@ class MnemonicImport extends React.Component {
 
     renderInput() {
         const { onCancel } = this.props;
-
+        const { formatMessage } = this.props.intl;
         const {
             mnemonic,
             isValid,
@@ -208,7 +204,7 @@ class MnemonicImport extends React.Component {
                     <FormattedMessage id="CREATION.RESTORE.MNEMONIC.TITLE" />
                 </div>
                 <div className='greyModal'>
-                    <WarningComponent show={ showWarning } id="CHOOSING_TYPE.MNEMONIC.NO_OPTIONS" />
+                    <Toast />
                     <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>
@@ -245,6 +241,8 @@ class MnemonicImport extends React.Component {
     }
 }
 
-export default connect(state => ({
-    accounts: state.accounts.accounts
-}))(MnemonicImport);
+export default injectIntl(
+    connect(state => ({
+        accounts: state.accounts.accounts
+    }))(MnemonicImport)
+);

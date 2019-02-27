@@ -5,10 +5,11 @@ import App from 'app';
 import Logger from '@tronlink/lib/logger';
 import MessageDuplex from '@tronlink/lib/MessageDuplex';
 import reducer from 'reducers';
-
+import { addLocaleData } from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import zh from 'react-intl/locale-data/zh';
+import ja from 'react-intl/locale-data/ja';
 import * as Sentry from '@sentry/browser';
-
-import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { PopupAPI } from '@tronlink/lib/api';
@@ -19,7 +20,8 @@ import {
     setAppState,
     setCurrency,
     setNodes,
-    setPriceList
+    setPriceList,
+    setLanguage
 } from 'reducers/appReducer';
 
 import {
@@ -36,10 +38,7 @@ import {
     faCircle,
     faDotCircle
 } from '@fortawesome/free-solid-svg-icons';
-
-import enLocale from 'react-intl/locale-data/en';
-import enMessages from 'translations/en.json';
-
+addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
     dsn: 'https://546d9fe346d149f6b60962741858759b@sentry.io/1329911',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
@@ -49,33 +48,12 @@ const logger = new Logger('Popup');
 
 export const app = {
     duplex: new MessageDuplex.Popup(),
-
     async run() {
-        this.loadLocale();
         this.loadIcons();
         this.createStore();
-
         await this.getAppState();
-
         this.bindDuplexRequests();
         this.render();
-    },
-
-    loadLocale() {
-        logger.info('Loading locale and translation data');
-
-        addLocaleData([
-            ...enLocale
-        ]);
-
-        this.messages = {
-            en: enMessages
-        };
-
-        this.languageKey = navigator.language.split(/[-_]/)[ 0 ];
-        this.language = this.messages.hasOwnProperty(this.languageKey) ? this.languageKey : 'en';
-
-        logger.info('Loaded locales and translations');
     },
 
     loadIcons() {
@@ -112,7 +90,8 @@ export const app = {
             selectedAccount,
             prices,
             confirmations,
-            selectedToken
+            selectedToken,
+            language
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -120,7 +99,9 @@ export const app = {
             PopupAPI.getSelectedAccount(),
             PopupAPI.getPrices(),
             PopupAPI.getConfirmations(),
-            PopupAPI.getSelectedToken()
+            PopupAPI.getSelectedToken(),
+            PopupAPI.getLanguage()
+
         ]);
 
         this.store.dispatch(setAppState(appState));
@@ -130,6 +111,7 @@ export const app = {
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
         this.store.dispatch(setToken(selectedToken));
+        this.store.dispatch(setLanguage(language));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -170,24 +152,21 @@ export const app = {
             setCurrency(currency)
         ));
 
-        this.duplex.on('setTokenId', tokenId => this.store.dispatch(
-            setToken(tokenId)
+        this.duplex.on('setSelectedToken', token => this.store.dispatch(
+            setToken(token)
+        ));
+
+        this.duplex.on('setLanguage', language => this.store.dispatch(
+            setLanguage(language)
         ));
 
     },
 
     render() {
         logger.info('Rendering application');
-
         ReactDOM.render(
             <Provider store={ this.store }>
-                <IntlProvider
-                    key={ this.language }
-                    locale={ this.language }
-                    messages={ this.messages[ this.language ] }
-                >
-                    <App />
-                </IntlProvider>
+                <App />
             </Provider>,
             document.getElementById('root')
         );

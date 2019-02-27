@@ -30,12 +30,10 @@
     }
 
     &.is-valid:not(.is-loading):hover {
-        transform: translateY(-1px);
         box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18);
     }
 
     &.is-valid:not(.is-loading):focus {
-        transform: translateY(-1px);
         box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.18);
     }
 
@@ -43,11 +41,11 @@
         background: #636ACC;
 
         &.is-valid:not(.is-loading):hover {
-            background: #454c67;
+            //background: #454c67;
         }
     
         &.is-valid:not(.is-loading):focus {
-            background: #474d64;
+            //background: #474d64;
         }
     }
 

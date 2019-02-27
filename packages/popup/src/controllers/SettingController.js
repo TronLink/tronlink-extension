@@ -29,7 +29,12 @@ class SettingController extends  React.Component {
                     state: VALIDATION_STATE.NONE
                 },
                 isValid: false
-            }
+            },
+            languages:[
+                {name:'English',key:'en',selected:true},
+                {name:'中文',key:'zh',selected:false},
+                {name:'日本語',key:'ja',selected:false},
+            ]
         };
     }
 
@@ -178,7 +183,8 @@ class SettingController extends  React.Component {
     }
 
     render(){
-        const { prices,nodes,onCancel } = this.props;
+        const { prices,nodes,onCancel,app,language } = this.props;
+        const { formatMessage } = this.props.intl;
         const {
             name,
             fullNode,
@@ -186,6 +192,7 @@ class SettingController extends  React.Component {
             eventServer,
             isValid
         } = this.state.customNode;
+        const {languages} = this.state;
         return (
             <div className='insetContainer choosingType2'>
                 <div className='pageHeader'>
@@ -204,7 +211,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={name.value} onClick={(e)=>{e.stopPropagation()}} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>
+                                        <input type="text" defaultValue={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -212,7 +219,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={fullNode.value} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />
+                                        <input type="text" defaultValue={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -220,7 +227,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={solidityNode.value} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>
+                                        <input type="text" defaultValue={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -228,7 +235,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={eventServer.value} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />
+                                        <input type="text" defaultValue={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />
                                     </div>
                                 </div>
                                 <Button
@@ -251,7 +258,23 @@ class SettingController extends  React.Component {
                                 }
                             </div>
                         </div>
-
+                    </div>
+                    <div className="option" onClick={ ()=>{this.setting(2)} }>
+                        <div className="txt">
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.LANGUAGE" />
+                                <div className="unit">
+                                    {
+                                        languages.filter(({key})=>key === language)[0].name
+                                    }
+                                </div>
+                            </div>
+                            <div className="settingWrap">
+                                {
+                                    languages.map(({name,selected,key})=><div key={name} onClick={(e)=>{e.stopPropagation();PopupAPI.setLanguage(key);}} className={"unit"+(key === language?" selected":"")}>{name}</div>)
+                                }
+                            </div>
+                        </div>
                     </div>
                     <div className="option" onClick={() =>{PopupAPI.lockWallet()}   }>
                         <div className="txt">
