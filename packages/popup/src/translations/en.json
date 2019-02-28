@@ -191,9 +191,14 @@
     "SETTING.TITLE.NODE":"Custom node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
     "SETTING.TITLE.LANGUAGE":"Language",
+    "SETTING.TITLE.AUTO_LOCK":"Auto lock",
     "SETTING.TITLE.LOCK":"Log out",
     "SETTING.SUCCESS.ADD_NODE":"Add Node Success!",
-
+    "SETTING.TITLE.AUTO_LOCK.1_MIN":"1min",
+    "SETTING.TITLE.AUTO_LOCK.5_MIN":"5min",
+    "SETTING.TITLE.AUTO_LOCK.10_MIN":"10min",
+    "SETTING.TITLE.AUTO_LOCK.30_MIN":"30min",
+    "SETTING.TITLE.AUTO_LOCK.NEVER":"never",
 
     "SEND.RECIPIENT": "Recipient's address",
     "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",

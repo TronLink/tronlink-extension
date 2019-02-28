@@ -255,8 +255,6 @@ class Wallet extends EventEmitter {
                 }else{
                     res = false;
                 }
-            }else{
-                continue;
             }
         }
         return res;
@@ -373,8 +371,10 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', this.selectedAccount);
     }
     async lockWallet(){
-        await StorageService.lock();
+        StorageService.lock();
+        this.setSetting({lock:{lockTime:0,duration:0}});
         this._setState(APP_STATE.PASSWORD_SET);
+
     }
     queueConfirmation(confirmation, uuid, callback) {
         this.confirmations.push({
@@ -621,8 +621,17 @@ class Wallet extends EventEmitter {
         this.emit('setLanguage', language);
     }
 
+    setSetting(setting) {
+        StorageService.setSetting(setting);
+        this.emit('setSetting', setting);
+    }
+
     getLanguage() {
         return StorageService.language;
+    }
+
+    getSetting() {
+        return StorageService.setting;
     }
 
     getAccountDetails(address) {

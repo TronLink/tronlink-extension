@@ -34,7 +34,23 @@ class SettingController extends  React.Component {
                 {name:'English',key:'en',selected:true},
                 {name:'中文',key:'zh',selected:false},
                 {name:'日本語',key:'ja',selected:false},
-            ]
+            ],
+            autoLock:[{
+                time:60 * 1000,
+                name:'SETTING.TITLE.AUTO_LOCK.1_MIN'
+            },{
+                time:5 * 60 * 1000,
+                name:'SETTING.TITLE.AUTO_LOCK.5_MIN'
+            },{
+                time:10 * 60 * 1000,
+                name:'SETTING.TITLE.AUTO_LOCK.10_MIN'
+            },{
+                time:30 * 60 * 1000,
+                name:'SETTING.TITLE.AUTO_LOCK.30_MIN'
+            },{
+                time:0,
+                name:'SETTING.TITLE.AUTO_LOCK.NEVER'
+            }]
         };
     }
 
@@ -144,7 +160,6 @@ class SettingController extends  React.Component {
         e.stopPropagation();
         const { formatMessage } = this.props.intl;
         const { customNode } = this.state;
-        console.log(customNode);
         const name = customNode.name.value.trim();
         const fullNode = customNode.fullNode.value.trim();
         const solidityNode = customNode.solidityNode.value.trim();
@@ -183,7 +198,7 @@ class SettingController extends  React.Component {
     }
 
     render(){
-        const { prices,nodes,onCancel,app,language } = this.props;
+        const { prices,nodes,onCancel,app,language,lock} = this.props;
         const { formatMessage } = this.props.intl;
         const {
             name,
@@ -192,7 +207,7 @@ class SettingController extends  React.Component {
             eventServer,
             isValid
         } = this.state.customNode;
-        const {languages} = this.state;
+        const {languages,autoLock} = this.state;
         return (
             <div className='insetContainer choosingType2'>
                 <div className='pageHeader'>
@@ -275,6 +290,29 @@ class SettingController extends  React.Component {
                                 }
                             </div>
                         </div>
+                    </div>
+                    <div className="option" onClick={() =>{this.setting(3)}   }>
+                        <div className="txt">
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.AUTO_LOCK" />
+                                <div className="unit">
+                                    <FormattedMessage id={autoLock.filter(({time})=>time === lock.duration)[0].name} />
+                                </div>
+                            </div>
+                            <div className="settingWrap">
+                                {
+                                    autoLock.map(({name,time})=>(
+                                        <div key={time} onClick={(e)=>{
+                                            e.stopPropagation();
+                                            PopupAPI.setSetting({lock:{lockTime:new Date().getTime(),duration:time}});
+                                        }} className={"unit"+(time === lock.duration ? " selected":"")}>
+                                            <FormattedMessage id={name} />
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+
                     </div>
                     <div className="option" onClick={() =>{PopupAPI.lockWallet()}   }>
                         <div className="txt">

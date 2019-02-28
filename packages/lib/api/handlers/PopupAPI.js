@@ -155,8 +155,15 @@ export default {
 
     setLanguage(language){
         this.duplex.send('setLanguage',language,false);
-    }
+    },
 
+    getSetting(){
+        return this.duplex.send('getSetting');
+    },
+
+    setSetting(setting){
+        this.duplex.send('setSetting',setting,false);
+    }
 
 
 };

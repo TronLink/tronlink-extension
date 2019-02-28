@@ -419,6 +419,11 @@ html, body {
                 }
                 &:nth-child(4){
                     &:before{
+                        background-image: url('../images/new/icon-auto-lock.png');
+                    }
+                }
+                &:nth-child(5){
+                    &:before{
                         background-image: url('../images/new/icon-lock.svg');
                     }
                 }
@@ -452,6 +457,13 @@ html, body {
                         }
                     }
                 }
+                &:nth-child(4){
+                    &.active{
+                        .settingWrap{
+                            height: 160px;
+                        }
+                    }
+                }
             }
         }
     }
@@ -462,9 +474,12 @@ html, body {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                overflow:hidden;
                 padding-top: 18px;
+                transition: all ease-in-out 0.2s;
                 img{
-                    width: 58px;
+                    width: auto;
+                    height:58px
                 }
                 .amount{
                     height: 28px;

@@ -105,6 +105,8 @@ class AccountsPage extends React.Component {
         const p = (prices.priceList[prices.selected] * (accounts.selected.balance + accounts.selected.frozenBalance) / Math.pow(10,6)).toFixed(2);
         return (
             <div className="accountInfo">
+                <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
+                <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                 <div className="row1">
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>
@@ -116,10 +118,6 @@ class AccountsPage extends React.Component {
                                 <span className="icon link"></span>
                                 <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
                             </div>
-                            {/*<div className="item" onClick={ () => {} }>*/}
-                                {/*<span className="icon whitelist"></span>*/}
-                                {/*<FormattedMessage id="MENU.WHITE_LIST" />*/}
-                            {/*</div>*/}
                             <div className="item" onClick={ () => { this.onDelete() } }>
                                 <span className="icon delete"></span>
                                 <FormattedMessage id="MENU.DELETE_WALLET" />
@@ -288,7 +286,7 @@ class AccountsPage extends React.Component {
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
                                     <div className="name">
-                                        {token.name}
+                                        {token.abbr}
                                     </div>
                                     <div className="worth">
                                         <span>{amount}</span>

@@ -21,7 +21,8 @@ import {
     setCurrency,
     setNodes,
     setPriceList,
-    setLanguage
+    setLanguage,
+    setSetting
 } from 'reducers/appReducer';
 
 import {
@@ -82,8 +83,12 @@ export const app = {
 
     async getAppState() {
         PopupAPI.init(this.duplex);
-
-        const [
+        const setting = await PopupAPI.getSetting();
+        console.log(new Date().getTime() - setting.lock.lockTime,setting.lock.duration);
+        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration){
+            PopupAPI.lockWallet();
+        }
+        let [
             appState,
             nodes,
             accounts,
@@ -91,7 +96,7 @@ export const app = {
             prices,
             confirmations,
             selectedToken,
-            language
+            language,
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -101,9 +106,15 @@ export const app = {
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
             PopupAPI.getLanguage()
-
         ]);
-
+        const lang = navigator.language || navigator.browserLanguage;
+        if(lang.indexOf('zh')>-1){
+            language = language || 'zh';
+        }else if(lang.indexOf('ja')>-1){
+            language = language || 'ja';
+        }else{
+            language = language || 'en';
+        }
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
@@ -112,9 +123,9 @@ export const app = {
         this.store.dispatch(setConfirmations(confirmations));
         this.store.dispatch(setToken(selectedToken));
         this.store.dispatch(setLanguage(language));
+        this.store.dispatch(setSetting(setting));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
-
 
         logger.info('Set application state');
     },
@@ -158,6 +169,10 @@ export const app = {
 
         this.duplex.on('setLanguage', language => this.store.dispatch(
             setLanguage(language)
+        ));
+
+        this.duplex.on('setSetting', setting => this.store.dispatch(
+            setSetting(setting)
         ));
 
     },

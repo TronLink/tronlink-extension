@@ -119,6 +119,25 @@
         flex-direction: column;
         align-items: center;
         color: #fff;
+        & > .link{
+            position: absolute;
+            right:10px;
+            width: 28px;
+            height: 28px;
+            border-radius:100%;
+            background-color: #fff;
+            background-position: center center;
+            background-repeat: no-repeat;
+            &.link-twiter{
+                top:60px;
+                background-image: url('../../assets/images/new/icon-twiter.png');
+            }
+            &.link-telegram{
+                top:100px;
+                background-image: url('../../assets/images/new/icon-telegram.png');
+            }
+        }
+
         .row1{
             width: 100%;
             height: 20px;

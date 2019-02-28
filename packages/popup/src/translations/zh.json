@@ -64,7 +64,7 @@
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "选择相关联的账号",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
-    "CHOOSING_TYPE.TITLE":"选择类型",
+    "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "所有可选的账户已经被导入",
     "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
@@ -72,7 +72,7 @@
     "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
 
     "CREATION_CRITERIA.HAS_LENGTH": "至少包含<strong>4个</strong>字符",
-    "CREATION_CRITERIA.IS_ALPHANUMERIC": "Contains only <strong>alphanumeric</strong> characters, along with optional spaces",
+    "CREATION_CRITERIA.IS_ALPHANUMERIC": "仅包含数字，字母及空格",
     "CREATION_CRITERIA.IS_UNIQUE": "没有与其他账户重名",
 
     "WRITING_PHRASE": "请备份你的助记词，你需要在下一步中确认助记词",
@@ -191,9 +191,14 @@
     "SETTING.TITLE.NODE":"自定义节点",
     "SETTING.TITLE.CURRENCY":"设置货币",
     "SETTING.TITLE.LANGUAGE":"语言",
+    "SETTING.TITLE.AUTO_LOCK":"自动锁定",
     "SETTING.TITLE.LOCK":"登出",
     "SETTING.SUCCESS.ADD_NODE":"添加节点成功",
-
+    "SETTING.TITLE.AUTO_LOCK.1_MIN":"1分钟",
+    "SETTING.TITLE.AUTO_LOCK.5_MIN":"5分钟",
+    "SETTING.TITLE.AUTO_LOCK.10_MIN":"10分钟",
+    "SETTING.TITLE.AUTO_LOCK.30_MIN":"30分钟",
+    "SETTING.TITLE.AUTO_LOCK.NEVER":"永不",
 
     "SEND.RECIPIENT": "Recipient's address",
     "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",

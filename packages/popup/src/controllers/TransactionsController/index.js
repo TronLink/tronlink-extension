@@ -10,10 +10,10 @@ BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
 class  TransactionsController extends React.Component{
     constructor(props){
         super(props);
-        this.state={index :0 };
+        this.state={index :0,isTop:false };
     }
     render() {
-        const { index } = this.state;
+        const { index,isTop } = this.state;
         const {
             accounts,
             onCancel,
@@ -45,7 +45,7 @@ class  TransactionsController extends React.Component{
 
                 </div>
                 <div className='greyModal'>
-                    <div className="showTokenInfo">
+                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0}:{height:(id==='_'?216:176)}}>
                         <Toast />
                         <img src={imgUrl} />
                         <div className="amount">
@@ -106,7 +106,10 @@ class  TransactionsController extends React.Component{
                             <FormattedMessage id="ACCOUNT.SEND"  />
                         </div>
                     </div>
-                    <div className="transaction scroll">
+                    <div className="transaction scroll" onScroll={(e)=>{
+                        const isTop = e.target.scrollTop === 0 ? false : true;
+                        this.setState({isTop});
+                    }}>
                         {
                             transactionGroup ?
                                 Object.entries(transactionGroup).map(([v, transactions], i) =>

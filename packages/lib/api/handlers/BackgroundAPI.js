@@ -52,7 +52,12 @@ export default {
 
     setLanguage(language) {
         this.duplex.send('popup', 'setLanguage', language, false);
+    },
+
+    setSetting(setting) {
+        this.duplex.send('popup', 'setSetting', setting, false);
     }
+
 
 
 };

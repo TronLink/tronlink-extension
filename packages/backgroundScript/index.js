@@ -130,7 +130,9 @@ const backgroundScript = {
         // language
         duplex.on('getLanguage', this.walletService.getLanguage);
         duplex.on('setLanguage', this.walletService.setLanguage);
-
+        //setting
+        duplex.on('getSetting', this.walletService.getSetting);
+        duplex.on('setSetting', this.walletService.setSetting);
     },
 
     bindTabDuplex() {
@@ -312,6 +314,10 @@ const backgroundScript = {
 
         this.walletService.on('setLanguage', language => (
             BackgroundAPI.setLanguage(language)
+        ));
+
+        this.walletService.on('setSetting', setting => (
+            BackgroundAPI.setSetting(setting)
         ));
     }
 };

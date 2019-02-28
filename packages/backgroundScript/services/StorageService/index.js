@@ -40,7 +40,13 @@ const StorageService = {
     tokenCache: {},
     selectedAccount: false,
     selectedToken:{},
-    language: 'en',
+    setting:{
+        lock:{
+            lockTime:0,
+            duration:0
+        }
+    },
+    language: '',
     ready: false,
     password: false,
 
@@ -67,7 +73,7 @@ const StorageService = {
         return !!(await this.getStorage('accounts'));
     },
 
-    async lock(){
+    lock(){
         this.ready = false;
     },
 
@@ -197,6 +203,12 @@ const StorageService = {
         this.save('language');
     },
 
+    setSetting(setting){
+        logger.info('Saving setting', setting);
+        this.setting = setting;
+        this.save('setting');
+
+    },
     migrate() {
         try {
             const storage = localStorage.getItem('TronLink_WALLET');
