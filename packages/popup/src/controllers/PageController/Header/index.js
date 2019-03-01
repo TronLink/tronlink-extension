@@ -40,6 +40,12 @@ class Header extends React.Component {
             refresh:false
         }
     }
+    componentDidMount(){
+        const {nodes} = this.props;
+        const ns = Object.entries(nodes.nodes);
+        const nodeIndex = ns.map(([nodeId,obj],i)=>{obj.index = i;return [nodeId,obj]}).filter(([nodeId,obj]) => nodeId === nodes.selected)[0][1].index;
+        this.setState({nodeIndex});
+    }
     onNodeChange(nodeId,index) {
         PopupAPI.selectNode(nodeId);
         app.getNodes();
@@ -58,6 +64,19 @@ class Header extends React.Component {
             <div className='header'>
                 <Toast />
                 <div className='titleContainer'>
+                    <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
+                    <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
+                    <div className="nodesWrap">
+                        <div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>
+                            <span className="dot" style={{backgroundColor:colorArr[nodeIndex%3]}}></span>
+                            <div className="name">{name}</div>
+                            <div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>
+                                {
+                                    ns.map(([nodeId,obj],i)=> <div onClick={()=>{ this.onNodeChange(nodeId,i) }} className="item" key={nodeId}><span className="dot" style={{backgroundColor:colorArr[i]}}></span><span>{obj.name}</span></div>)
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <div className="fun" onClick={()=>{
                         if(!refresh){
                             this.setState({refresh:true}, async()=>{
@@ -72,17 +91,6 @@ class Header extends React.Component {
 
                     }}
                     ></div>
-                    <div className="nodesWrap">
-                        <div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>
-                            <span className="dot" style={{backgroundColor:colorArr[nodeIndex]}}></span>
-                            <div className="name">{name}</div>
-                            <div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>
-                                {
-                                    ns.map(([nodeId,obj],i)=> <div onClick={()=>{ this.onNodeChange(nodeId,i) }} className="item" key={nodeId}><span className="dot" style={{backgroundColor:colorArr[i]}}></span><span>{obj.name}</span></div>)
-                                }
-                            </div>
-                        </div>
-                    </div>
                     <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
                 </div>
             </div>

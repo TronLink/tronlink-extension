@@ -84,7 +84,6 @@ export const app = {
     async getAppState() {
         PopupAPI.init(this.duplex);
         const setting = await PopupAPI.getSetting();
-        console.log(new Date().getTime() - setting.lock.lockTime,setting.lock.duration);
         if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration){
             PopupAPI.lockWallet();
         }

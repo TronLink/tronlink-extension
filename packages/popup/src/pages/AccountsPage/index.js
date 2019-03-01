@@ -48,6 +48,7 @@ class AccountsPage extends React.Component {
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
+        PopupAPI.refresh();
     }
     componentDidUpdate() {
 
@@ -105,8 +106,6 @@ class AccountsPage extends React.Component {
         const p = (prices.priceList[prices.selected] * (accounts.selected.balance + accounts.selected.frozenBalance) / Math.pow(10,6)).toFixed(2);
         return (
             <div className="accountInfo">
-                <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
-                <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                 <div className="row1">
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>

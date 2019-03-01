@@ -15,13 +15,29 @@
             flex-direction: row;
             align-items: center;
             justify-content: center;
+            & > .link{
+                width: 40px;
+                height: 58px;
+                background-position: center center;
+                background-repeat: no-repeat;
+                &.link-twiter{
+                    top:60px;
+                    background-image: url('../../assets/images/new/icon-twiter.png');
+                }
+                &.link-telegram{
+                    width: 30px;
+                    top:100px;
+                    background-image: url('../../assets/images/new/icon-telegram.png');
+                }
+            }
             & > .fun{
-                width: 50px;
+                width: 40px;
                 height: 58px;
                 cursor: pointer;
                 background-repeat: no-repeat;
                 background-position: center;
-                &:nth-child(1){
+                &:nth-child(4){
+                    width: 30px;
                     background-image: url('../../assets/images/new/icon-refresh.svg');
                     &.refresh{
                         animation: rotate .5s linear infinite;
@@ -44,7 +60,7 @@
                         }
                     }
                 }
-                &:nth-child(3){
+                &:nth-child(5){
                     background-image: url('../../assets/images/new/icon-setting.svg');
                 }
             }

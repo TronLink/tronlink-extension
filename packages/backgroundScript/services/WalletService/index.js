@@ -122,19 +122,14 @@ class Wallet extends EventEmitter {
         this.isPolling = true;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
-            if(account.address === this.selectedAccount){
+            if(account.address === this.selectedAccount) {
                 await account.update();
-
-                if(account.address === this.selectedAccount)
-                    this.emit('setAccount', this.selectedAccount);
-
-                this.emit('setAccounts', this.getAccounts());
                 account.updateTransactions()
                     .then(() => {
-                        if(account.address === this.selectedAccount)
+                        if(account.address === this.selectedAccount){
                             this.emit('setAccount', this.selectedAccount);
-
-                        this.emit('setAccounts', this.getAccounts());
+                            this.emit('setAccounts', this.getAccounts());
+                        }
                     });
             }
             // if(account.address === this.selectedAccount)
@@ -369,10 +364,11 @@ class Wallet extends EventEmitter {
         });
 
         this.emit('setAccount', this.selectedAccount);
+        const {lock:{duration}} = this.getSetting();
+        this.setSetting({lock:{lockTime:new Date().getTime(),duration}});
     }
     async lockWallet(){
         StorageService.lock();
-        this.setSetting({lock:{lockTime:0,duration:0}});
         this._setState(APP_STATE.PASSWORD_SET);
 
     }
@@ -570,7 +566,6 @@ class Wallet extends EventEmitter {
             account.reset()
         ));
 
-        this._pollAccounts();
         const node = NodeService.getCurrentNode();
 
         this.emit('setNode', {
@@ -578,9 +573,9 @@ class Wallet extends EventEmitter {
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-
-        this.emit('setAccounts', this.getAccounts());
-        this.emit('setAccount', this.selectedAccount);
+        this.refresh();
+        //this.emit('setAccounts', this.getAccounts());
+        //this.emit('setAccount', this.selectedAccount);
     }
 
     addNode(node) {

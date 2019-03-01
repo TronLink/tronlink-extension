@@ -49,7 +49,7 @@ html, body {
         .setLanguage{
             width: 100%;
             top: 20px;
-            padding-right: 24px;
+            padding-right: 14px;
             position: absolute;
             display: flex;
             justify-content: flex-end;
@@ -58,13 +58,14 @@ html, body {
                 position: relative;
                 display: flex;
                 height: 30px;
-                width: 100px;
+                width: 110px;
                 padding:0 10px;
                 flex-direction: row;
                 align-items: center;
                 cursor: pointer;
+                font-size: 14px;
                 &:after{
-                    content:'';
+                    content:' ';
                     width: 0;
                     height: 0;
                     border:4px solid #D8D8D8;
@@ -75,24 +76,26 @@ html, body {
                     margin-top: 2px;
                 }
                 &:before{
-                    content: '';
-                    width: 14px;
-                    height: 14px;
+                    content: ' ';
+                    width: 16px;
+                    height: 16px;
                     margin-right: 6px;
+                    background-size:100%;
+                    background-repeat: no-repeat;
                 }
                 &.en{
                     &:before{
-                        background-image: url('../images/new/language/icon-english.png');
+                        background-image: url('../images/new/language/icon-english.svg');
                     }
                 }
                 &.zh{
                     &:before{
-                        background-image: url('../images/new/language/icon-chinese.png');
+                        background-image: url('../images/new/language/icon-chinese.svg');
                     }
                 }
                 &.ja{
                     &:before{
-                        background-image: url('../images/new/language/icon-japanese.png');
+                        background-image: url('../images/new/language/icon-japanese.svg');
                     }
                 }
                 &:hover{
@@ -106,6 +109,7 @@ html, body {
                     border-radius: 4px;
                     width: 100%;
                     display: none;
+                    font-size: 12px;
                     .item{
                         padding:0 10px;
                         height: 30px;
@@ -123,17 +127,17 @@ html, body {
                         }
                         &.en{
                             &:before{
-                                background-image: url('../images/new/language/icon-english.png');
+                                background-image: url('../images/new/language/icon-english.svg');
                             }
                         }
                         &.zh{
                             &:before{
-                                background-image: url('../images/new/language/icon-chinese.png');
+                                background-image: url('../images/new/language/icon-chinese.svg');
                             }
                         }
                         &.ja{
                             &:before{
-                                background-image: url('../images/new/language/icon-japanese.png');
+                                background-image: url('../images/new/language/icon-japanese.svg');
                             }
                         }
                     }
@@ -475,7 +479,7 @@ html, body {
                 flex-direction: column;
                 align-items: center;
                 overflow:hidden;
-                padding-top: 18px;
+                padding-top: 10px;
                 transition: all ease-in-out 0.2s;
                 img{
                     width: auto;
@@ -829,13 +833,13 @@ html, body {
         }
         .detail{
             position: absolute;
-            right:10px;
-            font-size: 12px;
+            right:17px;
+            font-size: 14px;
             color: #333;
             cursor: pointer;
         }
         .title{
-            font-size: 15px;
+            //font-size: 15px;
         }
     }
     .greyModal {
