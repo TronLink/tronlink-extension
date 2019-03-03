@@ -27,7 +27,6 @@ import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 
-
 class AccountsPage extends React.Component {
     constructor() {
         super();
@@ -99,11 +98,10 @@ class AccountsPage extends React.Component {
         });
     }
 
-    renderAccountInfo(accounts,prices){
+    renderAccountInfo(accounts,prices,totalMoney){
         const { formatMessage } = this.props.intl;
         const {showAccountList,showMenuList} = this.state;
         const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
-        const p = (prices.priceList[prices.selected] * (accounts.selected.balance + accounts.selected.frozenBalance) / Math.pow(10,6)).toFixed(2);
         return (
             <div className="accountInfo">
                 <div className="row1">
@@ -163,7 +161,7 @@ class AccountsPage extends React.Component {
 
                 </div>
                 <div className="row3">
-                    ≈ {p} {prices.selected}
+                    ≈ {totalMoney} {prices.selected}
                 </div>
                 <div className="row4">
                     <div onClick={ () => PopupAPI.changeState(APP_STATE.RECEIVE) }>
@@ -177,55 +175,6 @@ class AccountsPage extends React.Component {
                 </div>
             </div>
         )
-    }
-    renderAccounts() {
-        const {
-            accounts,
-            selected
-        } = this.props.accounts;
-
-        return Object.entries(accounts).map(([ address, account ]) => (
-            <div
-                className={ `account ${ selected.address === address ? 'active' : '' }` }
-                onClick={ () => this.onClick(address) }
-                key={ address }
-            >
-                <span className='accountName'>
-                    { account.name }
-                </span>
-                <span className='accountAddress'>
-                    { address }
-                </span>
-                <div className='accountDetails'>
-                    <span className='accountBalance'>
-                        { account.balance ?
-                            <FormattedMessage id='ACCOUNT.BALANCE' values={{ amount: account.balance / 1000000 }} /> :
-                            <FormattedMessage id='ACCOUNT.NO_BALANCE' />
-                        }
-                    </span>
-                    <span className='accountTokens'>
-                        { account.tokenCount ?
-                            <FormattedMessage id='ACCOUNT.TOKENS' values={{ amount: account.tokenCount }} /> :
-                            <FormattedMessage id='ACCOUNT.NO_TOKENS' />
-                        }
-                    </span>
-                </div>
-                <div className='accountDetails'>
-                    <span className='accountBalance'>
-                        { account.bandwidth ?
-                            <FormattedMessage id='ACCOUNT.BANDWIDTH' values={{ amount: account.bandwidth }} /> :
-                            <FormattedMessage id='ACCOUNT.NO_BANDWIDTH' />
-                        }
-                    </span>
-                    <span className='accountTokens'>
-                        { account.energy ?
-                            <FormattedMessage id='ACCOUNT.ENERGY' values={{ amount: account.energy }} /> :
-                            <FormattedMessage id='ACCOUNT.NO_ENERGY' />
-                        }
-                    </span>
-                </div>
-            </div>
-        ));
     }
     renderResource(account){
         return (
@@ -256,27 +205,24 @@ class AccountsPage extends React.Component {
         )
 
     }
-    renderTokens(account,prices){
-        BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
-        const trx_price = prices.priceList[prices.selected];
-        const trx = {tokenId:"_",name:"TRX",balance:(account.balance + account.frozenBalance),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
-        let tokens = {...account.tokens.basic,...account.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
+    renderTokens(tokens){
+        const {prices,accounts} = this.props;
         return (
             <div className="tokens">
                 {
-                    [trx,...tokens].map(({tokenId,...token})=>{
+                    tokens.map(({tokenId,...token})=>{
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
+                            const money = tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*prices.priceList[prices.selected]).toFixed(2);
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
                                         let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
                                         if(tokenId === '_'){
-                                            o.frozenBalance = new BigNumber(account.frozenBalance)
+                                            o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                                 .shiftedBy(-token.decimals)
                                                 .toString();
-                                            o.balance = new BigNumber(account.balance)
+                                            o.balance = new BigNumber(accounts.selected.balance)
                                                 .shiftedBy(-token.decimals)
                                                 .toString();
                                         }
@@ -289,7 +235,7 @@ class AccountsPage extends React.Component {
                                     </div>
                                     <div className="worth">
                                         <span>{amount}</span>
-                                        <span>≈ {tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*trx_price).toFixed(2)} {prices.selected}</span>
+                                        <span>≈ {money} {prices.selected}</span>
                                     </div>
                                 </div>
                             )
@@ -379,8 +325,22 @@ class AccountsPage extends React.Component {
         return dom;
     }
     render() {
+        BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
+        let totalMoney = '0';
         const {showNodeList,mnemonic,privateKey}  = this.state;
         const { accounts,prices,nodes } = this.props;
+        const trx_price = prices.priceList[prices.selected];
+        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + accounts.selected.frozenBalance),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
+        tokens = [trx,...tokens];
+        tokens.forEach(({tokenId,...token})=>{
+            const amount = new BigNumber(token.balance)
+                .shiftedBy(-token.decimals)
+                .toString();
+            const money = tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*prices.priceList[prices.selected]).toFixed(2);
+            totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
+        })
         return (
             <div className='accountsPage' onClick={()=>{
                 this.setState({
@@ -397,11 +357,11 @@ class AccountsPage extends React.Component {
                     this.renderDeleteAccount()
                 }
                 <Header showNodeList={showNodeList} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
-                { accounts.selected.address ? this.renderAccountInfo(accounts,prices):null }
+                { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
                 <div class="listWrap">
                     { this.renderResource(accounts.accounts[accounts.selected.address]) }
                     <div className="scroll">
-                        { this.renderTokens(accounts.selected,prices) }
+                        { this.renderTokens(tokens) }
                     </div>
                 </div>
             </div>

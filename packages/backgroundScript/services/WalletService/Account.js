@@ -244,10 +244,10 @@ class Account {
             address,
             tokens
         } = this;
-
         logger.info(`Requested update for ${ address }`);
         const account =  await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
         const {data: {data: basicTokenPriceList}} = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
+        const {data: {data: {rows: smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const {data: {trc20_tokens: smart}} = await axios.get('https://apilist.tronscan.org/api/token_trc20', {
                 params: {
@@ -256,7 +256,6 @@ class Account {
                     start: 0
                 }
             });
-            const {data: {data: {rows: smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
             if (!account.address) {
                 logger.info(`Account ${ address } does not exist on the network`);
 
@@ -314,7 +313,8 @@ class Account {
             for(const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[ key ] || false;
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id==key);
-                let {precision=0,price} = filter.length ? filter[0] : {price:0,precision:0};
+                const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key == fTokenAddr);
+                let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
                 price = price/Math.pow(10,precision);
                 if(!token && !StorageService.tokenCache.hasOwnProperty(key))
                     await StorageService.cacheToken(key);
