@@ -262,6 +262,21 @@ class Account {
                 this.reset();
                 return false;
             }
+            const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
+            addSmartTokens.forEach(async ([tokenId,token])=>{
+                let balance;
+                const contract = await NodeService.tronWeb.contract().at(tokenId);
+                const number = await contract.balanceOf(address).call();
+                if (number.balance) {
+                    balance = new BigNumber(number.balance).toString();
+                } else {
+                    balance = new BigNumber(number).toString();
+                }
+                this.tokens.smart[ tokenId ] = token;
+                this.tokens.smart[ tokenId ].imgUrl = false;
+                this.tokens.smart[ tokenId ].balance = balance;
+                this.tokens.smart[ tokenId ].price = 0;
+            });
             for(let {contract_address,decimals,name,symbol:abbr,icon_url} of smart){
                 let balance;
                 let token = this.tokens.smart[ contract_address ] || false;
@@ -283,7 +298,7 @@ class Account {
                             name,
                             abbr,
                             decimals,
-                            imgUrl
+                            imgUrl = false
                         } = StorageService.tokenCache[ contract_address ];
 
                         token = {
