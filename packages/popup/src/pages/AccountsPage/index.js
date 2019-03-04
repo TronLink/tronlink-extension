@@ -123,7 +123,8 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className="accountWrap" onClick={(e)=>{e.stopPropagation();this.setState({showAccountList:!showAccountList,showMenuList:false,showNodeList:false})}}>
                         <span>{accounts.selected.name}</span>
-                        <div className="dropList accountList" style={showAccountList?{width:'100%',height:30*(addresses.length+2),opacity:1}:{}}>
+                        <div className="dropList accountList" style={showAccountList?{width:'100%',height:30*((addresses.length > 4 ? 4 : addresses.length)+2),opacity:1}:{}}>
+                            <div className="accounts">
                             {
                                 addresses.map(
                                     v => (
@@ -141,6 +142,7 @@ class AccountsPage extends React.Component {
                                     )
                                 )
                             }
+                            </div>
                             <div className="item gap" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
                                 <span className="icon create"></span>
                                 <FormattedMessage id="CREATION.CREATE.TITLE" />
@@ -332,7 +334,12 @@ class AccountsPage extends React.Component {
         const trx_price = prices.priceList[prices.selected];
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + accounts.selected.frozenBalance),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(({tokenId,...token})=>{
+            const amount = new BigNumber(token.balance)
+                .shiftedBy(-token.decimals)
+                .toString();
+            return amount > 0;
+        }),'name');
         tokens = [trx,...tokens];
         tokens.forEach(({tokenId,...token})=>{
             const amount = new BigNumber(token.balance)

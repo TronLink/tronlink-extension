@@ -71,8 +71,8 @@
   "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "秘密鍵",
   "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
 
-  "CREATION_CRITERIA.HAS_LENGTH": "<strong>4文字</strong以上とします",
-  "CREATION_CRITERIA.IS_ALPHANUMERIC": "Contains only <strong>alphanumeric</strong> characters, along with optional spaces",
+  "CREATION_CRITERIA.HAS_LENGTH": "<strong>4文字</strong>以上とします",
+  "CREATION_CRITERIA.IS_ALPHANUMERIC": "数字、文字、スペースのみを含む",
   "CREATION_CRITERIA.IS_UNIQUE": "の名前は他のアカウントでは使用されていません",
 
   "WRITING_PHRASE": "回復フレーズをコピーしてください。次のステップでこれらの単語を確認する必要があります",

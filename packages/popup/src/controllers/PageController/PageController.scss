@@ -156,6 +156,12 @@
         overflow:hidden;
         &.accountList{
             top: 30px;
+            display: flex;
+            flex-direction: column;
+            .accounts{
+                flex:1;
+                overflow-y:auto;
+            }
         }
         &.menuList{
             transform: translateX(-100%);
