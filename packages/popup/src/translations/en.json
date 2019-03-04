@@ -61,7 +61,7 @@
     "CREATION.RESTORE.TIP":"Recommend for users with existing Tron accounts",
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
     "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
-    "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Choose related to accounts",
+    "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Select account",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"Choosing type",

@@ -26,7 +26,7 @@ class ConfirmingPhrase extends React.Component {
 
         // if(correctOrder[ nextIndex ] !== wordIndex)
         //     return;
-        if(selected.map((v)=>v.word).includes(word)){
+        if(selected.map((v)=>v.wordIndex).includes(wordIndex)){
             selected.splice(selected.map((v)=>v.word).indexOf(word),1);
         }else{
             selected.push({wordIndex,word});

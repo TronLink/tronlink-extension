@@ -61,11 +61,11 @@
   "CREATION.RESTORE.TIP":"TRONアカウントを持つユーザーにお勧め",
   "CREATION.RESTORE.PRIVATE_KEY.TITLE": "秘密鍵でインポートする",
   "CREATION.RESTORE.MNEMONIC.TITLE": "回復フレーズでインポートします",
-  "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "関連アカウントを選ぶ",
+  "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "アカウントを選択",
 
   "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
   "CHOOSING_TYPE.TITLE":"種類を選択してください",
-  "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
+  "CHOOSING_TYPE.MNEMONIC.TITLE": "ニーモニック",
   "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "すべての選ベるアカウントがインポートされました",
   "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
   "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "秘密鍵",

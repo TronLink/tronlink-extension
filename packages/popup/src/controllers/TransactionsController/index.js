@@ -107,8 +107,11 @@ class  TransactionsController extends React.Component{
                         </div>
                     </div>
                     <div className="transaction scroll" onScroll={(e)=>{
-                        const isTop = e.target.scrollTop === 0 ? false : true;
-                        this.setState({isTop});
+                        const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
+                        if(transactionGroup && transactionGroup[key].length > 8){
+                            const isTop = e.target.scrollTop === 0 ? false : true;
+                            this.setState({isTop});
+                        }
                     }}>
                         {
                             transactionGroup ?
@@ -122,8 +125,7 @@ class  TransactionsController extends React.Component{
                                                     return (
                                                         <div className={"item " + direction}>
                                                             <div className="left">
-                                                                <div
-                                                                    className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
+                                                                <div className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
                                                                 <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                             </div>
                                                             <div className="right">
