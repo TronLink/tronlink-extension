@@ -223,11 +223,15 @@
 
     "COMMON.BALANCE":"Balance",
 
+    "MENU.ADD_TRC20_TOKEN":"Add TRC20token",
     "MENU.ACCOUNT_DETAIL":"Account Detail",
     "MENU.WHITE_LIST":"White list manage",
     "MENU.DELETE_WALLET":"Delete Account",
+    "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"Please enter the contract address of TRC20token",
 
     "TOAST.COPY":"Copied",
+    "TOAST.ADDED":"added",
+
     "ALERT.DELETE_ACCOUNT.ONLY_ONE":"At least one account is required",
 
     "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"Available balance",

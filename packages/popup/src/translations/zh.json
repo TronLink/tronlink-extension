@@ -223,11 +223,14 @@
 
     "COMMON.BALANCE":"余额",
 
+    "MENU.ADD_TRC20_TOKEN":"添加TRC20token",
     "MENU.ACCOUNT_DETAIL":"账户明细",
     "MENU.WHITE_LIST":"白名单管理",
     "MENU.DELETE_WALLET":"删除账户",
+    "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"请输入TRC20token的合约地址",
 
     "TOAST.COPY":"已复制",
+    "TOAST.ADDED":"已添加",
     "ALERT.DELETE_ACCOUNT.ONLY_ONE":"至少要保留一个账户",
 
     "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"可用余额",

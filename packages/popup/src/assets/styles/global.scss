@@ -335,7 +335,7 @@ html, body {
                 }
                 .settingWrap{
                     height:0;
-                    overflow:hidden;
+                    overflow:auto;
                     transition: all 0.2s ease-in-out;
                     .unit{
                         height: 20px;
@@ -418,12 +418,12 @@ html, body {
                 }
                 &:nth-child(3){
                     &:before{
-                        background-image: url('../images/new/icon-language.png');
+                        background-image: url('../images/new/icon-language.svg');
                     }
                 }
                 &:nth-child(4){
                     &:before{
-                        background-image: url('../images/new/icon-auto-lock.png');
+                        background-image: url('../images/new/icon-auto-lock.svg');
                     }
                 }
                 &:nth-child(5){
@@ -671,6 +671,15 @@ html, body {
             display: flex;
             flex-direction: column;
             align-items: center;
+            button.addToken{
+                margin-top: 18px;
+                &:before{
+                    content:' ';
+                    width: 13px;
+                    height: 13px;
+                    background-image: url('../images/new/icon-add2.svg');
+                }
+            }
             &>.desc{
                 margin:50px 0 30px;
                 font-size: 12px;

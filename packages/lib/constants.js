@@ -14,7 +14,8 @@ export const APP_STATE = {
     RECEIVE: 7, //[x] Show if need to accept trx or tokens
     SEND: 8,  //[x] Show if need to send trx or tokens
     TRANSACTIONS: 9,  //[x] Show transactions record
-    SETTING: 10  //[x] Show setting
+    SETTING: 10,  //[x] Show setting
+    ADD_TRC20_TOKEN: 11 //[x] Show setting
 
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 

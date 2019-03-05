@@ -106,7 +106,11 @@ class AccountsPage extends React.Component {
             <div className="accountInfo">
                 <div className="row1">
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
-                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*3,opacity:1}:{}}>
+                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
+                            <div onClick={ ()=>{ PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className="item">
+                                <span className="icon addToken"></span>
+                                <FormattedMessage id="MENU.ADD_TRC20_TOKEN" />
+                            </div>
                             <div onClick={ this.onExport } className="item">
                                 <span className="icon backup"></span>
                                 <FormattedMessage id="ACCOUNTS.EXPORT" />
@@ -216,7 +220,8 @@ class AccountsPage extends React.Component {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
-                            const money = tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*prices.priceList[prices.selected]).toFixed(2);
+                            const price = token.price == undefined ? 0 : token.price;
+                            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
                                         let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
@@ -233,7 +238,7 @@ class AccountsPage extends React.Component {
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
                                     <div className="name">
-                                        {token.abbr?token.abbr:token.symbol}
+                                        {token.abbr === ''? token.name : (token.abbr?token.abbr:token.symbol)}
                                     </div>
                                     <div className="worth">
                                         <span>{amount}</span>
@@ -332,14 +337,9 @@ class AccountsPage extends React.Component {
         const {showNodeList,mnemonic,privateKey}  = this.state;
         const { accounts,prices,nodes } = this.props;
         const trx_price = prices.priceList[prices.selected];
-        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + accounts.selected.frozenBalance),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(({tokenId,...token})=>{
-            const amount = new BigNumber(token.balance)
-                .shiftedBy(-token.decimals)
-                .toString();
-            return amount > 0;
-        }),'name');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'abbr','symbol');
         tokens = [trx,...tokens];
         tokens.forEach(({tokenId,...token})=>{
             const amount = new BigNumber(token.balance)

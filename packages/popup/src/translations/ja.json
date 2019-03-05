@@ -224,11 +224,15 @@
 
   "COMMON.BALANCE":"残高",
 
+  "MENU.ADD_TRC20_TOKEN":"TRC20tokenを追加",
   "MENU.ACCOUNT_DETAIL":"アカウント詳細",
   "MENU.WHITE_LIST":"ホワイトリストを管理する",
   "MENU.DELETE_WALLET":"アカウントを削除する",
+  "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"TRC20tokenの契約アドレスを入力してください",
 
   "TOAST.COPY":"コピー済み",
+  "TOAST.ADDED":"追加しました",
+
   "ALERT.DELETE_ACCOUNT.ONLY_ONE":"少なくとも1つ以上のアカウントを保管してください",
 
   "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"利用残高",

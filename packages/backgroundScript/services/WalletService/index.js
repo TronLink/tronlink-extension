@@ -30,7 +30,7 @@ class Wallet extends EventEmitter {
         // This should be moved into its own component
         this.isPolling = false;
         this.shouldPoll = false;
-
+        this.isDuringSelectedAccount = false;
         this._checkStorage();
 
         setInterval(() => {
@@ -125,11 +125,17 @@ class Wallet extends EventEmitter {
             if(account.address === this.selectedAccount) {
                 await account.update();
                 await account.updateTransactions();
-                console.log('!@@@@@@@@@@@@@@@@@@@@@@');
-                this.emit('setAccount', account.address);
-                this.emit('setAccounts', this.getAccounts());
+                console.log(this.isDuringSelectedAccount,this.selectedAccount,account.address);
+                if(!this.isDuringSelectedAccount){
+                    console.log('#######$$$$$$$%%%%%%%%%%%%%%');
+                    this.emit('setAccount', this.selectedAccount);
+                    this.emit('setAccounts', this.getAccounts());
+                }
+            } else {
+                continue;
             }
         }
+        this.isDuringSelectedAccount=false;
         this.isPolling = false;
         setTimeout(() => (
             this._pollAccounts()
@@ -249,7 +255,7 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.READY].includes(appState))
+        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.ADD_TRC20_TOKEN,APP_STATE.READY].includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
@@ -455,10 +461,10 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-
-        this.emit('setConfirmations', this.confirmations);
+        if(this.confirmations.length){
+            this.emit('setConfirmations', this.confirmations);
+        }
         this._closePopup();
-
         this.resetState();
     }
 
@@ -492,10 +498,10 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-
-        this.emit('setConfirmations', this.confirmations);
+        if(this.confirmations.length) {
+            this.emit('setConfirmations', this.confirmations);
+        }
         this._closePopup();
-
         this.resetState();
     }
 
@@ -547,8 +553,9 @@ class Wallet extends EventEmitter {
         NodeService.setAddress();
 
         this.selectedAccount = address;
-
+        this.isDuringSelectedAccount = true;
         this.emit('setAccount', address);
+
     }
 
 

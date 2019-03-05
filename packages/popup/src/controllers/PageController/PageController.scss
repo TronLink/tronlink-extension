@@ -22,12 +22,12 @@
                 background-repeat: no-repeat;
                 &.link-twiter{
                     top:60px;
-                    background-image: url('../../assets/images/new/icon-twiter.png');
+                    background-image: url('../../assets/images/new/icon-twiter.svg');
                 }
                 &.link-telegram{
                     width: 30px;
                     top:100px;
-                    background-image: url('../../assets/images/new/icon-telegram.png');
+                    background-image: url('../../assets/images/new/icon-telegram.svg');
                 }
             }
             & > .fun{
@@ -234,6 +234,9 @@
                 }
                 &.link{
                     background-image: url('../../assets/images/new/icon-link.svg');
+                }
+                &.addToken{
+                    background-image: url('../../assets/images/new/icon-add.svg');
                 }
             }
 

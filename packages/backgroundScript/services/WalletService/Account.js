@@ -276,6 +276,8 @@ class Account {
                 this.tokens.smart[ tokenId ].imgUrl = false;
                 this.tokens.smart[ tokenId ].balance = balance;
                 this.tokens.smart[ tokenId ].price = 0;
+                this.tokens.smart[ tokenId ].abbr = token.symbol;
+
             });
             for(let {contract_address,decimals,name,symbol:abbr,icon_url} of smart){
                 let balance;
@@ -331,10 +333,10 @@ class Account {
                 const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key == fTokenAddr);
                 let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
                 price = price/Math.pow(10,precision);
-                if(!token && !StorageService.tokenCache.hasOwnProperty(key))
+                if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
                     await StorageService.cacheToken(key);
 
-                if(!token && StorageService.tokenCache.hasOwnProperty(key)) {
+                if(StorageService.tokenCache.hasOwnProperty(key)) {
                     const {
                         name,
                         abbr,
@@ -350,7 +352,6 @@ class Account {
                         imgUrl
                     };
                 }
-
                 this.tokens.basic[ key ] = {
                     ...token,
                     balance: value,

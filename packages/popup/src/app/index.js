@@ -16,6 +16,7 @@ import ReceiveController from '@tronlink/popup/src/controllers/ReceiveController
 import SendController from '@tronlink/popup/src/controllers/SendController';
 import TransactionsController from '@tronlink/popup/src/controllers/TransactionsController';
 import SettingController from '@tronlink/popup/src/controllers/SettingController';
+import AddTokenController from '@tronlink/popup/src/controllers/AddTokenController';
 
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
@@ -68,6 +69,9 @@ class App extends React.Component {
                 break;
             case APP_STATE.SETTING:
                 dom = <SettingController lock={lock} language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                break;
+            case APP_STATE.ADD_TRC20_TOKEN:
+                dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             default:
                 dom =
