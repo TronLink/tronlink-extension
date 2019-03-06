@@ -47,7 +47,7 @@ class AccountsPage extends React.Component {
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
-        PopupAPI.refresh();
+        //PopupAPI.refresh();
     }
     componentDidUpdate() {
 
@@ -342,10 +342,11 @@ class AccountsPage extends React.Component {
         tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'abbr','symbol');
         tokens = [trx,...tokens];
         tokens.forEach(({tokenId,...token})=>{
+            const price = token.price == undefined ? 0 : token.price;
             const amount = new BigNumber(token.balance)
                 .shiftedBy(-token.decimals)
                 .toString();
-            const money = tokenId==='_' ?(token.price*amount).toFixed(2):(token.price*amount*prices.priceList[prices.selected]).toFixed(2);
+            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount*prices.priceList[prices.selected]).toFixed(2);
             totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
         })
         return (

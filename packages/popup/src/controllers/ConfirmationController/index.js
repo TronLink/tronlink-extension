@@ -147,7 +147,7 @@ class ConfirmationController extends React.Component {
             meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.asset_name) });
 
         if(input.token_id)
-            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.token_id) });
+            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: input.token_id });
 
         if(input.to_address) {
             const address = TronWeb.address.fromHex(input.to_address);
@@ -258,7 +258,7 @@ class ConfirmationController extends React.Component {
         const {
             type
         } = this.props.confirmation;
-
+        console.log(type);
         return (
             <div className='insetContainer confirmationController'>
                 <div className='greyModal confirmModal'>
@@ -268,9 +268,12 @@ class ConfirmationController extends React.Component {
                         </div>
                     ) }
                     />
-                    { type === CONFIRMATION_TYPE.STRING ?
+                    {type === CONFIRMATION_TYPE.STRING ?
                         this.renderMessage() :
-                        this.renderTransaction()
+                        (type === CONFIRMATION_TYPE.TRANSACTION?
+                            this.renderTransaction():
+                                null
+                        )
                     }
                     <div className='buttonRow'>
                         <Button

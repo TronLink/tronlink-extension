@@ -124,11 +124,13 @@ const NodeService = {
 
             if(!contract.name && !contract.symbol && !contract.decimals)
                 return false;
-
+            const name = await contract.name().call();
+            const symbol = await contract.symbol().call();
+            const decimals = await contract.decimals().call();
             return {
-                name: await contract.name().call(),
-                symbol: await contract.symbol().call(),
-                decimals: new BigNumber(await contract.decimals().call()).toNumber()
+                name: typeof name === 'object' ? name._name: name,
+                symbol: typeof symbol === 'object' ? symbol._symbol: symbol,
+                decimals: typeof decimals === 'object' ? decimals._decimals: decimals
             };
         } catch(ex) {
             logger.error(`Failed to fetch token ${ address }:`, ex);

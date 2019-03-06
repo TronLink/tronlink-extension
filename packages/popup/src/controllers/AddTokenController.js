@@ -55,7 +55,7 @@ class AddTokenController extends React.Component {
                                 const value = e.target.value;
                                 this.state.address.value = value;
                                 this.state.address.valid = TronWeb.isAddress(value);
-                                this.state({address:this.state.address});
+                                this.setState({address:this.state.address});
                             }} placeholder={formatMessage({id:"MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER"})} />
                         </div>
                     </div>

@@ -30,7 +30,6 @@ class Wallet extends EventEmitter {
         // This should be moved into its own component
         this.isPolling = false;
         this.shouldPoll = false;
-        this.isDuringSelectedAccount = false;
         this._checkStorage();
 
         setInterval(() => {
@@ -125,9 +124,7 @@ class Wallet extends EventEmitter {
             if(account.address === this.selectedAccount) {
                 await account.update();
                 await account.updateTransactions();
-                console.log(this.isDuringSelectedAccount,this.selectedAccount,account.address);
-                if(!this.isDuringSelectedAccount){
-                    console.log('#######$$$$$$$%%%%%%%%%%%%%%');
+                if(account.address === this.selectedAccount){
                     this.emit('setAccount', this.selectedAccount);
                     this.emit('setAccounts', this.getAccounts());
                 }
@@ -135,7 +132,6 @@ class Wallet extends EventEmitter {
                 continue;
             }
         }
-        this.isDuringSelectedAccount=false;
         this.isPolling = false;
         setTimeout(() => (
             this._pollAccounts()
@@ -551,15 +547,13 @@ class Wallet extends EventEmitter {
     selectAccount(address) {
         StorageService.selectAccount(address);
         NodeService.setAddress();
-
         this.selectedAccount = address;
-        this.isDuringSelectedAccount = true;
         this.emit('setAccount', address);
-
+        //this.refresh();
     }
 
 
-    selectNode(nodeID) {
+    async selectNode(nodeID) {
         NodeService.selectNode(nodeID);
 
         Object.values(this.accounts).forEach(account => (
@@ -573,7 +567,7 @@ class Wallet extends EventEmitter {
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-        this.refresh();
+        await this.refresh();
         //this.emit('setAccounts', this.getAccounts());
         //this.emit('setAccount', this.selectedAccount);
     }
@@ -697,7 +691,6 @@ class Wallet extends EventEmitter {
             recipient,
             amount
         );
-
         this._pollAccounts();
     }
 
@@ -707,7 +700,6 @@ class Wallet extends EventEmitter {
             amount,
             token
         );
-
         this._pollAccounts();
     }
 
@@ -717,7 +709,6 @@ class Wallet extends EventEmitter {
             amount,
             token
         );
-
         this._pollAccounts();
     }
 

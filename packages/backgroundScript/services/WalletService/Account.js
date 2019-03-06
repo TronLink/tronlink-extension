@@ -272,12 +272,15 @@ class Account {
                 } else {
                     balance = new BigNumber(number).toString();
                 }
-                this.tokens.smart[ tokenId ] = token;
+                if(typeof token.name === 'object'){
+                    const token2 = await NodeService.getSmartToken(tokenId);
+                    this.tokens.smart[ tokenId ] = token2;
+                } else {
+                    this.tokens.smart[ tokenId ] = token;
+                }
                 this.tokens.smart[ tokenId ].imgUrl = false;
                 this.tokens.smart[ tokenId ].balance = balance;
                 this.tokens.smart[ tokenId ].price = 0;
-                this.tokens.smart[ tokenId ].abbr = token.symbol;
-
             });
             for(let {contract_address,decimals,name,symbol:abbr,icon_url} of smart){
                 let balance;

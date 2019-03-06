@@ -21,7 +21,7 @@ class  TransactionsController extends React.Component{
         } = this.props;
         const {formatMessage} = this.props.intl;
         const {address} = accounts.selected;
-        const {id='_',name='TRX',decimals=6,imgUrl,price,amount,balance,frozenBalance} = accounts.selectedToken;
+        const {id='_',name='TRX',decimals=6,imgUrl,price = 0,amount,balance,frozenBalance} = accounts.selectedToken;
         const transactionGroup = accounts.selected.transactions[id];
         return (
             <div className='insetContainer transactions'>
@@ -52,7 +52,7 @@ class  TransactionsController extends React.Component{
                             {amount}
                         </div>
                         <div className="worth">
-                            ≈ {id==='_' ?(price*amount).toFixed(2):(price*amount*prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
+                            ≈ {id==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
                         </div>
                         {
                             id === "_"?
