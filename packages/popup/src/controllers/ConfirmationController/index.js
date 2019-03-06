@@ -258,7 +258,6 @@ class ConfirmationController extends React.Component {
         const {
             type
         } = this.props.confirmation;
-        console.log(type);
         return (
             <div className='insetContainer confirmationController'>
                 <div className='greyModal confirmModal'>

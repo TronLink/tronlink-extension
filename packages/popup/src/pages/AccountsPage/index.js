@@ -238,7 +238,7 @@ class AccountsPage extends React.Component {
                                     }}>
                                     <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
                                     <div className="name">
-                                        {token.abbr === ''? token.name : (token.abbr?token.abbr:token.symbol)}
+                                        {token.abbr || token.symbol || token.name}
                                     </div>
                                     <div className="worth">
                                         <span>{amount}</span>

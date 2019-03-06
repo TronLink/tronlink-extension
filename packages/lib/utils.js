@@ -166,10 +166,12 @@ const Utils = {
         for (let i = 0; i < data.length; i++) {
             let letter;
             if(data[i][field] == undefined){
-                if(data[i][field2].match(/^\d/)){
+                if(data[i][field2] && data[i][field2].match(/^\d/)){
                     letter ='_';
-                }else{
+                }else if(data[i][field2] && data[i][field2].match(/^[a-zA-z]/)){
                     letter = data[i][field2].substr(0, 1).toUpperCase();
+                }else{
+                    letter = data[i]['name'].substr(0, 1).toUpperCase();
                 }
             }else if(data[i][field] === ''){
                 letter = data[i]['name'].substr(0, 1).toUpperCase();
