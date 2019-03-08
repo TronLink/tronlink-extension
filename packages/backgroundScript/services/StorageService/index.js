@@ -325,26 +325,35 @@ const StorageService = {
 
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             if(typeof tokenID === 'string' ){
-                const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
-                const {
-                    name,
-                    abbr,
-                    precision: decimals = 0,
-                    imgUrl=false
-                } = data.data[0];
-                this.tokenCache[ tokenID ] = {
-                    name,
-                    abbr,
-                    decimals,
-                    imgUrl
-                };
-            }else{
-                const {contract_address,decimals,name,abbr,imgUrl} = tokenID;
+                if(tokenID === '_'){
+                   this.tokenCache[ tokenID ] = {
+                        name:'TRX',
+                        abbr:'TRX',
+                        decimals:6
+                    };
+                }else{
+                    const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
+                    const {
+                        name,
+                        abbr,
+                        precision: decimals = 0,
+                        imgUrl=false
+                    } = data.data[0];
+                    this.tokenCache[ tokenID ] = {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl
+                    };
+                }
+            } else {
+                const {contract_address,decimals,name,abbr} = tokenID;
+                const {data:{trc20_tokens:[{icon_url=false}]}} = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
                 this.tokenCache[ contract_address ] = {
                     name,
                     abbr,
                     decimals,
-                    imgUrl
+                    imgUrl:icon_url
                 };
             }
 

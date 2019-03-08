@@ -245,20 +245,13 @@ class Account {
             tokens
         } = this;
         logger.info(`Requested update for ${ address }`);
-        const account =  await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+        const node = NodeService.getNodes().selected;
         const {data: {data: basicTokenPriceList}} = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
         const {data: {data: {rows: smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
-        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            const {data: {trc20_tokens: smart}} = await axios.get('https://apilist.tronscan.org/api/token_trc20', {
-                params: {
-                    sort: 'issue_time',
-                    limit: 100,
-                    start: 0
-                }
-            });
+        if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            const {data:account} = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             if (!account.address) {
                 logger.info(`Account ${ address } does not exist on the network`);
-
                 this.reset();
                 return false;
             }
@@ -272,7 +265,7 @@ class Account {
                 } else {
                     balance = new BigNumber(number).toString();
                 }
-                if(typeof token.name === 'object'){
+                if(typeof token.name === 'object') {
                     const token2 = await NodeService.getSmartToken(tokenId);
                     this.tokens.smart[ tokenId ] = token2;
                 } else {
@@ -282,21 +275,68 @@ class Account {
                 this.tokens.smart[ tokenId ].balance = balance;
                 this.tokens.smart[ tokenId ].price = 0;
             });
-            for(let {contract_address,decimals,name,symbol:abbr,icon_url} of smart){
-                let balance;
-                let token = this.tokens.smart[ contract_address ] || false;
-                const contract = await NodeService.tronWeb.contract().at(contract_address);
-                const number = await contract.balanceOf(address).call();
-                if (number.balance) {
-                    balance = new BigNumber(number.balance).toString();
-                } else {
-                    balance = new BigNumber(number).toString();
+            let sentDelegateBandwidth = 0;
+            let delegated = account.delegated;
+            if(delegated && delegated.sentDelegatedBandwidth) {
+                for (let i = 0; i < delegated.sentDelegatedBandwidth.length; i++) {
+                    sentDelegateBandwidth = sentDelegateBandwidth + delegated.sentDelegatedBandwidth[i]['frozen_balance_for_bandwidth'];
                 }
-                if(balance > 0){
+            }
+            let frozenBandwidth=0;
+            if(account.frozen.balances.length > 0){
+                frozenBandwidth=account.frozen.balances[0].amount;
+            }
+            let sentDelegateResource=0;
+            if(delegated && delegated.sentDelegatedResource) {
+                for (let i = 0; i < delegated.sentDelegatedResource.length; i++) {
+                    sentDelegateResource = sentDelegateResource + delegated.sentDelegatedResource[i]['frozen_balance_for_energy'];
+                }
+            }
+            let frozenEnergy=0;
+            if(account.accountResource.frozen_balance_for_energy.frozen_balance > 0){
+                frozenEnergy = account.accountResource.frozen_balance_for_energy.frozen_balance;
+            }
+            this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
+            this.balance = account.balance || 0;
+            const filteredTokens = account.tokenBalances.filter(v=>v.balance > 0);
+            for(const { name:key, balance } of filteredTokens) {
+                let token = this.tokens.basic[ key ] || false;
+                const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
+                const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
+                let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
+                price = price/Math.pow(10,precision);
+                if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl === undefined))
+                    await StorageService.cacheToken(key);
+
+                if(StorageService.tokenCache.hasOwnProperty(key)) {
+                    const {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl
+                    } = StorageService.tokenCache[ key ];
+
+                    token = {
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl
+                    };
+                }
+                this.tokens.basic[ key ] = {
+                    ...token,
+                    balance,
+                    price
+                };
+            }
+            const smartTokens = account.trc20token_balances.filter(v=>v.balance > 0);
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
+                let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
-                    const price = filter.length?filter[0].price/Math.pow(10,decimals):0;
+                    const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
                     if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
-                        await StorageService.cacheToken({contract_address,decimals,name,abbr,imgUrl:icon_url});
+                        await StorageService.cacheToken({contract_address,decimals,name,abbr});
 
                     if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
                         const {
@@ -320,69 +360,86 @@ class Account {
                         balance,
                         price
                     };
-                }
-                if(balance == 0 && StorageService.tokenCache.hasOwnProperty(contract_address)) {
-                    const {
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl = false
-                    } = StorageService.tokenCache[ contract_address ];
 
-                    token = {
-                        price:0,
-                        balance: 0,
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl,
-                    };
-                    this.tokens.smart[ contract_address ] = token;
-                }
             }
-        }else{
+        } else {
+            const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+            const filteredTokens = (account.assetV2 || []).filter(({ value }) => { return value > 0 });
+            if(filteredTokens.length > 0) {
+                for(const { key, value } of filteredTokens) {
+                    let token = this.tokens.basic[ key ] || false;
+                    const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
+                    const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
+                    let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
+                    price = price/Math.pow(10,precision);
+                    if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
+                        await StorageService.cacheToken(key);
+
+                    if(StorageService.tokenCache.hasOwnProperty(key)) {
+                        const {
+                            name,
+                            abbr,
+                            decimals,
+                            imgUrl
+                        } = StorageService.tokenCache[ key ];
+
+                        token = {
+                            balance: 0,
+                            name,
+                            abbr,
+                            decimals,
+                            imgUrl
+                        };
+                    }
+                    this.tokens.basic[ key ] = {
+                        ...token,
+                        balance: value,
+                        price
+                    };
+                }
+            }else{
+                this.tokens.basic = {};
+            }
             this.tokens.smart = {};
+            this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
+            this.balance = account.balance || 0;
         }
-        const filteredTokens = (account.assetV2 || []).filter(({ value }) => {
-            return value > 0;
-        });
-        if(filteredTokens.length > 0){
-            for(const { key, value } of filteredTokens) {
-                let token = this.tokens.basic[ key ] || false;
-                const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id==key);
-                const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key == fTokenAddr);
-                let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
-                price = price/Math.pow(10,precision);
-                if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
-                    await StorageService.cacheToken(key);
 
-                if(StorageService.tokenCache.hasOwnProperty(key)) {
-                    const {
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl
-                    } = StorageService.tokenCache[ key ];
-
-                    token = {
-                        balance: 0,
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl
-                    };
-                }
-                this.tokens.basic[ key ] = {
-                    ...token,
-                    balance: value,
-                    price
-                };
-            }
-        }else{
-            this.tokens.basic = {};
-        }
-        this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
-        this.balance = account.balance || 0;
+        // if(filteredTokens.length > 0) {
+        //     for(const { key, value } of filteredTokens) {
+        //         let token = this.tokens.basic[ key ] || false;
+        //         const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id==key);
+        //         const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key == fTokenAddr);
+        //         let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
+        //         price = price/Math.pow(10,precision);
+        //         if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
+        //             await StorageService.cacheToken(key);
+        //
+        //         if(StorageService.tokenCache.hasOwnProperty(key)) {
+        //             const {
+        //                 name,
+        //                 abbr,
+        //                 decimals,
+        //                 imgUrl
+        //             } = StorageService.tokenCache[ key ];
+        //
+        //             token = {
+        //                 balance: 0,
+        //                 name,
+        //                 abbr,
+        //                 decimals,
+        //                 imgUrl
+        //             };
+        //         }
+        //         this.tokens.basic[ key ] = {
+        //             ...token,
+        //             balance: value,
+        //             price
+        //         };
+        //     }
+        // }else{
+        //     this.tokens.basic = {};
+        // }
         this.lastUpdated = Date.now();
         await Promise.all([
             this.updateBalance(),

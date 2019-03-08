@@ -236,7 +236,7 @@ class AccountsPage extends React.Component {
                                         PopupAPI.setSelectedToken(o);
                                         PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                                     }}>
-                                    <img src={token.imgUrl?token.imgUrl:token10DefaultImg} alt=""/>
+                                    <img src={token.imgUrl || token10DefaultImg} alt=""/>
                                     <div className="name">
                                         {token.abbr || token.symbol || token.name}
                                     </div>
@@ -340,15 +340,21 @@ class AccountsPage extends React.Component {
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
-        tokens = [trx,...tokens];
-        tokens.forEach(({tokenId,...token})=>{
-            const price = token.price == undefined ? 0 : token.price;
+        tokens = Object.keys(accounts.selected.tokens.basic).includes('_') ? tokens : [trx,...tokens];
+        tokens = tokens.map(({tokenId,...token})=>{
+            if(tokenId === '_') {
+                token.balance += accounts.selected.frozenBalance ? accounts.selected.frozenBalance : 0;
+                token.imgUrl = trxImg;
+                token.price = trx_price;
+            }
+            const price = token.price === undefined ? 0 : token.price;
             const amount = new BigNumber(token.balance)
                 .shiftedBy(-token.decimals)
                 .toString();
-            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount*prices.priceList[prices.selected]).toFixed(2);
+            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * trx_price).toFixed(2);
             totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
-        })
+            return {tokenId,...token};
+        });
         return (
             <div className='accountsPage' onClick={()=>{
                 this.setState({

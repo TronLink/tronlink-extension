@@ -162,24 +162,9 @@ const Utils = {
     dataLetterSort (data,field,field2) {
         let needArray = [];
         let list = {};
-        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_'];
+        let LetterArray = ['_','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','@'];
         for (let i = 0; i < data.length; i++) {
-            let letter = (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
-            // if(data[i][field] == undefined){
-            //     if(data[i][field2] && data[i][field2].match(/^\d/)){
-            //         letter ='_';
-            //     }else if(data[i][field2] && data[i][field2].match(/^[a-zA-z]/)){
-            //         letter = data[i][field2].substr(0, 1).toUpperCase();
-            //     }else{
-            //         letter = data[i]['name'].substr(0, 1).toUpperCase();
-            //     }
-            // }else if(data[i][field] === ''){
-            //     letter = data[i]['name'].substr(0, 1).toUpperCase();
-            // }else if(data[i][field].match(/^\d/)){
-            //     letter = '_';
-            // }else if(data[i][field]){
-            //     letter = data[i][field].substr(0, 1).toUpperCase()
-            // }
+            let letter = data[i]['tokenId'] === '_' ? '_' : (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
             if(!list[letter]){
                 list[letter] = [];
             }
