@@ -14,7 +14,6 @@ export default {
     },
 
     changeState(appState) {
-        console.log(appState)
         return this.duplex.send('changeState', appState, false);
     },
 

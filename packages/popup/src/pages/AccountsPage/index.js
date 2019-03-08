@@ -161,7 +161,7 @@ class AccountsPage extends React.Component {
                 <div className="row2">
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
                     <CopyToClipboard text={accounts.selected.address}
-                                    onCopy={() => {T.notify(formatMessage({id:'TOAST.COPY'}))} }>
+                                    onCopy={(e) => { T.notify(formatMessage({id:'TOAST.COPY'}))} }>
                         <span className='copy'></span>
                     </CopyToClipboard>
 
@@ -339,7 +339,7 @@ class AccountsPage extends React.Component {
         const trx_price = prices.priceList[prices.selected];
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'abbr','symbol');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
         tokens = [trx,...tokens];
         tokens.forEach(({tokenId,...token})=>{
             const price = token.price == undefined ? 0 : token.price;

@@ -122,12 +122,12 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                await account.update();
-                await account.updateTransactions();
-                if(account.address === this.selectedAccount){
-                    this.emit('setAccount', this.selectedAccount);
-                    this.emit('setAccounts', this.getAccounts());
-                }
+                Promise.all([account.update(),account.updateTransactions()]).then(()=>{
+                    if(account.address === this.selectedAccount){
+                        this.emit('setAccount', this.selectedAccount);
+                        this.emit('setAccounts', this.getAccounts());
+                    }
+                }).catch(e=>{console.log(e)});
             } else {
                 continue;
             }
@@ -240,7 +240,7 @@ class Wallet extends EventEmitter {
                 ]).catch(e=>false);
                 if(r){
                     res = true;
-                    this.emit('setAccount', account.address);
+                    this.emit('setAccount', this.selectedAccount);
                     this.emit('setAccounts', this.getAccounts());
                 }else{
                     res = false;
@@ -691,7 +691,7 @@ class Wallet extends EventEmitter {
             recipient,
             amount
         );
-        this._pollAccounts();
+        this._refresh();
     }
 
     async sendBasicToken({ recipient, amount, token }) {
@@ -700,7 +700,7 @@ class Wallet extends EventEmitter {
             amount,
             token
         );
-        this._pollAccounts();
+        this.refresh();
     }
 
     async sendSmartToken({ recipient, amount, token }) {
@@ -709,7 +709,7 @@ class Wallet extends EventEmitter {
             amount,
             token
         );
-        this._pollAccounts();
+        this.refresh();
     }
 
     exportAccount() {

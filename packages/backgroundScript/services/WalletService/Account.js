@@ -292,7 +292,7 @@ class Account {
                 } else {
                     balance = new BigNumber(number).toString();
                 }
-                if(balance>0){
+                if(balance > 0){
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
                     const price = filter.length?filter[0].price/Math.pow(10,decimals):0;
                     if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
@@ -315,12 +315,29 @@ class Account {
                             imgUrl,
                         };
                     }
-
                     this.tokens.smart[ contract_address ] = {
                         ...token,
                         balance,
                         price
                     };
+                }
+                if(balance == 0 && StorageService.tokenCache.hasOwnProperty(contract_address)) {
+                    const {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl = false
+                    } = StorageService.tokenCache[ contract_address ];
+
+                    token = {
+                        price:0,
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl,
+                    };
+                    this.tokens.smart[ contract_address ] = token;
                 }
             }
         }else{
