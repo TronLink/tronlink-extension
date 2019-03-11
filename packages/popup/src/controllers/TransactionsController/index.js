@@ -120,7 +120,7 @@ class  TransactionsController extends React.Component{
                                         {
                                             transactions.length > 0 ?
                                                 transactions.map(v => {
-                                                    const direction = v.transferToAddress === address ? 'receive' : 'send';
+                                                    const direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
                                                     const addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
                                                     return (
                                                         <div className={"item " + direction}>

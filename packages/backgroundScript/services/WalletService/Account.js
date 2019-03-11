@@ -173,21 +173,62 @@ class Account {
     async getTransactions() {
         let transactions = {};
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            const address = this.address;
             const tokens = ['_',...Object.keys(this.tokens.basic)];
+            const params = {sort: '-timestamp', limit: 20, start: 0};
+            let all, send, receive;
             for(let key of tokens) {
-                const address = this.address;
-                let all, send, receive, params = {sort: '-timestamp', limit: 20, start: 0};
                 if (key === '_') {
-                    params.asset_name = 'TRX';
+                    //params.asset_name = 'TRX';
+                    all =   axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+                    send =  axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+                    receive =  axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
                 } else {
                     params.token_id = key;
+                    all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+                    send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+                    receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
                 }
-                all =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-                send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-                receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
-                const [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
+
+                let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
+                if(key === '_'){
+                    ALL = ALL.map(v=>{
+                        const res = {};
+                        res.transferToAddress = v.toAddress || v.ownerAddress;
+                        res.transferFromAddress = v.ownerAddress;
+                        res.timestamp = v.timestamp;
+                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance || 0;
+                        res.type = v.contractType;
+                        return res;
+                    });
+                    SEND = SEND.map(v=>{
+                        const res = {};
+                        res.transferToAddress = v.toAddress || v.ownerAddress;
+                        res.transferFromAddress = v.ownerAddress;
+                        res.timestamp = v.timestamp;
+                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance ||0;
+                        res.type = v.contractType;
+                        return res;
+                    });
+                    RECEIVE = RECEIVE.map(v=>{
+                        const res = {};
+                        res.transferToAddress = v.toAddress || v.ownerAddress;
+                        res.transferFromAddress = v.ownerAddress;
+                        res.timestamp = v.timestamp;
+                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance ||0;
+                        res.type = v.contractType;
+                        return res;
+                    });
+                }
                 transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
             }
+            const {data:{data:trc20_res}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {params: {...params, limit:10000,address}}).catch(err=>{return {data:{data:[]}}});
+            Object.entries(this.tokens.smart).filter(([tokenId,token])=> typeof token ==='object').filter(([tokenId,token])=>{
+                all =  trc20_res.filter(v =>  token.name === v.tokenName).length ? trc20_res.filter(v =>  token.name === v.tokenName).splice(0,20) : [];
+                send = trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).splice(0,20) : [];
+                receive = trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).splice(0,20) : [];
+                transactions[tokenId] = {all, send, receive};
+            });
             return transactions;
         } else {
             // let hasMoreTransactions = true;
@@ -214,10 +255,10 @@ class Account {
         if(this.type !== accountType)
             return false;
 
-        if(accountType == ACCOUNT_TYPE.MNEMONIC && this.mnemonic == importData)
+        if(accountType == ACCOUNT_TYPE.MNEMONIC && this.mnemonic === importData)
             return true;
 
-        if(accountType == ACCOUNT_TYPE.PRIVATE_KEY && this.privateKey == importData)
+        if(accountType == ACCOUNT_TYPE.PRIVATE_KEY && this.privateKey === importData)
             return true;
 
         return false;
@@ -400,7 +441,7 @@ class Account {
             }else{
                 this.tokens.basic = {};
             }
-            this.tokens.smart = {};
+            //this.tokens.smart = {};
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
             this.balance = account.balance || 0;
         }

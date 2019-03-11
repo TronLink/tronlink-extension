@@ -567,9 +567,9 @@ class Wallet extends EventEmitter {
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-        await this.refresh();
-        //this.emit('setAccounts', this.getAccounts());
-        //this.emit('setAccount', this.selectedAccount);
+        //await this.refresh();
+        this.emit('setAccounts', this.getAccounts());
+        this.emit('setAccount', this.selectedAccount);
     }
 
     addNode(node) {
@@ -691,7 +691,7 @@ class Wallet extends EventEmitter {
             recipient,
             amount
         );
-        this._refresh();
+        this.refresh();
     }
 
     async sendBasicToken({ recipient, amount, token }) {

@@ -197,7 +197,7 @@ class SendController extends React.Component {
         const {selected, accounts} = this.props.accounts;
         const trx = {tokenId:'_',name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg};
         let tokens = {...selected.tokens.basic,...selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=>typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}),'name');
         tokens = [trx,...tokens];
         return (
             <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
