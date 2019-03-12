@@ -175,58 +175,27 @@ class Account {
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const address = this.address;
             const tokens = ['_',...Object.keys(this.tokens.basic)];
-            const params = {sort: '-timestamp', limit: 20, start: 0};
+            let params = {sort: '-timestamp', limit: 20, start: 0};
             let all, send, receive;
             for(let key of tokens) {
                 if (key === '_') {
-                    //params.asset_name = 'TRX';
-                    all =   axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-                    send =  axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-                    receive =  axios.get('https://apilist.tronscan.org/api/simple-transaction', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
+                    params.asset_name = 'TRX';
                 } else {
+                    delete params.asset_name;
                     params.token_id = key;
-                    all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-                    send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-                    receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
                 }
-
+                all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+                send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+                receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
                 let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
-                if(key === '_'){
-                    ALL = ALL.map(v=>{
-                        const res = {};
-                        res.transferToAddress = v.toAddress || v.ownerAddress;
-                        res.transferFromAddress = v.ownerAddress;
-                        res.timestamp = v.timestamp;
-                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance || 0;
-                        res.type = v.contractType;
-                        return res;
-                    });
-                    SEND = SEND.map(v=>{
-                        const res = {};
-                        res.transferToAddress = v.toAddress || v.ownerAddress;
-                        res.transferFromAddress = v.ownerAddress;
-                        res.timestamp = v.timestamp;
-                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance ||0;
-                        res.type = v.contractType;
-                        return res;
-                    });
-                    RECEIVE = RECEIVE.map(v=>{
-                        const res = {};
-                        res.transferToAddress = v.toAddress || v.ownerAddress;
-                        res.transferFromAddress = v.ownerAddress;
-                        res.timestamp = v.timestamp;
-                        res.amount = v.contractData.amount || v.contractData.call_value || v.contractData.frozen_balance ||0;
-                        res.type = v.contractType;
-                        return res;
-                    });
-                }
                 transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
             }
+            delete params.token_id;
             const {data:{data:trc20_res}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {params: {...params, limit:10000,address}}).catch(err=>{return {data:{data:[]}}});
             Object.entries(this.tokens.smart).filter(([tokenId,token])=> typeof token ==='object').filter(([tokenId,token])=>{
-                all =  trc20_res.filter(v =>  token.name === v.tokenName).length ? trc20_res.filter(v =>  token.name === v.tokenName).splice(0,20) : [];
-                send = trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).splice(0,20) : [];
-                receive = trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).splice(0,20) : [];
+                all =  trc20_res.filter(v =>  token.name === v.tokenName).length ? trc20_res.filter(v =>  token.name === v.tokenName) : [];
+                send = trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address) : [];
+                receive = trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address) : [];
                 transactions[tokenId] = {all, send, receive};
             });
             return transactions;
@@ -291,6 +260,7 @@ class Account {
         const {data: {data: {rows: smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const {data:account} = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
+            const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
             if (!account.address) {
                 logger.info(`Account ${ address } does not exist on the network`);
                 this.reset();
@@ -298,23 +268,27 @@ class Account {
             }
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
             addSmartTokens.forEach(async ([tokenId,token])=>{
-                let balance;
-                const contract = await NodeService.tronWeb.contract().at(tokenId);
-                const number = await contract.balanceOf(address).call();
-                if (number.balance) {
-                    balance = new BigNumber(number.balance).toString();
-                } else {
-                    balance = new BigNumber(number).toString();
+                const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                if(contract){
+                    let balance;
+                    const number = await contract.balanceOf(address).call();
+                    if (number.balance) {
+                        balance = new BigNumber(number.balance).toString();
+                    } else {
+                        balance = new BigNumber(number).toString();
+                    }
+                    if(typeof token.name === 'object') {
+                        const token2 = await NodeService.getSmartToken(tokenId);
+                        this.tokens.smart[ tokenId ] = token2;
+                    } else {
+                        this.tokens.smart[ tokenId ] = token;
+                    }
+                    this.tokens.smart[ tokenId ].imgUrl = false;
+                    this.tokens.smart[ tokenId ].balance = balance;
+                    this.tokens.smart[ tokenId ].price = 0;
+                }else{
+                    this.tokens.smart[ tokenId ].balance = 0;
                 }
-                if(typeof token.name === 'object') {
-                    const token2 = await NodeService.getSmartToken(tokenId);
-                    this.tokens.smart[ tokenId ] = token2;
-                } else {
-                    this.tokens.smart[ tokenId ] = token;
-                }
-                this.tokens.smart[ tokenId ].imgUrl = false;
-                this.tokens.smart[ tokenId ].balance = balance;
-                this.tokens.smart[ tokenId ].price = 0;
             });
             let sentDelegateBandwidth = 0;
             let delegated = account.delegated;
@@ -338,9 +312,9 @@ class Account {
                 frozenEnergy = account.accountResource.frozen_balance_for_energy.frozen_balance;
             }
             this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
-            this.balance = account.balance || 0;
-            const filteredTokens = account.tokenBalances.filter(v=>v.balance > 0);
-            for(const { name:key, balance } of filteredTokens) {
+            this.balance = account2.balance || 0;
+            const filteredTokens = (account2.assetV2 || []).filter(({ value }) => { return value > 0 });
+            for(const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[ key ] || false;
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
                 const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
@@ -367,7 +341,7 @@ class Account {
                 }
                 this.tokens.basic[ key ] = {
                     ...token,
-                    balance,
+                    balance:value,
                     price
                 };
             }
@@ -442,6 +416,30 @@ class Account {
                 this.tokens.basic = {};
             }
             //this.tokens.smart = {};
+            const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
+            addSmartTokens.forEach(async ([tokenId,token])=>{
+                const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e=>false);
+                if(contract){
+                    let balance;
+                    const number = await contract.balanceOf(address).call();
+                    if (number.balance) {
+                        balance = new BigNumber(number.balance).toString();
+                    } else {
+                        balance = new BigNumber(number).toString();
+                    }
+                    if(typeof token.name === 'object') {
+                        const token2 = await NodeService.getSmartToken(tokenId);
+                        this.tokens.smart[ tokenId ] = token2;
+                    } else {
+                        this.tokens.smart[ tokenId ] = token;
+                    }
+                    this.tokens.smart[ tokenId ].imgUrl = false;
+                    this.tokens.smart[ tokenId ].balance = balance;
+                    this.tokens.smart[ tokenId ].price = 0;
+                }else{
+                    this.tokens.smart[ tokenId ].balance = 0;
+                }
+            });
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
             this.balance = account.balance || 0;
         }

@@ -129,7 +129,7 @@ class  TransactionsController extends React.Component{
                                                                 <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                             </div>
                                                             <div className="right">
-                                                                {v.amount / Math.pow(10, decimals)}
+                                                                {new BigNumber(v.amount).shiftedBy(-decimals).toString()}
                                                             </div>
                                                         </div>
                                                     )

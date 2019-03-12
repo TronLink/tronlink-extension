@@ -162,9 +162,9 @@ const Utils = {
     dataLetterSort (data,field,field2) {
         let needArray = [];
         let list = {};
-        let LetterArray = ['_','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','@'];
+        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_'];
         for (let i = 0; i < data.length; i++) {
-            let letter = data[i]['tokenId'] === '_' ? '_' : (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
+            let letter = (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
             if(!list[letter]){
                 list[letter] = [];
             }
