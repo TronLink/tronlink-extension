@@ -174,22 +174,22 @@ class Account {
         let transactions = {};
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const address = this.address;
-            const tokens = ['_',...Object.keys(this.tokens.basic)];
+            //const tokens = ['_',...Object.keys(this.tokens.basic)];
             let params = {sort: '-timestamp', limit: 20, start: 0};
             let all, send, receive;
-            for(let key of tokens) {
-                if (key === '_') {
-                    params.asset_name = 'TRX';
-                } else {
-                    delete params.asset_name;
-                    params.token_id = key;
-                }
-                all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-                send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-                receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
-                let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
-                transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
-            }
+            // for(let key of tokens) {
+            //     if (key === '_') {
+            //         params.asset_name = 'TRX';
+            //     } else {
+            //         delete params.asset_name;
+            //         params.token_id = key;
+            //     }
+            //     all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+            //     send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+            //     receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
+            //     let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
+            //     transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
+            // }
             delete params.token_id;
             const {data:{data:trc20_res}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {params: {...params, limit:10000,address}}).catch(err=>{return {data:{data:[]}}});
             Object.entries(this.tokens.smart).filter(([tokenId,token])=> typeof token ==='object').filter(([tokenId,token])=>{
@@ -443,42 +443,6 @@ class Account {
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
             this.balance = account.balance || 0;
         }
-
-        // if(filteredTokens.length > 0) {
-        //     for(const { key, value } of filteredTokens) {
-        //         let token = this.tokens.basic[ key ] || false;
-        //         const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id==key);
-        //         const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key == fTokenAddr);
-        //         let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
-        //         price = price/Math.pow(10,precision);
-        //         if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
-        //             await StorageService.cacheToken(key);
-        //
-        //         if(StorageService.tokenCache.hasOwnProperty(key)) {
-        //             const {
-        //                 name,
-        //                 abbr,
-        //                 decimals,
-        //                 imgUrl
-        //             } = StorageService.tokenCache[ key ];
-        //
-        //             token = {
-        //                 balance: 0,
-        //                 name,
-        //                 abbr,
-        //                 decimals,
-        //                 imgUrl
-        //             };
-        //         }
-        //         this.tokens.basic[ key ] = {
-        //             ...token,
-        //             balance: value,
-        //             price
-        //         };
-        //     }
-        // }else{
-        //     this.tokens.basic = {};
-        // }
         this.lastUpdated = Date.now();
         await Promise.all([
             this.updateBalance(),

@@ -133,6 +133,8 @@ const backgroundScript = {
         //setting
         duplex.on('getSetting', this.walletService.getSetting);
         duplex.on('setSetting', this.walletService.setSetting);
+
+        duplex.on('getTransactionsByTokenId', this.walletService.getTransactionsByTokenId);
     },
 
     bindTabDuplex() {

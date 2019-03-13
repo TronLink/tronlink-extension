@@ -722,6 +722,22 @@ class Wallet extends EventEmitter {
             privateKey
         };
     }
+
+    async getTransactionsByTokenId(tokenId){
+        let address = this.selectedAccount;
+        let all, send, receive;
+        let params = {sort: '-timestamp', limit: 20, start: 0};
+        if(tokenId === '_'){
+            params.asset_name = 'TRX';
+        } else {
+            params.token_id = tokenId;
+        }
+        all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+        send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+        receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
+        let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
+        return {all:ALL, send:SEND, receive:RECEIVE};
+    }
 }
 
 export default Wallet;

@@ -7,13 +7,29 @@ import { FormattedMessage,injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import {APP_STATE} from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
+
 class  TransactionsController extends React.Component{
     constructor(props){
         super(props);
-        this.state={index :0,isTop:false };
+        this.state={index :0,isTop:false ,transactionGroup:{all:[],send:[],receive:[]}};
+    }
+    async componentDidMount(){
+        let transactionGroup;
+        const {
+            accounts
+        } = this.props;
+        const {id="_"} = accounts.selectedToken;
+        if(id.match(/^T/)){
+            transactionGroup = accounts.selected.transactions[id];
+        } else {
+            T.loading();
+            transactionGroup = await PopupAPI.getTransactionsByTokenId(id);
+            T.loaded();
+        }
+        this.setState({transactionGroup})
     }
     render() {
-        const { index,isTop } = this.state;
+        const { index,isTop,transactionGroup } = this.state;
         const {
             accounts,
             onCancel,
@@ -22,7 +38,6 @@ class  TransactionsController extends React.Component{
         const {formatMessage} = this.props.intl;
         const {address} = accounts.selected;
         const {id='_',name='TRX',decimals=6,imgUrl,price = 0,amount,balance,frozenBalance} = accounts.selectedToken;
-        const transactionGroup = accounts.selected.transactions[id];
         return (
             <div className='insetContainer transactions'>
                 <div className='pageHeader'>

@@ -163,6 +163,10 @@ export default {
 
     setSetting(setting){
         this.duplex.send('setSetting',setting,false);
+    },
+
+    getTransactionsByTokenId(tokenId){
+        return this.duplex.send('getTransactionsByTokenId',tokenId);
     }
 
 
