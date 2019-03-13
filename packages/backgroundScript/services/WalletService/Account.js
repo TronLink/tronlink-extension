@@ -277,7 +277,7 @@ class Account {
                     } else {
                         balance = new BigNumber(number).toString();
                     }
-                    if(typeof token.name === 'object') {
+                    if(typeof token.name === 'object' || (!token.decimals)) {
                         const token2 = await NodeService.getSmartToken(tokenId);
                         this.tokens.smart[ tokenId ] = token2;
                     } else {
