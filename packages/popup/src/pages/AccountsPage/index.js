@@ -342,7 +342,7 @@ class AccountsPage extends React.Component {
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=>typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
         tokens = [trx,...tokens];
         tokens = tokens.map(({tokenId,...token})=>{
-            token.decimals = token.decimals || 6;
+            token.decimals = token.decimals || 0;
             const price = token.price === undefined ? 0 : token.price;
             const amount = new BigNumber(token.balance)
                 .shiftedBy(-token.decimals)
