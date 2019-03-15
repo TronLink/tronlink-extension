@@ -7,7 +7,7 @@ import { FormattedMessage,injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import {APP_STATE} from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
-
+const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class  TransactionsController extends React.Component{
     constructor(props){
         super(props);
@@ -62,7 +62,7 @@ class  TransactionsController extends React.Component{
                 <div className='greyModal'>
                     <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0}:{height:(id==='_'?216:176)}}>
                         <Toast />
-                        <img src={imgUrl} />
+                        <img src={imgUrl} onError={(e)=>{e.target.src=token10DefaultImg}} />
                         <div className="amount">
                             {amount}
                         </div>
