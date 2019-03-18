@@ -159,7 +159,7 @@
     "CONTRACTS.ParticipateAssetIssueContract": "参与通证发型",
     "CONTRACTS.AccountUpdateContract": "更新你的账户",
     "CONTRACTS.FreezeBalanceContract": "冻结余额",
-    "CONTRACTS.UnfreezeAssetContract": "解冻TRX",
+    "CONTRACTS.UnfreezeBalanceContract": "解冻TRX",
     "CONTRACTS.UpdateAssetContract": "更新你的通证信息",
     "CONTRACTS.ProposalCreateContract": "提议网络变化",
     "CONTRACTS.ProposalApproveContract": "通过网络提议",

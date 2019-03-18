@@ -160,7 +160,7 @@
   "CONTRACTS.ParticipateAssetIssueContract": "トークンを購入する",
   "CONTRACTS.AccountUpdateContract": "あなたのアカウントを更新する",
   "CONTRACTS.FreezeBalanceContract": "あなたの残高の一部を凍結する",
-  "CONTRACTS.UnfreezeAssetContract": "あなたのTRXの凍結を解除",
+  "CONTRACTS.UnfreezeBalanceContract": "あなたのTRXの凍結を解除",
   "CONTRACTS.UpdateAssetContract": "トークンを更新する",
   "CONTRACTS.ProposalCreateContract": "ネットワークの変更を提案するs",
   "CONTRACTS.ProposalApproveContract": "ネットワーク提案を承認する",
