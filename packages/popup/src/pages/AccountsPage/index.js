@@ -220,7 +220,7 @@ class AccountsPage extends React.Component {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
-                            const price = token.price == undefined ? 0 : token.price;
+                            const price = token.price === undefined ? 0 : token.price;
                             const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
@@ -236,7 +236,7 @@ class AccountsPage extends React.Component {
                                         PopupAPI.setSelectedToken(o);
                                         PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                                     }}>
-                                    <img src={token.imgUrl || token10DefaultImg} alt=""/>
+                                    <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
                                     <div className="name">
                                         {token.abbr || token.symbol || token.name}
                                     </div>
