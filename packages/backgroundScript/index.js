@@ -83,7 +83,6 @@ const backgroundScript = {
             this.walletService.state
         ));
 
-
         //get the transaction records of token that need to selected
         duplex.on('setSelectedToken', this.walletService.setSelectedToken);
         duplex.on('getSelectedToken', this.walletService.getSelectedToken);

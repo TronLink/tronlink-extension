@@ -4,7 +4,7 @@ export default {
     },
 
     //Data refresh
-    refresh(){
+    refresh() {
         return this.duplex.send('refresh');
     },
     // Data requesting
@@ -131,8 +131,6 @@ export default {
     lockWallet() {
         return this.duplex.send('lockWallet');
     },
-
-
     // Misc
 
     selectCurrency(currency) {
@@ -143,30 +141,30 @@ export default {
         this.duplex.send('setSelectedToken', token, false);
     },
 
-    getSelectedToken(){
+    getSelectedToken() {
         return this.duplex.send('getSelectedToken');
     },
 
     //get type of language package
 
-    getLanguage(){
+    getLanguage() {
         return this.duplex.send('getLanguage');
     },
 
-    setLanguage(language){
-        this.duplex.send('setLanguage',language,false);
+    setLanguage(language) {
+        this.duplex.send('setLanguage', language, false);
     },
 
-    getSetting(){
+    getSetting() {
         return this.duplex.send('getSetting');
     },
 
-    setSetting(setting){
-        this.duplex.send('setSetting',setting,false);
+    setSetting(setting) {
+        this.duplex.send('setSetting', setting, false);
     },
 
-    getTransactionsByTokenId(tokenId){
-        return this.duplex.send('getTransactionsByTokenId',tokenId);
+    getTransactionsByTokenId(tokenId) {
+        return this.duplex.send('getTransactionsByTokenId', tokenId);
     }
 
 

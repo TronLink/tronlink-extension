@@ -34,7 +34,7 @@ class LoginController extends React.Component {
 
     onButtonClick() {
         const { password } = this.state;
-
+        console.log(password);
         this.setState({
             loading: true
         });
@@ -50,6 +50,11 @@ class LoginController extends React.Component {
             }));
     }
 
+    onTestClick() {
+        console.log('test点击');
+        console.log(`PopupAPI是${PopupAPI}`);
+    }
+
     render() {
         const {
             password,
@@ -60,11 +65,11 @@ class LoginController extends React.Component {
         return (
             <div className='insetContainer logoWrap'>
                 <div className='pageHeader'>
-                    <div className="pageHeaderLogoWrap">
-                        <div className="logo1"></div>
-                        <div className="logo2"></div>
+                    <div className='pageHeaderLogoWrap'>
+                        <div className='logo1'></div>
+                        <div className='logo2'></div>
                     </div>
-                    <div className="pageHeaderText">
+                    <div className='pageHeaderText'>
                         <FormattedMessage id='LOGIN.PASSWORD.BACK' />
                     </div>
                 </div>
@@ -85,7 +90,7 @@ class LoginController extends React.Component {
                         onEnter={ this.onButtonClick }
                         tabIndex={ 1 }
                     />
-
+                    <div onClick={ this.onTestClick } style={{ padding: '20px', background: 'pink' }}>新增测试方法</div>
                     <Button
                         id='BUTTON.CONTINUE'
                         isValid={ password.isValid }

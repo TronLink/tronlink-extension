@@ -30,7 +30,7 @@ class Wallet extends EventEmitter {
         // This should be moved into its own component
         this.isPolling = false;
         this.shouldPoll = false;
-        this._checkStorage();
+        this._checkStorage(); //change store by judge
 
         setInterval(() => {
             this._updatePrice();
@@ -38,8 +38,9 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
+        console.log(`StorageService的对象是否存在${StorageService},${StorageService.dataExists()},${StorageService.needsMigrating}`);
         if(await StorageService.dataExists() || StorageService.needsMigrating)
-            this._setState(APP_STATE.PASSWORD_SET);
+            this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
     }
 
     migrate(password) {
@@ -78,6 +79,7 @@ class Wallet extends EventEmitter {
     }
 
     _setState(appState) {
+        console.log(`传参appState为${appState},默认this.state为${this.state}`);
         if(this.state === appState)
             return;
 
@@ -122,21 +124,20 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                Promise.all([account.update(),account.updateTransactions()]).then(()=>{
-                    if(account.address === this.selectedAccount){
+                Promise.all([account.update(), account.updateTransactions()]).then(()=>{
+                    if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
                         this.emit('setAccounts', this.getAccounts());
                     }
-                }).catch(e=>{console.log(e)});
+                }).catch( e => { console.log(e)});
             } else {
                 continue;
             }
         }
         this.isPolling = false;
         setTimeout(() => (
-            this._pollAccounts()
+            this._pollAccounts() // ??TODO repeatedly request
         ), 10 * 1000);
-
     }
 
     async _updatePrice() {
@@ -238,7 +239,7 @@ class Wallet extends EventEmitter {
                     account.update(),
                     //account.updateTransactions()
                 ]).catch(e=>false);
-                if(r){
+                if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
                     this.emit('setAccounts', this.getAccounts());
@@ -251,7 +252,7 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.ADD_TRC20_TOKEN,APP_STATE.READY].includes(appState))
+        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.ADD_TRC20_TOKEN,APP_STATE.READY,APP_STATE.TESTHMTL].includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
@@ -362,11 +363,12 @@ class Wallet extends EventEmitter {
         const {lock:{duration}} = this.getSetting();
         this.setSetting({lock:{lockTime:new Date().getTime(),duration}});
     }
-    async lockWallet(){
+
+    async lockWallet() {
         StorageService.lock();
         this._setState(APP_STATE.PASSWORD_SET);
-
     }
+
     queueConfirmation(confirmation, uuid, callback) {
         this.confirmations.push({
             confirmation,
@@ -552,7 +554,6 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', address);
     }
 
-
     async selectNode(nodeID) {
         NodeService.selectNode(nodeID);
 
@@ -724,18 +725,18 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId(tokenId){
+    async getTransactionsByTokenId(tokenId) {
         let address = this.selectedAccount;
         let all, send, receive;
         let params = {sort: '-timestamp', limit: 20, start: 0};
-        if(tokenId === '_'){
+        if(tokenId === '_') {
             params.asset_name = 'TRX';
         } else {
             params.token_id = tokenId;
         }
-        all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-        send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-        receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
+        all = axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
+        send = axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
+        receive = axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
         let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
         return {all:ALL, send:SEND, receive:RECEIVE};
     }

@@ -3,16 +3,14 @@ import TronWeb from 'tronweb';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-import TransactionMapper from './TransactionMapper';
 
 import { BigNumber } from 'bignumber.js';
 
 import {
-    ACCOUNT_TYPE,
-    SUPPORTED_CONTRACTS
+    ACCOUNT_TYPE
 } from '@tronlink/lib/constants';
-import axios from "axios";
-BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
+import axios from 'axios';
+BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
 const logger = new Logger('WalletService/Account');
 class Account {
     constructor(accountType, importData, accountIndex = 0) {
@@ -269,7 +267,7 @@ class Account {
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
             addSmartTokens.forEach(async ([tokenId,token])=>{
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
-                if(contract){
+                if(contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
                     if (number.balance) {
@@ -298,8 +296,8 @@ class Account {
                 }
             }
             let frozenBandwidth=0;
-            if(account.frozen.balances.length > 0){
-                frozenBandwidth=account.frozen.balances[0].amount;
+            if(account.frozen.balances.length > 0) {
+                frozenBandwidth = account.frozen.balances[0].amount;
             }
             let sentDelegateResource=0;
             if(delegated && delegated.sentDelegatedResource) {
@@ -308,7 +306,7 @@ class Account {
                 }
             }
             let frozenEnergy=0;
-            if(account.accountResource.frozen_balance_for_energy.frozen_balance > 0){
+            if(account.accountResource.frozen_balance_for_energy.frozen_balance > 0) {
                 frozenEnergy = account.accountResource.frozen_balance_for_energy.frozen_balance;
             }
             this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
