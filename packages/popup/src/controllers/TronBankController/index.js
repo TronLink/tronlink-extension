@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-19 22:23:52
+ * @Last Modified time: 2019-03-19 22:27:17
  * TronBankPage
  */
 import React from 'react';
@@ -86,16 +86,17 @@ class BankController extends React.Component {
                         <section className='rentNumInfo infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTNUM'/></label>
                             <div className='receiveAccount'>
-                                <input placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })} />TRX
+                                <input placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} />TRX
                             </div>
                         </section>
                         <section className='rentDayInfo infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
-                            <div className='balance'>
+                            <div className='dayRange'>
                                 
                             </div>
                         </section>
                     </div>
+
                 </div>
             </div>
         );
