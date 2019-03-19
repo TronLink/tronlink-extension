@@ -2,13 +2,13 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-19 21:32:02
+ * @Last Modified time: 2019-03-19 22:23:52
  * TronBankPage
  */
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
-import { NavBar, Icon, InputItem, } from 'antd-mobile';
+import { Flex, NavBar, Icon, List, InputItem, } from 'antd-mobile';
 import {
     APP_STATE
 } from '@tronlink/lib/constants';
@@ -59,6 +59,7 @@ class BankController extends React.Component {
                 >TronBank
                 </NavBar>
                 <div className='bankContent'>
+                    {/* account pay receive */}
                     <div className='accountContent'>
                         <section className='accountInfo infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
@@ -73,24 +74,25 @@ class BankController extends React.Component {
                         <section className='receiveInfo infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
                             <div className='receiveAccount'>
-                                <InputItem placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })}></InputItem>
+                                <input placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })}/>
                             </div>
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.USED'/>/<FormattedMessage id='BANK.INDEX.TOTAL'/>
                             </div>
                         </section>
                     </div>
+                    {/* rent num day */}
                     <div className='rentContent'>
                         <section className='rentNumInfo infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTNUM'/></label>
                             <div className='receiveAccount'>
-                                <InputItem placeholder={ formatMessage({ id: 'ANK.INDEX.PLACEHOLDER' })} extra='TRX'></InputItem>
+                                <input placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })} />TRX
                             </div>
                         </section>
                         <section className='rentDayInfo infoSec'>
-                            <label><FormattedMessage id='ANK.INDEX.RENTDAY'/></label>
+                            <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='balance'>
-                       
+                                
                             </div>
                         </section>
                     </div>
