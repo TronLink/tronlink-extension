@@ -84,7 +84,7 @@ export const app = {
     async getAppState() {
         PopupAPI.init(this.duplex);
         const setting = await PopupAPI.getSetting();
-        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration){
+        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration) {
             PopupAPI.lockWallet();
         }
         let [
@@ -107,9 +107,9 @@ export const app = {
             PopupAPI.getLanguage()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
-        if(lang.indexOf('zh')>-1){
+        if(lang.indexOf('zh')>-1) {
             language = language || 'zh';
-        }else if(lang.indexOf('ja')>-1){
+        }else if(lang.indexOf('ja')>-1) {
             language = language || 'ja';
         }else{
             language = language || 'en';

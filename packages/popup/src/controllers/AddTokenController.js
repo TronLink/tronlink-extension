@@ -1,10 +1,10 @@
 import React from 'react';
-import { FormattedMessage,injectIntl } from 'react-intl';
-import {PopupAPI} from "@tronlink/lib/api";
-import Toast,{ T } from 'react-toast-mobile';
-import TronWeb from "tronweb";
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { PopupAPI } from '@tronlink/lib/api';
+import Toast, { T } from 'react-toast-mobile';
+import TronWeb from 'tronweb';
 class AddTokenController extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             address:{
@@ -13,34 +13,31 @@ class AddTokenController extends React.Component {
             }
         }
     }
-    async addToken(address){
 
+    async addToken(address) {
         if(!this.state.address.valid)
             return;
 
         const { smart } = this.props.tokens;
-        const {formatMessage} = this.props.intl;
+        const { formatMessage } = this.props.intl;
         const token = await PopupAPI.getSmartToken(address);
         if(!token) {
-            T.notify(formatMessage({id:"ERRORS.INVALID_TOKEN"}));
+            T.notify(formatMessage({ id:"ERRORS.INVALID_TOKEN" }));
             return;
         }
 
         if(Object.values(smart).some(({ name, symbol }) => token.name === name || token.symbol === symbol)) {
-            T.notify(formatMessage({id:"ERRORS.TOKEN_ADDED"}));
+            T.notify(formatMessage({ id:"ERRORS.TOKEN_ADDED" }));
             return;
         }
 
         await PopupAPI.addSmartToken(address, token.name, token.symbol, token.decimals);
-        T.notify(formatMessage({id:"TOAST.ADDED"}));
-
+        T.notify(formatMessage({ id:"TOAST.ADDED" }));
     }
 
-
-
     render() {
-        const {formatMessage} = this.props.intl;
-        const {onCancel} = this.props;
+        const { formatMessage } = this.props.intl;
+        const { onCancel } = this.props;
         return (
             <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
                 <div className='pageHeader'>
@@ -66,6 +63,6 @@ class AddTokenController extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default injectIntl(AddTokenController);

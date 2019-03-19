@@ -1,9 +1,8 @@
 import React from 'react';
-import QRCode  from 'qrcode-react';
+import QRCode from 'qrcode-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Toast,{ T } from 'react-toast-mobile';
-import { FormattedMessage,injectIntl } from 'react-intl';
-
+import Toast, { T } from 'react-toast-mobile';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 const ReceiveController = props => {
     const {

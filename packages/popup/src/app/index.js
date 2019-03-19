@@ -1,5 +1,5 @@
 import React from 'react';
-import { IntlProvider,FormattedMessage } from 'react-intl';
+import { IntlProvider, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { PopupAPI } from '@tronlink/lib/api';
 
@@ -17,11 +17,13 @@ import SendController from '@tronlink/popup/src/controllers/SendController';
 import TransactionsController from '@tronlink/popup/src/controllers/TransactionsController';
 import SettingController from '@tronlink/popup/src/controllers/SettingController';
 import AddTokenController from '@tronlink/popup/src/controllers/AddTokenController';
+import BankController from '@tronlink/popup/src/controllers/TronBankController';
 import TestHtmlController from '@tronlink/popup/src/controllers/TestHtmlController';
 
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
 import 'react-toast-mobile/lib/react-toast-mobile.css';
+import 'antd-mobile/dist/antd-mobile.css';
 
 import enMessages from '@tronlink/popup/src/translations/en.json';
 import zhMessages from '@tronlink/popup/src/translations/zh.json';
@@ -31,15 +33,12 @@ class App extends React.Component {
         en: enMessages,
         zh: zhMessages,
         ja: jaMessages
-    }
+    };
 
     render() {
         const { appState, accounts, prices, nodes, language, lock } = this.props;
         let dom = null;
         switch(appState) {
-            case APP_STATE.TESTHMTL:
-                dom = <TestHtmlController />;
-                break;
             case APP_STATE.UNINITIALISED:
                 dom = <RegistrationController language={language} />
                 break;
@@ -75,6 +74,12 @@ class App extends React.Component {
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                break;
+            case APP_STATE.TRONBANK:
+                dom = <BankController accounts={accounts}></BankController>
+                break;
+            case APP_STATE.TESTHMTL:
+                dom = <TestHtmlController />;
                 break;
             default:
                 dom =

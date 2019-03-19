@@ -254,10 +254,10 @@ class Account {
         } = this;
         logger.info(`Requested update for ${ address }`);
         const node = NodeService.getNodes().selected;
-        const {data: {data: basicTokenPriceList}} = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
-        const {data: {data: {rows: smartTokenPriceList}}} = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
+        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
+        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            const {data:account} = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
+            const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
             if (!account.address) {
                 logger.info(`Account ${ address } does not exist on the network`);
@@ -383,8 +383,8 @@ class Account {
                     let token = this.tokens.basic[ key ] || false;
                     const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
                     const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
-                    let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
-                    price = price/Math.pow(10,precision);
+                    let { precision = 0, price } = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
+                    price = price/Math.pow(10, precision);
                     if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
                         await StorageService.cacheToken(key);
 
@@ -414,10 +414,10 @@ class Account {
                 this.tokens.basic = {};
             }
             //this.tokens.smart = {};
-            const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
-            addSmartTokens.forEach(async ([tokenId,token])=>{
+            const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => {return !token.abbr });
+            addSmartTokens.forEach(async ([tokenId, token]) => {
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e=>false);
-                if(contract){
+                if(contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
                     if (number.balance) {
@@ -466,8 +466,6 @@ class Account {
     }
 
     async updateTransactions() {
-
-
         const transactions = await this.getTransactions().catch((e) => {
             logger.error(e);
             logger.error('Failed to update transactions for', this.address);

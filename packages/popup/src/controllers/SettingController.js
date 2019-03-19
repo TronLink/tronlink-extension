@@ -1,17 +1,15 @@
 import React from 'react';
 import swal from 'sweetalert2';
-import {PopupAPI} from "@tronlink/lib/api";
-import { FormattedMessage,injectIntl } from 'react-intl';
-import Button from "../components/Button";
+import { PopupAPI } from '@tronlink/lib/api';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import Button from '../components/Button';
 
-import {VALIDATION_STATE} from "@tronlink/lib/constants";
-
-
+import { VALIDATION_STATE } from '@tronlink/lib/constants';
 class SettingController extends  React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            customNode:{
+            customNode: {
                 name: {
                     value: '',
                     state: VALIDATION_STATE.NONE
@@ -30,10 +28,10 @@ class SettingController extends  React.Component {
                 },
                 isValid: false
             },
-            languages:[
-                {name:'English',key:'en',selected:true},
-                {name:'中文',key:'zh',selected:false},
-                {name:'日本語',key:'ja',selected:false},
+            languages: [
+                { name: 'English', key: 'en', selected: true },
+                { name: '中文', key: 'zh', selected: false },
+                { name: '日本語', key: 'ja', selected: false },
             ],
             autoLock:[{
                 time:60 * 1000,
@@ -54,11 +52,11 @@ class SettingController extends  React.Component {
         };
     }
 
-    setting(index){
+    setting(index) {
         const options = this.refs.cell.getElementsByClassName('option');
-        for(let i=0;i<options.length;i++){
-            if(index === i){
-                if(options[i].className.match(/active/)){
+        for(let i=0;i<options.length;i++) {
+            if(index === i) {
+                if(options[i].className.match(/active/)) {
                     options[i].classList.remove('active');
                 }else{
                     options[i].classList.add('active');
@@ -197,8 +195,8 @@ class SettingController extends  React.Component {
         });
     }
 
-    render(){
-        const { prices,nodes,onCancel,app,language,lock} = this.props;
+    render() {
+        const { prices, onCancel, language, lock} = this.props;
         const { formatMessage } = this.props.intl;
         const {
             name,

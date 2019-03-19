@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage,injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import {PopupAPI} from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
@@ -9,7 +9,7 @@ import swal from 'sweetalert2';
 import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 class SendController extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             isOpen:{
@@ -33,12 +33,14 @@ class SendController extends React.Component {
             loading:false
         }
     }
+
     componentDidMount() {
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 , 6) : selectedToken.amount;
         this.setState({selectedToken});
     }
-    componentWillReceiveProps(nextProps){
+
+    componentWillReceiveProps(nextProps) {
         const {selected,accounts} = nextProps.accounts;
         const {selectedToken} = this.state;
         if(selectedToken.id === '_'){
@@ -52,14 +54,16 @@ class SendController extends React.Component {
         }
         this.setState({selectedToken});
     }
-    changeToken(selectedToken,e){
+
+    changeToken(selectedToken,e) {
         e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.token = !isOpen.token;
         this.setState({isOpen,selectedToken},() => this.validateAmount());
         PopupAPI.setSelectedToken(selectedToken);
     }
-    changeAccount(address,e){
+
+    changeAccount(address,e) {
         e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.account = !isOpen.account;
@@ -75,6 +79,7 @@ class SendController extends React.Component {
             return;
         PopupAPI.selectAccount(address);
     }
+
     onRecipientChange(e) {
         const address = e.target.value;
 
@@ -94,6 +99,7 @@ class SendController extends React.Component {
             recipient
         });
     }
+
     onAmountChange(e) {
         const amount = e.target.value;
         this.setState({
@@ -102,10 +108,11 @@ class SendController extends React.Component {
                 valid: false
             }
         }, () => {
-             this.validateAmount()
+            this.validateAmount()
         });
     }
-    validateAmount(){
+
+    validateAmount() {
         const {
             amount,
             decimals
@@ -116,7 +123,7 @@ class SendController extends React.Component {
             value.isNaN() ||
             value.lte(0) ||
             (
-                decimals == 0 &&
+                decimals === 0 &&
                 !value.isInteger()
             )
         ) {
@@ -134,7 +141,8 @@ class SendController extends React.Component {
             }
         });
     }
-    onSend(){
+
+    onSend() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
         this.setState({
             loading: true,
@@ -191,6 +199,7 @@ class SendController extends React.Component {
         });
 
     }
+
     render() {
         const { isOpen,selectedToken,loading } = this.state;
         const {onCancel} = this.props;
@@ -231,7 +240,7 @@ class SendController extends React.Component {
                         <label><FormattedMessage id="ACCOUNT.SEND.CHOOSE_TOKEN"/></label>
                         <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ (e)=>{e.stopPropagation();isOpen.account=false;isOpen.token = !isOpen.token; this.setState({isOpen})} }>
                             <div className="selected">
-                                <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
+                                <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!=='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
                             <div className="dropWrap" style={isOpen.token?(tokens.length<=5?{height:36*tokens.length}:{height:180,overflow:'scroll'}):{}}>
                                 {
                                     tokens.map(({tokenId:id,balance,name,decimals})=>{
@@ -243,7 +252,7 @@ class SendController extends React.Component {
                                             .shiftedBy(-decimals)
                                             .toString();
                                         return (
-                                            <div onClick={(e)=>{this.changeToken({id,amount,name,decimals},e)}} className={"dropItem"+(id===selectedToken.id?" selected":"")}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id!='_'?(<span>id:{id.length===7?id:id.substr(0,6)+'...'+id.substr(-6)}</span>):''}</div>
+                                            <div onClick={(e)=>{this.changeToken({id,amount,name,decimals},e)}} className={"dropItem"+(id===selectedToken.id?" selected":"")}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id!=='_'?(<span>id:{id.length===7?id:id.substr(0,6)+'...'+id.substr(-6)}</span>):''}</div>
                                         )
                                     })
                                 }
@@ -269,6 +278,6 @@ class SendController extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default injectIntl(SendController);

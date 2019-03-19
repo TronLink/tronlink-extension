@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Toast,{ T } from 'react-toast-mobile';
+import Toast, { T } from 'react-toast-mobile';
 import { PAGES } from '@tronlink/lib/constants';
 import { app } from '@tronlink/popup/src/index';
-import {PopupAPI} from "@tronlink/lib/api";
-import {APP_STATE} from "@tronlink/lib/constants";
+import { PopupAPI } from "@tronlink/lib/api";
+import { APP_STATE } from "@tronlink/lib/constants";
 const PageLink = props => {
     const {
         active = false,

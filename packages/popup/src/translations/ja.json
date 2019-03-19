@@ -160,7 +160,7 @@
   "CONTRACTS.ParticipateAssetIssueContract": "トークンを購入する",
   "CONTRACTS.AccountUpdateContract": "あなたのアカウントを更新する",
   "CONTRACTS.FreezeBalanceContract": "あなたの残高の一部を凍結する",
-  "CONTRACTS.UnfreezeAssetContract": "あなたのTRXの凍結を解除",
+  "CONTRACTS.UnfreezeBalanceContract": "あなたのTRXの凍結を解除",
   "CONTRACTS.UpdateAssetContract": "トークンを更新する",
   "CONTRACTS.ProposalCreateContract": "ネットワークの変更を提案するs",
   "CONTRACTS.ProposalApproveContract": "ネットワーク提案を承認する",
@@ -238,5 +238,36 @@
   "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"利用残高",
   "TRANSACTION.TOKEN_INFO.FROZEN_BALANCE":"残高を凍結する",
   "TRANSACTION.TOKEN_INFO.CONTRACT":"契約",
-  "TRANSACTION.TOKEN_INFO.DETAIL":"詳細"
+  "TRANSACTION.TOKEN_INFO.DETAIL":"詳細",
+
+
+  "BANK.INDEX.ACCOUNT":"jaaccount",
+    "BANK.INDEX.BALANCE":"ja {amount}TRX",
+    "BANK.INDEX.PLACEHOLDER":"ja不填默认为当前支付账户地址",
+    "BANK.INDEX.RECEIVEERROR":"ja地址错误，请重新输入",
+    "BANK.INDEX.USED":"ja已用{num}Energy",
+    "BANK.INDEX.TOTAL":"ja共{total}Energy",
+    "BANK.INDEX.RENTNUM":"ja租用量",
+    "BANK.INDEX.RENTDAY":"ja租用天数",
+    "BANK.INDEX.FREEZEPLACEHOLDER":"ja冻结TRX的数量",
+    "BANK.INDEX.RENTNUMERROR":"ja错误，请重新输入",
+    "BANK.INDEX.FORECASTNUM":"ja预计可得",
+    "BANK.INDEX.RENTPLACEHOLDER":"ja租用天数",
+    "BANK.INDEX.RENTDAYERROR":"ja最少租用3天",
+    "BANK.INDEX.RENTDAYUNIT":"ja天",
+    "BANK.INDEX.RENTCONST":"ja花费",
+    "BANK.INDEX.BUTTON":"ja确定租用",
+
+    "BANK.RENTNUMMODAL.TITLE":"ja租用量说明",
+    "BANK.RENTNUMMODAL.CONTENT":"ja文案文案",
+    "BANK.RENTNUMMODAL.BUTTON":"ja关闭",
+
+    "BANK.RENTINFO.CONFIRM":"ja租用信息确认",
+    "BANK.RENTINFO.PAYADDRESS":"ja付款地址",
+    "BANK.RENTINFO.RECEIVEADDRESS":"ja接收地址",
+    "BANK.RENTINFO.RENTNUM":"ja租用量",
+    "BANK.RENTINFO.RENTDAY":"ja租用天数",
+    "BANK.RENTINFO.PAYNUM":"ja支付金额",
+    "BANK.RENTINFO.CANCELBTN":"ja取消",
+    "BANK.RENTINFO.PAYBTN":"ja立即支付"
 }

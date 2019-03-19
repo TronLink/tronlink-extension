@@ -3,11 +3,10 @@ import Input from '@tronlink/popup/src/components/Input';
 import Button from '@tronlink/popup/src/components/Button';
 import InputCriteria from '@tronlink/popup/src/components/InputCriteria';
 
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 
 import {
-    BUTTON_TYPE,
     VALIDATION_STATE
 } from '@tronlink/lib/constants';
 
@@ -18,7 +17,7 @@ class AccountName extends React.Component {
         hasLength: false,
         isAlphanumeric: false,
         isUnique: false,
-        showCriteria:false
+        showCriteria: false
     };
 
     constructor() {

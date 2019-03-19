@@ -1,11 +1,11 @@
 import React from 'react';
 
-import CopyToClipboard from 'react-copy-to-clipboard'
+import CopyToClipboard from 'react-copy-to-clipboard';
 import swal from 'sweetalert2';
-import Toast,{ T } from 'react-toast-mobile';
+import Toast, { T } from 'react-toast-mobile';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from '@tronlink/lib/api';
-import Utils  from '@tronlink/lib/utils';
+import Utils from '@tronlink/lib/utils';
 import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
@@ -34,23 +34,24 @@ class AccountsPage extends React.Component {
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
         this.state = {
-            mnemonic:false,
-            privateKey:false,
-            showAccountList:false,
-            showMenuList:false,
-            showNodeList:false,
-            showBackUp:false,
-            showDelete:false
-        }
+            mnemonic: false,
+            privateKey: false,
+            showAccountList: false,
+            showMenuList: false,
+            showNodeList: false,
+            showBackUp: false,
+            showDelete: false
+        };
     }
-    componentDidMount(){
+
+    componentDidMount() {
         const { prices } = this.props;
-        const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
+        const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[prices.selected], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         //PopupAPI.refresh();
     }
-    componentDidUpdate() {
 
+    componentDidUpdate() {
         // const { selected: previous } = prevProps.accounts;
         // const { selected } = this.props.accounts;
         //
@@ -69,14 +70,13 @@ class AccountsPage extends React.Component {
 
     async onDelete() {
         const { formatMessage } = this.props.intl;
-        if(Object.keys(this.props.accounts.accounts).length === 1){
-            swal(formatMessage({id:'At least one account is required'}),'','warning');
+        if(Object.keys(this.props.accounts.accounts).length === 1) {
+            swal(formatMessage({ id: 'At least one account is required' }), '', 'warning');
         } else {
             this.setState({
-                showDelete:true
+                showDelete: true
             });
         }
-
     }
 
     async onExport() {
@@ -87,27 +87,28 @@ class AccountsPage extends React.Component {
         this.setState({
             mnemonic,
             privateKey,
-            showBackUp:true
-        })
-    }
-    handleShowNodeList(){
-        this.setState({
-            showAccountList:false,
-            showMenuList:false,
-            showNodeList:!this.state.showNodeList
+            showBackUp: true
         });
     }
 
-    renderAccountInfo(accounts,prices,totalMoney){
+    handleShowNodeList() {
+        this.setState({
+            showAccountList: false,
+            showMenuList: false,
+            showNodeList: !this.state.showNodeList
+        });
+    }
+
+    renderAccountInfo(accounts, prices, totalMoney) {
         const { formatMessage } = this.props.intl;
-        const {showAccountList,showMenuList} = this.state;
-        const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
+        const { showAccountList, showMenuList } = this.state;
+        const addresses = Object.entries(accounts.accounts).map(([address, item]) => ({ address, name: item.name }));
         return (
-            <div className="accountInfo">
-                <div className="row1">
-                    <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
-                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
-                            <div onClick={ ()=>{ PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className="item">
+            <div className='accountInfo'>
+                <div className='row1'>
+                    <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showAccountList:false, showNodeList: false })} }>
+                        <div className='dropList menuList' style= { showMenuList ? { width: '160px', height: 30*4, opacity: 1} : {}}>
+                            <div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className="item">
                                 <span className="icon addToken"></span>
                                 <FormattedMessage id="MENU.ADD_TRC20_TOKEN" />
                             </div>
@@ -182,10 +183,10 @@ class AccountsPage extends React.Component {
             </div>
         )
     }
-    renderResource(account){
+
+    renderResource(account) {
         return (
-            account?
-            <div className="resource">
+            account ? <div className="resource">
                 <div className="cell">
                     <div className="title">
                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.BANDWIDTH' />
@@ -199,59 +200,60 @@ class AccountsPage extends React.Component {
                 <div className="cell">
                     <div className="title">
                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
-                        <div className="num">
+                        <div onClick={ () => {  PopupAPI.changeState(APP_STATE.TRONBANK)}} > 入口</div>
+                        <div className='num'>
                             {account.energy - account.energyUsed}<span>/{account.energy}</span>
                         </div>
                     </div>
                     <ProcessBar percentage={(account.energy - account.energyUsed)/account.energy} />
                 </div>
             </div>
-                :
-            null
+            :null
         )
-
     }
-    renderTokens(tokens){
-        const {prices,accounts} = this.props;
+
+    renderTokens(tokens) {
+        const { prices, accounts } = this.props;
         return (
             <div className="tokens">
                 {
-                    tokens.map(({tokenId,...token})=>{
+                    tokens.map(({tokenId,...token}) => {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
-                            const price = token.price === undefined ? 0 : token.price;
-                            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
-                            return (
-                                <div className="tokenItem" onClick={ ()=>{
-                                        let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
-                                        if(tokenId === '_'){
-                                            o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
-                                                .shiftedBy(-token.decimals)
-                                                .toString();
-                                            o.balance = new BigNumber(accounts.selected.balance)
-                                                .shiftedBy(-token.decimals)
-                                                .toString();
-                                        }
-                                        PopupAPI.setSelectedToken(o);
-                                        PopupAPI.changeState(APP_STATE.TRANSACTIONS);
-                                    }}>
-                                    <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
-                                    <div className="name">
-                                        {token.abbr || token.symbol || token.name}
-                                    </div>
-                                    <div className="worth">
-                                        <span>{amount}</span>
-                                        <span>≈ {money} {prices.selected}</span>
-                                    </div>
+                        const price = token.price === undefined ? 0 : token.price;
+                        const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
+                        return (
+                            <div className="tokenItem" onClick={ ()=> {
+                                    let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                    if(tokenId === '_'){
+                                        o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
+                                            .shiftedBy(-token.decimals)
+                                            .toString();
+                                        o.balance = new BigNumber(accounts.selected.balance)
+                                            .shiftedBy(-token.decimals)
+                                            .toString();
+                                    }
+                                    PopupAPI.setSelectedToken(o);
+                                    PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+                                }}>
+                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
+                                <div className="name">
+                                    {token.abbr || token.symbol || token.name}
                                 </div>
-                            )
+                                <div className="worth">
+                                    <span>{amount}</span>
+                                    <span>≈ {money} {prices.selected}</span>
+                                </div>
+                            </div>
+                        )
                     })
                 }
             </div>
         )
     }
-    renderDeleteAccount(){
+
+    renderDeleteAccount() {
         const { showDelete } = this.state;
         const dom = showDelete
                     ?
@@ -283,65 +285,66 @@ class AccountsPage extends React.Component {
                     null
         return dom;
     }
-    renderBackup(mnemonic,privateKey){
+
+    renderBackup(mnemonic, privateKey) {
         const { showBackUp } = this.state;
         const dom = showBackUp
-                    ?
-                    <div className="popUp">
-                        <div className="backUp">
-                            <div className="title">
-                                <FormattedMessage id="ACCOUNTS.EXPORT" />
-                            </div>
-                            {
-                                mnemonic
-                                    ?
-                                    <div className="option">
-                                        <FormattedMessage id="ACCOUNTS.EXPORT.MNEMONIC" />
-                                        <div className="block">
-                                            {
-                                                mnemonic.split(' ').map(v => <div className="cell">{v}</div>)
-                                            }
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                privateKey
-                                    ?
-                                    <div className="option" style={{marginBottom:20}}>
-                                        <FormattedMessage id="ACCOUNTS.EXPORT.PRIVATE_KEY" />
-                                        <div className="block">
-                                            { privateKey }
-                                        </div>
-                                    </div>
-                                    :
-                                    null
-                            }
-                            <div className='buttonRow'>
-                                <Button
-                                    id='BUTTON.CLOSE'
-                                    onClick={ () => {this.setState({showBackUp:false})} }
-                                    tabIndex={ 1 }
-                                />
-                            </div>
-                        </div>
+            ?
+            <div className="popUp">
+                <div className="backUp">
+                    <div className="title">
+                        <FormattedMessage id="ACCOUNTS.EXPORT" />
                     </div>
-                    :null
-
+                    {
+                        mnemonic
+                            ?
+                            <div className="option">
+                                <FormattedMessage id="ACCOUNTS.EXPORT.MNEMONIC" />
+                                <div className="block">
+                                    {
+                                        mnemonic.split(' ').map(v => <div className="cell">{v}</div>)
+                                    }
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
+                    {
+                        privateKey
+                            ?
+                            <div className="option" style={{marginBottom:20}}>
+                                <FormattedMessage id="ACCOUNTS.EXPORT.PRIVATE_KEY" />
+                                <div className="block">
+                                    { privateKey }
+                                </div>
+                            </div>
+                            :
+                            null
+                    }
+                    <div className='buttonRow'>
+                        <Button
+                            id='BUTTON.CLOSE'
+                            onClick={ () => { this.setState({ showBackUp: false})} }
+                            tabIndex={ 1 }
+                        />
+                    </div>
+                </div>
+            </div>
+            :null
         return dom;
     }
+
     render() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalMoney = '0';
-        const {showNodeList,mnemonic,privateKey}  = this.state;
-        const { accounts,prices,nodes } = this.props;
+        const { showNodeList, mnemonic, privateKey } = this.state;
+        const { accounts, prices, nodes } = this.props;
         const trx_price = prices.priceList[prices.selected];
-        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
-        let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=>typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
-        tokens = [trx,...tokens];
-        tokens = tokens.map(({tokenId,...token})=>{
+        const trx = { tokenId:"_", name:"TRX", balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart};
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance === 0 && v.symbol) ),'abbr','symbol');
+        tokens = [trx, ...tokens];
+        tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;
             const price = token.price === undefined ? 0 : token.price;
             const amount = new BigNumber(token.balance)
@@ -349,19 +352,19 @@ class AccountsPage extends React.Component {
                 .toString();
             const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * trx_price).toFixed(2);
             totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
-            return {tokenId,...token};
+            return { tokenId, ...token };
         });
         return (
-            <div className='accountsPage' onClick={()=>{
+            <div className='accountsPage' onClick={() => {
                 this.setState({
-                    showAccountList:false,
-                    showMenuList:false,
-                    showNodeList:false
+                    showAccountList: false,
+                    showMenuList: false,
+                    showNodeList: false
                 })
             }}>
                 <Toast />
                 {
-                    this.renderBackup(mnemonic,privateKey)
+                    this.renderBackup(mnemonic, privateKey)
                 }
                 {
                     this.renderDeleteAccount()
@@ -383,6 +386,6 @@ export default injectIntl(
     connect(state => ({
         accounts: state.accounts,
         prices: state.app.prices,
-        nodes:state.app.nodes
+        nodes: state.app.nodes
     }))(AccountsPage)
 );

@@ -12,11 +12,12 @@ export const APP_STATE = {
     READY: 5, // [x] User is logged in (and at least 1 account exists)
     REQUESTING_CONFIRMATION: 6, // [x] Shown if confirmations are queued
     RECEIVE: 7, //[x] Show if need to accept trx or tokens
-    SEND: 8,  //[x] Show if need to send trx or tokens
-    TRANSACTIONS: 9,  //[x] Show transactions record
-    SETTING: 10,  //[x] Show setting
+    SEND: 8, //[x] Show if need to send trx or tokens
+    TRANSACTIONS: 9, //[x] Show transactions record
+    SETTING: 10, //[x] Show setting
     ADD_TRC20_TOKEN: 11, //[x] Show setting
-    TESTHMTL: 12 // 测试
+    TRONBANK: 12, // [x] show TronBank page
+    TESTHMTL: 13 // 测试
 
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 

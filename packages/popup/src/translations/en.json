@@ -159,7 +159,7 @@
     "CONTRACTS.ParticipateAssetIssueContract": "purchase a token",
     "CONTRACTS.AccountUpdateContract": "update your account",
     "CONTRACTS.FreezeBalanceContract": "freeze some of your balance",
-    "CONTRACTS.UnfreezeAssetContract": "unfreeze your TRX",
+    "CONTRACTS.UnfreezeBalanceContract": "unfreeze your TRX",
     "CONTRACTS.UpdateAssetContract": "update your token",
     "CONTRACTS.ProposalCreateContract": "propose network changes",
     "CONTRACTS.ProposalApproveContract": "approve a network proposal",
@@ -237,5 +237,37 @@
     "TRANSACTION.TOKEN_INFO.AVAILABLE_BALANCE":"Available balance",
     "TRANSACTION.TOKEN_INFO.FROZEN_BALANCE":"Frozen balance",
     "TRANSACTION.TOKEN_INFO.CONTRACT":"Contract",
-    "TRANSACTION.TOKEN_INFO.DETAIL":"Detail"
+    "TRANSACTION.TOKEN_INFO.DETAIL":"Detail",
+
+    "BANK.INDEX.ACCOUNT":"account",
+    "BANK.INDEX.BALANCE":"en {amount}TRX",
+    "BANK.INDEX.PLACEHOLDER":"en不填默认为当前支付账户地址",
+    "BANK.INDEX.RECEIVEERROR":"en地址错误，请重新输入",
+    "BANK.INDEX.USED":"en已用{num}Energy",
+    "BANK.INDEX.TOTAL":"en共{total}Energy",
+    "BANK.INDEX.RENTNUM":"en租用量",
+    "BANK.INDEX.RENTDAY":"en租用天数",
+    "BANK.INDEX.FREEZEPLACEHOLDER":"en冻结TRX的数量",
+    "BANK.INDEX.RENTNUMERROR":"en错误，请重新输入",
+    "BANK.INDEX.FORECASTNUM":"en预计可得",
+    "BANK.INDEX.RENTPLACEHOLDER":"en租用天数",
+    "BANK.INDEX.RENTDAYERROR":"en最少租用3天",
+    "BANK.INDEX.RENTDAYUNIT":"en天",
+    "BANK.INDEX.RENTCONST":"en花费",
+    "BANK.INDEX.BUTTON":"en确定租用",
+
+    "BANK.RENTNUMMODAL.TITLE":"en租用量说明",
+    "BANK.RENTNUMMODAL.CONTENT":"en文案文案",
+    "BANK.RENTNUMMODAL.BUTTON":"en关闭",
+
+    "BANK.RENTINFO.CONFIRM":"en租用信息确认",
+    "BANK.RENTINFO.PAYADDRESS":"en付款地址",
+    "BANK.RENTINFO.RECEIVEADDRESS":"en接收地址",
+    "BANK.RENTINFO.RENTNUM":"en租用量",
+    "BANK.RENTINFO.RENTDAY":"en租用天数",
+    "BANK.RENTINFO.PAYNUM":"en支付金额",
+    "BANK.RENTINFO.CANCELBTN":"en取消",
+    "BANK.RENTINFO.PAYBTN":"en立即支付"
+
+
 }

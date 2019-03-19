@@ -50,11 +50,6 @@ class LoginController extends React.Component {
             }));
     }
 
-    onTestClick() {
-        console.log('test点击');
-        console.log(`PopupAPI是${PopupAPI}`);
-    }
-
     render() {
         const {
             password,
@@ -90,7 +85,7 @@ class LoginController extends React.Component {
                         onEnter={ this.onButtonClick }
                         tabIndex={ 1 }
                     />
-                    <div onClick={ this.onTestClick } style={{ padding: '20px', background: 'pink' }}>新增测试方法</div>
+            
                     <Button
                         id='BUTTON.CONTINUE'
                         isValid={ password.isValid }

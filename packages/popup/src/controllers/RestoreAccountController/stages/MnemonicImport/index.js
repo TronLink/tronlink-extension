@@ -1,12 +1,11 @@
 import React from 'react';
 import Button from '@tronlink/popup/src/components/Button';
 import Utils from '@tronlink/lib/utils';
-import Toast,{ T } from 'react-toast-mobile';
+import Toast, { T } from 'react-toast-mobile';
 import { connect } from 'react-redux';
-import { FormattedMessage,injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { PopupAPI } from '@tronlink/lib/api';
-
 
 import './MnemonicImport.scss';
 NodeService.init();
@@ -42,14 +41,12 @@ class MnemonicImport extends React.Component {
     }
 
     async changeStage(newStage) {
-        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS){
+        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS) {
             const res = await this.generateAccounts();
-            if(!res){
+            if(!res) {
                 return false;
             }
         }
-
-
         this.setState({
             subStage: newStage
         });
@@ -63,15 +60,14 @@ class MnemonicImport extends React.Component {
         });
 
         const { mnemonic } = this.state;
-        const {formatMessage} = this.props.intl;
+        const { formatMessage } = this.props.intl;
         const addresses = [];
         for(let i = 0; i < 5; i++) {
-
             let account = Utils.getAccountAtIndex(
                 mnemonic,
                 i
             );
-            if(!(account.address in this.props.accounts)){
+            if(!(account.address in this.props.accounts)) {
                 let { balance } = await NodeService.tronWeb.trx.getAccount(account.address);
                 balance = balance ? balance:0;
                 account.balance = balance;
@@ -154,7 +150,7 @@ class MnemonicImport extends React.Component {
                     <div className='addressList'>
                         { addresses.map(({ address,balance }, index) => {
                             const isSelected = selected.includes(index);
-                            const icon = isSelected ? 'dot-circle' : 'circle';
+                            // const icon = isSelected ? 'dot-circle' : 'circle';
                             const className = `addressOption ${ isSelected ? 'isSelected' : '' } ${ isLoading ? 'isLoading' : '' }`;
 
                             return (
@@ -189,12 +185,12 @@ class MnemonicImport extends React.Component {
 
     renderInput() {
         const { onCancel } = this.props;
-        const { formatMessage } = this.props.intl;
+        // const { formatMessage } = this.props.intl;
         const {
             mnemonic,
             isValid,
             isLoading,
-            showWarning
+            // showWarning
         } = this.state;
 
         return (

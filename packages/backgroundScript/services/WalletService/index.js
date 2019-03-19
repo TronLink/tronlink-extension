@@ -252,7 +252,20 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.ADD_TRC20_TOKEN,APP_STATE.READY,APP_STATE.TESTHMTL].includes(appState))
+        const stateAry = [
+            APP_STATE.PASSWORD_SET,
+            APP_STATE.RESTORING,
+            APP_STATE.CREATING,
+            APP_STATE.RECEIVE,
+            APP_STATE.SEND,
+            APP_STATE.TRANSACTIONS,
+            APP_STATE.SETTING,
+            APP_STATE.ADD_TRC20_TOKEN,
+            APP_STATE.READY,
+            APP_STATE.TESTHMTL,
+            APP_STATE.TRONBANK
+        ];
+        if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
