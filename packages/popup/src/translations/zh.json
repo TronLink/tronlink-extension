@@ -228,6 +228,9 @@
     "MENU.WHITE_LIST":"白名单管理",
     "MENU.DELETE_WALLET":"删除账户",
     "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"请输入TRC20token的合约地址",
+    "MENU.FROZEN_UNFROZEN":"冻结/解冻",
+    "MENU.VOTE":"投票",
+    "MENU.ACCOUNTS.TOTAL_ASSET":"总资产{sign}",
 
     "TOAST.COPY":"已复制",
     "TOAST.ADDED":"已添加",

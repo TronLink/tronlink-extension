@@ -105,8 +105,19 @@ class AccountsPage extends React.Component {
         return (
             <div className="accountInfo">
                 <div className="row1">
+                    <div className="accountWrap" onClick={(e)=>{e.stopPropagation();this.setState({showAccountList:true,showMenuList:false,showNodeList:false})}}>
+                        <span>{accounts.selected.name}</span>
+                    </div>
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
-                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*4,opacity:1}:{}}>
+                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
+                                <span className="icon frozen"></span>
+                                <FormattedMessage id="MENU.FROZEN_UNFROZEN" />
+                            </div>
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/sr/votes") }} className="item">
+                                <span className="icon vote"></span>
+                                <FormattedMessage id="MENU.VOTE" />
+                            </div>
                             <div onClick={ ()=>{ PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className="item">
                                 <span className="icon addToken"></span>
                                 <FormattedMessage id="MENU.ADD_TRC20_TOKEN" />
@@ -122,38 +133,6 @@ class AccountsPage extends React.Component {
                             <div className="item" onClick={ () => { this.onDelete() } }>
                                 <span className="icon delete"></span>
                                 <FormattedMessage id="MENU.DELETE_WALLET" />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="accountWrap" onClick={(e)=>{e.stopPropagation();this.setState({showAccountList:!showAccountList,showMenuList:false,showNodeList:false})}}>
-                        <span>{accounts.selected.name}</span>
-                        <div className="dropList accountList" style={showAccountList?{width:'100%',height:30*((addresses.length > 4 ? 4 : addresses.length)+2),opacity:1}:{}}>
-                            <div className="accounts">
-                            {
-                                addresses.map(
-                                    v => (
-                                        <div onClick={()=>{ this.onClick(v.address) }} className="item" key={v.address}>
-                                            <span className="icon account"></span>
-                                            <span>{v.name}</span>
-                                            {
-                                                v.address === accounts.selected.address
-                                                    ?
-                                                    <span className="selected"></span>
-                                                    :
-                                                    null
-                                            }
-                                        </div>
-                                    )
-                                )
-                            }
-                            </div>
-                            <div className="item gap" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
-                                <span className="icon create"></span>
-                                <FormattedMessage id="CREATION.CREATE.TITLE" />
-                            </div>
-                            <div className="item" onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
-                                <span className="icon import"></span>
-                                <FormattedMessage id="CREATION.RESTORE.TITLE" />
                             </div>
                         </div>
                     </div>
@@ -334,8 +313,11 @@ class AccountsPage extends React.Component {
     render() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalMoney = '0';
-        const {showNodeList,mnemonic,privateKey}  = this.state;
+        let totalAsset = new BigNumber(0);
+        let totalTrx = new BigNumber(0);;
+        const {showNodeList,mnemonic,privateKey,showAccountList}  = this.state;
         const { accounts,prices,nodes } = this.props;
+        const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
@@ -351,15 +333,16 @@ class AccountsPage extends React.Component {
             totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
             return {tokenId,...token};
         });
+        Object.entries(accounts.accounts).map(([address,account])=>{
+            totalAsset = totalAsset.plus(new BigNumber(account.asset));
+            totalTrx   = totalTrx.plus(new BigNumber(account.balance).shiftedBy(-6));
+        });
         return (
             <div className='accountsPage' onClick={()=>{
                 this.setState({
-                    showAccountList:false,
-                    showMenuList:false,
-                    showNodeList:false
+                    showMenuList:false
                 })
             }}>
-                <Toast />
                 {
                     this.renderBackup(mnemonic,privateKey)
                 }
@@ -367,11 +350,72 @@ class AccountsPage extends React.Component {
                     this.renderDeleteAccount()
                 }
                 <Header showNodeList={showNodeList} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
-                { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
-                <div class="listWrap">
-                    { this.renderResource(accounts.accounts[accounts.selected.address]) }
-                    <div className="scroll">
-                        { this.renderTokens(tokens) }
+                <div className="space-controller">
+                    <Toast />
+                    <div className={"accountsWrap"+(showAccountList?" show":"")}>
+                        <div className="accounts">
+                            <Toast />
+                            <div className="row1">
+                                <div className="cell" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
+                                    <FormattedMessage id="CREATION.CREATE.TITLE" />
+                                </div>
+                                <div className="cell" onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
+                                    <FormattedMessage id="CREATION.RESTORE.TITLE" />
+                                </div>
+                            </div>
+                            <div className="row2">
+                                <div className="cell">
+                                    <span>TRX:</span>
+                                    <span>{new BigNumber(totalTrx.toFixed(2)).toFormat()}</span>
+                                </div>
+                                <div className="cell">
+                                    <FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} />
+                                    <span>{new BigNumber(totalAsset.multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
+                                </div>
+                            </div>
+                            <div className="row3">
+                            {
+                                Object.entries(accounts.accounts).map(([address,account],i)=>{
+                                    return (
+                                        <div className={"cell cell"+ (i%5+1) +(accounts.selected.address === address?" selected":"")} onClick={()=>{
+                                            if(accounts.selected.address === address)
+                                                return;
+                                            PopupAPI.selectAccount(address);
+                                        }}>
+                                            <div className="top">
+                                                <div className="name">
+                                                    {account.name}
+                                                </div>
+                                                <div className="address">
+                                                    <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
+                                                    <div onClick={(e)=>{e.stopPropagation()}}>
+                                                        <CopyToClipboard text={address}
+                                                                         onCopy={(e) => {
+                                                                            T.notify(formatMessage({id:'TOAST.COPY'}));
+                                                                         }}>
+                                                            <span className='copy'></span>
+                                                        </CopyToClipboard>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="bottom">
+                                                <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
+                                                <span><FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} /> {new BigNumber(new BigNumber(account.asset).multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                            </div>
+                        </div>
+                        <div className="closed" onClick={()=>{this.setState({showAccountList:false})}}></div>
+                    </div>
+                    { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
+                    <div className="listWrap">
+                        { this.renderResource(accounts.accounts[accounts.selected.address]) }
+                        <div className="scroll">
+                            { this.renderTokens(tokens) }
+                        </div>
                     </div>
                 </div>
             </div>

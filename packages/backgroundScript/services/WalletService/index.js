@@ -582,12 +582,13 @@ class Wallet extends EventEmitter {
         const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
             accounts[ address ] = {
                 name: account.name,
-                balance: account.balance,
+                balance: account.balance + account.frozenBalance,
                 energyUsed:account.energyUsed,
                 energy: account.energy,
                 netUsed:account.netUsed,
                 netLimit:account.netLimit,
-                tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length
+                tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
+                asset:account.asset
             };
 
             return accounts;

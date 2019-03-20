@@ -64,34 +64,39 @@ class Header extends React.Component {
             <div className='header'>
                 <Toast />
                 <div className='titleContainer'>
-                    <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
-                    <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
-                    <div className="nodesWrap">
-                        <div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>
-                            <span className="dot" style={{backgroundColor:colorArr[nodeIndex%3]}}></span>
-                            <div className="name">{name}</div>
-                            <div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>
-                                {
-                                    ns.map(([nodeId,obj],i)=> <div onClick={()=>{ this.onNodeChange(nodeId,i) }} className="item" key={nodeId}><span className="dot" style={{backgroundColor:colorArr[i]}}></span><span>{obj.name}</span></div>)
-                                }
-                            </div>
-                        </div>
+                    <div>
+                        <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
+                        <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                     </div>
-                    <div className="fun" onClick={()=>{
-                        if(!refresh){
-                            this.setState({refresh:true}, async()=>{
-                                T.loading();
-                                const r = await PopupAPI.refresh();
-                                if(r){
-                                    this.setState({refresh:false});
-                                    T.loaded()
-                                }
-                            });
-                        }
+                    {/*<div className="nodesWrap">*/}
+                        {/*<div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>*/}
+                            {/*<span className="dot" style={{backgroundColor:colorArr[nodeIndex%3]}}></span>*/}
+                            {/*<div className="name">{name}</div>*/}
+                            {/*<div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>*/}
+                                {/*{*/}
+                                    {/*ns.map(([nodeId,obj],i)=> <div onClick={()=>{ this.onNodeChange(nodeId,i) }} className="item" key={nodeId}><span className="dot" style={{backgroundColor:colorArr[i]}}></span><span>{obj.name}</span></div>)*/}
+                                {/*}*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    <div>
+                        <div className="fun" onClick={()=>{window.open('https://trx.market')}}></div>
+                        <div className="fun" onClick={()=>{
+                            if(!refresh){
+                                this.setState({refresh:true}, async()=>{
+                                    T.loading();
+                                    const r = await PopupAPI.refresh();
+                                    if(r){
+                                        this.setState({refresh:false});
+                                        T.loaded()
+                                    }
+                                });
+                            }
 
-                    }}
-                    ></div>
-                    <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
+                        }}
+                        ></div>
+                        <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
+                    </div>
                 </div>
             </div>
         );

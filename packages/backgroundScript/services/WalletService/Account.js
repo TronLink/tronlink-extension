@@ -3,7 +3,6 @@ import TronWeb from 'tronweb';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-import TransactionMapper from './TransactionMapper';
 
 import { BigNumber } from 'bignumber.js';
 
@@ -30,7 +29,7 @@ class Account {
         this.netUsed = 0;
         this.netLimit = 5000;
         this.lastUpdated = 0;
-
+        this.asset = 0;
         this.ignoredTransactions = [];
         this.transactions = {};
         this.tokens = {
@@ -138,7 +137,8 @@ class Account {
             netUsed,
             energy,
             energyUsed,
-            lastUpdated
+            lastUpdated,
+            asset
         } = StorageService.getAccount(this.address);
 
         // Old TRC10 structure are no longer compatible
@@ -168,6 +168,7 @@ class Account {
         this.netLimit = netLimit;
         this.netUsed = netUsed;
         this.lastUpdated = lastUpdated;
+        this.asset = asset;
     }
 
     async getTransactions() {
@@ -241,7 +242,7 @@ class Account {
         this.bandwidthUsed = 0;
         this.transactions = {};
         this.ignoredTransactions = [];
-
+        this.netLimit = 0;
         Object.keys(this.tokens.smart).forEach(address => (
             this.tokens.smart[ address ].balance = 0
         ));
@@ -443,6 +444,13 @@ class Account {
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );
             this.balance = account.balance || 0;
         }
+        let totalOwnTrxCount = new BigNumber(this.balance + this.frozenBalance).shiftedBy(-6);
+        Object.entries({...this.tokens.basic,...this.tokens.smart}).map(([tokenId,token])=>{
+            if(token.price!==0){
+                totalOwnTrxCount = totalOwnTrxCount.plus(new BigNumber(token.balance).shiftedBy(-token.decimals).multipliedBy(token.price));
+            }
+        });
+        this.asset = totalOwnTrxCount.toNumber();
         this.lastUpdated = Date.now();
         await Promise.all([
             this.updateBalance(),
@@ -460,7 +468,7 @@ class Account {
         //         this.bandwidth = bandwidth
         //     ));
 
-        const { EnergyLimit=0,EnergyUsed=0,freeNetLimit,NetLimit=0,freeNetUsed=0,NetUsed=0} = await NodeService.tronWeb.trx.getAccountResources(address);
+        const { EnergyLimit=0,EnergyUsed=0,freeNetLimit=5000,NetLimit=0,freeNetUsed=0,NetUsed=0} = await NodeService.tronWeb.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
         this.netLimit = freeNetLimit + NetLimit;

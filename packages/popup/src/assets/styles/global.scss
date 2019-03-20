@@ -371,6 +371,58 @@ html, body {
                     .customButton{
                         width: 250px;
                     }
+                    .nodeWrap{
+                        margin-top: 4px;
+                        margin-bottom: 14px;
+                        width: 286px;
+                        .nodeItem{
+                            cursor: pointer;
+                            margin-top: 10px;
+                            height: 112px;
+                            padding:10px 14px;
+                            background:#f7f8fa;
+                            border-radius:2px;
+                            display: flex;
+                            flex-direction: column;
+                            &.selected{
+                                .title{
+                                    &:after{
+                                        border: none;
+                                        width: 16px;
+                                        height: 16px;
+                                        background-image: url('../images/new/icon-selected.svg');
+                                    }
+                                }
+                            }
+                            .title{
+                                height: 22px;
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                justify-content: space-between;
+                                font-size:16px;
+                                color:#515060;
+                                &:after{
+                                    content: "";
+                                    width: 14px;
+                                    height: 14px;
+                                    border: 1px solid #c2c8d5;
+                                    border-radius: 100%;
+                                }
+                            }
+                            .cell{
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                justify-content: space-between;
+                                height: 20px;
+                                line-height: 20px;
+                                font-size:12px;
+                                color:#888998;
+                                margin-top: 2px;
+                            }
+                        }
+                    }
                     .input-group{
                         width: 250px;
                         display: flex;

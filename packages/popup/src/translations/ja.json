@@ -229,6 +229,9 @@
   "MENU.WHITE_LIST":"ホワイトリストを管理する",
   "MENU.DELETE_WALLET":"アカウントを削除する",
   "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"TRC20tokenの契約アドレスを入力してください",
+  "MENU.FROZEN_UNFROZEN":"Frozen/Unfrozen",
+  "MENU.VOTE":"Vote",
+  "MENU.ACCOUNTS.TOTAL_ASSET":"Asset{sign}",
 
   "TOAST.COPY":"コピー済み",
   "TOAST.ADDED":"追加しました",

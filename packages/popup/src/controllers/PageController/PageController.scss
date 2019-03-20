@@ -8,100 +8,49 @@
     .header {
         width: 100%;
         background: #FFFFFF;
-
         .titleContainer {
             height: 58px;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: center;
-            & > .link{
-                width: 40px;
-                height: 58px;
-                background-position: center center;
-                background-repeat: no-repeat;
-                &.link-twiter{
-                    top:60px;
-                    background-image: url('../../assets/images/new/icon-twiter.svg');
-                }
-                &.link-telegram{
-                    width: 30px;
-                    top:100px;
-                    background-image: url('../../assets/images/new/icon-telegram.svg');
-                }
-            }
-            & > .fun{
-                width: 40px;
-                height: 58px;
-                cursor: pointer;
-                background-repeat: no-repeat;
-                background-position: center;
-                &:nth-child(4){
-                    width: 30px;
-                    background-image: url('../../assets/images/new/icon-refresh.svg');
-                    &.refresh{
-                        animation: rotate .5s linear infinite;
-                    }
-                    @keyframes rotate{
-                        0%{
-                            transform: rotateZ(0);
-                        }
-                        25%{
-                            transform: rotateZ(90deg);
-                        }
-                        50%{
-                            transform: rotateZ(180deg);
-                        }
-                        75%{
-                            transform: rotateZ(270deg);
-                        }
-                        100%{
-                            transform: rotateZ(360deg);
-                        }
-                    }
-                }
-                &:nth-child(5){
-                    background-image: url('../../assets/images/new/icon-setting.svg');
-                }
-            }
-            & > .nodesWrap{
-                flex:1;
+            justify-content: space-between;
+            padding:0 18px;
+            & > div {
                 display: flex;
-                justify-content: center;
-                align-items: center;
-                .nodes{
-                    position: relative;
-                    display: flex;
-                    flex-direction:row;
-                    align-items:center;
-                    border: 1px solid #C2C2D5;
-                    border-radius: 2px;
-                    width: 140px;
-                    height: 28px;
-                    padding:0 8px;
-                    .dot{
-                        width: 12px;
-                        height: 12px;
-                        border-radius: 100%;
+                flex-direction: row;
+                .link {
+                    width: 18px;
+                    height: 18px;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    &.link-twiter {
+                        background-image: url('../../assets/images/new/icon-twiter.svg');
                     }
-                    .name{
-                        cursor: pointer;
-                        flex: 1;
-                        text-align: center;
+                    &.link-telegram {
+                        margin-left: 18px;
+                        background-image: url('../../assets/images/new/icon-telegram.svg');
                     }
-                    &:after{
-                        content:'';
-                        width: 0;
-                        height: 0;
-                        border-left:4px solid transparent;
-                        border-right:4px solid transparent;
-                        border-bottom:4px solid transparent;
-                        border-top:4px solid #DBDBDB;
+                }
+                .fun {
+                    width: 18px;
+                    height: 18px;
+                    cursor: pointer;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    &:nth-child(1) {
+                        background-image: url('../../assets/images/new/icon-exchange.svg');
+                        margin-right: 18px;
+                    }
+                    &:nth-child(2) {
+                        background-image: url('../../assets/images/new/icon-refresh.svg');
+                        margin-right: 18px;
+                    }
+                    &:nth-child(3) {
+                        background-image: url('../../assets/images/new/icon-setting.svg');
                     }
                 }
 
             }
-
             .title {
                 font-size: 14px;
                 line-height: 14px;
@@ -113,32 +62,7 @@
                 color: #888888;
                 padding-top: 3px;
             }
-        }
 
-        .pageLinks {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            background: #707897;
-            color: #fff;
-
-            .pageLink {
-                padding: 0 16px;
-                height: 50px;
-                line-height: 50px;
-                font-size: 13px;
-                transition: all 150ms ease;
-                border-bottom: 2px solid transparent;
-                cursor: pointer;
-
-                &.active {
-                    background: #474d6440;
-                }
-
-                &:not(.active):hover {
-                    background: #6068836b;
-                }
-            }
         }
     }
     .dropList{
@@ -237,6 +161,12 @@
                 }
                 &.addToken{
                     background-image: url('../../assets/images/new/icon-add.svg');
+                }
+                &.frozen{
+                    background-image: url('../../assets/images/new/icon-frozen.svg');
+                }
+                &.vote{
+                    background-image: url('../../assets/images/new/icon-vote.svg');
                 }
             }
 

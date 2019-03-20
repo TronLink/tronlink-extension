@@ -2,13 +2,11 @@
     background: #EAEAEA;
     display: flex;
     flex-direction: row;
-
     .accountBalance {
         flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
-
         .trxBalance {
             & > span:first-of-type {
                 font-size: 16px;
@@ -47,7 +45,7 @@
             display: block;
         }
 
-        & > span::last-of-type {
+        & > span:last-of-type {
             font-size: 12px;
             display: block;
         }
