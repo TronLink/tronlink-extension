@@ -2,9 +2,30 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-19 22:19:00
+ * @Last Modified time: 2019-03-20 16:49:45
  * TronBankPage
  */
+ .commonBack{
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 56px;
+    background-image: url('../../assets/images/new/icon-back.svg');
+    background-repeat: no-repeat;
+    background-position: center center;
+ }
+ .rightMore{
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 56px;
+    // background-repeat: no-repeat;
+    // background-position: center center;
+ }
 .TronBankContainer{
     background: #F7F8FA;
     height:100%;
@@ -18,10 +39,15 @@
     }
     .accountContent,.rentContent{
         margin:10px 0;
-        min-height:180px;
         padding:0px 12px;
         background: #FFFFFF;
         border-radius: 2px;
+    }
+    .accountContent{
+        min-height:180px;
+    }
+    .rentContent{
+        min-height: 220px;
     }
     .accountInfo{
         border-bottom: 1px solid #EFEFEF; 
@@ -43,6 +69,10 @@
                 height:100%;
                 background: #F7F8FA;
                 border:none;
+                text-indent: 10px;
+            }
+            .rentNumInput{
+                width: 252px;
             }
         }
         .selectedAccount{
@@ -68,4 +98,56 @@
             letter-spacing: 0;
         }
     }
+    .rentIntroduce{
+        margin:0 auto 18px auto;
+        min-width: 274px;
+        height:27px;
+        line-height: 27px;
+        background: #F7F8FA;
+        border-radius: 2px;
+        font-family: PingFang-SC-Medium;
+        font-size: 14px;
+        color: #888998;
+        letter-spacing: 0;
+        text-align: center;
+    }
+    .dayRange{
+        display: flex;
+        height:36px;
+        width: 100%;
+        margin:10px 0 5px;  
+        border: 1px solid #EFEFEF;
+        border-radius: 2px;
+        span{
+            height:36px;
+            line-height:36px;
+            width:36px;
+            text-align: center;
+        }
+        .rentDay{
+            flex-grow: 1;
+            height: 100%;
+            text-align: center;
+            border:none;
+            font-family: PingFangSC-Regular;
+            font-size: 14px;
+            color: #C2C8D5;
+            letter-spacing: 0;
+            text-align: center;
+            background: #F7F8FA;
+        }
+    }
+    .bankSubmit{
+        margin-top:8px;
+        height:40px;
+        border-radius: 2px;
+        font-family: PingFang-SC-Bold;
+        font-size: 14px;
+        color: rgba(255,255,255,0.50);
+        text-align: center;
+    }
 }
+
+
+
+

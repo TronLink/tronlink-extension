@@ -251,6 +251,7 @@
     "BANK.INDEX.FORECASTNUM":"预计可得",
     "BANK.INDEX.RENTPLACEHOLDER":"租用天数",
     "BANK.INDEX.RENTDAYERROR":"最少租用3天",
+    "BANK.INDEX.RENTINTRODUCE":"当前租用{num}能量*{day}天，约花费{cost}TRX",
     "BANK.INDEX.RENTDAYUNIT":"天",
     "BANK.INDEX.RENTCONST":"花费",
     "BANK.INDEX.BUTTON":"确定租用",
