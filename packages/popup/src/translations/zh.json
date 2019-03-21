@@ -259,8 +259,21 @@
     "BANK.RENTNUMMODAL.RECORD":"租用记录",
     "BANK.RENTNUMMODAL.HELP":"帮助",
 
+    "BANK.RENTRECORD.VALID":"有效",
+    "BANK.RENTRECORD.INVALID":"失效",
+    "BANK.RENTRECORD.ALLSTATUS":"全部",
+    "BANK.RENTRECORD.RENTDETAIL":"租用详情：",
+    "BANK.RENTRECORD.DEADLINE":"到期时间：",
+    "BANK.RENTRECORD.TIMEUNIT":"天",
+    "BANK.RENTRECORD.COST":"花费",
+    "BANK.RENTRECORD.VALIDNAME":"生效中",
+    "BANK.RENTRECORD.INVALIDNAME":"已完成",
+
+
+
+
     "BANK.RENTNUMMODAL.TITLE":"租用量说明",
-    "BANK.RENTNUMMODAL.CONTENT":"文案文案",
+    "BANK.RENTNUMMODAL.CONTENT":" 文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容",
     "BANK.RENTNUMMODAL.BUTTON":"关闭",
 
     "BANK.RENTINFO.CONFIRM":"租用信息确认",
@@ -271,5 +284,6 @@
     "BANK.RENTINFO.PAYNUM":"支付金额",
     "BANK.RENTINFO.CANCELBTN":"取消",
     "BANK.RENTINFO.PAYBTN":"立即支付"
+
 
 }

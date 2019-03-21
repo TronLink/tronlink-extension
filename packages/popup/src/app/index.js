@@ -18,6 +18,7 @@ import TransactionsController from '@tronlink/popup/src/controllers/Transactions
 import SettingController from '@tronlink/popup/src/controllers/SettingController';
 import AddTokenController from '@tronlink/popup/src/controllers/AddTokenController';
 import BankController from '@tronlink/popup/src/controllers/TronBankController';
+import BankRecordController from '@tronlink/popup/src/controllers/BankRecordController';
 import TestHtmlController from '@tronlink/popup/src/controllers/TestHtmlController';
 
 import 'react-custom-scroll/dist/customScroll.css';
@@ -40,43 +41,46 @@ class App extends React.Component {
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
-                dom = <RegistrationController language={language} />
+                dom = <RegistrationController language={language} />;
                 break;
             case APP_STATE.PASSWORD_SET:
-                dom = <LoginController />
+                dom = <LoginController />;
                 break;
             case APP_STATE.UNLOCKED:
-                dom = <WalletCreationController />
+                dom = <WalletCreationController />;
                 break;
             case APP_STATE.CREATING:
-                dom = <CreateAccountController />
+                dom = <CreateAccountController />;
                 break;
             case APP_STATE.RESTORING:
-                dom = <RestoreAccountController />
+                dom = <RestoreAccountController />;
                 break;
             case APP_STATE.READY:
-                dom = <PageController />
+                dom = <PageController />;
                 break;
             case APP_STATE.REQUESTING_CONFIRMATION:
-                dom = <ConfirmationController />
+                dom = <ConfirmationController />;
                 break;
             case APP_STATE.RECEIVE:
-                dom  = <ReceiveController address={accounts.selected.address} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom  = <ReceiveController address={accounts.selected.address} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SEND:
-                dom =  <SendController accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom =  <SendController accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTIONS:
-                dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SETTING:
-                dom = <SettingController lock={lock} language={language} prices={prices} nodes={nodes} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <SettingController lock={lock} language={language} prices={prices} nodes={nodes} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
-                dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRONBANK:
-                dom = <BankController accounts={accounts}></BankController>
+                dom = <BankController accounts={accounts}></BankController>;
+                break;
+            case APP_STATE.TRONBANK_RECORD:
+                dom = <BankRecordController accounts={accounts}></BankRecordController>;
                 break;
             case APP_STATE.TESTHMTL:
                 dom = <TestHtmlController />;

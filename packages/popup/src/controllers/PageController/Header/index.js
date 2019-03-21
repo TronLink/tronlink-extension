@@ -31,7 +31,7 @@ const PageLink = props => {
 };
 
 class Header extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.onNodeChange = this.onNodeChange.bind(this);
         this.state={
@@ -40,17 +40,20 @@ class Header extends React.Component {
             refresh:false
         }
     }
-    componentDidMount(){
+
+    componentDidMount() {
         const {nodes} = this.props;
         const ns = Object.entries(nodes.nodes);
         const nodeIndex = ns.map(([nodeId,obj],i)=>{obj.index = i;return [nodeId,obj]}).filter(([nodeId,obj]) => nodeId === nodes.selected)[0][1].index;
         this.setState({nodeIndex});
     }
+
     onNodeChange(nodeId,index) {
         PopupAPI.selectNode(nodeId);
         app.getNodes();
         this.setState({nodeIndex:index,showNodeList:!this.state.showNodeList});
     }
+
     render() {
         const colorArr = ['#B8E986','#F5A623','#F8E71C'];
         const { nodeIndex,refresh } = this.state;

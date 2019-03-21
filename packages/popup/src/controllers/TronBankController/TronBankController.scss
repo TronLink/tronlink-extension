@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-20 19:51:52
+ * @Last Modified time: 2019-03-21 15:27:11
  * TronBankPage
  */
 
@@ -32,6 +32,46 @@
             top: 0;
             width: 18px;
             height: 56px;
+        }
+    }
+    // menumodal
+    .navBarMoreMenu{
+            position: absolute;
+            top: 40px;
+            right: 18px;
+            z-index: 100;
+        .dropList{
+            transform: translateX(100%);
+            cursor: pointer;
+            opacity: 0;            
+            background: rgba(80,81,96,0.90);
+            border-radius: 4px;
+            transition: all ease-in-out .2s;
+            .item{
+                display: flex;
+                flex-direction: row;
+                padding: 0 8px;
+                align-items: center;
+                height: 30px;
+                font-family: PingFangSC-Regular;
+                font-size: 12px;
+                color: #F7F8FA;
+                letter-spacing: 0.2px;
+                cursor: pointer;
+                &:hover{
+                    background-color: #888998;
+                }
+            }
+            .rightMoreIcon{
+                width: 12px;
+                height: 12px;
+                margin-right: 6px;
+            }
+        }
+        .menuVisible{
+            opacity: 1;
+            transform: translateX(0);
+            transition: all .2s ease-in-out
         }
     }
     .bankContent{
@@ -164,6 +204,8 @@
             height: 100%;
             text-align: center;
             border:none;
+            border-left:1px solid #EFEFEF;
+            border-right:1px solid #EFEFEF;
             font-family: PingFangSC-Regular;
             font-size: 14px;
             color: #C2C8D5;
@@ -185,37 +227,61 @@
     }
 }
 
-.modalWrapper{
+// modal
+.am-modal-mask{
+    background: #505160;
+}
+.modalContent{
     width: 300px;
     height: 344px;
     background: #FFFFFF;
     border-radius: 2px;
-    .am-modal-body{
-        height:219px;
-    }
-    .popup-list .am-list-body {
-        height: 210px;
-        overflow: auto;
-    }
     .am-modal-header{
-        padding: 9px 20px 20px;
+        padding: 24px 20px 20px;
+    }
+    .am-modal-title{
+        padding: 0;
         font-family: PingFang-SC-Bold;
         font-size: 18px;
         color: #505160;
         letter-spacing: 0;
         text-align: center;
     }
-    .am-modal-transparent .am-modal-content .am-modal-body{
-        padding: 0 20px;
+    .am-modal-content{
+        border-radius: 2px;
+        padding: 0;
+        .am-modal-body{
+            padding:0 20px;
+            max-height:282px;
+        }
     }
     .rentIntroduceCont{
-        height: 195px;
-        overflow: scroll;
-        font-family: PingFang-SC-Medium;
-        font-size: 14px;
-        color: #505160;
+        .modalRentContent{
+            height: 195px;
+            text-align: justify;
+            overflow: scroll;
+            font-family: PingFang-SC-Medium;
+            font-size: 14px;
+            color: #505160;
+            line-height: 20px;
+            letter-spacing: 0;
+        }
+        .modalCloseBtn{
+            width: 120px;
+            height: 36px;
+            line-height: 35px;
+            margin: 24px auto 0;
+            font-family: PingFang-SC-Bold;
+            font-size: 16px;
+            color: #636ACC;
+            text-align: center;
+            border: 1px solid #636ACC;
+            border-radius: 2px;
+        }
     }
 }
+
+
 
 
 

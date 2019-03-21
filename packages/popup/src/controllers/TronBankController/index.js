@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-20 19:51:22
+ * @Last Modified time: 2019-03-21 15:16:47
  * TronBankPage
  */
 import React from 'react';
@@ -17,7 +17,7 @@ class BankController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            maskVisible: true,
+            maskVisible: false,
             modalVisible: false,
             selected: '',
             isOpen: {
@@ -71,7 +71,6 @@ class BankController extends React.Component {
         const { selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
-        console.log(myImg('more'));
         return (
             <div className='TronBankContainer'>
                 <NavBar
@@ -79,9 +78,21 @@ class BankController extends React.Component {
                     mode='light'
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
-                    rightContent={<img className='rightMore' src={myImg('more')} alt={'more'}/>}
+                    rightContent={<img onClick={() => { console.log(this.state.maskVisible);this.setState({ maskVisible: !this.state.maskVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
                 >TronBank
                 </NavBar>
+                <div className='navBarMoreMenu' onClick={(e) => { e.stopPropagation();this.setState({ maskVisible: !this.state.maskVisible }); } }>
+                    <div className={ this.state.maskVisible ? 'dropList menuList menuVisible' : 'dropList menuList'}>
+                        <div onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK_RECORD); } } className='item'>
+                            <img onClick={() => { this.setState({ maskVisible: true }); }} className='rightMoreIcon' src={myImg('record')} alt={'record'}/>
+                            <FormattedMessage id='BANK.RENTNUMMODAL.RECORD' />
+                        </div>
+                        <div onClick={(e) => { console.log('TODO'); }} className='item'>
+                            <img onClick={() => { this.setState({ maskVisible: true }); }} className='rightMoreIcon' src={myImg('help')} alt={'help'}/>
+                            <FormattedMessage id='BANK.RENTNUMMODAL.HELP' />
+                        </div>
+                    </div>
+                </div>
                 <div className='bankContent'>
                     {/* account pay,receive */}
                     <div className='accountContent'>
@@ -124,23 +135,27 @@ class BankController extends React.Component {
                             <FormattedMessage id='BANK.INDEX.RENTINTRODUCE'/>
                         </section>
                     </div>
-                    {/* subbtn */}
+                    {/* tronBank subbtn */}
                     <Button className='bankSubmit' disabled style={{ background: '#C2C8D5' }}>
                         <FormattedMessage id='BANK.INDEX.BUTTON'/>
                     </Button>
                 </div>
+                {/*rentNum modal */}
                 <Modal
-                    className='modalWrapper'
+                    className='modalContent'
+                    wrapClassName='modalWrap'
                     visible={this.state.modalVisible}
                     transparent
                     maskClosable={false}
                     onClose={this.onModalClose('modalVisible')}
-                    title='租用量说明'
-                    footer={[{ text: 'Ok', onPress: () => { this.onModalClose('modalVisible')(); } }]}
+                    title={ formatMessage({ id: 'BANK.RENTNUMMODAL.TITLE' })}
                     afterClose={() => { console.log('afterClose'); }}
                 >
                     <div className='rentIntroduceCont'>
-                        文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容
+                        <section className='modalRentContent'>
+                            <FormattedMessage id='BANK.RENTNUMMODAL.CONTENT'/>
+                        </section>
+                        <Button className='modalCloseBtn' onClick={() => { this.onModalClose('modalVisible')(); }} size='small'><FormattedMessage id='BANK.RENTNUMMODAL.BUTTON'/></Button>
                     </div>
                 </Modal>
             </div>
