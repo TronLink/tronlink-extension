@@ -10,6 +10,7 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import {
     FormattedMessage,
@@ -36,26 +37,34 @@ class AccountsPage extends React.Component {
         this.state = {
             mnemonic:false,
             privateKey:false,
-            showAccountList:false,
             showMenuList:false,
             showNodeList:false,
             showBackUp:false,
-            showDelete:false
+            showDelete:false,
+            news:[]
         }
     }
-    componentDidMount(){
+    async componentDidMount(){
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
+        const { developmentMode } = this.props.setting;
+        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'http://list.tronlink.org';
+        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
+        let news = [];
+        if(res){
+            news = res.data.data;
+        }else{
+            news = [];
+        }
+        this.setState({news});
+        //console.log(location.hostname);
+        //developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec',
         //PopupAPI.refresh();
     }
     componentDidUpdate() {
 
-        // const { selected: previous } = prevProps.accounts;
-        // const { selected } = this.props.accounts;
-        //
-        // if(selected.name !== previous.name)
-        //     this.props.setSubTitle(selected.name);
+
     }
 
     onClick(address) {
@@ -92,7 +101,6 @@ class AccountsPage extends React.Component {
     }
     handleShowNodeList(){
         this.setState({
-            showAccountList:false,
             showMenuList:false,
             showNodeList:!this.state.showNodeList
         });
@@ -100,15 +108,18 @@ class AccountsPage extends React.Component {
 
     renderAccountInfo(accounts,prices,totalMoney){
         const { formatMessage } = this.props.intl;
-        const {showAccountList,showMenuList} = this.state;
-        const addresses = Object.entries(accounts.accounts).map(([address,item]) => ({address,name:item.name}));
+        const {showMenuList} = this.state;
         return (
             <div className="accountInfo">
                 <div className="row1">
-                    <div className="accountWrap" onClick={(e)=>{e.stopPropagation();this.setState({showAccountList:true,showMenuList:false,showNodeList:false})}}>
+                    <div className="accountWrap" onClick={async (e)=>{
+                        const setting = await PopupAPI.getSetting();
+                        const openAccountsMenu = true;
+                        PopupAPI.setSetting({...setting,openAccountsMenu});
+                    }}>
                         <span>{accounts.selected.name}</span>
                     </div>
-                    <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showAccountList:false,showNodeList:false})}}>
+                    <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
                             <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
                                 <span className="icon frozen"></span>
@@ -314,9 +325,12 @@ class AccountsPage extends React.Component {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalMoney = '0';
         let totalAsset = new BigNumber(0);
-        let totalTrx = new BigNumber(0);;
-        const {showNodeList,mnemonic,privateKey,showAccountList}  = this.state;
-        const { accounts,prices,nodes } = this.props;
+        let totalTrx = new BigNumber(0);
+        const {showNodeList,mnemonic,privateKey,news}  = this.state;
+        const id = news.length > 0 ? news[0].id : 0;
+        const { accounts,prices,nodes,setting,language:lng } = this.props;
+        console.log(setting);
+        const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
@@ -352,7 +366,45 @@ class AccountsPage extends React.Component {
                 <Header showNodeList={showNodeList} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
                 <div className="space-controller">
                     <Toast />
-                    <div className={"accountsWrap"+(showAccountList?" show":"")}>
+                    {
+                         id === 0 || (setting.advertising[id] && !setting.advertising[id][mode])?
+                            null
+                             :
+                            <div className="advertisingWrap">
+                                <div className="closed" onClick={async ()=>{
+                                    let advertising = setting.advertising ? setting.advertising : {};
+                                    advertising[id] = {developmentMode:true,productionMode:true};
+                                    advertising[id][mode] = false;
+                                    PopupAPI.setSetting({...setting,advertising});
+                                }}></div>
+                                {
+                                    news.map(({language,...news})=>{
+                                        let l = 1;
+                                        switch(lng){
+                                            case 'en':
+                                                l = 1;
+                                                break;
+                                            case 'zh':
+                                                l = 2;
+                                                break;
+                                            case 'ja':
+                                                l = 3;
+                                                break;
+                                            default:
+                                                l = 1;
+                                        }
+                                        return (
+                                            language === l ?
+                                                <a href={news.content_url} target="_blank">
+                                                    <img src={news.pic_url} alt=""/>
+                                                    <span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span>
+                                                </a>:null
+                                        )
+                                    })
+                                }
+                            </div>
+                    }
+                    <div className={"accountsWrap"+(setting.openAccountsMenu?" show":"")}>
                         <div className="accounts">
                             <Toast />
                             <div className="row1">
@@ -377,7 +429,10 @@ class AccountsPage extends React.Component {
                             {
                                 Object.entries(accounts.accounts).map(([address,account],i)=>{
                                     return (
-                                        <div className={"cell cell"+ (i%5+1) +(accounts.selected.address === address?" selected":"")} onClick={()=>{
+                                        <div className={"cell cell"+ (i%5+1) +(accounts.selected.address === address?" selected":"")} onClick={async()=>{
+                                            const setting = await PopupAPI.getSetting();
+                                            const openAccountsMenu = false;
+                                            PopupAPI.setSetting({...setting,openAccountsMenu});
                                             if(accounts.selected.address === address)
                                                 return;
                                             PopupAPI.selectAccount(address);
@@ -408,7 +463,12 @@ class AccountsPage extends React.Component {
                             }
                             </div>
                         </div>
-                        <div className="closed" onClick={()=>{this.setState({showAccountList:false})}}></div>
+                        <div className="closed" onClick={async()=>{
+                            const setting = await PopupAPI.getSetting();
+                            const openAccountsMenu = false;
+                            PopupAPI.setSetting({...setting,openAccountsMenu});
+                        }}>
+                        </div>
                     </div>
                     { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
                     <div className="listWrap">
@@ -425,8 +485,10 @@ class AccountsPage extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        language: state.app.language,
         accounts: state.accounts,
         prices: state.app.prices,
-        nodes:state.app.nodes
+        nodes:state.app.nodes,
+        setting:state.app.setting
     }))(AccountsPage)
 );

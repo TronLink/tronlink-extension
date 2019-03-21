@@ -332,9 +332,11 @@ class SettingController extends  React.Component {
                             <div className="settingWrap">
                                 {
                                     autoLock.map(({name,time})=>(
-                                        <div key={time} onClick={(e)=>{
+                                        <div key={time} onClick={async (e)=>{
                                             e.stopPropagation();
-                                            PopupAPI.setSetting({lock:{lockTime:new Date().getTime(),duration:time}});
+                                            let setting = await PopupAPI.getSetting();
+                                            setting.lock={lockTime:new Date().getTime(),duration:time};
+                                            PopupAPI.setSetting(setting);
                                         }} className={"unit"+(time === lock.duration ? " selected":"")}>
                                             <FormattedMessage id={name} />
                                         </div>

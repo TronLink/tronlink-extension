@@ -125,13 +125,14 @@ class Wallet extends EventEmitter {
                 Promise.all([account.update(),account.updateTransactions()]).then(()=>{
                     if(account.address === this.selectedAccount){
                         this.emit('setAccount', this.selectedAccount);
-                        this.emit('setAccounts', this.getAccounts());
+                        //this.emit('setAccounts', this.getAccounts());
                     }
                 }).catch(e=>{console.log(e)});
             } else {
-                continue;
+                await account.update();
             }
         }
+        this.emit('setAccounts', this.getAccounts());
         this.isPolling = false;
         setTimeout(() => (
             this._pollAccounts()
@@ -234,19 +235,18 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const  r = await Promise.all([
-                    account.update(),
-                    //account.updateTransactions()
-                ]).catch(e=>false);
+                const  r = await account.update().catch(e=>false);
                 if(r){
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
-                    this.emit('setAccounts', this.getAccounts());
                 }else{
                     res = false;
                 }
+            }else{
+                await account.update();
             }
         }
+        this.emit('setAccounts', this.getAccounts());
         return res;
     }
 
@@ -359,8 +359,9 @@ class Wallet extends EventEmitter {
         });
 
         this.emit('setAccount', this.selectedAccount);
-        const {lock:{duration}} = this.getSetting();
-        this.setSetting({lock:{lockTime:new Date().getTime(),duration}});
+        let setting = this.getSetting();
+        setting.lock.lockTime = new Date().getTime();
+        this.setSetting(setting);
     }
     async lockWallet(){
         StorageService.lock();

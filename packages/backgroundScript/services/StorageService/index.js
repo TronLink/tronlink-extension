@@ -15,7 +15,8 @@ const StorageService = {
         'prices',
         'pendingTransactions',
         'tokenCache',
-        'selectedToken'
+        'setting',
+        'language'
     ],
 
     storage: extensionizer.storage.local,
@@ -44,7 +45,10 @@ const StorageService = {
         lock:{
             lockTime:0,
             duration:0
-        }
+        },
+        openAccountsMenu:false,
+        advertising:{},
+        developmentMode:true
     },
     language: '',
     ready: false,
@@ -205,7 +209,8 @@ const StorageService = {
 
     setSetting(setting){
         logger.info('Saving setting', setting);
-        this.setting = setting;
+        const developmentMode = location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec';
+        this.setting = {...setting,developmentMode};
         this.save('setting');
 
     },
