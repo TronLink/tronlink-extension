@@ -2,37 +2,37 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-20 16:49:45
+ * @Last Modified time: 2019-03-20 19:51:52
  * TronBankPage
  */
- .commonBack{
-    cursor: pointer;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 40px;
-    height: 56px;
-    background-image: url('../../assets/images/new/icon-back.svg');
-    background-repeat: no-repeat;
-    background-position: center center;
- }
- .rightMore{
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 40px;
-    height: 56px;
-    // background-repeat: no-repeat;
-    // background-position: center center;
- }
+
 .TronBankContainer{
     background: #F7F8FA;
     height:100%;
     width: 360px;
+    // navbar
     .navbar{
         width: 100%;
         height: 58px;
+        .commonBack{
+            cursor: pointer;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 56px;
+            background-image: url('../../assets/images/new/icon-back.svg');
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        .rightMore{
+            cursor: pointer;
+            position: absolute;
+            right:18px;
+            top: 0;
+            width: 18px;
+            height: 56px;
+        }
     }
     .bankContent{
         margin:0 18px;
@@ -46,12 +46,22 @@
     .accountContent{
         min-height:180px;
     }
+
     .rentContent{
         min-height: 220px;
+        .rentNumEntrance{
+            width: 14px;
+            height: 14px;
+            margin-left: 6px;
+        }
     }
+
+    // account
     .accountInfo{
         border-bottom: 1px solid #EFEFEF; 
     }
+
+    // common
     .infoSec{
         padding:10px 0;
         label{
@@ -59,6 +69,7 @@
             font-size: 14px;
             color: #505160;
             letter-spacing: 0;
+            display: flex;
         }
         .receiveAccount{
             input{
@@ -98,6 +109,8 @@
             letter-spacing: 0;
         }
     }
+
+    // rent 
     .rentIntroduce{
         margin:0 auto 18px auto;
         min-width: 274px;
@@ -111,6 +124,8 @@
         letter-spacing: 0;
         text-align: center;
     }
+
+    // danRange
     .dayRange{
         display: flex;
         height:36px;
@@ -118,11 +133,31 @@
         margin:10px 0 5px;  
         border: 1px solid #EFEFEF;
         border-radius: 2px;
-        span{
-            height:36px;
-            line-height:36px;
-            width:36px;
-            text-align: center;
+        overflow: hidden;
+        .am-button>.am-button-icon{
+            margin:0;
+        }
+        .operatingBtn{
+            height:100%;
+            border-radius: 0;
+            .am-button-small{
+                padding: 0 10px;
+            }
+            &:before{
+                border:none;
+            }
+            .operationReduceIcon{
+                display: block;
+                width: 16px;
+                height:2px;
+                font-size: 12px;
+            }
+            .operationAddIcon{
+                display: block;
+                width: 16px;
+                height:16px;
+                font-size: 12px;
+            }
         }
         .rentDay{
             flex-grow: 1;
@@ -137,6 +172,8 @@
             background: #F7F8FA;
         }
     }
+
+    // submit btn
     .bankSubmit{
         margin-top:8px;
         height:40px;
@@ -147,6 +184,39 @@
         text-align: center;
     }
 }
+
+.modalWrapper{
+    width: 300px;
+    height: 344px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    .am-modal-body{
+        height:219px;
+    }
+    .popup-list .am-list-body {
+        height: 210px;
+        overflow: auto;
+    }
+    .am-modal-header{
+        padding: 9px 20px 20px;
+        font-family: PingFang-SC-Bold;
+        font-size: 18px;
+        color: #505160;
+        letter-spacing: 0;
+        text-align: center;
+    }
+    .am-modal-transparent .am-modal-content .am-modal-body{
+        padding: 0 20px;
+    }
+    .rentIntroduceCont{
+        height: 195px;
+        overflow: scroll;
+        font-family: PingFang-SC-Medium;
+        font-size: 14px;
+        color: #505160;
+    }
+}
+
 
 
 

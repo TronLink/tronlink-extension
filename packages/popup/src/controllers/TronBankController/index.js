@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-20 16:53:36
+ * @Last Modified time: 2019-03-20 19:51:22
  * TronBankPage
  */
 import React from 'react';
@@ -10,7 +10,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
 import { VALIDATION_STATE, APP_STATE } from '@tronlink/lib/constants';
-import { NavBar, Button } from 'antd-mobile';
+import { NavBar, Button, Modal } from 'antd-mobile';
 import './TronBankController.scss';
 
 class BankController extends React.Component {
@@ -18,6 +18,7 @@ class BankController extends React.Component {
         super(props);
         this.state = {
             maskVisible: true,
+            modalVisible: false,
             selected: '',
             isOpen: {
                 account: false,
@@ -60,10 +61,16 @@ class BankController extends React.Component {
         });
     }
 
+    onModalClose = key => () => {
+        this.setState({
+            [ key ]: false,
+        });
+    };
+
     render() {
         const { selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
-        const myImg = src => { return `../../assets/images/new/tronBank/${src}.svg`}
+        const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         console.log(myImg('more'));
         return (
             <div className='TronBankContainer'>
@@ -84,8 +91,7 @@ class BankController extends React.Component {
                                 <FormattedMessage id='BANK.INDEX.ACCOUNT'/>一<span>{ selected.address }</span>
                             </div>
                             <div className='balance'>
-                                <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount:selected.balance / Math.pow(10, 6)}}/>
-                                {/* &nbsp; {selected.balance / Math.pow(10, 6)} TRX */}
+                                <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>
                             </div>
                         </section>
                         <section className='infoSec'>
@@ -101,7 +107,7 @@ class BankController extends React.Component {
                     {/* rent num,day */}
                     <div className='rentContent'>
                         <section className='infoSec'>
-                            <label><FormattedMessage id='BANK.INDEX.RENTNUM'/></label>
+                            <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ modalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
                             <div className='receiveAccount'>
                                 <input className='rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} />TRX
                             </div>
@@ -109,19 +115,34 @@ class BankController extends React.Component {
                         <section className='infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='dayRange'>
-                                <span></span>
+                                <span><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
                                 <input className='rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
-                                <span></span>
+                                <span><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
                             </div>
                         </section>
                         <section className='rentIntroduce'>
                             <FormattedMessage id='BANK.INDEX.RENTINTRODUCE'/>
                         </section>
                     </div>
-                    <Button className='bankSubmit' disabled style={{background:'#C2C8D5'}}>
+                    {/* subbtn */}
+                    <Button className='bankSubmit' disabled style={{ background: '#C2C8D5' }}>
                         <FormattedMessage id='BANK.INDEX.BUTTON'/>
                     </Button>
                 </div>
+                <Modal
+                    className='modalWrapper'
+                    visible={this.state.modalVisible}
+                    transparent
+                    maskClosable={false}
+                    onClose={this.onModalClose('modalVisible')}
+                    title='租用量说明'
+                    footer={[{ text: 'Ok', onPress: () => { this.onModalClose('modalVisible')(); } }]}
+                    afterClose={() => { console.log('afterClose'); }}
+                >
+                    <div className='rentIntroduceCont'>
+                        文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容
+                    </div>
+                </Modal>
             </div>
         );
     }
