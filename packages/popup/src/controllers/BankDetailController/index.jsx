@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 14:20:11
+ * @Last Modified time: 2019-03-22 17:56:47
  * BankOrderDetail
  */
 import React from 'react';
@@ -63,7 +63,7 @@ class BankDetailController extends React.Component {
                                 <FormattedMessage id={val.id}/>
                             </span>
                             <span className='orderStatus'>
-                                {val.id === 'BANK.RENTDETAIL.STATUS' ? <span>{val.value == 1 ? <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/> : <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>} </span> : val.value}
+                                {val.id === 'BANK.RENTDETAIL.STATUS' ? <span>{val.value === 1 ? <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/> : <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>} </span> : val.value}
                                 {val.type === 2 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                             </span>
                         </div>

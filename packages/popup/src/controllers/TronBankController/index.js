@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-21 15:16:47
+ * @Last Modified time: 2019-03-22 17:58:53
  * TronBankPage
  */
 import React from 'react';
@@ -17,45 +17,44 @@ class BankController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            maskVisible: false,
-            modalVisible: false,
-            selected: '',
-            isOpen: {
-                account: false,
-                token: false
-            },
-            selectedToken: {
-                id: '_',
-                name: 'TRX',
-                amount: 0,
-                decimals: 6
+            popoverVisible: false,
+            rentModalVisible: false,
+            recipient: {
+                value: '',
+                valid: false,
+                error: false
             },
             loading: false
         };
     }
 
     componentDidMount() { // data by props
-        const { selectedToken, selected } = this.props.accounts;
-        selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
-        this.setState({ selectedToken });
-        console.log(selectedToken, selected);
+        // const { selectedToken, selected } = this.props.accounts;
+        // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
+        // this.setState({ selectedToken });
+        // console.log(selectedToken, selected);
     }
 
-    onRecipientChange(e) {
-        //reacipientchange
+    onRecipientChange(e, _type) {
+        //reacipientchange  judge account isvalid by _type
         const address = e.target.value;
         const recipient = {
             value: address,
-            valid: VALIDATION_STATE.NONE
+            valid: VALIDATION_STATE.NONE,
+            error: VALIDATION_STATE.NONE
         };
 
         if(!address.length)
             return this.setState({ recipient });
-
-        if(!TronWeb.isAddress(address))
+        if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
-        else recipient.valid = true;
-
+            recipient.error = false;
+            if(_type == 2) recipient.error = true; else recipient.error = false;
+        }
+        else {
+            recipient.valid = true;
+            recipient.error = false;
+        }
         this.setState({
             recipient
         });
@@ -68,8 +67,9 @@ class BankController extends React.Component {
     };
 
     render() {
-        const { selected } = this.props.accounts;
+        const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
+        const { recipient } = this.state;
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
@@ -78,17 +78,18 @@ class BankController extends React.Component {
                     mode='light'
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
-                    rightContent={<img onClick={() => { console.log(this.state.maskVisible);this.setState({ maskVisible: !this.state.maskVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
+                    rightContent={<img onClick={() => { console.log(this.state.popoverVisible);this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
                 >TronBank
                 </NavBar>
-                <div className='navBarMoreMenu' onClick={(e) => { e.stopPropagation();this.setState({ maskVisible: !this.state.maskVisible }); } }>
-                    <div className={ this.state.maskVisible ? 'dropList menuList menuVisible' : 'dropList menuList'}>
+                {/* navModal */}
+                <div className='navBarMoreMenu' onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible }); } }>
+                    <div className={ this.state.popoverVisible ? 'dropList menuList menuVisible' : 'dropList menuList'}>
                         <div onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK_RECORD); } } className='item'>
-                            <img onClick={() => { this.setState({ maskVisible: true }); }} className='rightMoreIcon' src={myImg('record')} alt={'record'}/>
+                            <img onClick={() => { this.setState({ popoverVisible: true }); }} className='rightMoreIcon' src={myImg('record')} alt={'record'}/>
                             <FormattedMessage id='BANK.RENTNUMMODAL.RECORD' />
                         </div>
                         <div onClick={(e) => { console.log('TODO'); }} className='item'>
-                            <img onClick={() => { this.setState({ maskVisible: true }); }} className='rightMoreIcon' src={myImg('help')} alt={'help'}/>
+                            <img onClick={() => { this.setState({ popoverVisible: true }); }} className='rightMoreIcon' src={myImg('help')} alt={'help'}/>
                             <FormattedMessage id='BANK.RENTNUMMODAL.HELP' />
                         </div>
                     </div>
@@ -107,28 +108,35 @@ class BankController extends React.Component {
                         </section>
                         <section className='infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
-                            <div className='receiveAccount'>
-                                <input onChange={(e) => { this.onRecipientChange(e); } } placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })}/>
+                            <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
+                                <input onChange={(e) => { this.onRecipientChange(e, 1); } } onBlur={(e) => this.onRecipientChange(e, 2)} placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })}/>
                             </div>
+                            {recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null}
                             <div className='balance'>
-                                <FormattedMessage id='BANK.INDEX.USED'/>/<FormattedMessage id='BANK.INDEX.TOTAL'/>
+                                <FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/>
                             </div>
                         </section>
                     </div>
                     {/* rent num,day */}
                     <div className='rentContent'>
                         <section className='infoSec'>
-                            <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ modalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
-                            <div className='receiveAccount'>
-                                <input className='rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} />TRX
+                            <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ rentModalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
+                            <div className='rentNumWrapper'>
+                                <input className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
+                            </div>
+                            <div className='errorMsg'>
+                                <FormattedMessage id='BANK.INDEX.RENTNUMERROR'/>
                             </div>
                         </section>
                         <section className='infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='dayRange'>
                                 <span><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
-                                <input className='rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
+                                <input className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
                                 <span><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
+                            </div>
+                            <div className='errorMsg'>
+                                <FormattedMessage id='BANK.INDEX.RENTDAYERROR'/>
                             </div>
                         </section>
                         <section className='rentIntroduce'>
@@ -144,10 +152,10 @@ class BankController extends React.Component {
                 <Modal
                     className='modalContent'
                     wrapClassName='modalWrap'
-                    visible={this.state.modalVisible}
+                    visible={this.state.rentModalVisible}
                     transparent
                     maskClosable={false}
-                    onClose={this.onModalClose('modalVisible')}
+                    onClose={this.onModalClose('rentModalVisible')}
                     title={ formatMessage({ id: 'BANK.RENTNUMMODAL.TITLE' })}
                     afterClose={() => { console.log('afterClose'); }}
                 >
@@ -155,7 +163,7 @@ class BankController extends React.Component {
                         <section className='modalRentContent'>
                             <FormattedMessage id='BANK.RENTNUMMODAL.CONTENT'/>
                         </section>
-                        <Button className='modalCloseBtn' onClick={() => { this.onModalClose('modalVisible')(); }} size='small'><FormattedMessage id='BANK.RENTNUMMODAL.BUTTON'/></Button>
+                        <Button className='modalCloseBtn' onClick={() => { this.onModalClose('rentModalVisible')(); }} size='small'><FormattedMessage id='BANK.RENTNUMMODAL.BUTTON'/></Button>
                     </div>
                 </Modal>
             </div>
