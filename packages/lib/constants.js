@@ -18,7 +18,8 @@ export const APP_STATE = {
     ADD_TRC20_TOKEN: 11, //[x] Show setting
     TRONBANK: 12, // [x] show TronBank page
     TRONBANK_RECORD: 13, //[x] show TronBankRecord page
-    TESTHMTL: 14 // 测试
+    TRONBANK_DETAIL: 14, //[X] show TronBankDetail page
+    TESTHMTL: 15 // 测试
 
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 

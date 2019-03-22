@@ -260,6 +260,28 @@
     "BANK.RENTNUMMODAL.RECORD":"en租用记录",
     "BANK.RENTNUMMODAL.HELP":"en帮助",
 
+
+    "BANK.RENTRECORD.VALID":"en有效",
+    "BANK.RENTRECORD.INVALID":"en失效",
+    "BANK.RENTRECORD.ALLSTATUS":"en全部",
+    "BANK.RENTRECORD.RENTDETAIL":"en租用详情：",
+    "BANK.RENTRECORD.DEADLINE":"en到期时间：",
+    "BANK.RENTRECORD.TIMEUNIT":"en天",
+    "BANK.RENTRECORD.COST":"en花费",
+    "BANK.RENTRECORD.VALIDNAME":"en生效中",
+    "BANK.RENTRECORD.INVALIDNAME":"en已完成",
+
+    "BANK.RENTDETAIL.TITLE":"en订单详情",
+    "BANK.RENTDETAIL.STATUS":"en订单状态",
+    "BANK.RENTDETAIL.ORDERNUM":"en订单号",
+    "BANK.RENTDETAIL.PAYACCOUNT":"en付款账号",
+    "BANK.RENTDETAIL.TOACCOUNT":"en到账账号",
+    "BANK.RENTDETAIL.RENTNUM":"en租用数量",
+    "BANK.RENTDETAIL.RENTTIME":"en租用周期",
+    "BANK.RENTDETAIL.PAYNUM":"en支付金额",
+    "BANK.RENTDETAIL.PAYTIME":"en支付时间",
+    "BANK.RENTDETAIL.EXPIRESTIME":"en到期时间",
+
     "BANK.RENTNUMMODAL.TITLE":"en租用量说明",
     "BANK.RENTNUMMODAL.CONTENT":"en文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容",
     "BANK.RENTNUMMODAL.BUTTON":"en关闭",

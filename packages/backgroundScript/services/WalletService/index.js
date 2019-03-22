@@ -264,7 +264,8 @@ class Wallet extends EventEmitter {
             APP_STATE.READY,
             APP_STATE.TESTHMTL,
             APP_STATE.TRONBANK,
-            APP_STATE.TRONBANK_RECORD
+            APP_STATE.TRONBANK_RECORD,
+            APP_STATE.TRONBANK_DETAIL
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);

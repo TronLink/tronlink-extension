@@ -8,12 +8,13 @@ import { PopupAPI } from '@tronlink/lib/api';
 import {APP_STATE} from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
-class  TransactionsController extends React.Component{
-    constructor(props){
+class  TransactionsController extends React.Component {
+    constructor(props) {
         super(props);
         this.state={index :0,isTop:false ,transactionGroup:{all:[],send:[],receive:[]}};
     }
-    async componentDidMount(){
+
+    async componentDidMount() {
         let transactionGroup;
         const {
             accounts
@@ -28,6 +29,7 @@ class  TransactionsController extends React.Component{
         }
         this.setState({transactionGroup})
     }
+
     render() {
         const { index,isTop,transactionGroup } = this.state;
         const {

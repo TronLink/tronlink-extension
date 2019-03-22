@@ -19,6 +19,7 @@ import SettingController from '@tronlink/popup/src/controllers/SettingController
 import AddTokenController from '@tronlink/popup/src/controllers/AddTokenController';
 import BankController from '@tronlink/popup/src/controllers/TronBankController';
 import BankRecordController from '@tronlink/popup/src/controllers/BankRecordController';
+import BankDetailController from '@tronlink/popup/src/controllers/BankDetailController';
 import TestHtmlController from '@tronlink/popup/src/controllers/TestHtmlController';
 
 import 'react-custom-scroll/dist/customScroll.css';
@@ -62,10 +63,10 @@ class App extends React.Component {
                 dom = <ConfirmationController />;
                 break;
             case APP_STATE.RECEIVE:
-                dom  = <ReceiveController address={accounts.selected.address} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <ReceiveController address={accounts.selected.address} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SEND:
-                dom =  <SendController accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <SendController accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTIONS:
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
@@ -82,6 +83,9 @@ class App extends React.Component {
             case APP_STATE.TRONBANK_RECORD:
                 dom = <BankRecordController accounts={accounts}></BankRecordController>;
                 break;
+            case APP_STATE.TRONBANK_DETAIL:
+                dom = <BankDetailController accounts={accounts}></BankDetailController>;
+                break;
             case APP_STATE.TESTHMTL:
                 dom = <TestHtmlController />;
                 break;
@@ -90,14 +94,13 @@ class App extends React.Component {
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState() }>
                         <FormattedMessage id='ERRORS.UNSUPPORTED_STATE' values={{ appState }} />
                     </div>;
-
         }
 
         return (
             <IntlProvider locale={ language } messages={ this.messages[ language ] }>
                 { dom }
             </IntlProvider>
-        )
+        );
     }
 }
 

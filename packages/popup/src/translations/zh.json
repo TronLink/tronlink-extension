@@ -269,8 +269,16 @@
     "BANK.RENTRECORD.VALIDNAME":"生效中",
     "BANK.RENTRECORD.INVALIDNAME":"已完成",
 
-
-
+    "BANK.RENTDETAIL.TITLE":"订单详情",
+    "BANK.RENTDETAIL.STATUS":"订单状态",
+    "BANK.RENTDETAIL.ORDERNUM":"订单号",
+    "BANK.RENTDETAIL.PAYACCOUNT":"付款账号",
+    "BANK.RENTDETAIL.TOACCOUNT":"到账账号",
+    "BANK.RENTDETAIL.RENTNUM":"租用数量",
+    "BANK.RENTDETAIL.RENTTIME":"租用周期",
+    "BANK.RENTDETAIL.PAYNUM":"支付金额",
+    "BANK.RENTDETAIL.PAYTIME":"支付时间",
+    "BANK.RENTDETAIL.EXPIRESTIME":"到期时间",
 
     "BANK.RENTNUMMODAL.TITLE":"租用量说明",
     "BANK.RENTNUMMODAL.CONTENT":" 文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容",
