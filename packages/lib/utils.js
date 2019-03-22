@@ -32,7 +32,6 @@ const Utils = {
         return bytes;
     },
 
-
     byteToString(arr) {
         if(typeof arr === 'string') {
             return arr;
@@ -56,7 +55,6 @@ const Utils = {
         }
         return str;
     },
-
 
     hash(string) {
         return crypto
@@ -158,24 +156,28 @@ const Utils = {
         return typeof obj === 'function';
     },
 
-
-    dataLetterSort (data,field,field2) {
+    dataLetterSort (data, field, field2) {
         let needArray = [];
         let list = {};
         let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_'];
         for (let i = 0; i < data.length; i++) {
             let letter = (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
-            if(!list[letter]){
+            if(!list[letter]) {
                 list[letter] = [];
             }
             list[letter].push(data[i]);
         }
-        LetterArray.forEach(v=>{
-            if(list[v]){
+        LetterArray.forEach( v => {
+            if(list[v]) {
                 needArray = needArray.concat(list[v])
             }
         });
         return needArray;
+    },
+
+    validatInteger(str) {
+        const reg = /^[1-9]\d*|0$/;
+        return reg.test(str);
     }
 };
 

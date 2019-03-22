@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 17:58:53
+ * @Last Modified time: 2019-03-22 21:33:13
  * TronBankPage
  */
 import React from 'react';
@@ -11,6 +11,7 @@ import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
 import { VALIDATION_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal } from 'antd-mobile';
+import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
 
 class BankController extends React.Component {
@@ -24,6 +25,15 @@ class BankController extends React.Component {
                 valid: false,
                 error: false
             },
+            rentNum: {
+                value: '',
+                valid: false,
+                error: false
+            },
+            rentNumMin: 100,
+            rentNumMax: 1000,
+            rentDayMin: 3,
+            rentDayMax: 30,
             loading: false
         };
     }
@@ -48,7 +58,6 @@ class BankController extends React.Component {
             return this.setState({ recipient });
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
-            recipient.error = false;
             if(_type == 2) recipient.error = true; else recipient.error = false;
         }
         else {
@@ -57,6 +66,30 @@ class BankController extends React.Component {
         }
         this.setState({
             recipient
+        });
+    }
+
+    handlerRentChange(e, _type) {
+        // rent change
+        const { rentNumMin, rentNumMax } = this.state
+        const rentVal = e.target.value;
+        const rentNum = {
+            value: rentVal,
+            valid: VALIDATION_STATE.NONE,
+            error: VALIDATION_STATE.NONE
+        };
+        if(!rentVal.length)
+            return this.setState({ rentNum });
+
+        if(Utils.validatInteger(rentVal) && rentVal < rentNumMax && rentVal > rentNumMin) {
+            rentNum.valid = true;
+            rentNum.error = false;
+        } else {
+            rentNum.valid = false;
+            if(_type == 2) rentNum.error = true; else rentNum.error = false;
+        }
+        this.setState({
+            rentNum
         });
     }
 
@@ -69,7 +102,7 @@ class BankController extends React.Component {
     render() {
         const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
-        const { recipient } = this.state;
+        const { recipient, rentNum } = this.state;
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
@@ -121,12 +154,10 @@ class BankController extends React.Component {
                     <div className='rentContent'>
                         <section className='infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ rentModalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
-                            <div className='rentNumWrapper'>
-                                <input className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
+                            <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
+                                <input onChange={ (e)=>{this.handlerRentChange(e,1)}} onBlur={ (e)=>this.handlerRentChange(e,2)} className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
                             </div>
-                            <div className='errorMsg'>
-                                <FormattedMessage id='BANK.INDEX.RENTNUMERROR'/>
-                            </div>
+                            { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
                         </section>
                         <section className='infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
