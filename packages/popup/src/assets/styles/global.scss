@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Rubik:400,500,700');
-@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+SC');
 @import url('./swal.scss');
 
 * {
@@ -12,8 +12,8 @@
 html,body,#root {
     height: 600px;
     width: 360px;
-    //font-family: 'Rubik', sans-serif;
-    font-family: sans-serif;
+    font-family: Arial,'Source Han Sans CN','Microsoft Yahei';
+    //font-family: sans-serif;
     cursor: default;
     user-select: none;
     margin: 0;

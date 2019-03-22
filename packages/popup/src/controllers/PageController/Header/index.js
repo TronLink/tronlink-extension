@@ -80,7 +80,7 @@ class Header extends React.Component {
                         {/*</div>*/}
                     {/*</div>*/}
                     <div>
-                        <div className="fun" onClick={()=>{window.open('https://trx.market')}}></div>
+                        <div className="fun" onClick={()=>{window.open('https://trx.market?from=tronlink')}}></div>
                         <div className="fun" onClick={()=>{
                             if(!refresh){
                                 this.setState({refresh:true}, async()=>{

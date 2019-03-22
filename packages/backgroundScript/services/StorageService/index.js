@@ -48,7 +48,7 @@ const StorageService = {
         },
         openAccountsMenu:false,
         advertising:{},
-        developmentMode:true
+        developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
     },
     language: '',
     ready: false,

@@ -80,7 +80,7 @@
 
   "ACCOUNT_NAME.DESC": "新しいアカウントに覚えやすい名前を付けてください",
 
-  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、16、または24ワードとします。",
+  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、16、または24ワードとします。（スペース区切り）",
   "MNEMONIC_IMPORT.SELECTION": "下からインポートしたいアカウントを選んでください",
 
   "PRIVATE_KEY_IMPORT.DESC": "下に秘密のキーを入力してください。秘密のキーは16進数のみとします",
@@ -229,9 +229,9 @@
   "MENU.WHITE_LIST":"ホワイトリストを管理する",
   "MENU.DELETE_WALLET":"アカウントを削除する",
   "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"TRC20tokenの契約アドレスを入力してください",
-  "MENU.FROZEN_UNFROZEN":"Frozen/Unfrozen",
-  "MENU.VOTE":"Vote",
-  "MENU.ACCOUNTS.TOTAL_ASSET":"Asset{sign}",
+  "MENU.FROZEN_UNFROZEN":"凍結/解除",
+  "MENU.VOTE":"投票",
+  "MENU.ACCOUNTS.TOTAL_ASSET":"総資産{sign}",
 
   "TOAST.COPY":"コピー済み",
   "TOAST.ADDED":"追加しました",

@@ -5,7 +5,7 @@ import { setPage } from '@tronlink/popup/src/reducers/appReducer';
 
 import AccountsPage from '@tronlink/popup/src/pages/AccountsPage';
 import TransactionsPage from '@tronlink/popup/src/pages/TransactionsPage';
-//import TokensPage from '@tronlink/popup/src/pages/TokensPage';
+import TokensPage from '@tronlink/popup/src/pages/TokensPage';
 import SendPage from '@tronlink/popup/src/pages/SendPage';
 import SettingsPage from '@tronlink/popup/src/pages/SettingsPage';
 

@@ -80,7 +80,7 @@
 
     "ACCOUNT_NAME.DESC": "请为您的新账号选择一个好记的名字",
 
-    "MNEMONIC_IMPORT.DESC": "请在下方输入你的助记词.长度为12，16，或者24个词",
+    "MNEMONIC_IMPORT.DESC": "请在下方输入你的助记词.长度为12，16，或者24个词（需用空格隔开）",
     "MNEMONIC_IMPORT.SELECTION": "选择下面你想导入的账户",
 
     "PRIVATE_KEY_IMPORT.DESC": "请在下方输入你的私钥，只能包含16进制字符",

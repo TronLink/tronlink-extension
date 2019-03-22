@@ -80,7 +80,7 @@
 
     "ACCOUNT_NAME.DESC": "Please choose a memorable name for your new account",
 
-    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12, 16 or 24 words in length",
+    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12, 16 or 24 words in length (separated by spaces)",
     "MNEMONIC_IMPORT.SELECTION": "Select the accounts you would like to import below",
 
     "PRIVATE_KEY_IMPORT.DESC": "Please enter your private key below. This can only contain hexadecimal characters",

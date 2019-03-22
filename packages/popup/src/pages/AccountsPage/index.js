@@ -27,7 +27,7 @@ import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
-
+let apiUrl = '';
 class AccountsPage extends React.Component {
     constructor() {
         super();
@@ -49,7 +49,7 @@ class AccountsPage extends React.Component {
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'http://list.tronlink.org';
+        apiUrl = developmentMode? 'http://52.14.133.221:8920':'http://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         let news = [];
         if(res){
@@ -58,15 +58,15 @@ class AccountsPage extends React.Component {
             news = [];
         }
         this.setState({news});
-        //console.log(location.hostname);
-        //developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec',
         //PopupAPI.refresh();
     }
     componentDidUpdate() {
 
 
     }
-
+    addCount(id){
+        return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
+    }
     onClick(address) {
         const { selected } = this.props.accounts;
 
@@ -329,7 +329,6 @@ class AccountsPage extends React.Component {
         const {showNodeList,mnemonic,privateKey,news}  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng } = this.props;
-        console.log(setting);
         const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
@@ -367,7 +366,7 @@ class AccountsPage extends React.Component {
                 <div className="space-controller">
                     <Toast />
                     {
-                         id === 0 || (setting.advertising[id] && !setting.advertising[id][mode])?
+                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || id === 0 || (setting.advertising[id] && !setting.advertising[id][mode])?
                             null
                              :
                             <div className="advertisingWrap">
@@ -395,10 +394,14 @@ class AccountsPage extends React.Component {
                                         }
                                         return (
                                             language === l ?
-                                                <a href={news.content_url} target="_blank">
+                                                <div  onClick={async ()=>{
+                                                    const r = await this.addCount(news.id);
+                                                    if(r)
+                                                        window.open(news.content_url);
+                                                }}>
                                                     <img src={news.pic_url} alt=""/>
                                                     <span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span>
-                                                </a>:null
+                                                </div>:null
                                         )
                                     })
                                 }
@@ -408,10 +411,10 @@ class AccountsPage extends React.Component {
                         <div className="accounts">
                             <Toast />
                             <div className="row1">
-                                <div className="cell" onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
                                     <FormattedMessage id="CREATION.CREATE.TITLE" />
                                 </div>
-                                <div className="cell" onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
                                     <FormattedMessage id="CREATION.RESTORE.TITLE" />
                                 </div>
                             </div>
