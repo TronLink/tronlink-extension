@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 19:45:46
+ * @Last Modified time: 2019-03-24 21:03:30
  * TronBankPage
  */
 import React from 'react';
@@ -20,7 +20,7 @@ class BankController extends React.Component {
         this.state = {
             popoverVisible: false,
             rentModalVisible: false,
-            rentConfirmVisible: true,
+            rentConfirmVisible: false,
             recipient: {
                 value: '',
                 valid: true,
@@ -230,6 +230,13 @@ class BankController extends React.Component {
         const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         const { recipient, rentNum, rentDay, rentNumMin, rentDayMin, rentDayMax, rentUnit } = this.state;
+        const orderList = [
+            { id: 'BANK.RENTINFO.PAYADDRESS', type: 1, value: 'TEXA.....BZ889DJHUYFG' },
+            { id: 'BANK.RENTINFO.RECEIVEADDRESS', type: 0, value: 'TEXA.....BZ889DJHUYFG' },
+            { id: 'BANK.RENTINFO.RENTNUM', type: 0, value: 'TEXABZ889DJHUYFG' },
+            { id: 'BANK.RENTINFO.RENTDAY', type: 0, value: 'TEXABZ889DJHUYFG' },
+            { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: '100TRX' },
+        ];
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
@@ -326,7 +333,7 @@ class BankController extends React.Component {
                     </div>
                 </Modal>
                 <Modal
-                    className='modalContent'
+                    className='modalContent confirmContentModal'
                     wrapClassName='modalConfirmWrap'
                     visible={this.state.rentConfirmVisible}
                     transparent
@@ -336,7 +343,24 @@ class BankController extends React.Component {
                     afterClose={() => { console.log('afterClose'); }}
                 >
                     <div className='rentIntroduceCont'>
-                        <section className='modalRentContent'>
+                        <section className='modalRentContent confirmRentContent'>
+                            <section className='detailContent'>
+                                {orderList.map((val, key) => (
+                                    <div key={key} className='orderList' >
+                                        <span className='orderIntroduce' >
+                                            <FormattedMessage id={val.id}/>
+                                        </span>
+                                        <span className='orderStatus'>
+                                            {val.id === 'BANK.RENTDETAIL.STATUS' ? <span>{val.value === 1 ? <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/> : <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>} </span> : val.value}
+                                            {val.type === 2 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
+                                        </span>
+                                    </div>
+                                ))}
+                            </section>
+                        </section>
+                        <section className='operateBtn'>
+                            <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>  
+                            <Button className='modalPayBtn' ><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
                         </section>
                     </div>
                 </Modal>

@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 12:45:13
+ * @Last Modified time: 2019-03-24 21:02:11
  * TronBankPage
  */
 
@@ -329,6 +329,9 @@
             line-height: 20px;
             letter-spacing: 0;
         }
+        .confirmRentContent{
+            height: 210px;
+        }
         .modalCloseBtn{
             width: 120px;
             height: 36px;
@@ -344,6 +347,46 @@
     }
 }
 
+.confirmContentModal{
+    .orderList{
+        border-bottom: 1px solid #EFEFEF;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+    .orderIntroduce{
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color:#888998; 
+        letter-spacing: 0 
+    }
+    .orderStatus{
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #505160;
+        letter-spacing: 0;
+        display: flex;
+        flex-direction: row;
+    }
+    .modalPayBtn{
+        width: 120px;
+        height: 36px;
+        background: #636ACC;
+        line-height: 36px;
+        margin: 24px auto 0;
+        font-family: PingFang-SC-Bold;
+        font-size: 16px;
+        border-radius: 2px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+    .operateBtn{
+        margin:0;
+        display: flex;
+        flex-direction: row;
+    }
+}
 
 
 
