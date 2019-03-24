@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 18:58:35
+ * @Last Modified time: 2019-03-24 19:45:46
  * TronBankPage
  */
 import React from 'react';
@@ -301,7 +301,6 @@ class BankController extends React.Component {
                         </section>
                     </div>
                     {/* tronBank subbtn */}
-                    {recipient.valid}{rentNum.valid}{rentDay.valid}
                     <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
                         className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
                     >

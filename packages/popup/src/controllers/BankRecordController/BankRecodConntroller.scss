@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-21 14:34:43 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 12:12:16
+ * @Last Modified time: 2019-03-24 19:48:13
  */
  .navbar{
     width: 100%;
@@ -10,6 +10,11 @@
     font-family: PingFang-SC-Bold;
     font-size: 18px;
     color: #515060;
+    .am-navbar-title{
+        font-family: PingFang-SC-Bold;
+        font-size: 18px;
+        color: #333;
+    }
     .commonBack{
         cursor: pointer;
         position: absolute;
