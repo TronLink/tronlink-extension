@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 21:33:13
+ * @Last Modified time: 2019-03-24 18:58:35
  * TronBankPage
  */
 import React from 'react';
@@ -20,9 +20,10 @@ class BankController extends React.Component {
         this.state = {
             popoverVisible: false,
             rentModalVisible: false,
+            rentConfirmVisible: false,
             recipient: {
                 value: '',
-                valid: false,
+                valid: true,
                 error: false
             },
             rentNum: {
@@ -30,10 +31,21 @@ class BankController extends React.Component {
                 valid: false,
                 error: false
             },
+            rentDay: {
+                value: '',
+                valid: false,
+                error: false,
+                maxError: false
+            },
             rentNumMin: 100,
             rentNumMax: 1000,
             rentDayMin: 3,
             rentDayMax: 30,
+            rentUnit: {
+                num: 10,
+                day: 1,
+                cost: 0.5
+            },
             loading: false
         };
     }
@@ -54,8 +66,11 @@ class BankController extends React.Component {
             error: VALIDATION_STATE.NONE
         };
 
-        if(!address.length)
+        if(!address.length) {
+            recipient.valid = true;
+            recipient.error = false;
             return this.setState({ recipient });
+        }
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
             if(_type == 2) recipient.error = true; else recipient.error = false;
@@ -69,9 +84,9 @@ class BankController extends React.Component {
         });
     }
 
-    handlerRentChange(e, _type) {
-        // rent change
-        const { rentNumMin, rentNumMax } = this.state
+    handlerRentNumChange(e, _type) {
+        // rent num change  _type 1chage 2blur
+        const { rentNumMin, rentNumMax } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
@@ -93,6 +108,91 @@ class BankController extends React.Component {
         });
     }
 
+    handlerRentDayChange(e, _type) {
+        // handler day change _type 1chage 2blur
+        const { rentDayMin, rentDayMax } = this.state;
+        const rentVal = e.target.value;
+        const rentDay = {
+            value: rentVal,
+            valid: VALIDATION_STATE.NONE,
+            error: VALIDATION_STATE.NONE
+        };
+        if(!rentVal.length)
+            return this.setState({ rentDay });
+
+        if(Utils.validatInteger(rentVal) && rentVal < rentDayMax && rentVal > rentDayMin) {
+            rentDay.valid = true;
+            rentDay.error = false;
+        } else {
+            rentDay.valid = false;
+            if(_type == 2) rentDay.error = true; else rentDay.error = false;
+        }
+        this.setState({
+            rentDay
+        });
+    }
+
+    handlerRentDayFun(_type) {
+        // _type 1reduce 2add
+        const { rentDayMin, rentDayMax } = this.state;
+        let rentVal = Number(this.state.rentDay.value);
+        const rentDay = {
+            value: '',
+            valid: VALIDATION_STATE.NONE,
+            error: VALIDATION_STATE.NONE,
+            maxError: VALIDATION_STATE.NONE
+        };
+
+        if(!Utils.validatInteger(rentVal)) {
+            rentDay.value = rentDayMin;
+            rentDay.valid = false;
+            rentDay.error = true;
+            rentDay.maxError = false;
+            this.setState({
+                rentDay
+            });
+            return;
+        }
+        if(_type == 1) {
+            if(rentVal <= rentDayMin ) {
+                rentDay.value = rentDayMin;
+                rentDay.valid = false;
+                rentDay.error = true;
+                rentDay.maxError = false;
+            }else {
+                if(rentVal > rentDayMax) {
+                    rentDay.valid = false;
+                    rentDay.error = false;
+                    rentDay.maxError = true;
+                    rentDay.value = rentDayMax;
+                }else{
+                    rentVal -= 1;
+                    rentDay.value = rentVal;
+                    rentDay.valid = true;
+                    rentDay.error = false;
+                    rentDay.maxError = false;
+                }
+            }
+        }
+        else {
+            if(rentVal >= rentDayMax ) {
+                rentDay.value = rentDayMax;
+                rentDay.valid = false;
+                rentDay.maxError = true;
+            }else {
+                rentVal += 1;
+                rentDay.value = rentVal;
+                rentDay.valid = true;
+                rentDay.maxError = false;
+            }
+            rentDay.error = false;
+        }
+        console.log(`当前值${rentVal}type${_type}`);
+        this.setState({
+            rentDay
+        });
+    }
+
     onModalClose = key => () => {
         this.setState({
             [ key ]: false,
@@ -102,7 +202,7 @@ class BankController extends React.Component {
     render() {
         const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
-        const { recipient, rentNum } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentDayMin, rentDayMax, rentUnit } = this.state;
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
@@ -142,7 +242,7 @@ class BankController extends React.Component {
                         <section className='infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
                             <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
-                                <input onChange={(e) => { this.onRecipientChange(e, 1); } } onBlur={(e) => this.onRecipientChange(e, 2)} placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER' })}/>
+                                <input onChange={(e) => { this.onRecipientChange(e, 1); } } onBlur={(e) => this.onRecipientChange(e, 2)} placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}/>
                             </div>
                             {recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null}
                             <div className='balance'>
@@ -155,27 +255,26 @@ class BankController extends React.Component {
                         <section className='infoSec'>
                             <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ rentModalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
                             <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
-                                <input onChange={ (e)=>{this.handlerRentChange(e,1)}} onBlur={ (e)=>this.handlerRentChange(e,2)} className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
+                                <input value={ rentNum.value } onChange={ (e) => { this.handlerRentNumChange(e, 1); }} onBlur={ (e) => this.handlerRentNumChange(e, 2)} className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
                             </div>
                             { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
                         </section>
-                        <section className='infoSec'>
+                        <section className='infoSec singlgeSty'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='dayRange'>
-                                <span><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
-                                <input className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
-                                <span><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
+                                <span onClick={ (e) => this.handlerRentDayFun(1)}><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
+                                <input value={rentDay.value} onChange={ (e) => { this.handlerRentDayChange(e, 1); }} onBlur={ (e) => { this.handlerRentDayChange(e, 1); }} className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
+                                <span onClick={ (e) => this.handlerRentDayFun(2)}><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
                             </div>
-                            <div className='errorMsg'>
-                                <FormattedMessage id='BANK.INDEX.RENTDAYERROR'/>
-                            </div>
+                            { rentDay.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
+                            { rentDay.maxError ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYMAXERROR' values={{ max: rentDayMax }}/></div> : null}
                         </section>
                         <section className='rentIntroduce'>
-                            <FormattedMessage id='BANK.INDEX.RENTINTRODUCE'/>
+                            <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
                         </section>
                     </div>
                     {/* tronBank subbtn */}
-                    <Button className='bankSubmit' disabled style={{ background: '#C2C8D5' }}>
+                    <Button className='bankSubmit' disabled={recipient.value && rentNum.value && rentDay.value ? false : true} style={{ background: '#C2C8D5' }} onClick={()=>{console.log(12)}}>
                         <FormattedMessage id='BANK.INDEX.BUTTON'/>
                     </Button>
                 </div>
@@ -195,6 +294,21 @@ class BankController extends React.Component {
                             <FormattedMessage id='BANK.RENTNUMMODAL.CONTENT'/>
                         </section>
                         <Button className='modalCloseBtn' onClick={() => { this.onModalClose('rentModalVisible')(); }} size='small'><FormattedMessage id='BANK.RENTNUMMODAL.BUTTON'/></Button>
+                    </div>
+                </Modal>
+                <Modal
+                    className='modalContent'
+                    wrapClassName='modalConfirmWrap'
+                    visible={this.state.rentConfirmVisible}
+                    transparent
+                    maskClosable={false}
+                    onClose={this.onModalClose('rentConfirmVisible')}
+                    title={ formatMessage({ id: 'BANK.RENTINFO.CONFIRM' })}
+                    afterClose={() => { console.log('afterClose'); }}
+                >
+                    <div className='rentIntroduceCont'>
+                        <section className='modalRentContent'>
+                        </section>
                     </div>
                 </Modal>
             </div>

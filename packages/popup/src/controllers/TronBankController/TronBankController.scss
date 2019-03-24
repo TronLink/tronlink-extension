@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 17:58:17
+ * @Last Modified time: 2019-03-24 12:45:13
  * TronBankPage
  */
 
@@ -17,6 +17,11 @@
         font-family: PingFang-SC-Bold;
         font-size: 18px;
         color: #515060;
+        .am-navbar-title{
+            font-family: PingFang-SC-Bold;
+            font-size: 18px;
+            color: #515060;
+        }
         .commonBack{
             cursor: pointer;
             position: absolute;
@@ -78,19 +83,22 @@
         }
     }
     .bankContent{
+        display: flex;
+        flex-direction: column;
         margin:0 18px;
     }
     .accountContent,.rentContent{
-        margin:10px 0;
         padding:0px 12px;
         background: #FFFFFF;
         border-radius: 2px;
     }
     .accountContent{
+        margin:10px 0 8px;
         min-height:180px;
     }
 
     .rentContent{
+        margin:0 0 10px; 
         min-height: 220px;
         .rentNumEntrance{
             width: 14px;
@@ -108,6 +116,7 @@
     .infoSec{
         padding:10px 0;
         label{
+            line-height: 20px;
             font-family: PingFang-SC-Bold;
             font-size: 14px;
             color: #505160;
@@ -167,6 +176,7 @@
             }
         }
         .selectedAccount{
+            line-height: 17px;
             margin:10px 0 6px;
             font-family: PingFangSC-Regular;
             font-size: 12px;
@@ -174,11 +184,15 @@
             letter-spacing: 0; 
         }
         .balance{
+            line-height: 17px;
             font-family: PingFangSC-Regular;
             font-size: 12px;
             color: #888998;
             letter-spacing: 0;
         }
+    }
+    .singlgeSty{
+        padding:0 0 10px; 
     }
     // rent 
     .rentIntroduce{
@@ -257,8 +271,7 @@
         color: #DB705C;
         letter-spacing: 0;
         margin-bottom:3px;
-        height: 17px;
-        line-height: 15px;
+        line-height: 17px;
     }
 }
 .normalBorder{
