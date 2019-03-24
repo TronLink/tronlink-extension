@@ -260,7 +260,7 @@
         border-radius: 2px;
         font-family: PingFang-SC-Bold;
         font-size: 14px;
-        color: rgba(255,255,255,0.50);
+        
         text-align: center;
     }
 
@@ -280,6 +280,15 @@
 .errorBorder{
     border: 1px solid #DB705C;
 }
+.normalValid{
+    background: #636ACC;
+    color: #FFFFFF;
+}
+.inValid{
+    background: #C2C8D5;
+    color: rgba(255,255,255,0.50);
+}
+
 
 // modal
 .am-modal-mask{

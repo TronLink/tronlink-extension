@@ -20,7 +20,7 @@ class BankController extends React.Component {
         this.state = {
             popoverVisible: false,
             rentModalVisible: false,
-            rentConfirmVisible: false,
+            rentConfirmVisible: true,
             recipient: {
                 value: '',
                 valid: true,
@@ -120,12 +120,39 @@ class BankController extends React.Component {
         if(!rentVal.length)
             return this.setState({ rentDay });
 
-        if(Utils.validatInteger(rentVal) && rentVal < rentDayMax && rentVal > rentDayMin) {
+        if(!Utils.validatInteger(rentVal)) {
+            rentDay.value = rentDayMin;
+            rentDay.valid = false;
+            rentDay.error = true;
+            rentDay.maxError = false;
+            this.setState({
+                rentDay
+            });
+            return;
+        }
+
+        if(rentVal <= rentDayMax && rentVal >= rentDayMin) {
             rentDay.valid = true;
             rentDay.error = false;
         } else {
             rentDay.valid = false;
-            if(_type == 2) rentDay.error = true; else rentDay.error = false;
+            if(_type == 2) {
+                if(rentVal < rentDayMin ) {
+                    rentDay.value = rentDayMin;
+                    rentDay.valid = false;
+                    rentDay.error = true;
+                    rentDay.maxError = false;
+                }
+                if(rentVal > rentDayMax) {
+                    rentDay.valid = false;
+                    rentDay.error = false;
+                    rentDay.maxError = true;
+                    rentDay.value = rentDayMax;
+                }
+            }else {
+                rentDay.error = false;
+                rentDay.maxError = false;
+            }
         }
         this.setState({
             rentDay
@@ -263,7 +290,7 @@ class BankController extends React.Component {
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='dayRange'>
                                 <span onClick={ (e) => this.handlerRentDayFun(1)}><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
-                                <input value={rentDay.value} onChange={ (e) => { this.handlerRentDayChange(e, 1); }} onBlur={ (e) => { this.handlerRentDayChange(e, 1); }} className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
+                                <input value={rentDay.value} onChange={ (e) => { this.handlerRentDayChange(e, 1); }} onBlur={ (e) => { this.handlerRentDayChange(e, 2); }} className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
                                 <span onClick={ (e) => this.handlerRentDayFun(2)}><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
                             </div>
                             { rentDay.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
@@ -274,7 +301,10 @@ class BankController extends React.Component {
                         </section>
                     </div>
                     {/* tronBank subbtn */}
-                    <Button className='bankSubmit' disabled={recipient.value && rentNum.value && rentDay.value ? false : true} style={{ background: '#C2C8D5' }} onClick={()=>{console.log(12)}}>
+                    {recipient.valid}{rentNum.valid}{rentDay.valid}
+                    <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
+                        className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
+                    >
                         <FormattedMessage id='BANK.INDEX.BUTTON'/>
                     </Button>
                 </div>
