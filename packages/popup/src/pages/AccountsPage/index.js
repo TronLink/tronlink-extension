@@ -443,21 +443,21 @@ class AccountsPage extends React.Component {
                                                 <div className="name">
                                                     {account.name}
                                                 </div>
-                                                <div className="address">
-                                                    <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
-                                                    <div onClick={(e)=>{e.stopPropagation()}}>
-                                                        <CopyToClipboard text={address}
-                                                                         onCopy={(e) => {
-                                                                            T.notify(formatMessage({id:'TOAST.COPY'}));
-                                                                         }}>
-                                                            <span className='copy'></span>
-                                                        </CopyToClipboard>
-                                                    </div>
+                                                <div className="asset">
+                                                    <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
+                                                    <span><FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} /> {new BigNumber(new BigNumber(account.asset).multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
                                                 </div>
                                             </div>
                                             <div className="bottom">
-                                                <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
-                                                <span><FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} /> {new BigNumber(new BigNumber(account.asset).multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
+                                                <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
+                                                <div onClick={(e)=>{e.stopPropagation()}}>
+                                                    <CopyToClipboard text={address}
+                                                                     onCopy={(e) => {
+                                                                         T.notify(formatMessage({id:'TOAST.COPY'}));
+                                                                     }}>
+                                                        <span className='copy'></span>
+                                                    </CopyToClipboard>
+                                                </div>
                                             </div>
                                         </div>
                                     )
