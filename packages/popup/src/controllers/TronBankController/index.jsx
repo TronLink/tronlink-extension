@@ -2,14 +2,14 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 21:03:30
+ * @Last Modified time: 2019-03-25 10:30:09
  * TronBankPage
  */
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
-import { VALIDATION_STATE, APP_STATE } from '@tronlink/lib/constants';
+import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
@@ -62,10 +62,9 @@ class BankController extends React.Component {
         const address = e.target.value;
         const recipient = {
             value: address,
-            valid: VALIDATION_STATE.NONE,
-            error: VALIDATION_STATE.NONE
+            valid: BANK_STATE.INVALID,
+            error: BANK_STATE.INVALID
         };
-
         if(!address.length) {
             recipient.valid = true;
             recipient.error = false;
@@ -90,8 +89,8 @@ class BankController extends React.Component {
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
-            valid: VALIDATION_STATE.NONE,
-            error: VALIDATION_STATE.NONE
+            valid: BANK_STATE.INVALID,
+            error: BANK_STATE.INVALID
         };
         if(!rentVal.length)
             return this.setState({ rentNum });
@@ -114,9 +113,10 @@ class BankController extends React.Component {
         const rentVal = e.target.value;
         const rentDay = {
             value: rentVal,
-            valid: VALIDATION_STATE.NONE,
-            error: VALIDATION_STATE.NONE
+            valid: BANK_STATE.INVALID,
+            error: BANK_STATE.INVALID
         };
+        console.log(`当前rentVal${rentVal},${rentVal.length},${rentDay.valid}`);
         if(!rentVal.length)
             return this.setState({ rentDay });
 
@@ -165,9 +165,9 @@ class BankController extends React.Component {
         let rentVal = Number(this.state.rentDay.value);
         const rentDay = {
             value: '',
-            valid: VALIDATION_STATE.NONE,
-            error: VALIDATION_STATE.NONE,
-            maxError: VALIDATION_STATE.NONE
+            valid: BANK_STATE.INVALID,
+            error: BANK_STATE.INVALID,
+            maxError: BANK_STATE.INVALID
         };
 
         if(!Utils.validatInteger(rentVal)) {

@@ -34,6 +34,11 @@ export const VALIDATION_STATE = {
     VALID: 'is-valid'
 };
 
+export const BANK_STATE = {
+    INVALID: false,
+    VALID: true
+};
+
 export const CREATION_STAGE = {
     SETTING_NAME: 0,
     WRITING_PHRASE: 1,
