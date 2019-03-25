@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 17:15:51
+ * @Last Modified time: 2019-03-25 21:06:37
  * TronBankPage
  */
 import React from 'react';
@@ -14,7 +14,7 @@ import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
-
+let contractInstance;
 class BankController extends React.Component {
     constructor(props) {
         super(props);
@@ -52,14 +52,22 @@ class BankController extends React.Component {
             loading: false
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
+        this.sendFun = this.sendFun.bind(this);
     }
 
-    componentDidMount() { // data by props
+    componentDidMount() { 
+        // data by props
+        this.getContract();
         // const { selectedToken, selected } = this.props.accounts;
         // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
         // this.setState({ selectedToken });
         // console.log(selectedToken, selected);
     }
+
+    async getContract(){
+        contractInstance = await NodeService.tronWeb.contract().at("TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5");
+        console.log(contractInstance);
+    } 
 
     onRecipientChange(e, _type) {
         //reacipientchange  judge account isvalid by _type
@@ -240,10 +248,39 @@ class BankController extends React.Component {
         // InfoConfirm
         const { formatMessage } = this.props.intl;
         // const { recipient, rentNum, rentDay } = this.state;
-        Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 1);
-        // this.setState({
-        //     rentConfirmVisible: true
-        // });
+        // Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 1);
+        this.setState({
+            rentConfirmVisible: true
+        });
+    }
+
+    async sendFun() {
+        //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr) 
+        // 10*0.1*3 = 3
+        const { rentNum, rentDay,recipient } = this.state;
+        const { selected } = this.props.accounts;
+        console.log(contractInstance);
+        // 10*0.1*3 = 3
+        const address = selected.address;
+        console.log(`address为${address}`);
+        const txid = await contractInstance.entrustOrder(10*Math.pow(10,6), 3*Math.pow(10,6), 3, 'TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e').send({
+            callValue:3*Math.pow(10,6),
+            shouldPollResponse:false
+        },'c4b1bca643c6fe46aee7a7cd020165dceffbb6c1ac0f44b3bad08ad3ab22f7f8');
+        console.log(txid);
+        // const transaction  =  await NodeService.tronWeb.trx.getTransaction(txid);
+        // console.log(transaction);
+        // await NodeService.tronWeb.trx.sendRawTransaction(transaction);
+        setInterval(async ()=>{
+            const res = await NodeService.tronWeb.getEventByTransactionID(txid);
+            console.log(res);
+        },1000)
+        // contractInstance.Entrust().watch((err, event) => {
+        // //     if (err) return console.error('Error with "Message" event:', err);
+        //     if (event) { // some function
+        //         console.log(event);
+        //     }
+        // })
     }
 
     onModalClose = key => () => {
@@ -425,7 +462,7 @@ class BankController extends React.Component {
                         </section>
                         <section className='operateBtn'>
                             <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>
-                            <Button className='modalPayBtn' ><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
+                            <Button className='modalPayBtn' onClick={this.sendFun}><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
                         </section>
                     </div>
                 </Modal>

@@ -165,7 +165,16 @@ export default {
 
     getTransactionsByTokenId(tokenId) {
         return this.duplex.send('getTransactionsByTokenId', tokenId);
-    }
+    },
 
+    //tronbank
+    rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
+        return this.duplex.send('rentEnergy', {
+            _freezeAmount,
+            _payAmount,
+            _days,
+            _energyAddress
+        });
+    }
 
 };
