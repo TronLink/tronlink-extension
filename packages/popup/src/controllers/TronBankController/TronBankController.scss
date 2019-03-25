@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 21:02:11
+ * @Last Modified time: 2019-03-25 14:47:47
  * TronBankPage
  */
 
@@ -347,6 +347,7 @@
     }
 }
 
+// confirm 
 .confirmContentModal{
     .orderList{
         border-bottom: 1px solid #EFEFEF;
@@ -388,6 +389,14 @@
     }
 }
 
+// toast 
+.am-toast-notice-content .am-toast-text{
+    background-color: rgba(0,0,0,0.50);
+    font-family: PingFangSC-Semibold;
+    font-size: 14px;
+    letter-spacing: 0;
+    padding: 10px 24px;
+}
 
 
 

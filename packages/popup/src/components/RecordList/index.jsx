@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 10:34:21
+ * @Last Modified time: 2019-03-25 10:54:46
  * RecordList
  */
 
@@ -27,7 +27,7 @@ class RecordList extends React.Component {
                 {recordList.map((val, key) => {
                     return(
                         <div key='key' className='recordList' onClick={() => PopupAPI.changeState(APP_STATE.TRONBANK_DETAIL) } >
-                            <div className='address'><img src={require('../../assets/images/new/tronBank/receive.svg')} alt='receive'/><span>{`${val.token.substr(0, 10)}...${val.token.substr(-10)}`}</span></div>
+                            <div className='address'><img src={require('../../assets/images/new/tronBank/receive.svg')} alt='receive'/><span>{`${val.token.substr(0, 4)}...${val.token.substr(-12)}`}</span></div>
                             <div className='recordCont'>
                                 <section className='recordLeftInfo'>
                                     <div><FormattedMessage id='BANK.RENTRECORD.RENTDETAIL'/>{val.num}TRX*{val.day}<FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/></div>

@@ -249,10 +249,10 @@
   "BANK.INDEX.TOTAL":"ja共{total}Energy",
   "BANK.INDEX.RENTNUM":"ja租用量",
   "BANK.INDEX.RENTDAY":"ja租用天数",
-  "BANK.INDEX.FREEZEPLACEHOLDER":"ja冻结TRX的数量（{min}-{max}）",
+  "BANK.INDEX.FREEZEPLACEHOLDER":"ja冻结TRX的数量",
   "BANK.INDEX.RENTNUMERROR":"ja错误，请重新输入",
   "BANK.INDEX.FORECASTNUM":"ja预计可得",
-  "BANK.INDEX.RENTPLACEHOLDER":"ja租用天数({min}-{max})",
+  "BANK.INDEX.RENTPLACEHOLDER":"ja租用天数",
   "BANK.INDEX.RENTDAYERROR":"ja最少租用{min}天",
   "BANK.INDEX.RENTDAYMAXERROR":"ja最多租用{max}天",
   "BANK.INDEX.RENTINTRODUCE":"ja当前租用{num}能量*{day}天，约花费{cost}TRX",
@@ -295,5 +295,9 @@
   "BANK.RENTINFO.RENTDAY":"ja租用天数",
   "BANK.RENTINFO.PAYNUM":"ja支付金额",
   "BANK.RENTINFO.CANCELBTN":"ja取消",
-  "BANK.RENTINFO.PAYBTN":"ja立即支付"
+  "BANK.RENTINFO.PAYBTN":"ja立即支付",
+  "BANK.RENTINFO.TIPS":"ja（约{num}万Energy)",
+  "BANK.RENTINFO.INSUFFICIENT":"ja余额不足"
+
+
 }

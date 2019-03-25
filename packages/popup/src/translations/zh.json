@@ -246,10 +246,10 @@
     "BANK.INDEX.TOTAL":"共{total}Energy",
     "BANK.INDEX.RENTNUM":"租用量",
     "BANK.INDEX.RENTDAY":"租用天数",
-    "BANK.INDEX.FREEZEPLACEHOLDER":"冻结TRX的数量（{min}-{max}）",
+    "BANK.INDEX.FREEZEPLACEHOLDER":"冻结TRX的数量",
     "BANK.INDEX.RENTNUMERROR":"错误，请重新输入",
     "BANK.INDEX.FORECASTNUM":"预计可得",
-    "BANK.INDEX.RENTPLACEHOLDER":"租用天数({min}-{max})",
+    "BANK.INDEX.RENTPLACEHOLDER":"租用天数",
     "BANK.INDEX.RENTDAYERROR":"最少租用{min}天",
     "BANK.INDEX.RENTDAYMAXERROR":"最多租用{max}天",
     "BANK.INDEX.RENTINTRODUCE":"当前租用{num}万能量*{day}天，约花费{cost}TRX",
@@ -292,7 +292,10 @@
     "BANK.RENTINFO.RENTDAY":"租用天数",
     "BANK.RENTINFO.PAYNUM":"支付金额",
     "BANK.RENTINFO.CANCELBTN":"取消",
-    "BANK.RENTINFO.PAYBTN":"立即支付"
+    "BANK.RENTINFO.PAYBTN":"立即支付",
+    "BANK.RENTINFO.TIPS":"（约{num}万Energy)",
+    "BANK.RENTINFO.INSUFFICIENT":"余额不足"
+
 
 
 }

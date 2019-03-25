@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 10:30:09
+ * @Last Modified time: 2019-03-25 15:12:18
  * TronBankPage
  */
 import React from 'react';
@@ -10,7 +10,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
 import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
-import { NavBar, Button, Modal } from 'antd-mobile';
+import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
 
@@ -48,6 +48,7 @@ class BankController extends React.Component {
             },
             loading: false
         };
+        this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
     }
 
     componentDidMount() { // data by props
@@ -220,6 +221,16 @@ class BankController extends React.Component {
         });
     }
 
+    handlerInfoConfirm() {
+        // InfoConfirm
+        const { formatMessage } = this.props.intl;
+        // const { recipient, rentNum, rentDay } = this.state;
+        Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 1);
+        // this.setState({
+        //     rentConfirmVisible: true
+        // });
+    }
+
     onModalClose = key => () => {
         this.setState({
             [ key ]: false,
@@ -229,13 +240,14 @@ class BankController extends React.Component {
     render() {
         const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
-        const { recipient, rentNum, rentDay, rentNumMin, rentDayMin, rentDayMax, rentUnit } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit } = this.state;
+        if(recipient.value === '') recipient.value = selected.address;
         const orderList = [
-            { id: 'BANK.RENTINFO.PAYADDRESS', type: 1, value: 'TEXA.....BZ889DJHUYFG' },
-            { id: 'BANK.RENTINFO.RECEIVEADDRESS', type: 0, value: 'TEXA.....BZ889DJHUYFG' },
-            { id: 'BANK.RENTINFO.RENTNUM', type: 0, value: 'TEXABZ889DJHUYFG' },
-            { id: 'BANK.RENTINFO.RENTDAY', type: 0, value: 'TEXABZ889DJHUYFG' },
-            { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: '100TRX' },
+            { id: 'BANK.RENTINFO.PAYADDRESS', user: 1, value: selected.address },
+            { id: 'BANK.RENTINFO.RECEIVEADDRESS', user: 1, value: recipient.value },
+            { id: 'BANK.RENTINFO.RENTNUM', tip: 1, value: `${rentNum.value}TRX` },
+            { id: 'BANK.RENTINFO.RENTDAY', type: 3, value: rentDay.value },
+            { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: `${rentUnit.cost}TRX` },
         ];
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
@@ -287,29 +299,62 @@ class BankController extends React.Component {
                     {/* rent num,day */}
                     <div className='rentContent'>
                         <section className='infoSec'>
-                            <label><FormattedMessage id='BANK.INDEX.RENTNUM'/><img onClick={() => { this.setState({ rentModalVisible: true }); }} className='rentNumEntrance' src={myImg('question')} alt={'question'}/></label>
+                            <label>
+                                <FormattedMessage id='BANK.INDEX.RENTNUM'/>
+                                <img onClick={() => { this.setState({ rentModalVisible: true }); }}
+                                    className='rentNumEntrance'
+                                    src={myImg('question')}
+                                    alt={'question'}
+                                />
+                            </label>
                             <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
-                                <input value={ rentNum.value } onChange={ (e) => { this.handlerRentNumChange(e, 1); }} onBlur={ (e) => this.handlerRentNumChange(e, 2)} className='commonInput rentNumInput' placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' })} /><span>TRX</span>
+                                <input value={ rentNum.value }
+                                    onChange={ (e) => { this.handlerRentNumChange(e, 1); }}
+                                    onBlur={ (e) => this.handlerRentNumChange(e, 2)}
+                                    className='commonInput rentNumInput'
+                                    placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' }) + `（${rentNumMin}-${rentNumMax}）`}
+                                /><span>TRX</span>
                             </div>
                             { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
                         </section>
                         <section className='infoSec singlgeSty'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                             <div className='dayRange'>
-                                <span onClick={ (e) => this.handlerRentDayFun(1)}><Button className='operatingBtn' icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />} inline size='small'></Button></span>
-                                <input value={rentDay.value} onChange={ (e) => { this.handlerRentDayChange(e, 1); }} onBlur={ (e) => { this.handlerRentDayChange(e, 2); }} className='commonInput rentDay' placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' })} type='text' />
-                                <span onClick={ (e) => this.handlerRentDayFun(2)}><Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'></Button></span>
+                                <span onClick={ (e) => this.handlerRentDayFun(1)}>
+                                    <Button className='operatingBtn'
+                                        icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />}
+                                        inline
+                                        size='small'
+                                    >
+                                    </Button>
+                                </span>
+                                <input value={rentDay.value}
+                                    onChange={ (e) => { this.handlerRentDayChange(e, 1); }}
+                                    onBlur={ (e) => { this.handlerRentDayChange(e, 2); }}
+                                    className='commonInput rentDay'
+                                    placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' }) + `(${rentDayMin}-${rentDayMax})`} type='text'
+                                />
+                                <span onClick={ (e) => this.handlerRentDayFun(2)}>
+                                    <Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'>
+                                    </Button>
+                                </span>
                             </div>
                             { rentDay.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
                             { rentDay.maxError ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYMAXERROR' values={{ max: rentDayMax }}/></div> : null}
                         </section>
-                        <section className='rentIntroduce'>
-                            <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
-                        </section>
+                        {rentNum.valid && rentDay.valid ?
+                            <section className='rentIntroduce'>
+                                {rentNum.value}TRX*{rentUnit.num}({rentUnit.day}天)  花费 {rentUnit.cost} TRX
+                            </section> :
+                            <section className='rentIntroduce'>
+                                <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
+                            </section>
+                        }
                     </div>
                     {/* tronBank subbtn */}
                     <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
                         className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
+                        onClick = {this.handlerInfoConfirm }
                     >
                         <FormattedMessage id='BANK.INDEX.BUTTON'/>
                     </Button>
@@ -351,15 +396,16 @@ class BankController extends React.Component {
                                             <FormattedMessage id={val.id}/>
                                         </span>
                                         <span className='orderStatus'>
-                                            {val.id === 'BANK.RENTDETAIL.STATUS' ? <span>{val.value === 1 ? <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/> : <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>} </span> : val.value}
-                                            {val.type === 2 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
+                                            {val.user == 1 ? `${val.value.substr(0, 4)}...${val.value.substr(-12)}` : val.value }
+                                            {val.tip === 1 ? <FormattedMessage id='BANK.RENTINFO.TIPS' values={{ num: 10 }} /> : null}
+                                            {val.type === 3 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                                         </span>
                                     </div>
                                 ))}
                             </section>
                         </section>
                         <section className='operateBtn'>
-                            <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>  
+                            <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>
                             <Button className='modalPayBtn' ><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
                         </section>
                     </div>
