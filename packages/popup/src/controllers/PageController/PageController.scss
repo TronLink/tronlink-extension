@@ -18,37 +18,58 @@
             & > div {
                 display: flex;
                 flex-direction: row;
-                .link {
-                    width: 18px;
-                    height: 18px;
-                    background-repeat: no-repeat;
-                    background-position: center;
-                    &.link-twiter {
-                        background-image: url('../../assets/images/new/icon-twiter.svg');
-                    }
-                    &.link-telegram {
-                        margin-left: 18px;
-                        background-image: url('../../assets/images/new/icon-telegram.svg');
+                justify-content: space-between;
+                img{
+                    width: 82px;
+                }
+                .linkWrap{
+                    height: 16px;
+                    border-right:1px solid #efefef;
+                    .link {
+                        width: 18px;
+                        height: 18px;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        margin-right: 10px;
+                        &.link-twiter {
+                            background-image: url('../../assets/images/new/icon-twiter.svg');
+                        }
+                        &.link-telegram {
+                            background-image: url('../../assets/images/new/icon-telegram.svg');
+                        }
+                        &.link-home{
+                            background-image: url('../../assets/images/new/icon-home.svg');
+                        }
+                        &.link-exchange{
+                            background-image: url('../../assets/images/new/icon-exchange.svg');
+                        }
                     }
                 }
-                .fun {
-                    width: 18px;
-                    height: 18px;
-                    cursor: pointer;
-                    background-repeat: no-repeat;
-                    background-position: center;
-                    &:nth-child(1) {
-                        background-image: url('../../assets/images/new/icon-exchange.svg');
-                        margin-right: 18px;
-                    }
-                    &:nth-child(2) {
-                        background-image: url('../../assets/images/new/icon-refresh.svg');
-                        margin-right: 18px;
-                    }
-                    &:nth-child(3) {
-                        background-image: url('../../assets/images/new/icon-setting.svg');
+                &>div{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    .fun {
+                        width: 18px;
+                        height: 18px;
+                        cursor: pointer;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        &:nth-child(1) {
+                            background-image: url('../../assets/images/new/icon-lock2.svg');
+                            margin-right: 10px;
+                            margin-left: 10px;
+                        }
+                        &:nth-child(2) {
+                            background-image: url('../../assets/images/new/icon-refresh.svg');
+                            margin-right: 10px;
+                        }
+                        &:nth-child(3) {
+                            background-image: url('../../assets/images/new/icon-setting.svg');
+                        }
                     }
                 }
+
 
             }
             .title {

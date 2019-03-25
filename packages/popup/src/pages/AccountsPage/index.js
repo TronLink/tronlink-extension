@@ -409,7 +409,6 @@ class AccountsPage extends React.Component {
                     }
                     <div className={"accountsWrap"+(setting.openAccountsMenu?" show":"")}>
                         <div className="accounts">
-                            <Toast />
                             <div className="row1">
                                 <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
                                     <FormattedMessage id="CREATION.CREATE.TITLE" />

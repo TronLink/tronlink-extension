@@ -237,9 +237,8 @@ class Account {
     reset() {
         this.balance = 0;
         this.energy = 0;
-        this.bandwidth = 0;
         this.energyUsed = 0;
-        this.bandwidthUsed = 0;
+        this.netUsed = 0;
         this.transactions = {};
         this.ignoredTransactions = [];
         this.netLimit = 0;
@@ -265,7 +264,7 @@ class Account {
             if (!account2.address) {
                 logger.info(`Account ${ address } does not exist on the network`);
                 this.reset();
-                return false;
+                return true;
             }
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
             addSmartTokens.forEach(async ([tokenId,token])=>{
@@ -320,7 +319,7 @@ class Account {
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
                 const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
                 let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
-                price = price/Math.pow(10,precision);
+                price = price/Math.pow(10,6);
                 if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl === undefined))
                     await StorageService.cacheToken(key);
 
@@ -386,7 +385,7 @@ class Account {
                     let token = this.tokens.basic[ key ] || false;
                     const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
                     const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
-                    let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
+                    let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].sPrecision}:{price:0,precision:0});
                     price = price/Math.pow(10,precision);
                     if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
                         await StorageService.cacheToken(key);
@@ -458,6 +457,7 @@ class Account {
         ]);
         logger.info(`Account ${ address } successfully updated`);
         this.save();
+        return true;
     }
 
     async updateBalance() {

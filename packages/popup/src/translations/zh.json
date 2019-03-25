@@ -189,6 +189,7 @@
 
     "SETTING.TITLE":"设置",
     "SETTING.TITLE.NODE":"自定义节点",
+    "SETTING.TITLE.ADD_NODE":"添加节点",
     "SETTING.TITLE.CURRENCY":"设置货币",
     "SETTING.TITLE.LANGUAGE":"语言",
     "SETTING.TITLE.AUTO_LOCK":"自动锁定",

@@ -6,6 +6,7 @@
     box-sizing: border-box;
 }
 
+.notive-wrap{z-index:9999}
 .mono {
     font-family: 'Ubuntu Mono', monospace;
 }
@@ -479,20 +480,25 @@ html, body {
                 }
                 &:nth-child(2){
                     &:before{
-                        background-image: url('../images/new/icon-currency.svg');
+                        background-image: url('../images/new/icon-add-node.svg');
                     }
                 }
                 &:nth-child(3){
                     &:before{
-                        background-image: url('../images/new/icon-language.svg');
+                        background-image: url('../images/new/icon-currency.svg');
                     }
                 }
                 &:nth-child(4){
                     &:before{
-                        background-image: url('../images/new/icon-auto-lock.svg');
+                        background-image: url('../images/new/icon-language.svg');
                     }
                 }
                 &:nth-child(5){
+                    &:before{
+                        background-image: url('../images/new/icon-auto-lock.svg');
+                    }
+                }
+                &:nth-child(6){
                     &:before{
                         background-image: url('../images/new/icon-lock.svg');
                     }
@@ -516,18 +522,25 @@ html, body {
                 &:nth-child(2){
                     &.active{
                         .settingWrap{
-                            height: 160px;
+                            height: 360px;
                         }
                     }
                 }
                 &:nth-child(3){
                     &.active{
                         .settingWrap{
-                            height: 100px;
+                            height: 160px;
                         }
                     }
                 }
                 &:nth-child(4){
+                    &.active{
+                        .settingWrap{
+                            height: 100px;
+                        }
+                    }
+                }
+                &:nth-child(5){
                     &.active{
                         .settingWrap{
                             height: 160px;

@@ -243,7 +243,8 @@ class Wallet extends EventEmitter {
                     res = false;
                 }
             }else{
-                await account.update();
+                continue;
+                //await account.update();
             }
         }
         this.emit('setAccounts', this.getAccounts());

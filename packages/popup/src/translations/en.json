@@ -189,6 +189,7 @@
 
     "SETTING.TITLE":"Setting",
     "SETTING.TITLE.NODE":"Custom node",
+    "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
     "SETTING.TITLE.LANGUAGE":"Language",
     "SETTING.TITLE.AUTO_LOCK":"Auto lock",

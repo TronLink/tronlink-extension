@@ -51,12 +51,12 @@
   "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
   "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
-  "CREATION.CREATE.TITLE": "アカウントを作成する",
+  "CREATION.CREATE.TITLE": "作成する",
   "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "回復フレーズを確認してください",
   "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "ニーモニックの順番が正しくありません",
   "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
   "CREATION.CREATE.TIP":"新規ユーザーにお勧め",
-  "CREATION.RESTORE.TITLE": "アカウントをインポートする",
+  "CREATION.RESTORE.TITLE": "輸入",
   "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
   "CREATION.RESTORE.TIP":"TRONアカウントを持つユーザーにお勧め",
   "CREATION.RESTORE.PRIVATE_KEY.TITLE": "秘密鍵でインポートする",
@@ -190,6 +190,7 @@
 
   "SETTING.TITLE":"設定する",
   "SETTING.TITLE.NODE":"カスタム・ノード",
+  "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
   "SETTING.TITLE.LANGUAGE":"言語",
   "SETTING.TITLE.AUTO_LOCK":"自動ロック",

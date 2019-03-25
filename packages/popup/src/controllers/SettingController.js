@@ -251,6 +251,15 @@ class SettingController extends  React.Component {
                                         })
                                     }
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="option" onClick={ ()=>{this.setting(1)} }   >
+                        <div className="txt">
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.ADD_NODE" />
+                            </div>
+                            <div className="settingWrap">
                                 <div className="input-group">
                                     <label>
                                         <FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />
@@ -291,7 +300,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={ ()=>{this.setting(1)} }>
+                    <div className="option" onClick={ ()=>{this.setting(2)} }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.CURRENCY" />
@@ -304,7 +313,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={ ()=>{this.setting(2)} }>
+                    <div className="option" onClick={ ()=>{this.setting(3)} }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.LANGUAGE" />
@@ -321,7 +330,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={() =>{this.setting(3)}   }>
+                    <div className="option" onClick={() =>{this.setting(4)}   }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.AUTO_LOCK" />

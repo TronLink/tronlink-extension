@@ -19,8 +19,8 @@ import SettingController from '@tronlink/popup/src/controllers/SettingController
 import AddTokenController from '@tronlink/popup/src/controllers/AddTokenController';
 
 import 'react-custom-scroll/dist/customScroll.css';
-import 'assets/styles/global.scss';
 import 'react-toast-mobile/lib/react-toast-mobile.css'
+import 'assets/styles/global.scss';
 
 import enMessages from '@tronlink/popup/src/translations/en.json';
 import zhMessages from '@tronlink/popup/src/translations/zh.json';

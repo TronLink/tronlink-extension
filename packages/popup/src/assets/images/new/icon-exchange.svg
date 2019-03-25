@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
     <title>交易所</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="TRONLink" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="6.1首页-账户-方案二" transform="translate(-227.000000, -21.000000)">
-            <g id="导航" transform="translate(20.000000, 15.000000)">
-                <g id="交易所" transform="translate(207.000000, 5.000000)">
-                    <g id="Group-11" transform="translate(0.000000, 7.555556)" fill="#4E5383" fill-rule="nonzero">
-                        <path d="M0.894736842,4.9403429 L5.36842105,4.9403429 L5.36842105,9.44444444 L0.894736842,9.44444444 L0.894736842,4.9403429 Z M2.68421053,5.84116321 L2.68421053,8.54362414 L3.57894737,8.54362414 L3.57894737,5.84116321 L2.68421053,5.84116321 Z" id="Combined-Shape"></path>
-                        <path d="M6.26315789,2.83333333 L10.7368421,2.83333333 L10.7368421,9.44444444 L6.26315789,9.44444444 L6.26315789,2.83333333 Z M8.05263158,3.85042735 L8.05263158,8.42735043 L8.94736842,8.42735043 L8.94736842,3.85042735 L8.05263158,3.85042735 Z" id="Combined-Shape"></path>
-                        <path d="M11.6315789,0.436241362 L16.1052632,0.436241362 L16.1052632,9.44444444 L11.6315789,9.44444444 L11.6315789,0.436241362 Z M13.4210526,1.38068581 L13.4210526,8.31841906 L14.3157895,8.31841906 L14.3157895,1.38068581 L13.4210526,1.38068581 Z" id="Combined-Shape"></path>
+        <g id="6.1首页-账户-方案二" transform="translate(-226.000000, -18.000000)">
+            <g id="导航" transform="translate(18.000000, 19.000000)">
+                <g id="交易所" transform="translate(209.000000, 0.000000)">
+                    <g id="Group-9" stroke="#4E5383">
+                        <polyline id="Path-8" points="5 8.99254193 7.1883741 7.17794509 9.3454706 8.87262242 12 7"></polyline>
+                        <polyline id="Path-11" stroke-width="2" points="0.156971807 8.07861724 8.51611328 0.955810547 16.6591797 8.07861724"></polyline>
+                        <polyline id="Path-12" stroke-width="2" points="2.34028957 9.8125 2.34028957 16.6801215 14.3247495 16.6801215 14.3247495 9.8125"></polyline>
                     </g>
-                    <g id="Group-9" transform="translate(0.944444, 0.000000)">
-                        <polyline id="Path-8" stroke="#4E5383" stroke-width="2" points="0.688042535 8.16520182 5.11800808 4.5024821 7.85431271 7.21314845 12.9375572 3.4429796"></polyline>
-                        <polygon id="Path-10" fill="#4E5383" transform="translate(13.081215, 3.283206) rotate(7.000000) translate(-13.081215, -3.283206) " points="10.847924 1.33574325 14.9268213 5.44970713 15.3145061 1.11670403"></polygon>
+                    <g id="Group-11" transform="translate(5.000000, 11.000000)" fill="#4E5383" fill-rule="nonzero">
+                        <rect id="Combined-Shape" x="6" y="0" width="1" height="4"></rect>
+                        <rect id="Combined-Shape" x="0" y="0" width="1" height="4"></rect>
+                        <rect id="Combined-Shape" x="3" y="0" width="1" height="4"></rect>
                     </g>
                 </g>
             </g>
