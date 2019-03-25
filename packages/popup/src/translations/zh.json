@@ -248,7 +248,7 @@
     "BANK.INDEX.RENTDAY":"租用天数",
     "BANK.INDEX.FREEZEPLACEHOLDER":"冻结TRX的数量",
     "BANK.INDEX.RENTNUMERROR":"错误，请重新输入",
-    "BANK.INDEX.FORECASTNUM":"预计可得",
+    "BANK.INDEX.FORECASTNUM":"预计可得={num}Energy",
     "BANK.INDEX.RENTPLACEHOLDER":"租用天数",
     "BANK.INDEX.RENTDAYERROR":"最少租用{min}天",
     "BANK.INDEX.RENTDAYMAXERROR":"最多租用{max}天",

@@ -2,13 +2,14 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 15:12:18
+ * @Last Modified time: 2019-03-25 17:15:51
  * TronBankPage
  */
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
+import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
@@ -28,6 +29,8 @@ class BankController extends React.Component {
             },
             rentNum: {
                 value: '',
+                predictVal: '',
+                predictStatus: false,
                 valid: false,
                 error: false
             },
@@ -84,23 +87,35 @@ class BankController extends React.Component {
         });
     }
 
-    handlerRentNumChange(e, _type) {
+    async handlerRentNumChange(e, _type) {
         // rent num change  _type 1chage 2blur
         const { rentNumMin, rentNumMax } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
+            predictVal: '',
+            predictStatus: BANK_STATE.INVALID,
             valid: BANK_STATE.INVALID,
             error: BANK_STATE.INVALID
         };
         if(!rentVal.length)
             return this.setState({ rentNum });
 
-        if(Utils.validatInteger(rentVal) && rentVal < rentNumMax && rentVal > rentNumMin) {
+        if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
+            if(_type == 2) {
+                const { selected } = this.props.accounts;
+                const address = selected.address;
+                const { TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
+                console.log(`当前address为${address}当前energy为${TotalEnergyWeight}`);
+                if(Number.isFinite(TotalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / TotalEnergyWeight * 50000000000);
+                else rentNum.predictVal = 0;
+                rentNum.predictStatus = true;
+            }
             rentNum.valid = true;
             rentNum.error = false;
         } else {
             rentNum.valid = false;
+            rentNum.predictStatus = false;
             if(_type == 2) rentNum.error = true; else rentNum.error = false;
         }
         this.setState({
@@ -288,7 +303,10 @@ class BankController extends React.Component {
                         <section className='infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
                             <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
-                                <input onChange={(e) => { this.onRecipientChange(e, 1); } } onBlur={(e) => this.onRecipientChange(e, 2)} placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}/>
+                                <input onChange={(e) => { this.onRecipientChange(e, 1); } }
+                                    onBlur={(e) => this.onRecipientChange(e, 2)}
+                                    placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
+                                />
                             </div>
                             {recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null}
                             <div className='balance'>
@@ -316,6 +334,7 @@ class BankController extends React.Component {
                                 /><span>TRX</span>
                             </div>
                             { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
+                            { rentNum.predictStatus ? <div className='predictMsg'><FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/></div> : null}
                         </section>
                         <section className='infoSec singlgeSty'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
@@ -339,11 +358,11 @@ class BankController extends React.Component {
                                     </Button>
                                 </span>
                             </div>
-                            { rentDay.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
-                            { rentDay.maxError ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTDAYMAXERROR' values={{ max: rentDayMax }}/></div> : null}
+                            { rentDay.error ? <div className='errorMsg rentError'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
+                            { rentDay.maxError ? <div className='errorMsg rentError'><FormattedMessage id='BANK.INDEX.RENTDAYMAXERROR' values={{ max: rentDayMax }}/></div> : null}
                         </section>
                         {rentNum.valid && rentDay.valid ?
-                            <section className='rentIntroduce'>
+                            <section className='calculation'>
                                 {rentNum.value}TRX*{rentUnit.num}({rentUnit.day}天)  花费 {rentUnit.cost} TRX
                             </section> :
                             <section className='rentIntroduce'>

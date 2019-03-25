@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 14:47:47
+ * @Last Modified time: 2019-03-25 16:50:11
  * TronBankPage
  */
 
@@ -208,6 +208,19 @@
         letter-spacing: 0;
         text-align: center;
     }
+    .calculation{
+        min-width: 274px;
+        margin:0 auto 18px auto;
+        height:27px;
+        line-height: 27px;
+        border-radius: 2px;
+        font-size: 14px;
+        background: rgba(87,107,148,0.10);
+        color: #576B94;
+        font-family: PingFang-SC-Bold;
+        letter-spacing: 0;
+        text-align: center;
+    }
 
     // danRange
     .dayRange{
@@ -272,6 +285,18 @@
         letter-spacing: 0;
         margin-bottom:3px;
         line-height: 17px;
+    }
+    .rentError{
+        margin-bottom:8px;
+    }
+    // predict
+    .predictMsg{
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #576B94;
+        line-height: 17px;
+        margin-bottom: 8px;
+        letter-spacing: 0;
     }
 }
 .normalBorder{
