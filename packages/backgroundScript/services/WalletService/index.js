@@ -728,6 +728,15 @@ class Wallet extends EventEmitter {
         this.refresh();
     }
 
+    async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
+        await this.accounts[ this.selectedAccount ].rentEnergy(
+            _freezeAmount,
+            _payAmount,
+            _days,
+            _energyAddress
+        );
+    }
+
     exportAccount() {
         const {
             mnemonic,

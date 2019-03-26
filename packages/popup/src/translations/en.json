@@ -295,10 +295,10 @@
     "BANK.RENTINFO.PAYNUM":"en支付金额",
     "BANK.RENTINFO.CANCELBTN":"en取消",
     "BANK.RENTINFO.PAYBTN":"en立即支付",
-    "BANK.RENTINFO.TIPS":"en（约{num}万Energy)",
-    "BANK.RENTINFO.INSUFFICIENT":"en余额不足"
+    "BANK.RENTINFO.TIPS":"en（约{num}Energy)",
+    "BANK.RENTINFO.INSUFFICIENT":"en余额不足",
 
-
-
+    "BANK.RENTINFO.SUCCESS":"租用成功，请等1分钟后查看结果",
+    "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下三笔订单"
 
 }

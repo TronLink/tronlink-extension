@@ -252,7 +252,7 @@
     "BANK.INDEX.RENTPLACEHOLDER":"租用天数",
     "BANK.INDEX.RENTDAYERROR":"最少租用{min}天",
     "BANK.INDEX.RENTDAYMAXERROR":"最多租用{max}天",
-    "BANK.INDEX.RENTINTRODUCE":"当前租用{num}万能量*{day}天，约花费{cost}TRX",
+    "BANK.INDEX.RENTINTRODUCE":"当前租用{num}能量*{day}天，约花费{cost}TRX",
     "BANK.INDEX.RENTDAYUNIT":"天",
     "BANK.INDEX.RENTCONST":"花费",
     "BANK.INDEX.BUTTON":"确定租用",
@@ -293,8 +293,11 @@
     "BANK.RENTINFO.PAYNUM":"支付金额",
     "BANK.RENTINFO.CANCELBTN":"取消",
     "BANK.RENTINFO.PAYBTN":"立即支付",
-    "BANK.RENTINFO.TIPS":"（约{num}万Energy)",
-    "BANK.RENTINFO.INSUFFICIENT":"余额不足"
+    "BANK.RENTINFO.TIPS":"（约{num}Energy)",
+    "BANK.RENTINFO.INSUFFICIENT":"余额不足",
+
+    "BANK.RENTINFO.SUCCESS":"租用成功，请等1分钟后查看结果",
+    "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下三笔订单"
 
 
 

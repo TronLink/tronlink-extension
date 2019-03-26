@@ -296,8 +296,11 @@
   "BANK.RENTINFO.PAYNUM":"ja支付金额",
   "BANK.RENTINFO.CANCELBTN":"ja取消",
   "BANK.RENTINFO.PAYBTN":"ja立即支付",
-  "BANK.RENTINFO.TIPS":"ja（约{num}万Energy)",
-  "BANK.RENTINFO.INSUFFICIENT":"ja余额不足"
+  "BANK.RENTINFO.TIPS":"ja（约{num}Energy)",
+  "BANK.RENTINFO.INSUFFICIENT":"ja余额不足",
+
+  "BANK.RENTINFO.SUCCESS":"ja租用成功，请等1分钟后查看结果",
+  "BANK.RENTINFO.FAILED":"ja租用失败，1分钟不能下三笔订单"
 
 
 }

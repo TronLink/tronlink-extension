@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 21:06:37
+ * @Last Modified time: 2019-03-26 16:21:45
  * TronBankPage
  */
 import React from 'react';
@@ -14,7 +14,6 @@ import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
-let contractInstance;
 class BankController extends React.Component {
     constructor(props) {
         super(props);
@@ -45,29 +44,21 @@ class BankController extends React.Component {
             rentDayMin: 3,
             rentDayMax: 30,
             rentUnit: {
-                num: 10,
+                num: 0.1,
                 day: 1,
                 cost: 0.5
             },
             loading: false
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
-        this.sendFun = this.sendFun.bind(this);
     }
 
-    componentDidMount() { 
+    componentDidMount() {
         // data by props
-        this.getContract();
         // const { selectedToken, selected } = this.props.accounts;
         // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
         // this.setState({ selectedToken });
-        // console.log(selectedToken, selected);
     }
-
-    async getContract(){
-        contractInstance = await NodeService.tronWeb.contract().at("TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5");
-        console.log(contractInstance);
-    } 
 
     onRecipientChange(e, _type) {
         //reacipientchange  judge account isvalid by _type
@@ -114,7 +105,6 @@ class BankController extends React.Component {
                 const { selected } = this.props.accounts;
                 const address = selected.address;
                 const { TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
-                console.log(`当前address为${address}当前energy为${TotalEnergyWeight}`);
                 if(Number.isFinite(TotalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / TotalEnergyWeight * 50000000000);
                 else rentNum.predictVal = 0;
                 rentNum.predictStatus = true;
@@ -140,7 +130,6 @@ class BankController extends React.Component {
             valid: BANK_STATE.INVALID,
             error: BANK_STATE.INVALID
         };
-        console.log(`当前rentVal${rentVal},${rentVal.length},${rentDay.valid}`);
         if(!rentVal.length)
             return this.setState({ rentDay });
 
@@ -246,7 +235,7 @@ class BankController extends React.Component {
 
     handlerInfoConfirm() {
         // InfoConfirm
-        const { formatMessage } = this.props.intl;
+        // const { formatMessage } = this.props.intl;
         // const { recipient, rentNum, rentDay } = this.state;
         // Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 1);
         this.setState({
@@ -254,33 +243,31 @@ class BankController extends React.Component {
         });
     }
 
-    async sendFun() {
-        //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr) 
-        // 10*0.1*3 = 3
-        const { rentNum, rentDay,recipient } = this.state;
+    rentDealSendFun(e) {
+        //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days*0.1
+        const { formatMessage } = this.props.intl;
+        const { rentNum, rentDay, recipient } = this.state;
         const { selected } = this.props.accounts;
-        console.log(contractInstance);
-        // 10*0.1*3 = 3
         const address = selected.address;
-        console.log(`address为${address}`);
-        const txid = await contractInstance.entrustOrder(10*Math.pow(10,6), 3*Math.pow(10,6), 3, 'TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e').send({
-            callValue:3*Math.pow(10,6),
-            shouldPollResponse:false
-        },'c4b1bca643c6fe46aee7a7cd020165dceffbb6c1ac0f44b3bad08ad3ab22f7f8');
-        console.log(txid);
-        // const transaction  =  await NodeService.tronWeb.trx.getTransaction(txid);
-        // console.log(transaction);
-        // await NodeService.tronWeb.trx.sendRawTransaction(transaction);
-        setInterval(async ()=>{
-            const res = await NodeService.tronWeb.getEventByTransactionID(txid);
-            console.log(res);
-        },1000)
-        // contractInstance.Entrust().watch((err, event) => {
-        // //     if (err) return console.error('Error with "Message" event:', err);
-        //     if (event) { // some function
-        //         console.log(event);
-        //     }
-        // })
+        const rentDayValue = Number(rentDay.value);
+        const freezeAmount = rentNum.value * Math.pow(10, 6);
+        const payAmount = freezeAmount * 0.1 * rentDayValue;
+        let recipientAddress;
+        if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
+        console.log({ freezeAmount, payAmount, rentDayValue, recipientAddress });
+        PopupAPI.rentEnergy(
+            freezeAmount,
+            payAmount,
+            rentDayValue,
+            recipientAddress
+        ).then(() => {
+            this.onModalClose('rentConfirmVisible');
+            console.log('成功了');
+            Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 2);
+        }).catch(error => {
+            console.log(error);
+            Toast.fail(JSON.stringify(error.error), 2);
+        });
     }
 
     onModalClose = key => () => {
@@ -290,13 +277,14 @@ class BankController extends React.Component {
     };
 
     render() {
-        const { accounts, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
+        const { accounts, selected } = this.props.accounts;
         const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit } = this.state;
-        if(recipient.value === '') recipient.value = selected.address;
+        let recipientVal;
+        if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
             { id: 'BANK.RENTINFO.PAYADDRESS', user: 1, value: selected.address },
-            { id: 'BANK.RENTINFO.RECEIVEADDRESS', user: 1, value: recipient.value },
+            { id: 'BANK.RENTINFO.RECEIVEADDRESS', user: 1, value: recipientVal },
             { id: 'BANK.RENTINFO.RENTNUM', tip: 1, value: `${rentNum.value}TRX` },
             { id: 'BANK.RENTINFO.RENTDAY', type: 3, value: rentDay.value },
             { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: `${rentUnit.cost}TRX` },
@@ -309,7 +297,7 @@ class BankController extends React.Component {
                     mode='light'
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
-                    rightContent={<img onClick={() => { console.log(this.state.popoverVisible);this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
+                    rightContent={<img onClick={() => { this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
                 >TronBank
                 </NavBar>
                 {/* navModal */}
@@ -400,14 +388,14 @@ class BankController extends React.Component {
                         </section>
                         {rentNum.valid && rentDay.valid ?
                             <section className='calculation'>
-                                {rentNum.value}TRX*{rentUnit.num}({rentUnit.day}天)  花费 {rentUnit.cost} TRX
+                                {rentNum.value}TRX*{rentUnit.num}({rentDay.value}天)  花费 {rentUnit.cost} TRX
                             </section> :
                             <section className='rentIntroduce'>
                                 <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
                             </section>
                         }
                     </div>
-                    {/* tronBank subbtn */}
+                    {/* tronBank submit */}
                     <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
                         className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
                         onClick = {this.handlerInfoConfirm }
@@ -438,7 +426,7 @@ class BankController extends React.Component {
                     wrapClassName='modalConfirmWrap'
                     visible={this.state.rentConfirmVisible}
                     transparent
-                    maskClosable={false}
+                    maskClosable={true}
                     onClose={this.onModalClose('rentConfirmVisible')}
                     title={ formatMessage({ id: 'BANK.RENTINFO.CONFIRM' })}
                     afterClose={() => { console.log('afterClose'); }}
@@ -453,7 +441,7 @@ class BankController extends React.Component {
                                         </span>
                                         <span className='orderStatus'>
                                             {val.user == 1 ? `${val.value.substr(0, 4)}...${val.value.substr(-12)}` : val.value }
-                                            {val.tip === 1 ? <FormattedMessage id='BANK.RENTINFO.TIPS' values={{ num: 10 }} /> : null}
+                                            {val.tip === 1 ? <FormattedMessage id='BANK.RENTINFO.TIPS' values={{ num: rentNum.predictVal }} /> : null}
                                             {val.type === 3 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                                         </span>
                                     </div>
@@ -462,7 +450,7 @@ class BankController extends React.Component {
                         </section>
                         <section className='operateBtn'>
                             <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>
-                            <Button className='modalPayBtn' onClick={this.sendFun}><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
+                            <Button className='modalPayBtn' onClick={ (e) => { this.rentDealSendFun(e); }}><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
                         </section>
                     </div>
                 </Modal>

@@ -134,6 +134,9 @@ const backgroundScript = {
         duplex.on('setSetting', this.walletService.setSetting);
 
         duplex.on('getTransactionsByTokenId', this.walletService.getTransactionsByTokenId);
+
+        // tronBank energy
+        duplex.on('rentEnergy', this.walletService.rentEnergy);
     },
 
     bindTabDuplex() {
