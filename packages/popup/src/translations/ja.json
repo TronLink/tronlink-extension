@@ -252,6 +252,7 @@
   "BANK.INDEX.FREEZEPLACEHOLDER":"ja冻结TRX的数量",
   "BANK.INDEX.RENTNUMERROR":"ja错误，请重新输入",
   "BANK.INDEX.FORECASTNUM":"ja预计可得={num}Energy",
+  "BANK.INDEX.OVERTAKEMAXNUM":"ja资源池剩余{max}TRX，请调小租用量",
   "BANK.INDEX.RENTPLACEHOLDER":"ja租用天数",
   "BANK.INDEX.RENTDAYERROR":"ja最少租用{min}天",
   "BANK.INDEX.RENTDAYMAXERROR":"ja最多租用{max}天",
@@ -299,7 +300,7 @@
   "BANK.RENTINFO.TIPS":"ja（约{num}Energy)",
   "BANK.RENTINFO.INSUFFICIENT":"ja余额不足",
 
-  "BANK.RENTINFO.SUCCESS":"ja租用成功，请等1分钟后查看结果",
+  "BANK.RENTINFO.SUCCESS":"ja支付成功，能量约1分钟后到账",
   "BANK.RENTINFO.FAILED":"ja租用失败，1分钟不能下三笔订单"
 
 

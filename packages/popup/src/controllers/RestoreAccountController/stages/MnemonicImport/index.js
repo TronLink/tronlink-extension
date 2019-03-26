@@ -75,13 +75,13 @@ class MnemonicImport extends React.Component {
             }
 
         }
-        if(addresses.length===0){
+        if(addresses.length === 0) {
             this.setState({
                 isLoading: false
             });
             T.notify(formatMessage({id:'CHOOSING_TYPE.MNEMONIC.NO_OPTIONS'}))
             return false;
-        }else{
+        }else {
             this.setState({
                 addresses,
                 isLoading: false

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-26 16:21:45
+ * @Last Modified time: 2019-03-26 19:06:25
  * TronBankPage
  */
 import React from 'react';
@@ -47,6 +47,10 @@ class BankController extends React.Component {
                 num: 0.1,
                 day: 1,
                 cost: 0.5
+            },
+            accountMaxBalance: {
+                value: '',
+                valid: false
             },
             loading: false
         };
@@ -102,12 +106,23 @@ class BankController extends React.Component {
 
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
             if(_type == 2) {
-                const { selected } = this.props.accounts;
+                const { selected, accounts } = this.props.accounts;
                 const address = selected.address;
                 const { TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
                 if(Number.isFinite(TotalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / TotalEnergyWeight * 50000000000);
                 else rentNum.predictVal = 0;
                 rentNum.predictStatus = true;
+                // account balance very small
+                const balanceAry = [];
+                Object.values(accounts).map(v => { return balanceAry.push(v.balance); });
+                const accountMaxBalance = {
+                    value: '',
+                    valid: BANK_STATE.INVALID
+                };
+                accountMaxBalance.value = Math.max(...balanceAry);
+                console.log(rentVal,Math.max(...balanceAry))
+                if(rentVal > Math.max(...balanceAry)) accountMaxBalance.valid = true; else accountMaxBalance.valid = false;
+                this.setState({ accountMaxBalance });
             }
             rentNum.valid = true;
             rentNum.error = false;
@@ -279,7 +294,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, accountMaxBalance } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -360,6 +375,7 @@ class BankController extends React.Component {
                             </div>
                             { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
                             { rentNum.predictStatus ? <div className='predictMsg'><FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/></div> : null}
+                            { accountMaxBalance.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} /></div> : null}
                         </section>
                         <section className='infoSec singlgeSty'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
