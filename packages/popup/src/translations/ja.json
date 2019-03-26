@@ -189,7 +189,7 @@
   "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
   "SETTING.TITLE":"設定する",
-  "SETTING.TITLE.NODE":"カスタム・ノード",
+  "SETTING.TITLE.NODE":"切り替え節",
   "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
   "SETTING.TITLE.LANGUAGE":"言語",

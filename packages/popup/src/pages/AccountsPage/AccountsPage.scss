@@ -11,7 +11,6 @@
         width: 100%;
         background:rgba(0,0,0,0.70);
         height:80px;
-        padding:20px;
         &>div{
             cursor: pointer;
             width: 100%;
@@ -21,18 +20,19 @@
             flex-direction: row;
             align-items: center;
             img{
-                width: 40px;
-                height: 40px;
-                margin-right: 8px;
+                border:none;
             }
-            span{
-                flex:1;
-                font-size:14px;
-                color:#fff;
-                overflow: hidden;
-                text-overflow:ellipsis;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
+            div{
+                padding:20px;
+                span{
+                    flex:1;
+                    font-size:14px;
+                    color:#fff;
+                    overflow: hidden;
+                    text-overflow:ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                }
             }
         }
 
@@ -129,7 +129,7 @@
             .row3{
                 flex:1;
                 overflow:auto;
-                margin-top: 8px;
+                margin: 0 -1px 0;
                 &::-webkit-scrollbar {
                     width: 4px;
                     height: 4px;
@@ -146,11 +146,16 @@
                 .cell{
                     cursor: pointer;
                     margin-top: 8px;
+                    margin-left: 1px;
                     border-radius:4px;
                     height:93px;
                     display: flex;
                     flex-direction: column;
                     justify-content: space-between;
+                    transition:all .2s ease-in-out;
+                    &:hover{
+                        transform:translate(-1px,-1px);
+                    }
                     &.selected{
                         .top{
                             .name{
@@ -164,9 +169,7 @@
                             }
                         }
                     }
-                    &:first-child{
-                        margin-top: 0;
-                    }
+
                     &.cell1{
                         background-image:linear-gradient(-137deg, #6d72cc 0%, #565ba7 100%);
                     }
@@ -202,7 +205,7 @@
                             display: flex;
                             font-size: 12px;
                             flex-direction: row;
-                            align-items: center;
+                            align-items:flex-end;
                             justify-content:space-between;
                         }
                     }
@@ -214,7 +217,7 @@
                         display: flex;
                         flex-direction: row;
                         justify-content: space-between;
-                        align-items: baseline;
+                        align-items:center;
                         font-size:12px;
                         color:rgba(235,235,235,0.80);
                         &>div{
@@ -609,11 +612,9 @@
                 padding:0 14px;
                 cursor: pointer;
                 margin-top: 10px;
-                transition: all .4s ease-in-out;
+                transition: all .2s ease-in-out;
                 &:hover{
-                    left:-1px;
-                    top:-1px;
-                    position: relative;
+                    transform: translate(-1px,-1px);
                     background-color: rgba(255,255,255,.8);
                 }
                 &:first-child{

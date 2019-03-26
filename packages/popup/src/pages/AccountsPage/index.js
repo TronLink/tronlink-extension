@@ -121,11 +121,11 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account?from=tronlink&type=frozen") }} className="item">
                                 <span className="icon frozen"></span>
                                 <FormattedMessage id="MENU.FROZEN_UNFROZEN" />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/sr/votes") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/sr/votes?from=tronlink") }} className="item">
                                 <span className="icon vote"></span>
                                 <FormattedMessage id="MENU.VOTE" />
                             </div>
@@ -137,7 +137,7 @@ class AccountsPage extends React.Component {
                                 <span className="icon backup"></span>
                                 <FormattedMessage id="ACCOUNTS.EXPORT" />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account?from=tronlink") }} className="item">
                                 <span className="icon link"></span>
                                 <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
                             </div>
@@ -399,8 +399,8 @@ class AccountsPage extends React.Component {
                                                     if(r)
                                                         window.open(news.content_url);
                                                 }}>
-                                                    <img src={news.pic_url} alt=""/>
-                                                    <span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span>
+                                                    {news.pic_url?<img src={news.pic_url} alt=""/>:null}
+                                                    {news.content?<div><span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span></div>:null}
                                                 </div>:null
                                         )
                                     })

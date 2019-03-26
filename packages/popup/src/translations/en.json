@@ -188,7 +188,7 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"Setting",
-    "SETTING.TITLE.NODE":"Custom node",
+    "SETTING.TITLE.NODE":"Switch node",
     "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
     "SETTING.TITLE.LANGUAGE":"Language",

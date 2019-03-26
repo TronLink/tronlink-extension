@@ -33,15 +33,27 @@
                         margin-right: 10px;
                         &.link-twiter {
                             background-image: url('../../assets/images/new/icon-twiter.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-twiter-hover.svg');
+                            }
                         }
                         &.link-telegram {
                             background-image: url('../../assets/images/new/icon-telegram.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-telegram-hover.svg');
+                            }
                         }
                         &.link-home{
                             background-image: url('../../assets/images/new/icon-home.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-home-hover.svg');
+                            }
                         }
                         &.link-exchange{
                             background-image: url('../../assets/images/new/icon-exchange.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-exchange-hover.svg');
+                            }
                         }
                     }
                 }
@@ -59,13 +71,22 @@
                             background-image: url('../../assets/images/new/icon-lock2.svg');
                             margin-right: 10px;
                             margin-left: 10px;
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-lock2-hover.svg');
+                            }
                         }
                         &:nth-child(2) {
                             background-image: url('../../assets/images/new/icon-refresh.svg');
                             margin-right: 10px;
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-refresh-hover.svg');
+                            }
                         }
                         &:nth-child(3) {
                             background-image: url('../../assets/images/new/icon-setting.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/icon-setting-hover.svg');
+                            }
                         }
                     }
                 }
