@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-26 19:06:25
+ * @Last Modified time: 2019-03-26 22:40:49
  * TronBankPage
  */
 import React from 'react';
@@ -14,6 +14,7 @@ import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
+import axios from 'axios';
 class BankController extends React.Component {
     constructor(props) {
         super(props);
@@ -59,9 +60,29 @@ class BankController extends React.Component {
 
     componentDidMount() {
         // data by props
+        this.defaultDataFun();
         // const { selectedToken, selected } = this.props.accounts;
         // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
         // this.setState({ selectedToken });
+    }
+
+    async defaultDataFun() {
+        const requestUrl = `${Utils.requestUrl('test')}/api/bank/default_data`;
+        console.log(requestUrl);
+        // const requestData = PopupAPI.getBankDefaultData(requestUrl);
+        const { data: { data: defaultData } } = await axios.get(requestUrl, {});
+        console.log(defaultData);
+        this.setState({
+            rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
+            rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
+            rentDayMin: defaultData.rental_days_min,
+            rentDayMax: defaultData.rental_days_max,
+            rentUnit: {
+                num: defaultData.energy,
+                day: defaultData.days,
+                cost: defaultData.pay_amount
+            }
+        })
     }
 
     onRecipientChange(e, _type) {
@@ -120,7 +141,6 @@ class BankController extends React.Component {
                     valid: BANK_STATE.INVALID
                 };
                 accountMaxBalance.value = Math.max(...balanceAry);
-                console.log(rentVal,Math.max(...balanceAry))
                 if(rentVal > Math.max(...balanceAry)) accountMaxBalance.valid = true; else accountMaxBalance.valid = false;
                 this.setState({ accountMaxBalance });
             }

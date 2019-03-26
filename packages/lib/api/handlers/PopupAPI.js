@@ -175,6 +175,10 @@ export default {
             _days,
             _energyAddress
         });
+    },
+
+    getBankDefaultData(requestUrl) {
+        return this.duplex.send('getBankDefaultData', { requestUrl });
     }
 
 };

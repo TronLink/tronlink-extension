@@ -178,6 +178,22 @@ const Utils = {
     validatInteger(str) {
         const reg = /^[1-9]\d*|0$/;
         return reg.test(str);
+    },
+
+    requestUrl(_type) {
+        let curApiHost;
+        switch (_type) {
+            case 'test':
+                curApiHost = 'http://52.14.133.221:8950';
+                break;
+            case 'online':
+                curApiHost = '';
+                break;
+            default:
+                curApiHost = 'http://52.14.133.221:8950';
+                break;
+        }
+        return curApiHost;
     }
 };
 

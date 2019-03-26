@@ -344,7 +344,7 @@ class Account {
                 };
             }
             const smartTokens = account.trc20token_balances.filter(v=>v.balance > 0);
-            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens) {
                 let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
                     const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
@@ -628,6 +628,12 @@ class Account {
             logger.error('Failed to rent energy:', ex);
             return Promise.reject(ex);
         }
+    }
+
+    async getBankDefaultData(requestUrl) {
+        // const { data: { data: dafalultData } } = await axios.get(requestUrl);
+        // console.log(dafalultData);
+        // return dafalultData;
     }
 }
 

@@ -737,6 +737,12 @@ class Wallet extends EventEmitter {
         );
     }
 
+    async getBankDefaultData({ requestUrl }) {
+        await this.accounts[ this.selectedAccount ].getBankDefaultData(
+            requestUrl
+        );
+    }
+
     exportAccount() {
         const {
             mnemonic,
