@@ -126,7 +126,7 @@ const NodeService = {
                 return false;
             const name = await contract.name().call();
             const symbol = await contract.symbol().call();
-            const decimals = new BigNumber(await contract.decimals().call()).toNumber();
+            const decimals = typeof(await contract.decimals().call()) === 'object' ? await contract.decimals().call() : new BigNumber(await contract.decimals().call()).toNumber();
             return {
                 name: typeof name === 'object' ? name._name: name,
                 symbol: typeof symbol === 'object' ? symbol._symbol: symbol,

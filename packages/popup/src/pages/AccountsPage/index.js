@@ -49,7 +49,7 @@ class AccountsPage extends React.Component {
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        apiUrl = developmentMode? 'http://52.14.133.221:8920':'http://list.tronlink.org';
+        apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         let news = [];
         if(res){
@@ -65,6 +65,7 @@ class AccountsPage extends React.Component {
 
     }
     addCount(id){
+        console.log(id);
         return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
     }
     onClick(address) {

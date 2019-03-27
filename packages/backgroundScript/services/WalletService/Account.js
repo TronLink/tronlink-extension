@@ -27,7 +27,7 @@ class Account {
         this.balance = 0;
         this.frozenBalance = 0;
         this.netUsed = 0;
-        this.netLimit = 5000;
+        this.netLimit = 0;
         this.lastUpdated = 0;
         this.asset = 0;
         this.ignoredTransactions = [];
@@ -318,8 +318,8 @@ class Account {
                 let token = this.tokens.basic[ key ] || false;
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
                 const trc20Filter = smartTokenPriceList.filter(({fTokenAddr})=>key === fTokenAddr);
-                let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].fPrecision}:{price:0,precision:0});
-                price = price/Math.pow(10,6);
+                let {precision=0,price} = filter.length ? filter[0] : (trc20Filter.length ? {price:trc20Filter[0].price,precision:trc20Filter[0].sPrecision}:{price:0,precision:0});
+                price = price/Math.pow(10,precision);
                 if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl === undefined))
                     await StorageService.cacheToken(key);
 

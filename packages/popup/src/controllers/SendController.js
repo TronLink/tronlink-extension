@@ -39,10 +39,10 @@ class SendController extends React.Component {
         this.setState({selectedToken});
     }
     componentWillReceiveProps(nextProps){
-        const {selected,accounts} = nextProps.accounts;
+        const {selected} = nextProps.accounts;
         const {selectedToken} = this.state;
         if(selectedToken.id === '_'){
-            selectedToken.amount = accounts[selected.address].balance / Math.pow(10, 6);
+            selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
             if(selectedToken.id.match(/^T/)){
                 selectedToken.amount = selected.tokens.smart[selectedToken.id].balance / Math.pow(10, selected.tokens.smart[selectedToken.id].decimals);

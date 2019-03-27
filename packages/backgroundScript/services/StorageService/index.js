@@ -209,11 +209,15 @@ const StorageService = {
 
     setSetting(setting){
         logger.info('Saving setting', setting);
-        const developmentMode = location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec';
-        this.setting = {...setting,developmentMode};
+        this.setting = setting;
         this.save('setting');
 
     },
+
+    getSetting(){
+        return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
+    },
+
     migrate() {
         try {
             const storage = localStorage.getItem('TronLink_WALLET');

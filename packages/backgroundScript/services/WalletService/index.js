@@ -623,7 +623,7 @@ class Wallet extends EventEmitter {
     }
 
     getSetting() {
-        return StorageService.setting;
+        return StorageService.getSetting();
     }
 
     getAccountDetails(address) {
