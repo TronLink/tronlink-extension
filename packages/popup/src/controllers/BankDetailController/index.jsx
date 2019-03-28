@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 18:00:26
+ * @Last Modified time: 2019-03-28 18:50:23
  * BankOrderDetail
  */
 import React from 'react';
@@ -27,13 +27,15 @@ class BankDetailController extends React.Component {
         const { selected } = this.props.accounts;
         let requestId;
         if(selected.selectedBankRecordId) requestId = selected.selectedBankRecordId;
+        console.log(`requestId为${requestId}`);
         this.getBankRecordDetail(requestId);
     }
 
     async getBankRecordDetail(_id) {
         Toast.loading();
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/order_info`;
-        const recordDetail = await PopupAPI.getBankRecordDetail(2, requestUrl);
+        console.log(`——id为${_id}`);
+        const recordDetail = await PopupAPI.getBankRecordDetail(_id, requestUrl);
         const orderList = [
             { id: 'BANK.RENTDETAIL.STATUS', type: 1, value: recordDetail.status },
             { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: recordDetail.id },
