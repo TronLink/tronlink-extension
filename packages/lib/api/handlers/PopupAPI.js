@@ -179,6 +179,18 @@ export default {
 
     getBankDefaultData(requestUrl) {
         return this.duplex.send('getBankDefaultData', { requestUrl });
+    },
+
+    calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
+        return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });
+    },
+
+    isValidOrderAddress(address, requestUrl) {
+        return this.duplex.send('isValidOrderAddress', { address, requestUrl });
+    },
+
+    getBankRecordList(address, limit, start, requestUrl) {
+        return this.duplex.send('getBankRecordList', { address, limit, start, requestUrl });
     }
 
 };

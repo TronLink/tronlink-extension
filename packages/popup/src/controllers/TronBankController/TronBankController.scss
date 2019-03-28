@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-25 16:50:11
+ * @Last Modified time: 2019-03-28 14:13:11
  * TronBankPage
  */
 
@@ -101,6 +101,7 @@
         margin:0 0 10px; 
         min-height: 220px;
         .rentNumEntrance{
+            cursor: pointer;
             width: 14px;
             height: 14px;
             margin-left: 6px;
@@ -197,7 +198,7 @@
     // rent 
     .rentIntroduce{
         margin:0 auto 18px auto;
-        min-width: 274px;
+        max-width: 274px;
         height:27px;
         line-height: 27px;
         background: #F7F8FA;
@@ -235,6 +236,7 @@
             margin:0;
         }
         .operatingBtn{
+            cursor: pointer;
             height:100%;
             border-radius: 0;
             .am-button-small{
@@ -273,7 +275,7 @@
         border-radius: 2px;
         font-family: PingFang-SC-Bold;
         font-size: 14px;
-        
+        cursor: pointer;
         text-align: center;
     }
 

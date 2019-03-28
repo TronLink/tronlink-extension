@@ -2,9 +2,10 @@
  * @Author: lxm 
  * @Date: 2019-03-21 18:38:20 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-21 19:31:14
+ * @Last Modified time: 2019-03-28 14:48:05
  */
  .recordList{
+    cursor: pointer;
     padding:10px 18px;
     border-bottom:1px solid #F7F8FA;
     .address{
@@ -66,7 +67,7 @@
             border-radius: 4px;
             font-family: PingFang-SC-Medium;
             font-size: 12px;
-            color: #76AB61;
+            color: #C2C8D5;
             text-align: center;
         }
     }

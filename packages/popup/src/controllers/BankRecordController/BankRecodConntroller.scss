@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-21 14:34:43 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 19:48:13
+ * @Last Modified time: 2019-03-28 14:41:20
  */
  .navbar{
     width: 100%;
@@ -27,9 +27,7 @@
         background-position: center center;
     }
 }
-.rentListContent{
-    padding-top: 10px;
-}
+
 .am-tabs-tab-bar-wrap{
     padding: 0 51px 0 60px;
 }
@@ -40,6 +38,7 @@ html:not([data-scale]) .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
     background-color: #fff;
 }
 .am-tabs-default-bar-tab{
+    cursor: pointer;
     height:37px;
     line-height:37px;
     font-family: PingFang-SC-Bold;
@@ -50,6 +49,18 @@ html:not([data-scale]) .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
     font-family: PingFang-SC-Bold;
     font-size: 16px;
 }
-.BankRecodConntroller{
-    padding:10px 18px 0;
+.bankRecordContainer{
+    overflow: hidden;
+}
+.rentListContent{
+    padding:0 10px 40px;
+    height: 540px;
+    overflow: auto;
+    .noData{
+        text-align: center;
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #505160;
+        margin: 10px 0;
+    }
 }

@@ -124,12 +124,12 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                Promise.all([account.update(), account.updateTransactions()]).then(()=>{
+                Promise.all([account.update(), account.updateTransactions()]).then(() => {
                     if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
                         this.emit('setAccounts', this.getAccounts());
                     }
-                }).catch( e => { console.log(e)});
+                }).catch( e => { console.log(e); });
             } else {
                 continue;
             }
@@ -146,7 +146,7 @@ class Wallet extends EventEmitter {
 
         const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH')
             .then(res => res.data)
-            .catch(err => {logger.error(err)});
+            .catch(err => { logger.error(err); });
 
         if(!prices)
             return logger.warn('Failed to update prices');
@@ -235,10 +235,10 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const  r = await Promise.all([
+                const r = await Promise.all([
                     account.update(),
                     //account.updateTransactions()
-                ]).catch(e=>false);
+                ]).catch(e => false);
                 if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
@@ -375,8 +375,8 @@ class Wallet extends EventEmitter {
         });
 
         this.emit('setAccount', this.selectedAccount);
-        const {lock:{duration}} = this.getSetting();
-        this.setSetting({lock:{lockTime:new Date().getTime(),duration}});
+        const { lock: { duration } } = this.getSetting();
+        this.setSetting({ lock: { lockTime: new Date().getTime(), duration } });
     }
 
     async lockWallet() {
@@ -474,7 +474,7 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-        if(this.confirmations.length){
+        if(this.confirmations.length) {
             this.emit('setConfirmations', this.confirmations);
         }
         this._closePopup();
@@ -599,10 +599,10 @@ class Wallet extends EventEmitter {
             accounts[ address ] = {
                 name: account.name,
                 balance: account.balance,
-                energyUsed:account.energyUsed,
+                energyUsed: account.energyUsed,
                 energy: account.energy,
-                netUsed:account.netUsed,
-                netLimit:account.netLimit,
+                netUsed: account.netUsed,
+                netLimit: account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length
             };
 
@@ -618,7 +618,7 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedToken) === '{}' ? {id:'_',name:'TRX',amount:0,decimals:6}:StorageService.selectedToken;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', amount: 0, decimals: 6 } : StorageService.selectedToken;
     }
 
     setLanguage(language) {
@@ -738,9 +738,40 @@ class Wallet extends EventEmitter {
     }
 
     async getBankDefaultData({ requestUrl }) {
-        await this.accounts[ this.selectedAccount ].getBankDefaultData(
-            requestUrl
-        );
+        const { data: defaultData } = await axios(requestUrl)
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!defaultData)
+            return logger.warn('Failed to get default data');
+        return defaultData;
+    }
+
+    async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
+        const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days }})
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!calculateData)
+            return logger.warn('Failed to get payMount data');
+        return calculateData;
+    }
+
+    async isValidOrderAddress({ address, requestUrl }) {
+        const { data: isRentData } = await axios.get(requestUrl, { params: { receiver_address: address } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!isRentData)
+            return logger.warn('Failed to get valid order address data');
+        return isRentData;
+    }
+
+    async getBankRecordList({ address, limit, start, requestUrl }) {
+        const { data: { data: bankRecordList } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!bankRecordList)
+            return logger.warn('Failed to get bank record data');
+        console.log(bankRecordList);
+        return bankRecordList;
     }
 
     exportAccount() {
@@ -768,7 +799,7 @@ class Wallet extends EventEmitter {
         send = axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
         receive = axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
         let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
-        return {all:ALL, send:SEND, receive:RECEIVE};
+        return { all: ALL, send: SEND, receive: RECEIVE };
     }
 }
 

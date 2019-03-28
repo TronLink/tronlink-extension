@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-26 22:40:49
+ * @Last Modified time: 2019-03-27 19:31:11
  * TronBankPage
  */
 import React from 'react';
@@ -14,7 +14,6 @@ import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './TronBankController.scss';
-import axios from 'axios';
 class BankController extends React.Component {
     constructor(props) {
         super(props);
@@ -40,18 +39,26 @@ class BankController extends React.Component {
                 error: false,
                 maxError: false
             },
-            rentNumMin: 100,
+            rentNumMin: 10,
             rentNumMax: 1000,
             rentDayMin: 3,
             rentDayMax: 30,
             rentUnit: {
-                num: 0.1,
+                num: 10,
+                day: 1,
+                cost: 0.5
+            },
+            defaultUnit: {
+                num: 10,
                 day: 1,
                 cost: 0.5
             },
             accountMaxBalance: {
                 value: '',
                 valid: false
+            },
+            validOrderOverLimit: {
+                valid: true
             },
             loading: false
         };
@@ -68,21 +75,54 @@ class BankController extends React.Component {
 
     async defaultDataFun() {
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/default_data`;
-        console.log(requestUrl);
-        // const requestData = PopupAPI.getBankDefaultData(requestUrl);
-        const { data: { data: defaultData } } = await axios.get(requestUrl, {});
-        console.log(defaultData);
+        const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         this.setState({
             rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
             rentDayMin: defaultData.rental_days_min,
             rentDayMax: defaultData.rental_days_max,
             rentUnit: {
-                num: defaultData.energy,
+                num: defaultData.energy / 10000,
                 day: defaultData.days,
-                cost: defaultData.pay_amount
+                cost: defaultData.pay_amount / Math.pow(10, 6)
+            },
+            defaultUnit: {
+                num: defaultData.energy / 10000,
+                day: defaultData.days,
+                cost: defaultData.pay_amount / Math.pow(10, 6)
             }
-        })
+        });
+    }
+
+    async calculateRentCost() {
+        // calculate bank rent cost
+        const requestUrl = `${Utils.requestUrl('test')}/api/bank/pay_amount`;
+        const { recipient, rentNum, rentDay, defaultUnit } = this.state;
+        const { selected } = this.props.accounts;
+        const address = selected.address;
+        const rentDayValue = rentDay.value;
+        console.log(`默认传值的数量${rentDayValue},${rentDay.value}`);
+        let recipientAddress;
+        if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
+        if(recipient.valid && rentNum.valid && rentDay.valid ) {
+            console.log(`天数${rentDayValue}`);
+            const calculateData = await PopupAPI.calculateRentCost(
+                recipientAddress,
+                rentNum.value * Math.pow(10, 6),
+                rentDayValue,
+                requestUrl
+            );
+            this.setState({
+                rentUnit: {
+                    num: calculateData.ratio,
+                    cost: calculateData.payAmount / Math.pow(10, 6)
+                }
+            });
+        }else {
+            this.setState({
+                rentUnit: defaultUnit
+            });
+        }
     }
 
     onRecipientChange(e, _type) {
@@ -93,22 +133,58 @@ class BankController extends React.Component {
             valid: BANK_STATE.INVALID,
             error: BANK_STATE.INVALID
         };
+        const validOrderOverLimit = {
+            valid: BANK_STATE.INVALID
+        };
         if(!address.length) {
             recipient.valid = true;
             recipient.error = false;
-            return this.setState({ recipient });
+            this.setState({
+                recipient
+            }, () => {
+                this.calculateRentCost();
+            });
+            if(_type == 2) this.isValidRentAddress(address);
+            return;
         }
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
+            validOrderOverLimit.valid = true;
             if(_type == 2) recipient.error = true; else recipient.error = false;
         }
         else {
             recipient.valid = true;
             recipient.error = false;
+            if(_type == 2) this.isValidRentAddress();
         }
         this.setState({
-            recipient
+            recipient,
+            validOrderOverLimit
+        }, () => {
+            this.calculateRentCost();
         });
+    }
+
+    async isValidRentAddress() {
+        // valid order num > 3
+        let address = this.rentAddressInput.value;
+        const { selected } = this.props.accounts;
+        const selectedaAddress = selected.address;
+        if(address == '') address = selectedaAddress;
+        const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
+        const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
+        this.setState({
+            validOrderOverLimit: {
+                valid: isRentDetail.isRent
+            }
+        });
+        const recipient = {
+            value: address,
+            error: BANK_STATE.INVALID,
+            valid: BANK_STATE.INVALID
+        };
+        if(!isRentDetail.isRent) recipient.valid = false; else recipient.valid = true;
+        this.setState({ recipient });
     }
 
     async handlerRentNumChange(e, _type) {
@@ -146,6 +222,10 @@ class BankController extends React.Component {
             }
             rentNum.valid = true;
             rentNum.error = false;
+            // this.setState({
+            //     rentNum
+            // });
+            // this.calculateRentCost();
         } else {
             rentNum.valid = false;
             rentNum.predictStatus = false;
@@ -153,7 +233,7 @@ class BankController extends React.Component {
         }
         this.setState({
             rentNum
-        });
+        }, () => { this.calculateRentCost(); });
     }
 
     handlerRentDayChange(e, _type) {
@@ -180,37 +260,48 @@ class BankController extends React.Component {
         }
 
         if(rentVal <= rentDayMax && rentVal >= rentDayMin) {
-            rentDay.valid = true;
+            if(_type == 2) {
+                rentDay.valid = true;
+                console.log(rentDay);
+                // this.setState({
+                //     rentDay
+                // }, () => {
+                //     this.calculateRentCost();
+                // });
+            }
             rentDay.error = false;
         } else {
             rentDay.valid = false;
             if(_type == 2) {
                 if(rentVal < rentDayMin ) {
                     rentDay.value = rentDayMin;
-                    rentDay.valid = false;
                     rentDay.error = true;
                     rentDay.maxError = false;
                 }
                 if(rentVal > rentDayMax) {
-                    rentDay.valid = false;
+                    rentDay.value = rentDayMax;
                     rentDay.error = false;
                     rentDay.maxError = true;
-                    rentDay.value = rentDayMax;
                 }
             }else {
                 rentDay.error = false;
                 rentDay.maxError = false;
             }
         }
+        // this.setState({
+        //     rentDay
+        // });
         this.setState({
             rentDay
+        }, () => {
+            this.calculateRentCost();
         });
     }
 
     handlerRentDayFun(_type) {
         // _type 1reduce 2add
         const { rentDayMin, rentDayMax } = this.state;
-        let rentVal = Number(this.state.rentDay.value);
+        let rentVal = this.rentDayInput.value;
         const rentDay = {
             value: '',
             valid: BANK_STATE.INVALID,
@@ -228,6 +319,7 @@ class BankController extends React.Component {
             });
             return;
         }
+        rentVal = Number(rentVal); // valid number
         if(_type == 1) {
             if(rentVal <= rentDayMin ) {
                 rentDay.value = rentDayMin;
@@ -241,11 +333,15 @@ class BankController extends React.Component {
                     rentDay.maxError = true;
                     rentDay.value = rentDayMax;
                 }else{
-                    rentVal -= 1;
-                    rentDay.value = rentVal;
+                    rentDay.value = rentVal - 1;
                     rentDay.valid = true;
                     rentDay.error = false;
                     rentDay.maxError = false;
+                    // this.setState({
+                    //     rentDay
+                    // }, () => {
+                    //     this.calculateRentCost();
+                    // });
                 }
             }
         }
@@ -255,16 +351,25 @@ class BankController extends React.Component {
                 rentDay.valid = false;
                 rentDay.maxError = true;
             }else {
-                rentVal += 1;
-                rentDay.value = rentVal;
+                if(rentVal == 0) rentVal = 2;
+                rentDay.value = rentVal + 1;
                 rentDay.valid = true;
                 rentDay.maxError = false;
+                // this.setState({
+                //     rentDay
+                // }, () => {
+                //     this.calculateRentCost();
+                // });
             }
             rentDay.error = false;
         }
-        console.log(`当前值${rentVal}type${_type}`);
+        // this.setState({
+        //     rentDay
+        // });
         this.setState({
             rentDay
+        }, () => {
+            this.calculateRentCost();
         });
     }
 
@@ -296,9 +401,8 @@ class BankController extends React.Component {
             rentDayValue,
             recipientAddress
         ).then(() => {
-            this.onModalClose('rentConfirmVisible');
-            console.log('成功了');
-            Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 2);
+            Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
+            this.setState({ rentConfirmVisible: false });
         }).catch(error => {
             console.log(error);
             Toast.fail(JSON.stringify(error.error), 2);
@@ -314,7 +418,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, accountMaxBalance } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, accountMaxBalance, validOrderOverLimit } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -363,12 +467,14 @@ class BankController extends React.Component {
                         <section className='infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
                             <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
-                                <input onChange={(e) => { this.onRecipientChange(e, 1); } }
+                                <input ref={ rentAddressInput => this.rentAddressInput = rentAddressInput}
+                                    onChange={(e) => { this.onRecipientChange(e, 1); } }
                                     onBlur={(e) => this.onRecipientChange(e, 2)}
                                     placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
                                 />
                             </div>
-                            {recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null}
+                            { recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
+                            { !validOrderOverLimit.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> : null }
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/>
                             </div>
@@ -409,6 +515,7 @@ class BankController extends React.Component {
                                     </Button>
                                 </span>
                                 <input value={rentDay.value}
+                                    ref={rentDayInput => this.rentDayInput = rentDayInput}
                                     onChange={ (e) => { this.handlerRentDayChange(e, 1); }}
                                     onBlur={ (e) => { this.handlerRentDayChange(e, 2); }}
                                     className='commonInput rentDay'
@@ -424,7 +531,7 @@ class BankController extends React.Component {
                         </section>
                         {rentNum.valid && rentDay.valid ?
                             <section className='calculation'>
-                                {rentNum.value}TRX*{rentUnit.num}({rentDay.value}天)  花费 {rentUnit.cost} TRX
+                                {rentNum.value}TRX*{rentUnit.num}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
                             </section> :
                             <section className='rentIntroduce'>
                                 <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
