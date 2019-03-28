@@ -215,7 +215,7 @@ const StorageService = {
     },
 
     getSetting(){
-        return {...this.setting,developmentMode:location.hostname === 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
+        return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
     },
 
     migrate() {
