@@ -43,7 +43,7 @@
             top:12px;
             width: 16px;
             height: 16px;
-            background-image: url('../../assets/images/new/icon-close.svg');
+            background-image: url('../../assets/images/new/icon-close2.svg');
         }
     }
     .accountsWrap{
@@ -206,7 +206,11 @@
                             font-size: 12px;
                             flex-direction: row;
                             align-items:flex-end;
-                            justify-content:space-between;
+                            & > span{
+                                &:last-child{
+                                    margin-left: 10px;
+                                }
+                            }
                         }
                     }
                     .bottom{
@@ -405,9 +409,10 @@
         .row2{
             display: flex;
             align-items: center;
-            font-size: 18px;
+            font-size: 16px;
             margin-top: 14px;
             height: 25px;
+            color: rgba(255,255,255,.7);
             .copy{
                 width: 13px;
                 height: 13px;
@@ -417,21 +422,21 @@
             }
         }
         .row3{
-            margin-top: 8px;
-            color: rgba(255,255,255,0.80);
+            margin-top: 6px;
+            font-size: 15px;
         }
         .row4{
             width: 100%;
             height: 38px;
-            border-top:1px solid rgba(247,248,250,0.30);
-            margin-top: 14px;
+            border-top:1px solid rgba(247,248,250,0.20);
+            margin-top: 16px;
             display: flex;
             flex-direction: row;
             align-items: center;
             & > div{
                 cursor: pointer;
                 flex:1;
-                height: 28px;
+                height: 20px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -439,7 +444,7 @@
                     margin-left: 6px;
                 }
                 &:first-child{
-                    border-right:1px solid rgba(247,248,250,0.30);
+                    border-right:1px solid rgba(247,248,250,0.20);
                     span:first-child{
                         width: 14px;
                         height: 14px;

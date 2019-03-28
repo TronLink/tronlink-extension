@@ -28,6 +28,7 @@ import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 let apiUrl = '';
+let tronscanUrl = '';
 class AccountsPage extends React.Component {
     constructor() {
         super();
@@ -50,6 +51,7 @@ class AccountsPage extends React.Component {
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
         apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         let news = [];
         if(res){
@@ -60,10 +62,7 @@ class AccountsPage extends React.Component {
         this.setState({news});
         //PopupAPI.refresh();
     }
-    componentDidUpdate() {
 
-
-    }
     addCount(id){
         console.log(id);
         return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
@@ -122,11 +121,11 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account?from=tronlink&type=frozen") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`) }} className="item">
                                 <span className="icon frozen"></span>
                                 <FormattedMessage id="MENU.FROZEN_UNFROZEN" />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/sr/votes?from=tronlink") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`) }} className="item">
                                 <span className="icon vote"></span>
                                 <FormattedMessage id="MENU.VOTE" />
                             </div>
@@ -138,7 +137,7 @@ class AccountsPage extends React.Component {
                                 <span className="icon backup"></span>
                                 <FormattedMessage id="ACCOUNTS.EXPORT" />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open("https://tronscan.org/#/account?from=tronlink") }} className="item">
+                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className="item">
                                 <span className="icon link"></span>
                                 <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
                             </div>
@@ -363,7 +362,7 @@ class AccountsPage extends React.Component {
                 {
                     this.renderDeleteAccount()
                 }
-                <Header showNodeList={showNodeList} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
+                <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
                 <div className="space-controller">
                     <Toast />
                     {

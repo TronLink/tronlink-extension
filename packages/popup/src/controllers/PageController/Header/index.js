@@ -55,11 +55,12 @@ class Header extends React.Component {
     render() {
         const { refresh } = this.state;
         const {
-            nodes
+            nodes,
+            developmentMode
         } = this.props;
         const ns = Object.entries(nodes.nodes);
         const name = ns.filter(v => v[0] === nodes.selected)[0][1].name;
-
+        const trxMarketUrl = developmentMode ? 'http://18.222.178.103:83?from=tronlink' : 'https://trx.market?from=tronlink';
         return (
             <div className='header'>
                 <div className='titleContainer'>
@@ -71,7 +72,7 @@ class Header extends React.Component {
                             <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
                             <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                             <a href="https://www.tronlink.org" target="_blank" className="link link-home"></a>
-                            <a href="https://trx.market?from=tronlink" target="_blank" className="link link-exchange"></a>
+                            <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
                         </div>
                         <div>
                             <div className="fun" onClick={ ()=>{ PopupAPI.lockWallet() } }></div>

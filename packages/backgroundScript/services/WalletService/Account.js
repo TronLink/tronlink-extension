@@ -242,6 +242,7 @@ class Account {
         this.transactions = {};
         this.ignoredTransactions = [];
         this.netLimit = 0;
+        this.asset = 0;
         Object.keys(this.tokens.smart).forEach(address => (
             this.tokens.smart[ address ].balance = 0
         ));
@@ -546,7 +547,6 @@ class Account {
             address: this.address,
             balance: this.balance,
             frozenBalance: this.frozenBalance,
-            bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
             lastUpdated: this.lastUpdated
