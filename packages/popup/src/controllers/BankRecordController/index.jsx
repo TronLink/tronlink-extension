@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 14:50:19
+ * @Last Modified time: 2019-03-28 17:48:15
  * BankRecordController
  */
 import React from 'react';
@@ -70,7 +70,7 @@ class BankRecordController extends React.Component {
             requestUrl
         );
         // default 0 valid
-        const newRecordList = defaultRecordList.filter((item) => { return item.status > 2 && item.status != 7; });
+        const newRecordList = defaultRecordList.filter((item) => { return item.status > 2 && item.status !== 7; });
         this.setState({
             defaultRecordList,
             recordList: newRecordList
@@ -86,9 +86,9 @@ class BankRecordController extends React.Component {
         const { defaultRecordList } = this.state;
         let newRecordList;
         if(ind == 0)
-            newRecordList = defaultRecordList.filter((item) => { return item.status > 2 && item.status != 7; });
+            newRecordList = defaultRecordList.filter((item) => { return item.status > 2 && item.status !== 7; });
         else if(ind == 1)
-            newRecordList = defaultRecordList.filter((item) => { return item.status == 7; });
+            newRecordList = defaultRecordList.filter((item) => { return item.status === 7; });
         else
             newRecordList = defaultRecordList;
 
@@ -109,7 +109,6 @@ class BankRecordController extends React.Component {
             { label: 3 }
         ];
         const { recordList } = this.state;
-        console.log(recordList);
         return (
             <div className='bankRecordContainer'>
                 <NavBar

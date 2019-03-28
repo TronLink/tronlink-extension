@@ -141,6 +141,8 @@ const backgroundScript = {
         duplex.on('calculateRentCost', this.walletService.calculateRentCost);
         duplex.on('isValidOrderAddress', this.walletService.isValidOrderAddress);
         duplex.on('getBankRecordList', this.walletService.getBankRecordList);
+        duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
+        duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);
     },
 
     bindTabDuplex() {
@@ -326,6 +328,10 @@ const backgroundScript = {
 
         this.walletService.on('setSetting', setting => (
             BackgroundAPI.setSetting(setting)
+        ));
+
+        this.walletService.on('setSelectedBankRecordId', id => (
+            BackgroundAPI.setSelectedBankRecordId(id)
         ));
     }
 };

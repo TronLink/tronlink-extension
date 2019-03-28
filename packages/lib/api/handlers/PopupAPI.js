@@ -177,6 +177,7 @@ export default {
         });
     },
 
+    //tronbank index
     getBankDefaultData(requestUrl) {
         return this.duplex.send('getBankDefaultData', { requestUrl });
     },
@@ -188,9 +189,16 @@ export default {
     isValidOrderAddress(address, requestUrl) {
         return this.duplex.send('isValidOrderAddress', { address, requestUrl });
     },
-
+    //record list
     getBankRecordList(address, limit, start, requestUrl) {
         return this.duplex.send('getBankRecordList', { address, limit, start, requestUrl });
-    }
+    },
 
+    getBankRecordDetail(id, requestUrl) {
+        return this.duplex.send('getBankRecordDetail', { id, requestUrl });
+    },
+
+    setSelectedBankRecordId(id) {
+        this.duplex.send('setSelectedBankRecordId', id, false);
+    }
 };

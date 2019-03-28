@@ -2,14 +2,15 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-22 17:56:47
+ * @Last Modified time: 2019-03-28 18:00:26
  * BankOrderDetail
  */
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import { APP_STATE } from '@tronlink/lib/constants';
-import { NavBar } from 'antd-mobile';
+import { NavBar, Toast } from 'antd-mobile';
+import Utils from '@tronlink/lib/utils';
 import './BankDetailController.scss';
 
 class BankDetailController extends React.Component {
@@ -17,35 +18,76 @@ class BankDetailController extends React.Component {
         super(props);
         this.state = {
             selected: '',
-            selectedToken: {
-                id: '_',
-                name: 'TRX',
-                amount: 0,
-                decimals: 6
-            },
-            loading: false
+            loading: false,
+            orderList: []
         };
     }
 
-    componentDidMount() { // data by props
-        // const { selectedToken, selected } = this.props.accounts;
-        // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
-        // this.setState({ selectedToken });
-        // console.log(selectedToken, selected);
+    componentDidMount() {
+        const { selected } = this.props.accounts;
+        let requestId;
+        if(selected.selectedBankRecordId) requestId = selected.selectedBankRecordId;
+        this.getBankRecordDetail(requestId);
+    }
+
+    async getBankRecordDetail(_id) {
+        Toast.loading();
+        const requestUrl = `${Utils.requestUrl('test')}/api/bank/order_info`;
+        const recordDetail = await PopupAPI.getBankRecordDetail(2, requestUrl);
+        const orderList = [
+            { id: 'BANK.RENTDETAIL.STATUS', type: 1, value: recordDetail.status },
+            { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: recordDetail.id },
+            { id: 'BANK.RENTDETAIL.PAYACCOUNT', type: 0, value: recordDetail.pay_address },
+            { id: 'BANK.RENTDETAIL.TOACCOUNT', type: 0, value: recordDetail.energy_address },
+            { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: `${recordDetail.freeze_amount}TRX` },
+            { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: recordDetail.days },
+            { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: `${recordDetail.pay_amount}TRX` },
+            { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: recordDetail.create_time },
+            { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: recordDetail.expire_time },
+        ];
+        this.setState({
+            orderList
+        });
+        Toast.hide();
     }
 
     render() {
-        const orderList = [
-            { id: 'BANK.RENTDETAIL.STATUS', type: 1, value: 1 },
-            { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: 10111111111111332 },
-            { id: 'BANK.RENTDETAIL.PAYACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
-            { id: 'BANK.RENTDETAIL.TOACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
-            { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: '100TRX' },
-            { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: '3' },
-            { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: '0.13TRX' },
-            { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: '2019.01.23 12:34' },
-            { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: '2019.01.23 12:34' }
-        ];
+        const { orderList } = this.state;
+        // const orderList = [
+        //     { id: 'BANK.RENTDETAIL.STATUS', type: 1, value: 1 },
+        //     { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: 10111111111111332 },
+        //     { id: 'BANK.RENTDETAIL.PAYACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
+        //     { id: 'BANK.RENTDETAIL.TOACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
+        //     { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: '100TRX' },
+        //     { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: '3' },
+        //     { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: '0.13TRX' },
+        //     { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: '2019.01.23 12:34' },
+        //     { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: '2019.01.23 12:34' }
+        // ];
+        let statusMessage;
+        orderList.map((val, key) => {
+        // 有效3-6 8   失效:7 单独  0-2 处理
+            if (val.status > 2 && val.status !== 7) {
+                statusMessage = (
+                    <span className='validStatus'>
+                        <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/>
+                    </span>
+                );
+            } else if(val.status === 7) {
+                statusMessage = (
+                    <span className='doneStatus'>
+                        <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>
+                    </span>
+                );
+            } else {
+                statusMessage = (
+                    <span className='validStatus'>
+                        <FormattedMessage id='BANK.RENTRECORD.DEALNAME'/>
+                    </span>
+                );
+            }
+            return statusMessage;
+        });
         return (
             <div className='BankDetailContainer'>
                 <NavBar
@@ -63,7 +105,10 @@ class BankDetailController extends React.Component {
                                 <FormattedMessage id={val.id}/>
                             </span>
                             <span className='orderStatus'>
-                                {val.id === 'BANK.RENTDETAIL.STATUS' ? <span>{val.value === 1 ? <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/> : <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>} </span> : val.value}
+                                {val.id === 'BANK.RENTDETAIL.STATUS' ?
+                                    <span>
+                                        {statusMessage}
+                                    </span> : val.value}
                                 {val.type === 2 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                             </span>
                         </div>
@@ -75,4 +120,3 @@ class BankDetailController extends React.Component {
 }
 
 export default injectIntl(BankDetailController);
-

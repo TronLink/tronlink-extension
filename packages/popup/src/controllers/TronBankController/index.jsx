@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-27 19:31:11
+ * @Last Modified time: 2019-03-28 17:38:13
  * TronBankPage
  */
 import React from 'react';
@@ -68,9 +68,6 @@ class BankController extends React.Component {
     componentDidMount() {
         // data by props
         this.defaultDataFun();
-        // const { selectedToken, selected } = this.props.accounts;
-        // selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10, 6) : selectedToken.amount;
-        // this.setState({ selectedToken });
     }
 
     async defaultDataFun() {
@@ -144,18 +141,18 @@ class BankController extends React.Component {
             }, () => {
                 this.calculateRentCost();
             });
-            if(_type == 2) this.isValidRentAddress(address);
+            if(_type === 2) this.isValidRentAddress(address);
             return;
         }
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
             validOrderOverLimit.valid = true;
-            if(_type == 2) recipient.error = true; else recipient.error = false;
+            if(_type === 2) recipient.error = true; else recipient.error = false;
         }
         else {
             recipient.valid = true;
             recipient.error = false;
-            if(_type == 2) this.isValidRentAddress();
+            if(_type === 2) this.isValidRentAddress();
         }
         this.setState({
             recipient,
@@ -170,7 +167,7 @@ class BankController extends React.Component {
         let address = this.rentAddressInput.value;
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
-        if(address == '') address = selectedaAddress;
+        if(address === '') address = selectedaAddress;
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
         this.setState({
@@ -202,7 +199,7 @@ class BankController extends React.Component {
             return this.setState({ rentNum });
 
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
-            if(_type == 2) {
+            if(_type === 2) {
                 const { selected, accounts } = this.props.accounts;
                 const address = selected.address;
                 const { TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
@@ -229,7 +226,7 @@ class BankController extends React.Component {
         } else {
             rentNum.valid = false;
             rentNum.predictStatus = false;
-            if(_type == 2) rentNum.error = true; else rentNum.error = false;
+            if(_type === 2) rentNum.error = true; else rentNum.error = false;
         }
         this.setState({
             rentNum
@@ -260,7 +257,7 @@ class BankController extends React.Component {
         }
 
         if(rentVal <= rentDayMax && rentVal >= rentDayMin) {
-            if(_type == 2) {
+            if(_type === 2) {
                 rentDay.valid = true;
                 console.log(rentDay);
                 // this.setState({
@@ -272,7 +269,7 @@ class BankController extends React.Component {
             rentDay.error = false;
         } else {
             rentDay.valid = false;
-            if(_type == 2) {
+            if(_type === 2) {
                 if(rentVal < rentDayMin ) {
                     rentDay.value = rentDayMin;
                     rentDay.error = true;
@@ -320,7 +317,7 @@ class BankController extends React.Component {
             return;
         }
         rentVal = Number(rentVal); // valid number
-        if(_type == 1) {
+        if(_type === 1) {
             if(rentVal <= rentDayMin ) {
                 rentDay.value = rentDayMin;
                 rentDay.valid = false;
@@ -351,7 +348,7 @@ class BankController extends React.Component {
                 rentDay.valid = false;
                 rentDay.maxError = true;
             }else {
-                if(rentVal == 0) rentVal = 2;
+                if(rentVal === 0) rentVal = 2;
                 rentDay.value = rentVal + 1;
                 rentDay.valid = true;
                 rentDay.maxError = false;
@@ -583,7 +580,7 @@ class BankController extends React.Component {
                                             <FormattedMessage id={val.id}/>
                                         </span>
                                         <span className='orderStatus'>
-                                            {val.user == 1 ? `${val.value.substr(0, 4)}...${val.value.substr(-12)}` : val.value }
+                                            {val.user === 1 ? `${val.value.substr(0, 4)}...${val.value.substr(-12)}` : val.value }
                                             {val.tip === 1 ? <FormattedMessage id='BANK.RENTINFO.TIPS' values={{ num: rentNum.predictVal }} /> : null}
                                             {val.type === 3 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                                         </span>

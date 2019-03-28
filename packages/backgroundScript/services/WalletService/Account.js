@@ -20,7 +20,7 @@ class Account {
         this.address = false;
         this.name = false;
         this.updatingTransactions = false;
-
+        this.selectedBankRecordId = 0;   
         this.energy = 0;
         this.energyUsed = 0;
         this.balance = 0;
@@ -537,7 +537,8 @@ class Account {
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
-            lastUpdated: this.lastUpdated
+            lastUpdated: this.lastUpdated,
+            selectedBankRecordId: this.selectedBankRecordId
         };
     }
 

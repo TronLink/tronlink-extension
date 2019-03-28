@@ -79,7 +79,6 @@ class Wallet extends EventEmitter {
     }
 
     _setState(appState) {
-        console.log(`传参appState为${appState},默认this.state为${this.state}`);
         if(this.state === appState)
             return;
 
@@ -770,8 +769,22 @@ class Wallet extends EventEmitter {
             .catch(err => { logger.error(err); });
         if(!bankRecordList)
             return logger.warn('Failed to get bank record data');
-        console.log(bankRecordList);
         return bankRecordList;
+    }
+
+    //setting bank record id
+    setSelectedBankRecordId(id) {
+        this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
+        this.emit('setSelectedBankRecordId', id);
+    }
+
+    async getBankRecordDetail({ _id, requestUrl }) {
+        const { data: bankRecordDetail } = await axios.get(requestUrl, { params: { id: _id } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!bankRecordDetail)
+            return logger.warn('Failed to get bank record detail data');
+        return bankRecordDetail;
     }
 
     exportAccount() {

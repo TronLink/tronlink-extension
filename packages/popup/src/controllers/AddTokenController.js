@@ -52,8 +52,8 @@ class AddTokenController extends React.Component {
                                 const value = e.target.value;
                                 this.state.address.value = value;
                                 this.state.address.valid = TronWeb.isAddress(value);
-                                this.setState({address:this.state.address});
-                            }} placeholder={formatMessage({id:"MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER"})} />
+                                this.setState({ address: this.state.address });
+                            }} placeholder={formatMessage({ id: "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER" })} />
                         </div>
                     </div>
                     <button onClick={ ()=>this.addToken(this.state.address.value) } className={"customButton primary addToken"+(this.state.address.valid?" is-valid":" is-invalid")}>

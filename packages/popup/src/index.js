@@ -28,7 +28,8 @@ import {
 import {
     setAccount,
     setAccounts,
-    setToken
+    setToken,
+    setSelectedBankRecordId
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -173,6 +174,10 @@ export const app = {
 
         this.duplex.on('setSetting', setting => this.store.dispatch(
             setSetting(setting)
+        ));
+
+        this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
+            setSelectedBankRecordId(id)
         ));
 
     },
