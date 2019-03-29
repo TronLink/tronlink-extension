@@ -1,10 +1,10 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import Toast, { T } from 'react-toast-mobile';
-import { PAGES } from '@tronlink/lib/constants';
+import { T } from 'react-toast-mobile';
+import { PAGES,APP_STATE } from '@tronlink/lib/constants';
 import { app } from '@tronlink/popup/src/index';
-import { PopupAPI } from "@tronlink/lib/api";
-import { APP_STATE } from "@tronlink/lib/constants";
+import { PopupAPI } from '@tronlink/lib/api';
+const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
 const PageLink = props => {
     const {
         active = false,
@@ -55,46 +55,47 @@ class Header extends React.Component {
     }
 
     render() {
-        const colorArr = ['#B8E986','#F5A623','#F8E71C'];
-        const { nodeIndex,refresh } = this.state;
+        const { refresh } = this.state;
         const {
-            nodes,showNodeList
+            nodes,
+            developmentMode
         } = this.props;
         const ns = Object.entries(nodes.nodes);
         const name = ns.filter(v => v[0] === nodes.selected)[0][1].name;
-
+        const trxMarketUrl = developmentMode ? 'http://18.222.178.103:83?from=tronlink' : 'https://trx.market?from=tronlink';
         return (
             <div className='header'>
-                <Toast />
                 <div className='titleContainer'>
-                    <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
-                    <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
-                    <div className="nodesWrap">
-                        <div className="nodes" onClick={ (e)=>{ e.stopPropagation();this.props.handleShowNodeList()} }>
-                            <span className="dot" style={{backgroundColor:colorArr[nodeIndex%3]}}></span>
-                            <div className="name">{name}</div>
-                            <div className="dropList" style={showNodeList?{width:'100%',height:30*ns.length,opacity:1}:{}}>
-                                {
-                                    ns.map(([nodeId,obj],i)=> <div onClick={()=>{ this.onNodeChange(nodeId,i) }} className="item" key={nodeId}><span className="dot" style={{backgroundColor:colorArr[i]}}></span><span>{obj.name}</span></div>)
+                    <div>
+                        <img src={logo} alt=""/>
+                    </div>
+                    <div>
+                        <div className="linkWrap">
+                            <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
+                            <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
+                            <a href="https://www.tronlink.org" target="_blank" className="link link-home"></a>
+                            <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
+                        </div>
+                        <div>
+                            <div className="fun" onClick={ ()=>{ PopupAPI.lockWallet() } }></div>
+                            <div className="fun" onClick={()=>{
+                                if(!refresh){
+                                    this.setState({refresh:true}, async()=>{
+                                        T.loading();
+                                        const r = await PopupAPI.refresh();
+                                        console.log(r);
+                                        if(r){
+                                            this.setState({refresh:false});
+                                            T.loaded()
+                                        }
+                                    });
                                 }
-                            </div>
+
+                            }}
+                            ></div>
+                            <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
                         </div>
                     </div>
-                    <div className="fun" onClick={()=>{
-                        if(!refresh){
-                            this.setState({refresh:true}, async()=>{
-                                T.loading();
-                                const r = await PopupAPI.refresh();
-                                if(r){
-                                    this.setState({refresh:false});
-                                    T.loaded()
-                                }
-                            });
-                        }
-
-                    }}
-                    ></div>
-                    <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
                 </div>
             </div>
         );

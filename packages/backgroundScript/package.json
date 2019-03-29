@@ -12,7 +12,7 @@
     "bip39": "^2.5.0",
     "buffer": "^5.2.1",
     "eventemitter3": "^3.1.0",
-    "tronweb": "^2.1.30"
+    "tronweb": "^2.2.7"
   },
   "scripts": {
     "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/backgroundScript.js",

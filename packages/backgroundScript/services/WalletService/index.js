@@ -126,13 +126,14 @@ class Wallet extends EventEmitter {
                 Promise.all([account.update(), account.updateTransactions()]).then(() => {
                     if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
-                        this.emit('setAccounts', this.getAccounts());
+                        //this.emit('setAccounts', this.getAccounts());
                     }
                 }).catch( e => { console.log(e); });
             } else {
-                continue;
+                await account.update();
             }
         }
+        this.emit('setAccounts', this.getAccounts());
         this.isPolling = false;
         setTimeout(() => (
             this._pollAccounts() // ??TODO repeatedly request
@@ -234,19 +235,19 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const r = await Promise.all([
-                    account.update(),
-                    //account.updateTransactions()
-                ]).catch(e => false);
-                if(r) {
+                const  r = await account.update().catch(e=>false);
+                if(r){
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
-                    this.emit('setAccounts', this.getAccounts());
                 }else{
                     res = false;
                 }
+            }else{
+                continue;
+                //await account.update();
             }
         }
+        this.emit('setAccounts', this.getAccounts());
         return res;
     }
 
@@ -374,8 +375,9 @@ class Wallet extends EventEmitter {
         });
 
         this.emit('setAccount', this.selectedAccount);
-        const { lock: { duration } } = this.getSetting();
-        this.setSetting({ lock: { lockTime: new Date().getTime(), duration } });
+        let setting = this.getSetting();
+        setting.lock.lockTime = new Date().getTime();
+        this.setSetting(setting);
     }
 
     async lockWallet() {
@@ -597,13 +599,14 @@ class Wallet extends EventEmitter {
         const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
             accounts[ address ] = {
                 name: account.name,
-                balance: account.balance,
+                balance: account.balance + account.frozenBalance,
                 energyUsed: account.energyUsed,
+                totalEnergyWeight: account.totalEnergyWeight,
                 energy: account.energy,
                 netUsed: account.netUsed,
                 netLimit: account.netLimit,
-                totalEnergyWeight: account.totalEnergyWeight,
-                tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length
+                tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
+                asset: account.asset
             };
 
             return accounts;
@@ -636,7 +639,7 @@ class Wallet extends EventEmitter {
     }
 
     getSetting() {
-        return StorageService.setting;
+        return StorageService.getSetting();
     }
 
     getAccountDetails(address) {

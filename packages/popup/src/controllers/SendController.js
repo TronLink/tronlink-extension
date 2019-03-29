@@ -41,12 +41,12 @@ class SendController extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {selected,accounts} = nextProps.accounts;
-        const {selectedToken} = this.state;
-        if(selectedToken.id === '_'){
-            selectedToken.amount = accounts[selected.address].balance / Math.pow(10, 6);
+        const { selected } = nextProps.accounts;
+        const { selectedToken } = this.state;
+        if(selectedToken.id === '_') {
+            selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
-            if(selectedToken.id.match(/^T/)){
+            if(selectedToken.id.match(/^T/)) {
                 selectedToken.amount = selected.tokens.smart[selectedToken.id].balance / Math.pow(10, selected.tokens.smart[selectedToken.id].decimals);
             }else{
                 selectedToken.amount = selected.tokens.basic[selectedToken.id].balance / Math.pow(10, selected.tokens.basic[selectedToken.id].decimals);

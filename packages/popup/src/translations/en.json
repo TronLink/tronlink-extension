@@ -80,7 +80,7 @@
 
     "ACCOUNT_NAME.DESC": "Please choose a memorable name for your new account",
 
-    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12, 16 or 24 words in length",
+    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12, 16 or 24 words in length (separated by spaces)",
     "MNEMONIC_IMPORT.SELECTION": "Select the accounts you would like to import below",
 
     "PRIVATE_KEY_IMPORT.DESC": "Please enter your private key below. This can only contain hexadecimal characters",
@@ -188,7 +188,8 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"Setting",
-    "SETTING.TITLE.NODE":"Custom node",
+    "SETTING.TITLE.NODE":"Switch node",
+    "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
     "SETTING.TITLE.LANGUAGE":"Language",
     "SETTING.TITLE.AUTO_LOCK":"Auto lock",
@@ -228,6 +229,9 @@
     "MENU.WHITE_LIST":"White list manage",
     "MENU.DELETE_WALLET":"Delete Account",
     "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"Please enter the contract address of TRC20token",
+    "MENU.FROZEN_UNFROZEN":"Frozen/Unfrozen",
+    "MENU.VOTE":"Vote",
+    "MENU.ACCOUNTS.TOTAL_ASSET":"Asset{sign}",
 
     "TOAST.COPY":"Copied",
     "TOAST.ADDED":"added",

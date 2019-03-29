@@ -51,12 +51,12 @@
   "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
   "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
-  "CREATION.CREATE.TITLE": "アカウントを作成する",
+  "CREATION.CREATE.TITLE": "作成する",
   "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "回復フレーズを確認してください",
   "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "ニーモニックの順番が正しくありません",
   "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
   "CREATION.CREATE.TIP":"新規ユーザーにお勧め",
-  "CREATION.RESTORE.TITLE": "アカウントをインポートする",
+  "CREATION.RESTORE.TITLE": "輸入",
   "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
   "CREATION.RESTORE.TIP":"TRONアカウントを持つユーザーにお勧め",
   "CREATION.RESTORE.PRIVATE_KEY.TITLE": "秘密鍵でインポートする",
@@ -80,7 +80,7 @@
 
   "ACCOUNT_NAME.DESC": "新しいアカウントに覚えやすい名前を付けてください",
 
-  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、16、または24ワードとします。",
+  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、16、または24ワードとします。（スペース区切り）",
   "MNEMONIC_IMPORT.SELECTION": "下からインポートしたいアカウントを選んでください",
 
   "PRIVATE_KEY_IMPORT.DESC": "下に秘密のキーを入力してください。秘密のキーは16進数のみとします",
@@ -189,7 +189,8 @@
   "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
   "SETTING.TITLE":"設定する",
-  "SETTING.TITLE.NODE":"カスタム・ノード",
+  "SETTING.TITLE.NODE":"切り替え節",
+  "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
   "SETTING.TITLE.LANGUAGE":"言語",
   "SETTING.TITLE.AUTO_LOCK":"自動ロック",
@@ -229,6 +230,9 @@
   "MENU.WHITE_LIST":"ホワイトリストを管理する",
   "MENU.DELETE_WALLET":"アカウントを削除する",
   "MENU.ADD_TRC20_TOKEN.INPUT_PLACE_HOLDER":"TRC20tokenの契約アドレスを入力してください",
+  "MENU.FROZEN_UNFROZEN":"凍結/解除",
+  "MENU.VOTE":"投票",
+  "MENU.ACCOUNTS.TOTAL_ASSET":"総資産{sign}",
 
   "TOAST.COPY":"コピー済み",
   "TOAST.ADDED":"追加しました",

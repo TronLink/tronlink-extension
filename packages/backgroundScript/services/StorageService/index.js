@@ -15,7 +15,8 @@ const StorageService = {
         'prices',
         'pendingTransactions',
         'tokenCache',
-        'selectedToken'
+        'setting',
+        'language'
     ],
 
     storage: extensionizer.storage.local,
@@ -39,12 +40,15 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-    selectedToken: {},
-    setting: {
-        lock: {
-            lockTime: 0,
-            duration: 0
-        }
+    selectedToken:{},
+    setting:{
+        lock:{
+            lockTime:0,
+            duration:0
+        },
+        openAccountsMenu:false,
+        advertising:{},
+        developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
     },
     language: '',
     ready: false,
@@ -208,6 +212,10 @@ const StorageService = {
         logger.info('Saving setting', setting);
         this.setting = setting;
         this.save('setting');
+    },
+
+    getSetting() {
+        return {...this.setting, developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec' };
     },
 
     migrate() {

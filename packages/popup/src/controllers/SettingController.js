@@ -1,10 +1,11 @@
 import React from 'react';
 import swal from 'sweetalert2';
-import { PopupAPI } from '@tronlink/lib/api';
+import { PopupAPI } from "@tronlink/lib/api";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Button from '../components/Button';
+import Button from "@tronlink/popup/src/components/Button";
+import { VALIDATION_STATE } from "@tronlink/lib/constants";
+import { app } from "@tronlink/popup/src";
 
-import { VALIDATION_STATE } from '@tronlink/lib/constants';
 class SettingController extends  React.Component {
     constructor(props) {
         super(props);
@@ -170,7 +171,7 @@ class SettingController extends  React.Component {
             eventServer
         });
 
-        //app.getNodes();
+        app.getNodes();
         swal(formatMessage({id:'SETTING.SUCCESS.ADD_NODE'}),'','success');
         this.setState({
             customNode: {
@@ -196,8 +197,9 @@ class SettingController extends  React.Component {
     }
 
     render() {
-        const { prices, onCancel, language, lock} = this.props;
+        const { prices, onCancel, language, lock, nodes } = this.props;
         const { formatMessage } = this.props.intl;
+        const currentNode = nodes.nodes[nodes.selected];
         const {
             name,
             fullNode,
@@ -217,6 +219,43 @@ class SettingController extends  React.Component {
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.NODE" />
+                                <div className="unit">{currentNode.name}</div>
+                            </div>
+                            <div className="settingWrap">
+                                <div className="nodeWrap">
+                                    {
+                                        Object.entries(nodes.nodes).map(([nodeId,node])=>{
+                                            return (
+                                                <div className={"nodeItem"+(nodeId === nodes.selected?" selected":"")} onClick={(e)=>{
+                                                    e.stopPropagation();
+                                                    PopupAPI.selectNode(nodeId);
+                                                    app.getNodes();
+                                                }}>
+                                                    <div className="title">{node.name}</div>
+                                                    <div className="cell">
+                                                        <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
+                                                        <span>{node.fullNode}</span>
+                                                    </div>
+                                                    <div className="cell">
+                                                        <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
+                                                        <span>{node.solidityNode}</span>
+                                                    </div>
+                                                    <div className="cell">
+                                                        <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
+                                                        <span>{node.eventServer}</span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="option" onClick={ ()=>{this.setting(1)} }   >
+                        <div className="txt">
+                            <div className="span">
+                                <FormattedMessage id="SETTING.TITLE.ADD_NODE" />
                             </div>
                             <div className="settingWrap">
                                 <div className="input-group">
@@ -224,7 +263,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>
+                                        <input type="text" value={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -232,7 +271,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />
+                                        <input type="text" value={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -240,7 +279,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>
+                                        <input type="text" value={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>
                                     </div>
                                 </div>
                                 <div className="input-group">
@@ -248,7 +287,7 @@ class SettingController extends  React.Component {
                                         <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
                                     </label>
                                     <div className="input">
-                                        <input type="text" defaultValue={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />
+                                        <input type="text" value={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onClick={(e)=>{e.stopPropagation()}} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />
                                     </div>
                                 </div>
                                 <Button
@@ -259,7 +298,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={ ()=>{this.setting(1)} }>
+                    <div className="option" onClick={ ()=>{this.setting(2)} }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.CURRENCY" />
@@ -272,7 +311,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={ ()=>{this.setting(2)} }>
+                    <div className="option" onClick={ ()=>{this.setting(3)} }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.LANGUAGE" />
@@ -289,7 +328,7 @@ class SettingController extends  React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="option" onClick={() =>{this.setting(3)}   }>
+                    <div className="option" onClick={() =>{this.setting(4)}   }>
                         <div className="txt">
                             <div className="span">
                                 <FormattedMessage id="SETTING.TITLE.AUTO_LOCK" />
@@ -300,9 +339,11 @@ class SettingController extends  React.Component {
                             <div className="settingWrap">
                                 {
                                     autoLock.map(({name,time})=>(
-                                        <div key={time} onClick={(e)=>{
+                                        <div key={time} onClick={async (e)=>{
                                             e.stopPropagation();
-                                            PopupAPI.setSetting({lock:{lockTime:new Date().getTime(),duration:time}});
+                                            let setting = await PopupAPI.getSetting();
+                                            setting.lock={lockTime:new Date().getTime(),duration:time};
+                                            PopupAPI.setSetting(setting);
                                         }} className={"unit"+(time === lock.duration ? " selected":"")}>
                                             <FormattedMessage id={name} />
                                         </div>
