@@ -20,15 +20,16 @@ class Account {
         this.address = false;
         this.name = false;
         this.updatingTransactions = false;
-        this.selectedBankRecordId = 0;   
+        this.selectedBankRecordId = 0;
+        this.bankRatio = 0; // Tron bank ratio
         this.energy = 0;
         this.energyUsed = 0;
         this.balance = 0;
         this.frozenBalance = 0;
         this.netUsed = 0;
         this.netLimit = 5000;
+        this.totalEnergyWeight = 0; //total
         this.lastUpdated = 0;
-
         this.ignoredTransactions = [];
         this.transactions = {};
         this.tokens = {
@@ -130,6 +131,7 @@ class Account {
             name,
             balance,
             frozenBalance,
+            totalEnergyWeight,
             transactions,
             tokens,
             netLimit,
@@ -159,6 +161,7 @@ class Account {
         this.name = name;
         this.balance = balance;
         this.frozenBalance = frozenBalance;
+        this.totalEnergyWeight = totalEnergyWeight;
         this.transactions = transactions;
         this.tokens = tokens;
         this.energy = energy;
@@ -452,17 +455,16 @@ class Account {
 
     async updateBalance() {
         const { address } = this;
-
         // await NodeService.tronWeb.trx.getBandwidth(address)
         //     .then((bandwidth = 0) => (
         //         this.bandwidth = bandwidth
         //     ));
-
-        const { EnergyLimit=0,EnergyUsed=0,freeNetLimit,NetLimit=0,freeNetUsed=0,NetUsed=0} = await NodeService.tronWeb.trx.getAccountResources(address);
+        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
         this.netLimit = freeNetLimit + NetLimit;
-        this.netUsed =  NetUsed + freeNetUsed;
+        this.netUsed = NetUsed + freeNetUsed;
+        this.totalEnergyWeight = TotalEnergyWeight;
     }
 
     async updateTransactions() {
@@ -534,6 +536,7 @@ class Account {
             address: this.address,
             balance: this.balance,
             frozenBalance: this.frozenBalance,
+            totalEnergyWeight: this.totalEnergyWeight,
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,
@@ -629,12 +632,6 @@ class Account {
             logger.error('Failed to rent energy:', ex);
             return Promise.reject(ex);
         }
-    }
-
-    async getBankDefaultData(requestUrl) {
-        // const { data: { data: dafalultData } } = await axios.get(requestUrl);
-        // console.log(dafalultData);
-        // return dafalultData;
     }
 }
 

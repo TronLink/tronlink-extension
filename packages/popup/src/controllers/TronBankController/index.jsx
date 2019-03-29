@@ -2,14 +2,13 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 17:38:13
+ * @Last Modified time: 2019-03-29 15:11:00
  * TronBankPage
  */
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import TronWeb from 'tronweb';
-import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
@@ -44,8 +43,7 @@ class BankController extends React.Component {
             rentDayMin: 3,
             rentDayMax: 30,
             rentUnit: {
-                num: 10,
-                day: 1,
+                ratio: 0,
                 cost: 0.5
             },
             defaultUnit: {
@@ -68,6 +66,7 @@ class BankController extends React.Component {
     componentDidMount() {
         // data by props
         this.defaultDataFun();
+        this.getDetaultRatioFun();
     }
 
     async defaultDataFun() {
@@ -78,11 +77,6 @@ class BankController extends React.Component {
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
             rentDayMin: defaultData.rental_days_min,
             rentDayMax: defaultData.rental_days_max,
-            rentUnit: {
-                num: defaultData.energy / 10000,
-                day: defaultData.days,
-                cost: defaultData.pay_amount / Math.pow(10, 6)
-            },
             defaultUnit: {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
@@ -91,33 +85,28 @@ class BankController extends React.Component {
         });
     }
 
-    async calculateRentCost() {
+    async getDetaultRatioFun() {
+        // get default ratio
+        const ratio = await PopupAPI.getDetaultRatioFun();
+        const rentUnit = {
+            ratio: 1 / ratio,
+        };
+        this.setState({
+            rentUnit
+        });
+    }
+
+    calculateRentCost() {
         // calculate bank rent cost
-        const requestUrl = `${Utils.requestUrl('test')}/api/bank/pay_amount`;
-        const { recipient, rentNum, rentDay, defaultUnit } = this.state;
-        const { selected } = this.props.accounts;
-        const address = selected.address;
-        const rentDayValue = rentDay.value;
-        console.log(`默认传值的数量${rentDayValue},${rentDay.value}`);
-        let recipientAddress;
-        if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
+        const { recipient, rentNum, rentDay } = this.state;
+        const ratio = this.state.rentUnit.ratio;
+        const rentUnit = {
+            ratio,
+            cost: rentNum.value * rentDay.value * ratio
+        };
         if(recipient.valid && rentNum.valid && rentDay.valid ) {
-            console.log(`天数${rentDayValue}`);
-            const calculateData = await PopupAPI.calculateRentCost(
-                recipientAddress,
-                rentNum.value * Math.pow(10, 6),
-                rentDayValue,
-                requestUrl
-            );
             this.setState({
-                rentUnit: {
-                    num: calculateData.ratio,
-                    cost: calculateData.payAmount / Math.pow(10, 6)
-                }
-            });
-        }else {
-            this.setState({
-                rentUnit: defaultUnit
+                rentUnit
             });
         }
     }
@@ -200,10 +189,10 @@ class BankController extends React.Component {
 
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
             if(_type === 2) {
-                const { selected, accounts } = this.props.accounts;
+                const { accounts, selected } = this.props.accounts;
                 const address = selected.address;
-                const { TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
-                if(Number.isFinite(TotalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / TotalEnergyWeight * 50000000000);
+                const totalEnergyWeight = selected.totalEnergyWeight;
+                if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);
                 else rentNum.predictVal = 0;
                 rentNum.predictStatus = true;
                 // account balance very small
@@ -216,13 +205,14 @@ class BankController extends React.Component {
                 accountMaxBalance.value = Math.max(...balanceAry);
                 if(rentVal > Math.max(...balanceAry)) accountMaxBalance.valid = true; else accountMaxBalance.valid = false;
                 this.setState({ accountMaxBalance });
+                this.isValidRentAddress(address);
             }
             rentNum.valid = true;
             rentNum.error = false;
-            // this.setState({
-            //     rentNum
-            // });
-            // this.calculateRentCost();
+            this.setState({
+                rentNum
+            });
+            this.calculateRentCost();
         } else {
             rentNum.valid = false;
             rentNum.predictStatus = false;
@@ -230,7 +220,9 @@ class BankController extends React.Component {
         }
         this.setState({
             rentNum
-        }, () => { this.calculateRentCost(); });
+        }, () => {
+            this.calculateRentCost();
+        });
     }
 
     handlerRentDayChange(e, _type) {
@@ -258,13 +250,15 @@ class BankController extends React.Component {
 
         if(rentVal <= rentDayMax && rentVal >= rentDayMin) {
             if(_type === 2) {
+                const { selected } = this.props.accounts;
+                const address = selected.address;
                 rentDay.valid = true;
-                console.log(rentDay);
-                // this.setState({
-                //     rentDay
-                // }, () => {
-                //     this.calculateRentCost();
-                // });
+                this.setState({
+                    rentDay
+                }, () => {
+                    this.calculateRentCost();
+                    this.isValidRentAddress(address);
+                });
             }
             rentDay.error = false;
         } else {
@@ -298,6 +292,8 @@ class BankController extends React.Component {
     handlerRentDayFun(_type) {
         // _type 1reduce 2add
         const { rentDayMin, rentDayMax } = this.state;
+        const { selected } = this.props.accounts;
+        const address = selected.address;
         let rentVal = this.rentDayInput.value;
         const rentDay = {
             value: '',
@@ -334,11 +330,11 @@ class BankController extends React.Component {
                     rentDay.valid = true;
                     rentDay.error = false;
                     rentDay.maxError = false;
-                    // this.setState({
-                    //     rentDay
-                    // }, () => {
-                    //     this.calculateRentCost();
-                    // });
+                    this.setState({
+                        rentDay
+                    }, () => {
+                        this.calculateRentCost();
+                    });
                 }
             }
         }
@@ -352,21 +348,19 @@ class BankController extends React.Component {
                 rentDay.value = rentVal + 1;
                 rentDay.valid = true;
                 rentDay.maxError = false;
-                // this.setState({
-                //     rentDay
-                // }, () => {
-                //     this.calculateRentCost();
-                // });
+                this.setState({
+                    rentDay
+                }, () => {
+                    this.calculateRentCost();
+                });
             }
             rentDay.error = false;
         }
-        // this.setState({
-        //     rentDay
-        // });
         this.setState({
             rentDay
         }, () => {
             this.calculateRentCost();
+            this.isValidRentAddress(address);
         });
     }
 
@@ -415,7 +409,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, accountMaxBalance, validOrderOverLimit } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -528,10 +522,10 @@ class BankController extends React.Component {
                         </section>
                         {rentNum.valid && rentDay.valid ?
                             <section className='calculation'>
-                                {rentNum.value}TRX*{rentUnit.num}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
+                                {rentNum.value}TRX*{rentUnit.ratio}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
                             </section> :
                             <section className='rentIntroduce'>
-                                <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...rentUnit }} />
+                                <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} />
                             </section>
                         }
                     </div>

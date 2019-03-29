@@ -167,7 +167,7 @@ export default {
         return this.duplex.send('getTransactionsByTokenId', tokenId);
     },
 
-    //tronbank
+    //tronbank contract
     rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
         return this.duplex.send('rentEnergy', {
             _freezeAmount,
@@ -177,10 +177,18 @@ export default {
         });
     },
 
-    //tronbank index
+    getDetaultRatioFun() {
+        return this.duplex.send('getDetaultRatioFun');
+    },
+
+    //tronbank  index
     getBankDefaultData(requestUrl) {
         return this.duplex.send('getBankDefaultData', { requestUrl });
     },
+
+    // getTotalEnergyWeight(address) {
+    //     return this.duplex.send('getTotalEnergyWeight', { address });
+    // },
 
     calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
         return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });

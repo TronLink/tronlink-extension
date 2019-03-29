@@ -602,6 +602,7 @@ class Wallet extends EventEmitter {
                 energy: account.energy,
                 netUsed: account.netUsed,
                 netLimit: account.netLimit,
+                totalEnergyWeight: account.totalEnergyWeight,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length
             };
 
@@ -736,6 +737,17 @@ class Wallet extends EventEmitter {
         );
     }
 
+    async getDetaultRatioFun() {
+        try {
+            const contractInstance = await NodeService.tronWeb.contract().at('TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5');
+            const ratio = await contractInstance.ratio().call();
+            return ratio.toString();
+        } catch(ex) {
+            logger.error('Failed to get rent tetio:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
     async getBankDefaultData({ requestUrl }) {
         const { data: defaultData } = await axios(requestUrl)
             .then(res => res.data)
@@ -744,6 +756,18 @@ class Wallet extends EventEmitter {
             return logger.warn('Failed to get default data');
         return defaultData;
     }
+
+    // async getTotalEnergyWeight(address) {
+    //     try {
+    //         console.log(`当前address为${address}`);
+    //         const { totalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
+    //         console.log(`totalEnergyWeightwei${totalEnergyWeight}`);
+    //         return totalEnergyWeight.toString();
+    //     } catch(ex) {
+    //         logger.error('Failed to get total Energy Weight:', ex);
+    //         return Promise.reject(ex);
+    //     }
+    // }
 
     async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
         const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days }})
@@ -779,8 +803,6 @@ class Wallet extends EventEmitter {
     }
 
     async getBankRecordDetail({ id, requestUrl }) {
-        console.log(`当前id,${id}`);
-        console.log(`当前requestUrl,${requestUrl}`);
         const { data: bankRecordDetail } = await axios.get(requestUrl, { params: { id } })
             .then(res => res.data)
             .catch(err => { logger.error(err); });
