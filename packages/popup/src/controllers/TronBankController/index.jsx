@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-29 15:11:00
+ * @Last Modified time: 2019-03-29 15:29:37
  * TronBankPage
  */
 import React from 'react';
@@ -98,17 +98,15 @@ class BankController extends React.Component {
 
     calculateRentCost() {
         // calculate bank rent cost
-        const { recipient, rentNum, rentDay } = this.state;
+        const { rentNum, rentDay } = this.state;
         const ratio = this.state.rentUnit.ratio;
         const rentUnit = {
             ratio,
-            cost: rentNum.value * rentDay.value * ratio
+            cost: (rentNum.value * rentDay.value * ratio).toFixed(1)
         };
-        if(recipient.valid && rentNum.valid && rentDay.valid ) {
-            this.setState({
-                rentUnit
-            });
-        }
+        this.setState({
+            rentUnit
+        });
     }
 
     onRecipientChange(e, _type) {
@@ -279,9 +277,6 @@ class BankController extends React.Component {
                 rentDay.maxError = false;
             }
         }
-        // this.setState({
-        //     rentDay
-        // });
         this.setState({
             rentDay
         }, () => {
