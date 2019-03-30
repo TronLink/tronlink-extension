@@ -197,6 +197,11 @@ export default {
     isValidOrderAddress(address, requestUrl) {
         return this.duplex.send('isValidOrderAddress', { address, requestUrl });
     },
+
+    isValidOnlineAddress(address) {
+        return this.duplex.send('isValidOnlineAddress', { address });
+    },
+
     //record list
     getBankRecordList(address, limit, start, requestUrl) {
         return this.duplex.send('getBankRecordList', { address, limit, start, requestUrl });

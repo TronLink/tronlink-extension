@@ -142,6 +142,7 @@ const backgroundScript = {
         duplex.on('getBankDefaultData', this.walletService.getBankDefaultData);
         duplex.on('calculateRentCost', this.walletService.calculateRentCost);
         duplex.on('isValidOrderAddress', this.walletService.isValidOrderAddress);
+        duplex.on('isValidOnlineAddress', this.walletService.isValidOnlineAddress);
         duplex.on('getBankRecordList', this.walletService.getBankRecordList);
         duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
         duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);

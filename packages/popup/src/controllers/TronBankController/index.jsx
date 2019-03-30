@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-29 15:29:37
+ * @Last Modified time: 2019-03-30 15:40:14
  * TronBankPage
  */
 import React from 'react';
@@ -139,7 +139,10 @@ class BankController extends React.Component {
         else {
             recipient.valid = true;
             recipient.error = false;
-            if(_type === 2) this.isValidRentAddress();
+            if(_type === 2) {
+                this.isValidRentAddress(address);
+                this.isValidOnlineAddress(address);
+            }
         }
         this.setState({
             recipient,
@@ -149,9 +152,9 @@ class BankController extends React.Component {
         });
     }
 
-    async isValidRentAddress() {
+    async isValidRentAddress(_address) {
         // valid order num > 3
-        let address = this.rentAddressInput.value;
+        let address = _address;
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
         if(address === '') address = selectedaAddress;
@@ -169,6 +172,12 @@ class BankController extends React.Component {
         };
         if(!isRentDetail.isRent) recipient.valid = false; else recipient.valid = true;
         this.setState({ recipient });
+    }
+
+    async isValidOnlineAddress(_address) {
+        console.log(`输入的地址为${_address}`);
+        const result = await PopupAPI.isValidOnlineAddress(_address);
+        console.log(result);
     }
 
     async handlerRentNumChange(e, _type) {

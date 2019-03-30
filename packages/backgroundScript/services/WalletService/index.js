@@ -235,11 +235,11 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const  r = await account.update().catch(e=>false);
-                if(r){
+                const r = await account.update().catch(e => false);
+                if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
-                }else{
+                }else {
                     res = false;
                 }
             }else{
@@ -788,6 +788,17 @@ class Wallet extends EventEmitter {
         if(!isRentData)
             return logger.warn('Failed to get valid order address data');
         return isRentData;
+    }
+
+    async isValidOnlineAddress({ address }) {
+        console.log(`传到后台的值${address}`);
+        const isOnlineData = await NodeService.tronWeb.trx.getAccount(address)
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        console.log(`isOnlineData是${isOnlineData}`);
+        if(!isOnlineData)
+            return logger.warn('Failed to get online address data');
+        return isOnlineData;
     }
 
     async getBankRecordList({ address, limit, start, requestUrl }) {
