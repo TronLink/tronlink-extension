@@ -36,16 +36,17 @@ class AccountsPage extends React.Component {
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
         this.state = {
-            mnemonic:false,
-            privateKey:false,
-            showMenuList:false,
-            showNodeList:false,
-            showBackUp:false,
-            showDelete:false,
-            news:[]
+            mnemonic: false,
+            privateKey: false,
+            showMenuList: false,
+            showNodeList: false,
+            showBackUp: false,
+            showDelete: false,
+            news: []
         }
     }
-    async componentDidMount(){
+
+    async componentDidMount() {
         const { prices } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[prices.selected], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
@@ -54,7 +55,7 @@ class AccountsPage extends React.Component {
         tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         let news = [];
-        if(res){
+        if(res) {
             news = res.data.data;
         }else{
             news = [];
@@ -63,10 +64,11 @@ class AccountsPage extends React.Component {
         //PopupAPI.refresh();
     }
 
-    addCount(id){
+    addCount(id) {
         console.log(id);
         return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
     }
+
     onClick(address) {
         const { selected } = this.props.accounts;
 
@@ -151,7 +153,7 @@ class AccountsPage extends React.Component {
                 <div className="row2">
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
                     <CopyToClipboard text={accounts.selected.address}
-                                    onCopy={(e) => { T.notify(formatMessage({id:'TOAST.COPY'}))} }>
+                        onCopy={(e) => { T.notify(formatMessage({ id: 'TOAST.COPY' })); } }>
                         <span className='copy'></span>
                     </CopyToClipboard>
 
@@ -174,6 +176,7 @@ class AccountsPage extends React.Component {
     }
 
     renderResource(account) {
+        const { nodes } = this.props;
         return (
             account ? <div className="resource">
                 <div className="cell">
@@ -189,16 +192,17 @@ class AccountsPage extends React.Component {
                 <div className="cell">
                     <div className="title">
                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
-                        <div onClick={ () => {  PopupAPI.changeState(APP_STATE.TRONBANK)}} > 入口</div>
+                        <div onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }} >
+                            {nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ? '入口' : null }
+                        </div>
                         <div className='num'>
                             {account.energy - account.energyUsed}<span>/{account.energy}</span>
                         </div>
                     </div>
                     <ProcessBar percentage={(account.energy - account.energyUsed)/account.energy} />
                 </div>
-            </div>
-            :null
-        )
+            </div>:null
+        );
     }
 
     renderTokens(tokens) {
@@ -211,21 +215,21 @@ class AccountsPage extends React.Component {
                             .shiftedBy(-token.decimals)
                             .toString();
                         const price = token.price === undefined ? 0 : token.price;
-                        const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
+                        const money = tokenId === '_' ? (price * amount).toFixed(2) : (price * amount * prices.priceList[prices.selected]).toFixed(2);
                         return (
                             <div className="tokenItem" onClick={ ()=>{
-                                    let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
-                                    if(tokenId === '_'){
-                                        o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                        o.balance = new BigNumber(accounts.selected.balance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                    }
-                                    PopupAPI.setSelectedToken(o);
-                                    PopupAPI.changeState(APP_STATE.TRANSACTIONS);
-                                }}>
+                                let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                if(tokenId === '_'){
+                                    o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
+                                        .shiftedBy(-token.decimals)
+                                        .toString();
+                                    o.balance = new BigNumber(accounts.selected.balance)
+                                        .shiftedBy(-token.decimals)
+                                        .toString();
+                                }
+                                PopupAPI.setSelectedToken(o);
+                                PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+                            }}>
                                 <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
                                 <div className="name">
                                     {token.abbr || token.symbol || token.name}
