@@ -801,6 +801,7 @@ class Wallet extends EventEmitter {
 
     //setting bank record id
     setSelectedBankRecordId(id) {
+        console.log(`传进来的值${id}`);
         this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
         this.emit('setSelectedBankRecordId', id);
     }

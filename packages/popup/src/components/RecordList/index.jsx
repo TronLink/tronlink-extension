@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 17:51:06
+ * @Last Modified time: 2019-03-30 14:59:12
  * RecordList
  */
 
@@ -20,6 +20,7 @@ class RecordList extends React.Component {
 
     async toMoreDetail(_id) {
         // PopupAPI
+        console.log(`传递id${_id}`);
         await PopupAPI.setSelectedBankRecordId(_id);
         PopupAPI.changeState(APP_STATE.TRONBANK_DETAIL);
     }
