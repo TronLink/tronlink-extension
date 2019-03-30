@@ -3538,6 +3538,11 @@ component-emitter@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
 
+component-indexof@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/component-indexof/-/component-indexof-0.0.3.tgz#11d091312239eb8f32c8f25ae9cb002ffe8d3c24"
+  integrity sha1-EdCRMSI5648yyPJa6csAL/6NPCQ=
+
 compressible@~2.0.16:
   version "2.0.16"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.16.tgz#a49bf9858f3821b64ce1be0296afc7380466a77f"

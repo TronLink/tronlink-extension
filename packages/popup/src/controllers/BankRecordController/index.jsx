@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 17:48:15
+ * @Last Modified time: 2019-03-30 19:12:39
  * BankRecordController
  */
 import React from 'react';
@@ -50,7 +50,8 @@ class BankRecordController extends React.Component {
                 // { id: 12, energy_address: 'st5TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 5 },
                 // { id: 13, energy_address: 'st4TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 4 },
             ],
-            loading: false
+            loading: false,
+            noData: false
         };
     }
 
@@ -73,7 +74,8 @@ class BankRecordController extends React.Component {
         const newRecordList = defaultRecordList.filter((item) => { return item.status > 2 && item.status !== 7; });
         this.setState({
             defaultRecordList,
-            recordList: newRecordList
+            recordList: newRecordList,
+            noData: true
         });
         console.log(newRecordList);
         Toast.hide();
@@ -108,7 +110,7 @@ class BankRecordController extends React.Component {
             { label: 2 },
             { label: 3 }
         ];
-        const { recordList } = this.state;
+        const { recordList, noData } = this.state;
         return (
             <div className='bankRecordContainer'>
                 <NavBar
@@ -132,7 +134,7 @@ class BankRecordController extends React.Component {
                             return(
                                 <div key={ind} className='rentListContent'>
                                     <RecordList recordList={recordList}></RecordList>
-                                    <div className='noData'>暂无数据~</div>
+                                    { noData ? <div className='noData'>暂无数据~</div> : null }
                                 </div>
                             );
                         })}
