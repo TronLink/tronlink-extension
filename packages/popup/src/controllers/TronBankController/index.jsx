@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-01 16:48:55
+ * @Last Modified time: 2019-04-01 17:10:31
  * TronBankPage
  */
 import React from 'react';
@@ -49,7 +49,8 @@ class BankController extends React.Component {
             defaultUnit: {
                 num: 10,
                 day: 1,
-                cost: 0.5
+                cost: 0.5,
+                totalEnergyWeight: 999
             },
             accountMaxBalance: {
                 value: '',
@@ -83,7 +84,8 @@ class BankController extends React.Component {
             defaultUnit: {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
-                cost: defaultData.pay_amount / Math.pow(10, 6)
+                cost: defaultData.pay_amount / Math.pow(10, 6),
+                totalEnergyWeight: 999
             }
         });
     }
@@ -187,7 +189,7 @@ class BankController extends React.Component {
 
     async handlerRentNumChange(e, _type) {
         // rent num change  _type 1chage 2blur
-        const { rentNumMin, rentNumMax } = this.state;
+        const { rentNumMin, rentNumMax, defaultUnit } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
@@ -202,20 +204,18 @@ class BankController extends React.Component {
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
             if(_type === 2) {
                 rentNum.error = false;
-                const { accounts, selected } = this.props.accounts;
+                const { selected } = this.props.accounts;
                 const totalEnergyWeight = selected.totalEnergyWeight;
+                // predict num energy
                 if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
                 rentNum.predictStatus = true;
-                console.log(`rentNum.predictVal${rentNum.predictVal}`);
-                // company account balance very small
-                const balanceAry = [];
-                Object.values(accounts).map(v => { return balanceAry.push(v.balance); });
+                console.log(`rentNum.predictVal${rentNum.predictVal},defaultUnit.num${defaultUnit.totalEnergyWeight}`);
                 const accountMaxBalance = {
-                    value: '',
+                    value: defaultUnit.totalEnergyWeight,
                     valid: BANK_STATE.INVALID
                 };
-                accountMaxBalance.value = Math.max(...balanceAry);
-                if(rentVal > Math.max(...balanceAry)) {
+                // overtake company account num
+                if(rentVal > defaultUnit.totalEnergyWeight) {
                     accountMaxBalance.valid = true;
                     rentNum.valid = false;
                 } else {
