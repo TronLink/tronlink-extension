@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-01 16:37:59
+ * @Last Modified time: 2019-04-01 16:48:55
  * TronBankPage
  */
 import React from 'react';
@@ -407,7 +407,27 @@ class BankController extends React.Component {
             recipientAddress
         ).then(() => {
             Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
-            this.setState({ rentConfirmVisible: false });
+            this.setState({
+                rentConfirmVisible: false,
+                recipient: {
+                    value: '',
+                    valid: true,
+                    error: false
+                },
+                rentNum: {
+                    value: '',
+                    predictVal: '',
+                    predictStatus: false,
+                    valid: false,
+                    error: false
+                },
+                rentDay: {
+                    value: '',
+                    valid: false,
+                    error: false,
+                    maxError: false
+                },
+            });
         }).catch(error => {
             console.log(error);
             Toast.fail(JSON.stringify(error.error), 2);
