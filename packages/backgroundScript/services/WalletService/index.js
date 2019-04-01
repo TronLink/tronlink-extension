@@ -792,10 +792,9 @@ class Wallet extends EventEmitter {
 
     async isValidOnlineAddress({ address }) {
         console.log(`传到后台的值${address}`);
-        const isOnlineData = await NodeService.tronWeb.trx.getAccount(address)
+        const isOnlineData = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
             .then(res => res.data)
             .catch(err => { logger.error(err); });
-        console.log(`isOnlineData是${isOnlineData}`);
         if(!isOnlineData)
             return logger.warn('Failed to get online address data');
         return isOnlineData;

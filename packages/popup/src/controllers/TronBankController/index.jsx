@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-30 15:40:14
+ * @Last Modified time: 2019-04-01 12:18:57
  * TronBankPage
  */
 import React from 'react';
@@ -128,7 +128,7 @@ class BankController extends React.Component {
             }, () => {
                 this.calculateRentCost();
             });
-            if(_type === 2) this.isValidRentAddress(address);
+            if(_type === 2) this.isValidRentAddress();
             return;
         }
         if(!TronWeb.isAddress(address)) {
@@ -140,8 +140,8 @@ class BankController extends React.Component {
             recipient.valid = true;
             recipient.error = false;
             if(_type === 2) {
-                this.isValidRentAddress(address);
-                this.isValidOnlineAddress(address);
+                this.isValidRentAddress();
+                this.isValidOnlineAddress();
             }
         }
         this.setState({
@@ -152,12 +152,13 @@ class BankController extends React.Component {
         });
     }
 
-    async isValidRentAddress(_address) {
+    async isValidRentAddress() {
         // valid order num > 3
-        let address = _address;
+        const curaAddress = this.rentAddressInput.value;
+        let address;
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
-        if(address === '') address = selectedaAddress;
+        if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
         this.setState({
@@ -174,10 +175,13 @@ class BankController extends React.Component {
         this.setState({ recipient });
     }
 
-    async isValidOnlineAddress(_address) {
-        console.log(`输入的地址为${_address}`);
-        const result = await PopupAPI.isValidOnlineAddress(_address);
-        console.log(result);
+    async isValidOnlineAddress() {
+        const curAddress = this.rentAddressInput.value;
+        console.log(`输入的地址为${curAddress}`);
+        const result = await PopupAPI.isValidOnlineAddress(curAddress);
+        if(typeof(result) == 'undefined') {
+            console.log(result);
+        }
     }
 
     async handlerRentNumChange(e, _type) {
@@ -197,7 +201,6 @@ class BankController extends React.Component {
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
             if(_type === 2) {
                 const { accounts, selected } = this.props.accounts;
-                const address = selected.address;
                 const totalEnergyWeight = selected.totalEnergyWeight;
                 if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);
                 else rentNum.predictVal = 0;
@@ -212,7 +215,7 @@ class BankController extends React.Component {
                 accountMaxBalance.value = Math.max(...balanceAry);
                 if(rentVal > Math.max(...balanceAry)) accountMaxBalance.valid = true; else accountMaxBalance.valid = false;
                 this.setState({ accountMaxBalance });
-                this.isValidRentAddress(address);
+                this.isValidRentAddress();
             }
             rentNum.valid = true;
             rentNum.error = false;
@@ -257,14 +260,12 @@ class BankController extends React.Component {
 
         if(rentVal <= rentDayMax && rentVal >= rentDayMin) {
             if(_type === 2) {
-                const { selected } = this.props.accounts;
-                const address = selected.address;
                 rentDay.valid = true;
                 this.setState({
                     rentDay
                 }, () => {
                     this.calculateRentCost();
-                    this.isValidRentAddress(address);
+                    this.isValidRentAddress();
                 });
             }
             rentDay.error = false;
@@ -296,8 +297,6 @@ class BankController extends React.Component {
     handlerRentDayFun(_type) {
         // _type 1reduce 2add
         const { rentDayMin, rentDayMax } = this.state;
-        const { selected } = this.props.accounts;
-        const address = selected.address;
         let rentVal = this.rentDayInput.value;
         const rentDay = {
             value: '',
@@ -364,15 +363,20 @@ class BankController extends React.Component {
             rentDay
         }, () => {
             this.calculateRentCost();
-            this.isValidRentAddress(address);
+            this.isValidRentAddress();
         });
     }
 
     handlerInfoConfirm() {
         // InfoConfirm
-        // const { formatMessage } = this.props.intl;
-        // const { recipient, rentNum, rentDay } = this.state;
-        // Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 1);
+        const { formatMessage } = this.props.intl;
+        const { selected } = this.props.accounts;
+        const currentBalance = selected.balance / Math.pow(10, 6);
+        const { rentUnit } = this.state;
+        if(rentUnit.cost > currentBalance) {
+            Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 2);
+            return;
+        }
         this.setState({
             rentConfirmVisible: true
         });
@@ -389,7 +393,6 @@ class BankController extends React.Component {
         const payAmount = freezeAmount * 0.1 * rentDayValue;
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
-        console.log({ freezeAmount, payAmount, rentDayValue, recipientAddress });
         PopupAPI.rentEnergy(
             freezeAmount,
             payAmount,
@@ -470,6 +473,7 @@ class BankController extends React.Component {
                             </div>
                             { recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
                             { !validOrderOverLimit.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> : null }
+                            {/* { !validOrderOverLimit.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> : null } */}
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/>
                             </div>
