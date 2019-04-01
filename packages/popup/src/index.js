@@ -105,7 +105,8 @@ export const app = {
             PopupAPI.getPrices(),
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
-            PopupAPI.getLanguage()
+            PopupAPI.getLanguage(),
+            // PopupAPI.getSelectedBankRecordId()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
         if(lang.indexOf('zh')>-1) {
@@ -179,7 +180,6 @@ export const app = {
         this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
             setSelectedBankRecordId(id)
         ));
-
     },
 
     render() {

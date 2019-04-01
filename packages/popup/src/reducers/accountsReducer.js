@@ -22,11 +22,11 @@ export const accountsReducer = createReducer({
             // cached: [],
             // uncached: 0
         },
-        selectedToken: {}
+        selectedToken: {},
+        selectedBankRecordId: 0
     },
     accounts: { },
-    selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 },
-    selectedBankRecordId: 0
+    selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 }
 }, {
     [ setAccount ]: (state, { payload: { transactions, ...account } }) => {
         state.selected = account;
@@ -57,6 +57,6 @@ export const accountsReducer = createReducer({
         state.selectedToken = payload;
     },
     [ setSelectedBankRecordId ]: (state, { payload }) => {
-        state.setSelectedBankRecordId = payload;
+        state.selected.setSelectedBankRecordId = payload;
     },
 });

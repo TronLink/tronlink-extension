@@ -213,5 +213,9 @@ export default {
 
     setSelectedBankRecordId(id) {
         this.duplex.send('setSelectedBankRecordId', id, false);
-    }
+    },
+
+    // getSelectedBankRecordId() {
+    //     return this.duplex.send('getSelectedBankRecordId');
+    // }
 };
