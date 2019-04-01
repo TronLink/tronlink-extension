@@ -760,18 +760,6 @@ class Wallet extends EventEmitter {
         return defaultData;
     }
 
-    // async getTotalEnergyWeight(address) {
-    //     try {
-    //         console.log(`当前address为${address}`);
-    //         const { totalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
-    //         console.log(`totalEnergyWeightwei${totalEnergyWeight}`);
-    //         return totalEnergyWeight.toString();
-    //     } catch(ex) {
-    //         logger.error('Failed to get total Energy Weight:', ex);
-    //         return Promise.reject(ex);
-    //     }
-    // }
-
     async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
         const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days }})
             .then(res => res.data)
@@ -791,13 +779,10 @@ class Wallet extends EventEmitter {
     }
 
     async isValidOnlineAddress({ address }) {
-        console.log(`传到后台的值${address}`);
-        const isOnlineData = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
-            .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!isOnlineData)
+        const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+        if(!account.address)
             return logger.warn('Failed to get online address data');
-        return isOnlineData;
+        return account.address;
     }
 
     async getBankRecordList({ address, limit, start, requestUrl }) {
@@ -811,7 +796,6 @@ class Wallet extends EventEmitter {
 
     //setting bank record id
     setSelectedBankRecordId(id) {
-        console.log(`传进来的值${id}`);
         this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
         this.emit('setSelectedBankRecordId', id);
     }

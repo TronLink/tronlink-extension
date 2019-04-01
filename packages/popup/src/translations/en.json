@@ -255,6 +255,7 @@
     "BANK.INDEX.RENTNUMERROR":"en错误，请重新输入",
     "BANK.INDEX.FORECASTNUM":"en预计可得={num}Energy",
     "BANK.INDEX.OVERTAKEORDERNUM":"en一个接收地址同时最多只能有三个生效中的订单",
+    "BANK.INDEX.NOTONLINEADDRESS":"en接收地址非线上地址",
     "BANK.INDEX.OVERTAKEMAXNUM":"en资源池剩余{max}TRX，请调小租用量",
     "BANK.INDEX.RENTPLACEHOLDER":"en租用天数",
     "BANK.INDEX.RENTDAYERROR":"en最少租用{min}天",

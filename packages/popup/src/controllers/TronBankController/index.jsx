@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-01 12:18:57
+ * @Last Modified time: 2019-04-01 16:37:59
  * TronBankPage
  */
 import React from 'react';
@@ -57,6 +57,9 @@ class BankController extends React.Component {
             },
             validOrderOverLimit: {
                 valid: true
+            },
+            isOnlineAddress: {
+                error: false
             },
             loading: false
         };
@@ -118,38 +121,30 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID
         };
         const validOrderOverLimit = {
-            valid: BANK_STATE.INVALID
+            valid: BANK_STATE.VALID
         };
         if(!address.length) {
-            recipient.valid = true;
-            recipient.error = false;
-            this.setState({
-                recipient
-            }, () => {
+            if(_type === 2) {
+                this.isValidRentAddress();
                 this.calculateRentCost();
-            });
-            if(_type === 2) this.isValidRentAddress();
+            }
             return;
         }
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
             validOrderOverLimit.valid = true;
             if(_type === 2) recipient.error = true; else recipient.error = false;
+            this.setState({
+                recipient,
+                validOrderOverLimit
+            }, () => {
+                this.calculateRentCost();
+            });
         }
         else {
-            recipient.valid = true;
-            recipient.error = false;
-            if(_type === 2) {
-                this.isValidRentAddress();
-                this.isValidOnlineAddress();
-            }
-        }
-        this.setState({
-            recipient,
-            validOrderOverLimit
-        }, () => {
+            if(_type === 2) this.isValidRentAddress();
             this.calculateRentCost();
-        });
+        }
     }
 
     async isValidRentAddress() {
@@ -171,17 +166,23 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID,
             valid: BANK_STATE.INVALID
         };
-        if(!isRentDetail.isRent) recipient.valid = false; else recipient.valid = true;
-        this.setState({ recipient });
-    }
-
-    async isValidOnlineAddress() {
-        const curAddress = this.rentAddressInput.value;
-        console.log(`输入的地址为${curAddress}`);
-        const result = await PopupAPI.isValidOnlineAddress(curAddress);
-        if(typeof(result) == 'undefined') {
-            console.log(result);
-        }
+        const isOnlineAddress = {
+            error: BANK_STATE.INVALID
+        };
+        // isRent => yes judge online address  => no tips
+        if(isRentDetail.isRent) {
+            const result = await PopupAPI.isValidOnlineAddress(address);
+            if(typeof(result) == 'undefined') {
+                isOnlineAddress.error = true;
+                recipient.error = false;
+                recipient.valid = false;
+            }else {
+                isOnlineAddress.error = false;
+                recipient.error = false;
+                recipient.valid = true;
+            }
+        }else recipient.valid = false;
+        this.setState({ isOnlineAddress, recipient });
     }
 
     async handlerRentNumChange(e, _type) {
@@ -200,12 +201,13 @@ class BankController extends React.Component {
 
         if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
             if(_type === 2) {
+                rentNum.error = false;
                 const { accounts, selected } = this.props.accounts;
                 const totalEnergyWeight = selected.totalEnergyWeight;
-                if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);
-                else rentNum.predictVal = 0;
+                if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
                 rentNum.predictStatus = true;
-                // account balance very small
+                console.log(`rentNum.predictVal${rentNum.predictVal}`);
+                // company account balance very small
                 const balanceAry = [];
                 Object.values(accounts).map(v => { return balanceAry.push(v.balance); });
                 const accountMaxBalance = {
@@ -213,16 +215,21 @@ class BankController extends React.Component {
                     valid: BANK_STATE.INVALID
                 };
                 accountMaxBalance.value = Math.max(...balanceAry);
-                if(rentVal > Math.max(...balanceAry)) accountMaxBalance.valid = true; else accountMaxBalance.valid = false;
+                if(rentVal > Math.max(...balanceAry)) {
+                    accountMaxBalance.valid = true;
+                    rentNum.valid = false;
+                } else {
+                    rentNum.valid = true;
+                    accountMaxBalance.valid = false;
+                }
                 this.setState({ accountMaxBalance });
                 this.isValidRentAddress();
             }
-            rentNum.valid = true;
-            rentNum.error = false;
             this.setState({
                 rentNum
+            }, () => {
+                this.calculateRentCost();
             });
-            this.calculateRentCost();
         } else {
             rentNum.valid = false;
             rentNum.predictStatus = false;
@@ -416,7 +423,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -472,8 +479,8 @@ class BankController extends React.Component {
                                 />
                             </div>
                             { recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
-                            { !validOrderOverLimit.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> : null }
-                            {/* { !validOrderOverLimit.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> : null } */}
+                            { validOrderOverLimit.valid ? null : <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> }
+                            { isOnlineAddress.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/></div> : null }
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/>
                             </div>
