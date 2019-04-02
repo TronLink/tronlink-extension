@@ -6,7 +6,6 @@ import { Accordion, NavBar } from 'antd-mobile';
 import './TronBankHelp.scss';
 
 class TronBankHelp extends React.Component {
-
     onChange = (key) => {
         console.log(key);
     };
