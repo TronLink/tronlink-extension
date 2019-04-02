@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 20:45:19
+ * @Last Modified time: 2019-04-02 20:48:47
  * BankOrderDetail
  */
 import React from 'react';
@@ -27,7 +27,6 @@ class BankDetailController extends React.Component {
         const { selected } = this.props.accounts;
         let requestId;
         if(selected.selectedBankRecordId) requestId = selected.selectedBankRecordId;
-        console.log(`requestId为${requestId}`);
         this.getBankRecordDetail(requestId);
     }
 

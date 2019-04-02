@@ -35,7 +35,7 @@ class TronBankHelp extends React.Component {
                             <section className='feedbackCont'>
                                 <h2 className='title'><FormattedMessage id='BANK.HELP.JOINCOMMUNITY' /></h2>
                                 <p className='content'>
-                                    <img src={require('../../assets/images/new/tronBank/telegram.svg')} alt='telegram'/><span className='linkStyle'>（Tron Lending）</span>
+                                    <img src={require('../../assets/images/new/tronBank/telegram.svg')} alt='telegram'/><a href='https//:www.baidu.com' target='_blank'><span className='linkStyle'>（Tron Lending）</span></a>
                                 </p>
                                 <h2 className='title'>
                                     <FormattedMessage id='BANK.HELP.FEEDBACK' />
