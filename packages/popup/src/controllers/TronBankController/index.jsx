@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 19:46:11
+ * @Last Modified time: 2019-04-02 19:55:06
  * TronBankPage
  */
 import React from 'react';
@@ -90,7 +90,6 @@ class BankController extends React.Component {
             total: totalEnergy,
             show: true
         };
-        console.log(`当前curentInputBalance${curentInputBalance.used},${curentInputBalance.total},${curentInputBalance.valid}`);
         this.setState({
             rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
@@ -215,7 +214,6 @@ class BankController extends React.Component {
             }else {
                 let energyUsed = result.EnergyUsed;
                 const energyLimit = result.EnergyLimit;
-                console.log(`result是${energyLimit},${energyUsed}`);
                 if(typeof(energyUsed) == 'undefined') energyUsed = 0;
                 isOnlineAddress.error = false;
                 recipient.error = false;
@@ -255,7 +253,6 @@ class BankController extends React.Component {
             const totalEnergyWeight = selected.totalEnergyWeight;
             // predict num energy
             if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
-            console.log(`rentNum.predictVal${rentNum.predictVal},defaultUnit.num${defaultUnit.totalEnergyWeight}`);
             const accountMaxBalance = {
                 value: defaultUnit.totalEnergyWeight,
                 valid: BANK_STATE.INVALID
@@ -315,7 +312,6 @@ class BankController extends React.Component {
         };
         if(!rentVal.length)
             return this.setState({ rentDay });
-        console.log(`当前值${rentVal},判断值${Utils.validatInteger(rentVal)}`);
         if(!Utils.validatInteger(rentVal)) {
             rentDay.valid = false;
             rentDay.error = false;
@@ -449,13 +445,12 @@ class BankController extends React.Component {
     rentDealSendFun(e) {
         //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days*0.1
         const { formatMessage } = this.props.intl;
-        const { rentNum, rentDay, recipient, rentUnit} = this.state;
+        const { rentNum, rentDay, recipient, rentUnit } = this.state;
         const { selected } = this.props.accounts;
         const address = selected.address;
         const rentDayValue = Number(rentDay.value);
         const freezeAmount = rentNum.value * Math.pow(10, 6);
         const ratio = rentUnit.ratio;
-        console.log(`rentUnit.ratio为${ratio}`);
         const payAmount = freezeAmount * ratio * rentDayValue;
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;

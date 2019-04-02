@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-30 14:59:12
+ * @Last Modified time: 2019-04-02 19:53:54
  * RecordList
  */
 
@@ -31,8 +31,8 @@ class RecordList extends React.Component {
             <div>
                 {recordList.map((val, key) => {
                     let statusMessage;
-                    // 有效3-6 8   失效:7 单独  0-2 处理
-                    if (val.status > 2 && val.status !== 7) {
+                    // 有效3 5 6 8   失效:7 单独  0-2  4 处理
+                    if (val.status > 2 && val.status !== 7 && val.status !== 4) {
                         statusMessage = (
                             <span className='validStatus'>
                                 <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/>

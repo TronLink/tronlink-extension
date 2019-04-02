@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 18:50:23
+ * @Last Modified time: 2019-04-02 19:53:42
  * BankOrderDetail
  */
 import React from 'react';
@@ -68,8 +68,8 @@ class BankDetailController extends React.Component {
         // ];
         let statusMessage;
         orderList.map((val, key) => {
-        // 有效3-6 8   失效:7 单独  0-2 处理
-            if (val.status > 2 && val.status !== 7) {
+        // 有效3 5 6 8   失效:7 单独  0-2 4 处理
+            if (val.status > 2 && val.status !== 7 && val.status !== 4) {
                 statusMessage = (
                     <span className='validStatus'>
                         <FormattedMessage id='BANK.RENTRECORD.VALIDNAME'/>
