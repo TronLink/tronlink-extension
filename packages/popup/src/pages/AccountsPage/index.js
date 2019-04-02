@@ -30,6 +30,7 @@ const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_1
 let apiUrl = '';
 let tronscanUrl = '';
 class AccountsPage extends React.Component {
+
     constructor() {
         super();
         this.onClick = this.onClick.bind(this);
@@ -42,10 +43,14 @@ class AccountsPage extends React.Component {
             showNodeList:false,
             showBackUp:false,
             showDelete:false,
-            news:[]
+            news: [],
+            ieos: []
         }
     }
+
     async componentDidMount(){
+        const ieos = [{name:'Ace',imgUrl:trxImg,type:1,deadline:(new Date('2019-04-13 00:00:00').getTime())/1000}];
+        //const ieos = [];
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
@@ -54,19 +59,48 @@ class AccountsPage extends React.Component {
         tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         let news = [];
-        if(res){
+        if(res) {
             news = res.data.data;
-        }else{
+        } else {
             news = [];
         }
         this.setState({news});
+
+        this.runTime(ieos);
+        // setInterval(()=>{
+        //     for(const o of ieos) {
+        //         if(o.type === 1) {
+        //             o.time = this.getTime(o.deadline);
+        //         }
+        //     }
+        //     this.setState({ieos});
+        // },1000)
         //PopupAPI.refresh();
     }
 
+    runTime(ieos){
+        for(const o of ieos) {
+            if(o.type === 1) {
+                o.time = this.getTime(o.deadline);
+            }
+        }
+        this.setState({ieos});
+        setTimeout(()=>{this.runTime(this.state.ieos)},1000);
+    }
+
+    getTime(deadline) {
+       const time =  new Date().getTime()/1000;
+       const gap = deadline - time;
+       const hours = Math.floor( gap / ( 60  * 60 ) );
+       const minutes = Math.floor( ( gap % ( 60 * 60 ) ) / 60);
+       const seconds = Math.floor(gap % 60);
+       return [hours>9?hours:'0'+hours,minutes>9?minutes:'0'+minutes,seconds>9?seconds:'0'+seconds];
+    }
+
     addCount(id){
-        console.log(id);
         return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
     }
+
     onClick(address) {
         const { selected } = this.props.accounts;
 
@@ -85,7 +119,6 @@ class AccountsPage extends React.Component {
                 showDelete:true
             });
         }
-
     }
 
     async onExport() {
@@ -99,6 +132,7 @@ class AccountsPage extends React.Component {
             showBackUp:true
         })
     }
+
     handleShowNodeList(){
         this.setState({
             showMenuList:false,
@@ -172,6 +206,7 @@ class AccountsPage extends React.Component {
             </div>
         )
     }
+
     renderResource(account){
         return (
             account?
@@ -198,6 +233,46 @@ class AccountsPage extends React.Component {
             </div>
                 :
             null
+        )
+
+    }
+
+    renderIeos(ieos){
+        const { time } = this.state;
+        if(ieos.length === 0)
+            return null;
+
+        return (
+            <div className="ieos">
+                {
+                    ieos.map(v=>(
+                        <div className="ieo">
+                            <img src={v.imgUrl} />
+                            <div className="name">{v.name}</div>
+                            <div className="worth">
+                                {
+                                        v.type==1?
+                                        <div className="ieo_will">
+                                            <FormattedMessage id="IEOS.LEFT_TIME" />
+                                            <div className="time">
+                                                <div className="cell">{v.time[0]}</div>
+                                                :
+                                                <div className="cell">{v.time[1]}</div>
+                                                :
+                                                <div className="cell">{v.time[2]}</div>
+                                            </div>
+                                        </div>
+                                        :
+                                        <div className="ieo_ing"><FormattedMessage id="IEOS.BUY_ING" /></div>
+                                }
+                                <div className="launch">
+                                    <FormattedMessage id="IEOS.LAUNCH_BASE" />
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
         )
 
     }
@@ -326,7 +401,7 @@ class AccountsPage extends React.Component {
         let totalMoney = '0';
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
-        const {showNodeList,mnemonic,privateKey,news}  = this.state;
+        const { showNodeList,mnemonic,privateKey,news,ieos }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng } = this.props;
         const mode = setting.developmentMode?'developmentMode':'productionMode';
@@ -475,6 +550,7 @@ class AccountsPage extends React.Component {
                     { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
+                        { this.renderIeos(ieos) }
                         <div className="scroll">
                             { this.renderTokens(tokens) }
                         </div>

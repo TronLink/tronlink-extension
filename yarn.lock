@@ -11235,7 +11235,7 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-tronweb@^2.2.7:
+tronweb@2.3.4, tronweb@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.3.4.tgz#e6bcee3062fbf144cdb4ed22924b937f9de037bf"
   dependencies:

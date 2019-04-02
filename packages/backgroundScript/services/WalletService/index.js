@@ -125,11 +125,11 @@ class Wallet extends EventEmitter {
                 Promise.all([account.update(),account.updateTransactions()]).then(()=>{
                     if(account.address === this.selectedAccount){
                         this.emit('setAccount', this.selectedAccount);
-                        //this.emit('setAccounts', this.getAccounts());
                     }
                 }).catch(e=>{console.log(e)});
             } else {
-                await account.update();
+                //await account.update();
+                continue;
             }
         }
         this.emit('setAccounts', this.getAccounts());

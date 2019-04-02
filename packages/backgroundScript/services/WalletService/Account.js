@@ -380,6 +380,11 @@ class Account {
             }
         } else {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+            if (!account.address) {
+                logger.info(`Account ${ address } does not exist on the network`);
+                this.reset();
+                return true;
+            }
             const filteredTokens = (account.assetV2 || []).filter(({ value }) => { return value > 0 });
             if(filteredTokens.length > 0) {
                 for(const { key, value } of filteredTokens) {
