@@ -246,7 +246,7 @@
     "BANK.INDEX.ACCOUNT":"account",
     "BANK.INDEX.BALANCE":"en {amount}TRX",
     "BANK.INDEX.PLACEHOLDER":"en不填默认为当前支付账户地址",
-    "BANK.INDEX.RECEIVEERROR":"en地址错误，请重新输入",
+    "BANK.INDEX.RECEIVEERROR":"en格式错误，请重新输入",
     "BANK.INDEX.USED":"en已用{num}Energy",
     "BANK.INDEX.TOTAL":"en共{total}Energy",
     "BANK.INDEX.RENTNUM":"en租用量",
@@ -255,7 +255,7 @@
     "BANK.INDEX.RENTNUMERROR":"en错误，请重新输入",
     "BANK.INDEX.FORECASTNUM":"en预计可得={num}Energy",
     "BANK.INDEX.OVERTAKEORDERNUM":"en一个接收地址同时最多只能有三个生效中的订单",
-    "BANK.INDEX.NOTONLINEADDRESS":"en接收地址非线上地址",
+    "BANK.INDEX.NOTONLINEADDRESS":"en地址未激活,请向其转入任意token,以激活该地址",
     "BANK.INDEX.OVERTAKEMAXNUM":"en资源池剩余{max}TRX，请调小租用量",
     "BANK.INDEX.RENTPLACEHOLDER":"en租用天数",
     "BANK.INDEX.RENTDAYERROR":"en最少租用{min}天",
@@ -267,9 +267,16 @@
 
     "BANK.RENTNUMMODAL.RECORD":"en租用记录",
     "BANK.RENTNUMMODAL.HELP":"en帮助",
+    "BANK.HELP.ANNOUNCEMENTS":"en注意事项",
+    "BANK.HELP.TIPSONE":"en1.付款完成后，能量约在1分钟后到账。由于广播延迟等原因，少数情况下，可能会存在5-10分钟的延迟。",
+    "BANK.HELP.TIPSTWO":"en2.同一能源接收地址，同时最多只能拥有三笔有效订单。",
+    "BANK.HELP.TIPSTHREE":"en3.订单不可撤",
+    "BANK.HELP.CONTACT":"en联系我们",
+    "BANK.HELP.JOINCOMMUNITY":"en加入社群",
+    "BANK.HELP.FEEDBACK":"en问题反馈",
 
 
-    "BANK.RENTRECORD.VALID":"en有效",
+    "BANK.RENTRECORD.VALID":"en生效中",
     "BANK.RENTRECORD.INVALID":"en已完成",
     "BANK.RENTRECORD.ALLSTATUS":"en全部",
     "BANK.RENTRECORD.RENTDETAIL":"en租用详情：",
@@ -292,7 +299,7 @@
     "BANK.RENTDETAIL.EXPIRESTIME":"en到期时间",
 
     "BANK.RENTNUMMODAL.TITLE":"en租用量说明",
-    "BANK.RENTNUMMODAL.CONTENT":"en文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容文案内容",
+    "BANK.RENTNUMMODAL.CONTENT":"en请填写希望冻结trx的数量，您将获得冻结对应数量trx所产生的能量。根据Tron网络机制， 冻结每个trx产生的能量与全网冻结量有关，因此能量将会实时波动。",
     "BANK.RENTNUMMODAL.BUTTON":"en关闭",
 
     "BANK.RENTINFO.CONFIRM":"en租用信息确认",

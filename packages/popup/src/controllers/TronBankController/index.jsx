@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-01 17:10:31
+ * @Last Modified time: 2019-04-02 11:01:52
  * TronBankPage
  */
 import React from 'react';
@@ -462,7 +462,7 @@ class BankController extends React.Component {
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
                     rightContent={<img onClick={() => { this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
-                >TronBank
+                >TronLending
                 </NavBar>
                 {/* navModal */}
                 <div className='navBarMoreMenu' onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible }); } }>
@@ -471,7 +471,7 @@ class BankController extends React.Component {
                             <img onClick={() => { this.setState({ popoverVisible: true }); }} className='rightMoreIcon' src={myImg('record')} alt={'record'}/>
                             <FormattedMessage id='BANK.RENTNUMMODAL.RECORD' />
                         </div>
-                        <div onClick={(e) => { console.log('TODO'); }} className='item'>
+                        <div onClick={(e) => { PopupAPI.changeState(APP_STATE.TRONBANK_HELP); }} className='item'>
                             <img onClick={() => { this.setState({ popoverVisible: true }); }} className='rightMoreIcon' src={myImg('help')} alt={'help'}/>
                             <FormattedMessage id='BANK.RENTNUMMODAL.HELP' />
                         </div>

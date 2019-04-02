@@ -20,7 +20,7 @@ import AddTokenController from '@tronlink/popup/src/controllers/AddTokenControll
 import BankController from '@tronlink/popup/src/controllers/TronBankController';
 import BankRecordController from '@tronlink/popup/src/controllers/BankRecordController';
 import BankDetailController from '@tronlink/popup/src/controllers/BankDetailController';
-import TestHtmlController from '@tronlink/popup/src/controllers/TestHtmlController';
+import BankHelplController from '@tronlink/popup/src/controllers/TronBankHelp';
 
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
@@ -86,8 +86,8 @@ class App extends React.Component {
             case APP_STATE.TRONBANK_DETAIL:
                 dom = <BankDetailController accounts={accounts}></BankDetailController>;
                 break;
-            case APP_STATE.TESTHMTL:
-                dom = <TestHtmlController />;
+            case APP_STATE.TRONBANK_HELP:
+                dom = <BankHelplController></BankHelplController>;
                 break;
             default:
                 dom =
