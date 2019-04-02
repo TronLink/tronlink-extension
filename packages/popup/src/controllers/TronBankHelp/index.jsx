@@ -34,10 +34,16 @@ class TronBankHelp extends React.Component {
                         </Accordion.Panel>
                         <Accordion.Panel header={formatMessage({ id: 'BANK.HELP.CONTACT' })}π className='feedback'>
                             <section className='feedbackCont'>
-                                <FormattedMessage id='BANK.HELP.JOINCOMMUNITY' /><br/>
-                                    (Tron Lending)
-                                <FormattedMessage id='BANK.HELP.FEEDBACK' /><br/>
+                                <h2 className='title'><FormattedMessage id='BANK.HELP.JOINCOMMUNITY' /></h2>
+                                <p className='content'>
+                                    <img src={require('../../assets/images/new/tronBank/telegram.svg')} alt='telegram'/><span className='linkStyle'>（Tron Lending）</span>
+                                </p>
+                                <h2 className='title'>
+                                    <FormattedMessage id='BANK.HELP.FEEDBACK' />
+                                </h2>
+                                <p className='content single'>
                                     xxx@TronLending.com
+                                </p>
                             </section>
                         </Accordion.Panel>
                     </Accordion>

@@ -628,9 +628,9 @@ class Account {
     }
 
     async rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
-        // contract TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5
+        // contract TCVuAbhMLUGpoVsSd2AygqiZWWyoSyNfVh
         try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5');
+            const contractInstance = await NodeService.tronWeb.contract().at('TCVuAbhMLUGpoVsSd2AygqiZWWyoSyNfVh');
             await contractInstance.entrustOrder(_freezeAmount, _payAmount, _days, _energyAddress).send(
                 {
                     callValue: _payAmount,

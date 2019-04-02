@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 15:26:09
+ * @Last Modified time: 2019-04-02 19:46:11
  * TronBankPage
  */
 import React from 'react';
@@ -30,13 +30,14 @@ class BankController extends React.Component {
                 predictVal: '',
                 predictStatus: false,
                 valid: false,
+                formatError: false,
                 error: false
             },
             rentDay: {
                 value: '',
                 valid: false,
                 error: false,
-                maxError: false
+                formatError: false
             },
             rentNumMin: 10, // default data
             rentNumMax: 1000,
@@ -140,6 +141,14 @@ class BankController extends React.Component {
         const validOrderOverLimit = {
             valid: BANK_STATE.VALID
         };
+        const isOnlineAddress = {
+            error: BANK_STATE.INVALID
+        };
+        const curentInputBalance = {
+            used: '',
+            total: '',
+            show: true
+        };
         if(!address.length) {
             if(_type === 2) {
                 this.isValidRentAddress();
@@ -150,10 +159,16 @@ class BankController extends React.Component {
         if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
             validOrderOverLimit.valid = true;
-            if(_type === 2) recipient.error = true; else recipient.error = false;
+            isOnlineAddress.error = false;
+            curentInputBalance.show = false;
+            if(_type === 2) {
+                recipient.error = true;
+            } else recipient.error = false;
             this.setState({
                 recipient,
-                validOrderOverLimit
+                validOrderOverLimit,
+                isOnlineAddress,
+                curentInputBalance
             }, () => {
                 this.calculateRentCost();
             });
@@ -173,18 +188,13 @@ class BankController extends React.Component {
         if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
-        // this.setState({
-        //     validOrderOverLimit: {
-        //         valid: isRentDetail.isRent
-        //     }
-        // });
-        const validOrderOverLimit = {
-            valid: isRentDetail.isRent
-        };
         const recipient = {
             value: address,
             error: BANK_STATE.INVALID,
             valid: BANK_STATE.INVALID
+        };
+        const validOrderOverLimit = {
+            valid: isRentDetail.isRent
         };
         const isOnlineAddress = {
             error: BANK_STATE.INVALID
@@ -194,7 +204,6 @@ class BankController extends React.Component {
             total: '',
             show: true
         };
-        console.log(`isrentshi${isRentDetail.isRent}`);
         // isRent => yes judge online address  => no tips
         if(isRentDetail.isRent) {
             const result = await PopupAPI.isValidOnlineAddress(address);
@@ -231,45 +240,62 @@ class BankController extends React.Component {
             predictVal: '',
             predictStatus: BANK_STATE.INVALID,
             valid: BANK_STATE.INVALID,
-            error: BANK_STATE.INVALID
+            error: BANK_STATE.INVALID,
+            formatError: BANK_STATE.INVALID
         };
         if(!rentVal.length)
             return this.setState({ rentNum });
-
-        if(Utils.validatInteger(rentVal) && rentVal <= rentNumMax && rentVal >= rentNumMin) {
+        if(!Utils.validatInteger(rentVal)) {
             if(_type === 2) {
+                rentNum.formatError = true;
                 rentNum.error = false;
-                const { selected } = this.props.accounts;
-                const totalEnergyWeight = selected.totalEnergyWeight;
-                // predict num energy
-                if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
-                console.log(`rentNum.predictVal${rentNum.predictVal},defaultUnit.num${defaultUnit.totalEnergyWeight}`);
-                const accountMaxBalance = {
-                    value: defaultUnit.totalEnergyWeight,
-                    valid: BANK_STATE.INVALID
-                };
-                // overtake company account num
-                if(rentVal > defaultUnit.totalEnergyWeight) {
-                    accountMaxBalance.valid = true;
-                    rentNum.valid = false;
-                    rentNum.predictStatus = false;
-                } else {
-                    rentNum.valid = true;
-                    accountMaxBalance.valid = false;
-                    rentNum.predictStatus = true;
-                }
-                this.setState({ accountMaxBalance });
-                this.isValidRentAddress();
             }
-            this.setState({
-                rentNum
-            }, () => {
-                this.calculateRentCost();
-            });
-        } else {
-            rentNum.valid = false;
-            rentNum.predictStatus = false;
-            if(_type === 2) rentNum.error = true; else rentNum.error = false;
+        }else{
+            const { selected } = this.props.accounts;
+            const totalEnergyWeight = selected.totalEnergyWeight;
+            // predict num energy
+            if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
+            console.log(`rentNum.predictVal${rentNum.predictVal},defaultUnit.num${defaultUnit.totalEnergyWeight}`);
+            const accountMaxBalance = {
+                value: defaultUnit.totalEnergyWeight,
+                valid: BANK_STATE.INVALID
+            };
+            if(rentVal <= rentNumMax && rentVal >= rentNumMin) {
+                if(_type === 2) {
+                    rentNum.formatError = false;
+                    rentNum.error = false;
+                    // overtake company account num
+                    if(rentVal > defaultUnit.totalEnergyWeight) {
+                        accountMaxBalance.valid = true;
+                        rentNum.valid = false;
+                        rentNum.predictStatus = false;
+                    } else {
+                        rentNum.valid = true;
+                        accountMaxBalance.valid = false;
+                        rentNum.predictStatus = true;
+                    }
+                    this.setState({ accountMaxBalance });
+                    this.isValidRentAddress();
+                }
+                this.setState({
+                    rentNum
+                }, () => {
+                    this.calculateRentCost();
+                });
+            } else {
+                rentNum.valid = false;
+                rentNum.predictStatus = false;
+                accountMaxBalance.valid = false;
+                this.setState({ accountMaxBalance });
+                if(_type === 2) {
+                    rentNum.error = true;
+                    rentNum.formatError = false;
+                }
+                else {
+                    rentNum.error = false;
+                    rentNum.formatError = false;
+                }
+            }
         }
         this.setState({
             rentNum
@@ -289,12 +315,14 @@ class BankController extends React.Component {
         };
         if(!rentVal.length)
             return this.setState({ rentDay });
-
+        console.log(`当前值${rentVal},判断值${Utils.validatInteger(rentVal)}`);
         if(!Utils.validatInteger(rentVal)) {
-            rentDay.value = rentDayMin;
             rentDay.valid = false;
-            rentDay.error = true;
-            rentDay.maxError = false;
+            rentDay.error = false;
+            if(_type == 2) {
+                rentDay.formatError = true;
+                rentDay.value = '';
+            }
             this.setState({
                 rentDay
             });
@@ -312,22 +340,23 @@ class BankController extends React.Component {
                 });
             }
             rentDay.error = false;
+            rentDay.formatError = false;
         } else {
             rentDay.valid = false;
             if(_type === 2) {
                 if(rentVal < rentDayMin ) {
                     rentDay.value = rentDayMin;
                     rentDay.error = true;
-                    rentDay.maxError = false;
+                    rentDay.formatError = false;
                 }
                 if(rentVal > rentDayMax) {
                     rentDay.value = rentDayMax;
-                    rentDay.error = false;
-                    rentDay.maxError = true;
+                    rentDay.error = true;
+                    rentDay.formatError = false;
                 }
             }else {
                 rentDay.error = false;
-                rentDay.maxError = false;
+                rentDay.formatError = false;
             }
         }
         this.setState({
@@ -345,42 +374,35 @@ class BankController extends React.Component {
             value: '',
             valid: BANK_STATE.INVALID,
             error: BANK_STATE.INVALID,
-            maxError: BANK_STATE.INVALID
+            formatError: BANK_STATE.INVALID
         };
 
         if(!Utils.validatInteger(rentVal)) {
             rentDay.value = rentDayMin;
             rentDay.valid = false;
-            rentDay.error = true;
-            rentDay.maxError = false;
+            rentDay.error = false;
+            rentDay.formatError = true;
             this.setState({
                 rentDay
             });
             return;
         }
         rentVal = Number(rentVal); // valid number
+        rentDay.formatError = false;
         if(_type === 1) {
             if(rentVal <= rentDayMin ) {
                 rentDay.value = rentDayMin;
                 rentDay.valid = false;
                 rentDay.error = true;
-                rentDay.maxError = false;
             }else {
                 if(rentVal > rentDayMax) {
-                    rentDay.valid = false;
-                    rentDay.error = false;
-                    rentDay.maxError = true;
                     rentDay.value = rentDayMax;
+                    rentDay.valid = false;
+                    rentDay.error = true;
                 }else{
                     rentDay.value = rentVal - 1;
                     rentDay.valid = true;
                     rentDay.error = false;
-                    rentDay.maxError = false;
-                    this.setState({
-                        rentDay
-                    }, () => {
-                        this.calculateRentCost();
-                    });
                 }
             }
         }
@@ -388,19 +410,18 @@ class BankController extends React.Component {
             if(rentVal >= rentDayMax ) {
                 rentDay.value = rentDayMax;
                 rentDay.valid = false;
-                rentDay.maxError = true;
+                rentDay.error = true;
             }else {
-                if(rentVal === 0) rentVal = 2;
-                rentDay.value = rentVal + 1;
-                rentDay.valid = true;
-                rentDay.maxError = false;
-                this.setState({
-                    rentDay
-                }, () => {
-                    this.calculateRentCost();
-                });
+                if(rentVal < rentDayMin) {
+                    rentDay.value = rentDayMin;
+                    rentDay.valid = false;
+                    rentDay.error = true;
+                }else{
+                    rentDay.value = rentVal + 1;
+                    rentDay.valid = true;
+                    rentDay.error = false;
+                }
             }
-            rentDay.error = false;
         }
         this.setState({
             rentDay
@@ -428,12 +449,14 @@ class BankController extends React.Component {
     rentDealSendFun(e) {
         //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days*0.1
         const { formatMessage } = this.props.intl;
-        const { rentNum, rentDay, recipient } = this.state;
+        const { rentNum, rentDay, recipient, rentUnit} = this.state;
         const { selected } = this.props.accounts;
         const address = selected.address;
         const rentDayValue = Number(rentDay.value);
         const freezeAmount = rentNum.value * Math.pow(10, 6);
-        const payAmount = freezeAmount * 0.1 * rentDayValue;
+        const ratio = rentUnit.ratio;
+        console.log(`rentUnit.ratio为${ratio}`);
+        const payAmount = freezeAmount * ratio * rentDayValue;
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
         PopupAPI.rentEnergy(
@@ -461,7 +484,7 @@ class BankController extends React.Component {
                     value: '',
                     valid: false,
                     error: false,
-                    maxError: false
+                    formatError: false
                 },
             });
         }).catch(error => {
@@ -575,9 +598,26 @@ class BankController extends React.Component {
                                     placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' }) + `（${rentNumMin}-${rentNumMax}）`}
                                 /><span>TRX</span>
                             </div>
-                            { rentNum.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RENTNUMERROR'/></div> : null}
-                            { rentNum.predictStatus ? <div className='predictMsg'><FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/></div> : null}
-                            { accountMaxBalance.valid ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} /></div> : null}
+                            { rentNum.formatError ?
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.RENTNUMFORMATERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
+                                </div> : null
+                            }
+                            { rentNum.error ?
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.RENTNUMERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
+                                </div> : null
+                            }
+                            { rentNum.predictStatus ?
+                                <div className='predictMsg'>
+                                    <FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/>
+                                </div> : null
+                            }
+                            { accountMaxBalance.valid ?
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} />
+                                </div> : null
+                            }
                         </section>
                         <section className='infoSec singlgeSty'>
                             <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
@@ -602,8 +642,16 @@ class BankController extends React.Component {
                                     </Button>
                                 </span>
                             </div>
-                            { rentDay.error ? <div className='errorMsg rentError'><FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin }}/></div> : null}
-                            { rentDay.maxError ? <div className='errorMsg rentError'><FormattedMessage id='BANK.INDEX.RENTDAYMAXERROR' values={{ max: rentDayMax }}/></div> : null}
+                            { rentDay.error ?
+                                <div className='errorMsg rentError'>
+                                    <FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
+                                </div> : null
+                            }
+                            { rentDay.formatError ?
+                                <div className='errorMsg rentError'>
+                                    <FormattedMessage id='BANK.INDEX.RENTDAYFORMATERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
+                                </div> : null
+                            }
                         </section>
                         {rentNum.valid && rentDay.valid ?
                             <section className='calculation'>

@@ -265,7 +265,8 @@ class Wallet extends EventEmitter {
             APP_STATE.TESTHMTL,
             APP_STATE.TRONBANK,
             APP_STATE.TRONBANK_RECORD,
-            APP_STATE.TRONBANK_DETAIL
+            APP_STATE.TRONBANK_DETAIL,
+            APP_STATE.TRONBANK_HELP,
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -742,7 +743,7 @@ class Wallet extends EventEmitter {
 
     async getDetaultRatioFun() {
         try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TGsekMj7NuWHKmTeaQ5zUDMiuzy56ANJw5');
+            const contractInstance = await NodeService.tronWeb.contract().at('TCVuAbhMLUGpoVsSd2AygqiZWWyoSyNfVh');
             const ratio = await contractInstance.ratio().call();
             return ratio.toString();
         } catch(ex) {
@@ -801,13 +802,6 @@ class Wallet extends EventEmitter {
         this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
         this.emit('setAccount', this.selectedAccount);
     }
-
-    // getSelectedBankRecordId() {
-    //     if(!this.selectedAccount)
-    //         return false;
-
-    //     return this.getAccountDetails(this.selectedAccount);
-    // }
 
     async getBankRecordDetail({ id, requestUrl }) {
         const { data: bankRecordDetail } = await axios.get(requestUrl, { params: { id } })

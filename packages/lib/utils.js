@@ -175,8 +175,8 @@ const Utils = {
         return needArray;
     },
 
-    validatInteger(str) {
-        const reg = /^[1-9]\d*|0$/;
+    validatInteger(str) { 
+        const reg = /[0-9]*[1-9][0-9]*$/;
         return reg.test(str);
     },
 
@@ -184,7 +184,7 @@ const Utils = {
         let curApiHost;
         switch (_type) {
             case 'test':
-                curApiHost = 'http://52.14.133.221:8950';
+                curApiHost = 'http://52.14.133.221:8990';
                 break;
             case 'online':
                 curApiHost = '';
