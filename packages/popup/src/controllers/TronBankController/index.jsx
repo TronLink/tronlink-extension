@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 12:05:51
+ * @Last Modified time: 2019-04-02 15:26:09
  * TronBankPage
  */
 import React from 'react';
@@ -57,9 +57,9 @@ class BankController extends React.Component {
                 valid: false
             },
             curentInputBalance: {
-                has: 0,
+                used: 0,
                 total: 0,
-                valid: true
+                show: true
             },
             validOrderOverLimit: {
                 valid: true
@@ -82,12 +82,14 @@ class BankController extends React.Component {
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
         const { accounts, selected } = this.props.accounts;
+        const totalEnergy = accounts[ selected.address ].energy;
+        const usedEnergy = accounts[ selected.address ].energyUsed;
         const curentInputBalance = {
-            has: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed,
-            total: accounts[ selected.address ].energy,
-            valid: true
+            used: usedEnergy,
+            total: totalEnergy,
+            show: true
         };
-        console.log(`当前curentInputBalance${curentInputBalance.has},${curentInputBalance.total},${curentInputBalance.valid}`);
+        console.log(`当前curentInputBalance${curentInputBalance.used},${curentInputBalance.total},${curentInputBalance.valid}`);
         this.setState({
             rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
@@ -171,11 +173,14 @@ class BankController extends React.Component {
         if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
-        this.setState({
-            validOrderOverLimit: {
-                valid: isRentDetail.isRent
-            }
-        });
+        // this.setState({
+        //     validOrderOverLimit: {
+        //         valid: isRentDetail.isRent
+        //     }
+        // });
+        const validOrderOverLimit = {
+            valid: isRentDetail.isRent
+        };
         const recipient = {
             value: address,
             error: BANK_STATE.INVALID,
@@ -184,20 +189,37 @@ class BankController extends React.Component {
         const isOnlineAddress = {
             error: BANK_STATE.INVALID
         };
+        const curentInputBalance = {
+            used: '',
+            total: '',
+            show: true
+        };
+        console.log(`isrentshi${isRentDetail.isRent}`);
         // isRent => yes judge online address  => no tips
         if(isRentDetail.isRent) {
             const result = await PopupAPI.isValidOnlineAddress(address);
             if(typeof(result) == 'undefined') {
                 isOnlineAddress.error = true;
+                curentInputBalance.show = false;
                 recipient.error = false;
                 recipient.valid = false;
             }else {
+                let energyUsed = result.EnergyUsed;
+                const energyLimit = result.EnergyLimit;
+                console.log(`result是${energyLimit},${energyUsed}`);
+                if(typeof(energyUsed) == 'undefined') energyUsed = 0;
                 isOnlineAddress.error = false;
                 recipient.error = false;
                 recipient.valid = true;
+                curentInputBalance.show = true;
+                curentInputBalance.used = energyUsed;
+                curentInputBalance.total = energyLimit;
             }
-        }else recipient.valid = false;
-        this.setState({ isOnlineAddress, recipient });
+        }else {
+            recipient.valid = false;
+            curentInputBalance.show = false;
+        }
+        this.setState({ isOnlineAddress, recipient, validOrderOverLimit, curentInputBalance });
     }
 
     async handlerRentNumChange(e, _type) {
@@ -221,7 +243,6 @@ class BankController extends React.Component {
                 const totalEnergyWeight = selected.totalEnergyWeight;
                 // predict num energy
                 if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
-                rentNum.predictStatus = true;
                 console.log(`rentNum.predictVal${rentNum.predictVal},defaultUnit.num${defaultUnit.totalEnergyWeight}`);
                 const accountMaxBalance = {
                     value: defaultUnit.totalEnergyWeight,
@@ -231,9 +252,11 @@ class BankController extends React.Component {
                 if(rentVal > defaultUnit.totalEnergyWeight) {
                     accountMaxBalance.valid = true;
                     rentNum.valid = false;
+                    rentNum.predictStatus = false;
                 } else {
                     rentNum.valid = true;
                     accountMaxBalance.valid = false;
+                    rentNum.predictStatus = true;
                 }
                 this.setState({ accountMaxBalance });
                 this.isValidRentAddress();
@@ -455,8 +478,8 @@ class BankController extends React.Component {
 
     render() {
         const { formatMessage } = this.props.intl;
-        const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress,curentInputBalance } = this.state;
+        const { selected } = this.props.accounts;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -511,10 +534,26 @@ class BankController extends React.Component {
                                     placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
                                 />
                             </div>
-                            { recipient.error ?         <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
-                            { validOrderOverLimit.valid ? null : <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> }
-                            { isOnlineAddress.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/></div> : null }
-                            { curentInputBalance.valid ? <div className='balance'><FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/></div> : null}
+                            { recipient.error ?
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.RECEIVEERROR'/>
+                                </div> : null
+                            }
+                            { validOrderOverLimit.valid ? null :
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/>
+                                </div>
+                            }
+                            { isOnlineAddress.error ?
+                                <div className='errorMsg'>
+                                    <FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/>
+                                </div> : null
+                            }
+                            { curentInputBalance.show ?
+                                <div className='balance'>
+                                    <FormattedMessage id='BANK.INDEX.USED' values={{ used: curentInputBalance.used }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: curentInputBalance.total }}/>
+                                </div> : null
+                            }
                         </section>
                     </div>
                     {/* rent num,day */}

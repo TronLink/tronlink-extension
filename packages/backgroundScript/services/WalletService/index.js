@@ -779,10 +779,12 @@ class Wallet extends EventEmitter {
     }
 
     async isValidOnlineAddress({ address }) {
-        const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
-        if(!account.address)
+        // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+        const account = await NodeService.tronWeb.trx.getAccountResources(address);
+        if(!account.EnergyLimit)
             return logger.warn('Failed to get online address data');
-        return account.address;
+        console.log(`account是${account.EnergyLimit},${account.EnergyUsed}`);
+        return account;
     }
 
     async getBankRecordList({ address, limit, start, requestUrl }) {
