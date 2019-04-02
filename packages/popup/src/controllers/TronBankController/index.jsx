@@ -456,7 +456,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { accounts, selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress,curentInputBalance } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -511,12 +511,10 @@ class BankController extends React.Component {
                                     placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
                                 />
                             </div>
-                            { recipient.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
+                            { recipient.error ?         <div className='errorMsg'><FormattedMessage id='BANK.INDEX.RECEIVEERROR'/></div> : null }
                             { validOrderOverLimit.valid ? null : <div className='errorMsg'><FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/></div> }
                             { isOnlineAddress.error ? <div className='errorMsg'><FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/></div> : null }
-                            <div className='balance'>
-                                <FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/>
-                            </div>
+                            { curentInputBalance.valid ? <div className='balance'><FormattedMessage id='BANK.INDEX.USED' values={{ num: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: accounts[ selected.address ].energy }}/></div> : null}
                         </section>
                     </div>
                     {/* rent num,day */}
