@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 19:53:42
+ * @Last Modified time: 2019-04-02 20:45:19
  * BankOrderDetail
  */
 import React from 'react';
@@ -44,8 +44,8 @@ class BankDetailController extends React.Component {
             { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: `${recordDetail.freeze_amount}TRX` },
             { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: recordDetail.days },
             { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: `${recordDetail.pay_amount}TRX` },
-            { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: recordDetail.create_time },
-            { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: recordDetail.expire_time },
+            { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: Utils.timetransTime(recordDetail.create_time) },
+            { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: Utils.timetransTime(recordDetail.expire_time) },
         ];
         this.setState({
             orderList
@@ -55,17 +55,6 @@ class BankDetailController extends React.Component {
 
     render() {
         const { orderList } = this.state;
-        // const orderList = [
-        //     { id: 'BANK.RENTDETAIL.STATUS', type: 1, value: 1 },
-        //     { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: 10111111111111332 },
-        //     { id: 'BANK.RENTDETAIL.PAYACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
-        //     { id: 'BANK.RENTDETAIL.TOACCOUNT', type: 0, value: 'TEXABZ889DJHUYFG' },
-        //     { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: '100TRX' },
-        //     { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: '3' },
-        //     { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: '0.13TRX' },
-        //     { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: '2019.01.23 12:34' },
-        //     { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: '2019.01.23 12:34' }
-        // ];
         let statusMessage;
         orderList.map((val, key) => {
         // 有效3 5 6 8   失效:7 单独  0-2 4 处理

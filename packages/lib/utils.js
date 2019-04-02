@@ -194,7 +194,28 @@ const Utils = {
                 break;
         }
         return curApiHost;
-    }
+    },
+
+    timetransTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}.${timeM}.${timeD} ${timeh}:${timem}`;
+    },
+
+    timeFormatTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}/${timeM}/${timeD} ${timeh}:${timem}`;
+    },
+
 };
 
 export default Utils;

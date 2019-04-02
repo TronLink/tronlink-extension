@@ -743,7 +743,7 @@ class Wallet extends EventEmitter {
 
     async getDetaultRatioFun() {
         try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TCVuAbhMLUGpoVsSd2AygqiZWWyoSyNfVh');
+            const contractInstance = await NodeService.tronWeb.contract().at('TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux');
             const ratio = await contractInstance.ratio().call();
             return ratio.toString();
         } catch(ex) {
