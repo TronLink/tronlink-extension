@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 11:01:52
+ * @Last Modified time: 2019-04-02 12:05:51
  * TronBankPage
  */
 import React from 'react';
@@ -17,7 +17,7 @@ class BankController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            popoverVisible: false,
+            popoverVisible: false, //modal show data
             rentModalVisible: false,
             rentConfirmVisible: false,
             recipient: {
@@ -38,31 +38,35 @@ class BankController extends React.Component {
                 error: false,
                 maxError: false
             },
-            rentNumMin: 10,
+            rentNumMin: 10, // default data
             rentNumMax: 1000,
             rentDayMin: 3,
             rentDayMax: 30,
-            rentUnit: {
-                ratio: 0,
-                cost: 0.5
-            },
             defaultUnit: {
                 num: 10,
                 day: 1,
                 cost: 0.5,
                 totalEnergyWeight: 999
             },
+            rentUnit: { //caclulate data
+                ratio: 0,
+                cost: 0.5
+            },
             accountMaxBalance: {
                 value: '',
                 valid: false
+            },
+            curentInputBalance: {
+                has: 0,
+                total: 0,
+                valid: true
             },
             validOrderOverLimit: {
                 valid: true
             },
             isOnlineAddress: {
                 error: false
-            },
-            loading: false
+            }
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
     }
@@ -76,6 +80,14 @@ class BankController extends React.Component {
     async defaultDataFun() {
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/default_data`;
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
+        // current account balance
+        const { accounts, selected } = this.props.accounts;
+        const curentInputBalance = {
+            has: accounts[ selected.address ].energy - accounts[ selected.address ].energyUsed,
+            total: accounts[ selected.address ].energy,
+            valid: true
+        };
+        console.log(`当前curentInputBalance${curentInputBalance.has},${curentInputBalance.total},${curentInputBalance.valid}`);
         this.setState({
             rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
@@ -86,7 +98,8 @@ class BankController extends React.Component {
                 day: defaultData.days,
                 cost: defaultData.pay_amount / Math.pow(10, 6),
                 totalEnergyWeight: 999
-            }
+            },
+            curentInputBalance
         });
     }
 
