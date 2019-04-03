@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-03 17:00:03
+ * @Last Modified time: 2019-04-03 17:23:10
  * TronBankPage
  */
 import React from 'react';
@@ -35,7 +35,7 @@ class BankController extends React.Component {
             },
             rentDay: {
                 value: 7,
-                valid: false,
+                valid: true,
                 error: false,
                 formatError: false
             },
@@ -308,7 +308,7 @@ class BankController extends React.Component {
         const rentVal = e.target.value;
         const rentDay = {
             value: rentVal,
-            valid: BANK_STATE.INVALID,
+            valid: BANK_STATE.VALID,
             error: BANK_STATE.INVALID
         };
         if(!rentVal.length)
@@ -369,7 +369,7 @@ class BankController extends React.Component {
         let rentVal = this.rentDayInput.value;
         const rentDay = {
             value: '',
-            valid: BANK_STATE.INVALID,
+            valid: BANK_STATE.VALID,
             error: BANK_STATE.INVALID,
             formatError: BANK_STATE.INVALID
         };
@@ -476,8 +476,8 @@ class BankController extends React.Component {
                     error: false
                 },
                 rentDay: {
-                    value: '',
-                    valid: false,
+                    value: 7,
+                    valid: true,
                     error: false,
                     formatError: false
                 },
@@ -537,7 +537,7 @@ class BankController extends React.Component {
                         <section className='accountInfo infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
                             <div className='selectedAccount'>
-                                <FormattedMessage id='BANK.INDEX.ACCOUNT'/>{ selected.name } <span>{ selected.address }</span>
+                                <FormattedMessage id='BANK.INDEX.ACCOUNT'/>{ selected.name.length > 6 ? selected.name.slice(0, 6) : selected.name } <span>{ selected.address }</span>
                             </div>
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>

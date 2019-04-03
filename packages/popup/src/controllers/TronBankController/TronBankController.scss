@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 17:45:13
+ * @Last Modified time: 2019-04-03 17:21:57
  * TronBankPage
  */
 
@@ -354,7 +354,7 @@
         .modalRentContent{
             height: 195px;
             text-align: justify;
-            overflow: scroll;
+            overflow: hidden;
             font-family: PingFang-SC-Medium;
             font-size: 14px;
             color: #505160;

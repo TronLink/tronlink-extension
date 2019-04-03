@@ -175,8 +175,8 @@ const Utils = {
         return needArray;
     },
 
-    validatInteger(str) { 
-        const reg = /[0-9]*[1-9][0-9]*$/;
+    validatInteger(str) {
+        const reg = /^\+?[1-9][0-9]*$/;
         return reg.test(str);
     },
 
