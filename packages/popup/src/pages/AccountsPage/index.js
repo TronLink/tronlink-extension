@@ -198,7 +198,9 @@ class AccountsPage extends React.Component {
                                     <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
-                                        <div className='bankPopover'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>
+                                        <div className='bankPopover'>
+                                            <div className='popoverTitle'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>
+                                        </div>
                                     </span> :
                                     <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                             }

@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-03 17:21:57
+ * @Last Modified time: 2019-04-03 18:00:01
  * TronBankPage
  */
 
@@ -84,6 +84,11 @@
             transform: translateX(0);
             transition: all .2s ease-in-out
         }
+    }
+    .backContentWrapper{
+        height: 540px;
+        padding-bottom: 20px;
+        overflow: auto;
     }
     .bankContent{
         display: flex;

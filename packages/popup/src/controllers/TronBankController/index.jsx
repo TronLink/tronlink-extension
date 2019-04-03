@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-03 17:23:10
+ * @Last Modified time: 2019-04-03 18:59:13
  * TronBankPage
  */
 import React from 'react';
@@ -316,7 +316,7 @@ class BankController extends React.Component {
         if(!Utils.validatInteger(rentVal)) {
             rentDay.valid = false;
             rentDay.error = false;
-            if(_type == 2) {
+            if(_type === 2) {
                 rentDay.formatError = true;
                 rentDay.value = '';
             }
@@ -391,7 +391,7 @@ class BankController extends React.Component {
         if(_type === 1) {
             rentDay.value = rentVal - 1;
             if(rentVal - 1 < rentDayMin ) {
-                if(rentVal == 1) rentDay.value = 1;
+                if(rentVal === 1) rentDay.value = 1;
                 rentDay.valid = false;
                 rentDay.error = true;
             }else {
@@ -531,140 +531,143 @@ class BankController extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className='bankContent'>
-                    {/* account pay,receive */}
-                    <div className='accountContent'>
-                        <section className='accountInfo infoSec'>
-                            <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
-                            <div className='selectedAccount'>
-                                <FormattedMessage id='BANK.INDEX.ACCOUNT'/>{ selected.name.length > 6 ? selected.name.slice(0, 6) : selected.name } <span>{ selected.address }</span>
-                            </div>
-                            <div className='balance'>
-                                <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>
-                            </div>
-                        </section>
-                        <section className='infoSec'>
-                            <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
-                            <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
-                                <input ref={ rentAddressInput => this.rentAddressInput = rentAddressInput}
-                                    onChange={(e) => { this.onRecipientChange(e, 1); } }
-                                    onBlur={(e) => this.onRecipientChange(e, 2)}
-                                    placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
-                                />
-                            </div>
-                            { recipient.error ?
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.RECEIVEERROR'/>
-                                </div> : null
-                            }
-                            { validOrderOverLimit.valid ? null :
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/>
+                <div className='backContentWrapper'>
+                    <div className='bankContent'>
+                        {/* account pay,receive */}
+                        <div className='accountContent'>
+                            <section className='accountInfo infoSec'>
+                                <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
+                                <div className='selectedAccount'>
+                                    { selected.name.length > 6 ? selected.name.slice(0, 6) : selected.name } <span>{ selected.address }</span>
                                 </div>
-                            }
-                            { isOnlineAddress.error ?
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/>
-                                </div> : null
-                            }
-                            { curentInputBalance.show ?
                                 <div className='balance'>
-                                    <FormattedMessage id='BANK.INDEX.USED' values={{ used: curentInputBalance.used }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: curentInputBalance.total }}/>
-                                </div> : null
-                            }
-                        </section>
-                    </div>
-                    {/* rent num,day */}
-                    <div className='rentContent'>
-                        <section className='infoSec'>
-                            <label>
-                                <FormattedMessage id='BANK.INDEX.RENTNUM'/>
-                                <img onClick={() => { this.setState({ rentModalVisible: true }); }}
-                                    className='rentNumEntrance'
-                                    src={myImg('question')}
-                                    alt={'question'}
-                                />
-                            </label>
-                            <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
-                                <input value={ rentNum.value }
-                                    onChange={ (e) => { this.handlerRentNumChange(e, 1); }}
-                                    onBlur={ (e) => this.handlerRentNumChange(e, 2)}
-                                    className='commonInput rentNumInput'
-                                    placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' }) + `（${rentNumMin}-${rentNumMax}）`}
-                                /><span>TRX</span>
-                            </div>
-                            { rentNum.formatError ?
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.RENTNUMFORMATERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
-                                </div> : null
-                            }
-                            { rentNum.error ?
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.RENTNUMERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
-                                </div> : null
-                            }
-                            { rentNum.predictStatus ?
-                                <div className='predictMsg'>
-                                    <FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/>
-                                </div> : null
-                            }
-                            { accountMaxBalance.valid ?
-                                <div className='errorMsg'>
-                                    <FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} />
-                                </div> : null
-                            }
-                        </section>
-                        <section className='infoSec singlgeSty'>
-                            <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
-                            <div className='dayRange'>
-                                <span onClick={ (e) => this.handlerRentDayFun(1)}>
-                                    <Button className='operatingBtn'
-                                        icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />}
-                                        inline
-                                        size='small'
-                                    >
-                                    </Button>
-                                </span>
-                                <input value={rentDay.value}
-                                    ref={rentDayInput => this.rentDayInput = rentDayInput}
-                                    onChange={ (e) => { this.handlerRentDayChange(e, 1); }}
-                                    onBlur={ (e) => { this.handlerRentDayChange(e, 2); }}
-                                    className='commonInput rentDay'
-                                    placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' }) + `(${rentDayMin}-${rentDayMax})`} type='text'
-                                />
-                                <span onClick={ (e) => this.handlerRentDayFun(2)}>
-                                    <Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'>
-                                    </Button>
-                                </span>
-                            </div>
-                            { rentDay.error ?
-                                <div className='errorMsg rentError'>
-                                    <FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
-                                </div> : null
-                            }
-                            { rentDay.formatError ?
-                                <div className='errorMsg rentError'>
-                                    <FormattedMessage id='BANK.INDEX.RENTDAYFORMATERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
-                                </div> : null
-                            }
-                        </section>
-                        {rentNum.valid && rentDay.valid ?
-                            <section className='calculation'>
-                                {rentNum.value}TRX*{rentUnit.ratio}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
-                            </section> :
-                            <section className='rentIntroduce'>
-                                <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} />
+                                    <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>
+                                </div>
                             </section>
-                        }
+                            <section className='infoSec'>
+                                <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
+                                <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
+                                    <input ref={ rentAddressInput => this.rentAddressInput = rentAddressInput}
+                                        onChange={(e) => { this.onRecipientChange(e, 1); } }
+                                        onBlur={(e) => this.onRecipientChange(e, 2)}
+                                        placeholder={ formatMessage({ id: 'BANK.INDEX.PLACEHOLDER', values: { min: rentNumMin } })}
+                                    />
+                                </div>
+                                { recipient.error ?
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.RECEIVEERROR'/>
+                                    </div> : null
+                                }
+                                { validOrderOverLimit.valid ? null :
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.OVERTAKEORDERNUM'/>
+                                    </div>
+                                }
+                                { isOnlineAddress.error ?
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.NOTONLINEADDRESS'/>
+                                    </div> : null
+                                }
+                                { curentInputBalance.show ?
+                                    <div className='balance'>
+                                        <FormattedMessage id='BANK.INDEX.USED' values={{ used: curentInputBalance.used }} />/<FormattedMessage id='BANK.INDEX.TOTAL' values={{ total: curentInputBalance.total }}/>
+                                    </div> : null
+                                }
+                            </section>
+                        </div>
+                        {/* rent num,day */}
+                        <div className='rentContent'>
+                            <section className='infoSec'>
+                                <label>
+                                    <FormattedMessage id='BANK.INDEX.RENTNUM'/>
+                                    <img onClick={() => { this.setState({ rentModalVisible: true }); }}
+                                        className='rentNumEntrance'
+                                        src={myImg('question')}
+                                        alt={'question'}
+                                    />
+                                </label>
+                                <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
+                                    <input value={ rentNum.value }
+                                        onChange={ (e) => { this.handlerRentNumChange(e, 1); }}
+                                        onBlur={ (e) => this.handlerRentNumChange(e, 2)}
+                                        className='commonInput rentNumInput'
+                                        placeholder={ formatMessage({ id: 'BANK.INDEX.FREEZEPLACEHOLDER' }) + `（${rentNumMin}-${rentNumMax}）`}
+                                    /><span>TRX</span>
+                                </div>
+                                { rentNum.formatError ?
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.RENTNUMFORMATERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
+                                    </div> : null
+                                }
+                                { rentNum.error ?
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.RENTNUMERROR' values={{ min: rentNumMin, max: rentNumMax }}/>
+                                    </div> : null
+                                }
+                                { rentNum.predictStatus ?
+                                    <div className='predictMsg'>
+                                        <FormattedMessage id='BANK.INDEX.FORECASTNUM' values={{ num: rentNum.predictVal }}/>
+                                    </div> : null
+                                }
+                                { accountMaxBalance.valid ?
+                                    <div className='errorMsg'>
+                                        <FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} />
+                                    </div> : null
+                                }
+                            </section>
+                            <section className='infoSec singlgeSty'>
+                                <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
+                                <div className='dayRange'>
+                                    <span onClick={ (e) => this.handlerRentDayFun(1)}>
+                                        <Button className='operatingBtn'
+                                            icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />}
+                                            inline
+                                            size='small'
+                                        >
+                                        </Button>
+                                    </span>
+                                    <input value={rentDay.value}
+                                        ref={rentDayInput => this.rentDayInput = rentDayInput}
+                                        onChange={ (e) => { this.handlerRentDayChange(e, 1); }}
+                                        onBlur={ (e) => { this.handlerRentDayChange(e, 2); }}
+                                        className='commonInput rentDay'
+                                        placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' }) + `(${rentDayMin}-${rentDayMax})`} type='text'
+                                    />
+                                    <span onClick={ (e) => this.handlerRentDayFun(2)}>
+                                        <Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'>
+                                        </Button>
+                                    </span>
+                                </div>
+                                { rentDay.error ?
+                                    <div className='errorMsg rentError'>
+                                        <FormattedMessage id='BANK.INDEX.RENTDAYERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
+                                    </div> : null
+                                }
+                                { rentDay.formatError ?
+                                    <div className='errorMsg rentError'>
+                                        <FormattedMessage id='BANK.INDEX.RENTDAYFORMATERROR' values={{ min: rentDayMin, max: rentDayMax }}/>
+                                    </div> : null
+                                }
+                            </section>
+                            {rentNum.valid && rentDay.valid ?
+                                <section className='calculation'>
+                                    {rentNum.value}TRX*{rentUnit.ratio}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
+                                </section> :
+                                <section className='rentIntroduce'>
+                                    <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} />
+                                </section>
+                            }
+                        </div>
+                        {/* tronBank submit */}
+                        <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
+                            className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
+                            onClick = {this.handlerInfoConfirm }
+                        >
+                            <FormattedMessage id='BANK.INDEX.BUTTON'/>
+                        </Button>
                     </div>
-                    {/* tronBank submit */}
-                    <Button disabled={recipient.valid && rentNum.valid && rentDay.valid ? false : true }
-                        className={recipient.valid && rentNum.valid && rentDay.valid ? 'bankSubmit normalValid' : 'bankSubmit inValid'}
-                        onClick = {this.handlerInfoConfirm }
-                    >
-                        <FormattedMessage id='BANK.INDEX.BUTTON'/>
-                    </Button>
                 </div>
+
                 {/*rentNum modal */}
                 <Modal
                     className='modalContent'
