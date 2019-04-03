@@ -244,7 +244,7 @@
   "TRANSACTION.TOKEN_INFO.CONTRACT":"契約",
   "TRANSACTION.TOKEN_INFO.DETAIL":"詳細",
 
-
+  "BANK.INDEX.ENTRANCE":"ja能量租赁",
   "BANK.INDEX.ACCOUNT":"jaaccount",
   "BANK.INDEX.BALANCE":"ja {amount}TRX",
   "BANK.INDEX.PLACEHOLDER":"ja不填默认为当前支付账户地址",

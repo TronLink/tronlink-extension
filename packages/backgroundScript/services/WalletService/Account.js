@@ -28,7 +28,8 @@ class Account {
         this.frozenBalance = 0;
         this.netUsed = 0;
         this.netLimit = 5000;
-        this.totalEnergyWeight = 0; //total
+        this.totalEnergyWeight = 0; //totalEnergyWeight
+        this.TotalEnergyLimit = 0; //TotalEnergyLimit
         this.lastUpdated = 0;
         this.asset = 0;
         this.ignoredTransactions = [];
@@ -133,6 +134,7 @@ class Account {
             balance,
             frozenBalance,
             totalEnergyWeight,
+            TotalEnergyLimit,
             transactions,
             tokens,
             netLimit,
@@ -164,6 +166,7 @@ class Account {
         this.balance = balance;
         this.frozenBalance = frozenBalance;
         this.totalEnergyWeight = totalEnergyWeight;
+        this.TotalEnergyLimit = TotalEnergyLimit;
         this.transactions = transactions;
         this.tokens = tokens;
         this.energy = energy;
@@ -470,12 +473,13 @@ class Account {
         //     .then((bandwidth = 0) => (
         //         this.bandwidth = bandwidth
         //     ));
-        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight } = await NodeService.tronWeb.trx.getAccountResources(address);
+        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = await NodeService.tronWeb.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
         this.netLimit = freeNetLimit + NetLimit;
         this.netUsed = NetUsed + freeNetUsed;
         this.totalEnergyWeight = TotalEnergyWeight;
+        this.TotalEnergyLimit = TotalEnergyLimit;
     }
 
     async updateTransactions() {
@@ -548,6 +552,7 @@ class Account {
             balance: this.balance,
             frozenBalance: this.frozenBalance,
             totalEnergyWeight: this.totalEnergyWeight,
+            TotalEnergyLimit: this.TotalEnergyLimit,
             bandwidth: this.bandwidth,
             energy: this.energy,
             transactions: this.transactions,

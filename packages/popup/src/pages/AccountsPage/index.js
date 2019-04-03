@@ -43,7 +43,7 @@ class AccountsPage extends React.Component {
             showBackUp: false,
             showDelete: false,
             news: []
-        }
+        };
     }
 
     async componentDidMount() {
@@ -51,22 +51,22 @@ class AccountsPage extends React.Component {
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[prices.selected], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
-        tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
-        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
+        apiUrl = developmentMode ? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        tronscanUrl = developmentMode ? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
+        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e => false);
         let news = [];
         if(res) {
             news = res.data.data;
         }else{
             news = [];
         }
-        this.setState({news});
+        this.setState({ news });
         //PopupAPI.refresh();
     }
 
     addCount(id) {
         console.log(id);
-        return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
+        return axios.post(apiUrl+'/api/activity/announcement/pv',{ id }).catch(e => false);
     }
 
     onClick(address) {
@@ -103,54 +103,55 @@ class AccountsPage extends React.Component {
 
     handleShowNodeList() {
         this.setState({
-            showMenuList:false,
-            showNodeList:!this.state.showNodeList
+            showMenuList: false,
+            showNodeList: !this.state.showNodeList
         });
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {
         const { formatMessage } = this.props.intl;
-        const {showMenuList} = this.state;
+        const { showMenuList } = this.state;
         return (
-            <div className="accountInfo">
-                <div className="row1">
-                    <div className="accountWrap" onClick={async (e)=>{
+            <div className='accountInfo'>
+                <div className='row1'>
+                    <div className='accountWrap' onClick={async (e) => {
                         const setting = await PopupAPI.getSetting();
                         const openAccountsMenu = true;
-                        PopupAPI.setSetting({...setting,openAccountsMenu});
-                    }}>
+                        PopupAPI.setSetting({ ...setting, openAccountsMenu });
+                    }}
+                    >
                         <span>{accounts.selected.name}</span>
                     </div>
-                    <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showNodeList:false})}}>
-                        <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`) }} className="item">
-                                <span className="icon frozen"></span>
-                                <FormattedMessage id="MENU.FROZEN_UNFROZEN" />
+                    <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false })}}>
+                        <div className='dropList menuList' style={showMenuList ? { width: '160px', height: 30*6, opacity: 1 }:{}}>
+                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`) }} className='item'>
+                                <span className='icon frozen'></span>
+                                <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`) }} className="item">
-                                <span className="icon vote"></span>
-                                <FormattedMessage id="MENU.VOTE" />
+                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`) }} className='item'>
+                                <span className='icon vote'></span>
+                                <FormattedMessage id='MENU.VOTE' />
                             </div>
-                            <div onClick={ ()=>{ PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className="item">
-                                <span className="icon addToken"></span>
-                                <FormattedMessage id="MENU.ADD_TRC20_TOKEN" />
+                            <div onClick={ ()=>{ PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN)} } className='item'>
+                                <span className='icon addToken'></span>
+                                <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />
                             </div>
-                            <div onClick={ this.onExport } className="item">
-                                <span className="icon backup"></span>
-                                <FormattedMessage id="ACCOUNTS.EXPORT" />
+                            <div onClick={ this.onExport } className='item'>
+                                <span className='icon backup'></span>
+                                <FormattedMessage id='ACCOUNTS.EXPORT' />
                             </div>
-                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className="item">
-                                <span className="icon link"></span>
-                                <FormattedMessage id="MENU.ACCOUNT_DETAIL" />
+                            <div onClick={(e)=>{ e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className='item'>
+                                <span className='icon link'></span>
+                                <FormattedMessage id='MENU.ACCOUNT_DETAIL' />
                             </div>
-                            <div className="item" onClick={ () => { this.onDelete() } }>
-                                <span className="icon delete"></span>
-                                <FormattedMessage id="MENU.DELETE_WALLET" />
+                            <div className='item' onClick={ () => { this.onDelete() } }>
+                                <span className='icon delete'></span>
+                                <FormattedMessage id='MENU.DELETE_WALLET' />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="row2">
+                <div className='row2'>
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
                     <CopyToClipboard text={accounts.selected.address}
                         onCopy={(e) => { T.notify(formatMessage({ id: 'TOAST.COPY' })); } }>
@@ -158,17 +159,17 @@ class AccountsPage extends React.Component {
                     </CopyToClipboard>
 
                 </div>
-                <div className="row3">
+                <div className='row3'>
                     ≈ {totalMoney} {prices.selected}
                 </div>
-                <div className="row4">
+                <div className='row4'>
                     <div onClick={ () => PopupAPI.changeState(APP_STATE.RECEIVE) }>
                         <span></span>
-                        <FormattedMessage id="ACCOUNT.RECEIVE" />
+                        <FormattedMessage id='ACCOUNT.RECEIVE' />
                     </div>
                     <div onClick={ () => PopupAPI.changeState(APP_STATE.SEND) }>
                         <span></span>
-                        <FormattedMessage id="ACCOUNT.SEND" />
+                        <FormattedMessage id='ACCOUNT.SEND' />
                     </div>
                 </div>
             </div>
@@ -178,37 +179,43 @@ class AccountsPage extends React.Component {
     renderResource(account) {
         const { nodes } = this.props;
         return (
-            account ? <div className="resource">
-                <div className="cell">
-                    <div className="title">
-                        <FormattedMessage id='CONFIRMATIONS.RESOURCE.BANDWIDTH' />
-                        <div className="num">
-                            {account.netLimit - account.netUsed}<span>/{account.netLimit}</span>
+            account ?
+                <div className='resource'>
+                    <div className='cell'>
+                        <div className='title'>
+                            <FormattedMessage id='CONFIRMATIONS.RESOURCE.BANDWIDTH' />
+                            <div className='num'>
+                                {account.netLimit - account.netUsed}<span>/{account.netLimit}</span>
+                            </div>
                         </div>
+                        <ProcessBar percentage={(account.netLimit - account.netUsed)/account.netLimit} />
                     </div>
-                    <ProcessBar percentage={(account.netLimit - account.netUsed)/account.netLimit} />
-                </div>
-                <div className="line"></div>
-                <div className="cell">
-                    <div className="title">
-                        <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
-                        <div onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }} >
-                            {nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ? '入口' : null }
+                    <div className='line'></div>
+                    <div className='cell bankSingle'>
+                        <div className='title'>
+                            {
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
+                                    <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
+                                        <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
+                                        <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
+                                        <div className='bankPopover'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>
+                                    </span> :
+                                    <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
+                            }
+                            <div className='num'>
+                                {account.energy - account.energyUsed}<span>/{account.energy}</span>
+                            </div>
                         </div>
-                        <div className='num'>
-                            {account.energy - account.energyUsed}<span>/{account.energy}</span>
-                        </div>
+                        <ProcessBar percentage={(account.energy - account.energyUsed) / account.energy} />
                     </div>
-                    <ProcessBar percentage={(account.energy - account.energyUsed)/account.energy} />
-                </div>
-            </div>:null
+                </div> : null
         );
     }
 
     renderTokens(tokens) {
         const { prices, accounts } = this.props;
         return (
-            <div className="tokens">
+            <div className='tokens'>
                 {
                     tokens.map(({tokenId,...token}) => {
                         const amount = new BigNumber(token.balance)
@@ -217,7 +224,7 @@ class AccountsPage extends React.Component {
                         const price = token.price === undefined ? 0 : token.price;
                         const money = tokenId === '_' ? (price * amount).toFixed(2) : (price * amount * prices.priceList[prices.selected]).toFixed(2);
                         return (
-                            <div className="tokenItem" onClick={ ()=>{
+                            <div className='tokenItem' onClick={ ()=>{
                                 let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
                                 if(tokenId === '_'){
                                     o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
@@ -230,11 +237,11 @@ class AccountsPage extends React.Component {
                                 PopupAPI.setSelectedToken(o);
                                 PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                             }}>
-                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
-                                <div className="name">
+                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=''/>
+                                <div className='name'>
                                     {token.abbr || token.symbol || token.name}
                                 </div>
-                                <div className="worth">
+                                <div className='worth'>
                                     <span>{amount}</span>
                                     <span>≈ {money} {prices.selected}</span>
                                 </div>
@@ -249,33 +256,32 @@ class AccountsPage extends React.Component {
     renderDeleteAccount() {
         const { showDelete } = this.state;
         const dom = showDelete
-                    ?
-                    <div className="popUp">
-                        <div className="deleteAccount">
-                            <div className="title">
-                                <FormattedMessage id="ACCOUNTS.CONFIRM_DELETE" />
-                            </div>
-                            <div className="img"></div>
-                            <div className="txt">
-                                <FormattedMessage id="ACCOUNTS.CONFIRM_DELETE.BODY" />
-                            </div>
-                            <div className='buttonRow'>
-                                <Button
-                                    id='BUTTON.CANCEL'
-                                    type={ BUTTON_TYPE.DANGER }
-                                    onClick={ () => {this.setState({showDelete:false})} }
-                                    tabIndex={ 1 }
-                                />
-                                <Button
-                                    id='BUTTON.CONFIRM'
-                                    onClick={()=>{PopupAPI.deleteAccount();this.setState({showDelete:false});}}
-                                    tabIndex={ 1 }
-                                />
-                            </div>
-                        </div>
+            ?
+            <div className='popUp'>
+                <div className='deleteAccount'>
+                    <div className='title'>
+                        <FormattedMessage id='ACCOUNTS.CONFIRM_DELETE' />
                     </div>
-                    :
-                    null
+                    <div className='img'></div>
+                    <div className='txt'>
+                        <FormattedMessage id='ACCOUNTS.CONFIRM_DELETE.BODY' />
+                    </div>
+                    <div className='buttonRow'>
+                        <Button
+                            id='BUTTON.CANCEL'
+                            type={ BUTTON_TYPE.DANGER }
+                            onClick={ () => {this.setState({showDelete:false})} }
+                            tabIndex={ 1 }
+                        />
+                        <Button
+                            id='BUTTON.CONFIRM'
+                            onClick={()=>{PopupAPI.deleteAccount();this.setState({showDelete:false});}}
+                            tabIndex={ 1 }
+                        />
+                    </div>
+                </div>
+            </div>
+            : null;
         return dom;
     }
 
@@ -283,19 +289,19 @@ class AccountsPage extends React.Component {
         const { showBackUp } = this.state;
         const dom = showBackUp
             ?
-            <div className="popUp">
-                <div className="backUp">
-                    <div className="title">
-                        <FormattedMessage id="ACCOUNTS.EXPORT" />
+            <div className='popUp'>
+                <div className='backUp'>
+                    <div className='title'>
+                        <FormattedMessage id='ACCOUNTS.EXPORT' />
                     </div>
                     {
                         mnemonic
                             ?
-                            <div className="option">
-                                <FormattedMessage id="ACCOUNTS.EXPORT.MNEMONIC" />
-                                <div className="block">
+                            <div className='option'>
+                                <FormattedMessage id='ACCOUNTS.EXPORT.MNEMONIC' />
+                                <div className='block'>
                                     {
-                                        mnemonic.split(' ').map(v => <div className="cell">{v}</div>)
+                                        mnemonic.split(' ').map(v => <div className='cell'>{v}</div>)
                                     }
                                 </div>
                             </div>
@@ -305,9 +311,9 @@ class AccountsPage extends React.Component {
                     {
                         privateKey
                             ?
-                            <div className="option" style={{marginBottom:20}}>
-                                <FormattedMessage id="ACCOUNTS.EXPORT.PRIVATE_KEY" />
-                                <div className="block">
+                            <div className='option' style={{marginBottom:20}}>
+                                <FormattedMessage id='ACCOUNTS.EXPORT.PRIVATE_KEY' />
+                                <div className='block'>
                                     { privateKey }
                                 </div>
                             </div>
@@ -338,7 +344,7 @@ class AccountsPage extends React.Component {
         const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        const trx = { tokenId:"_", name:"TRX", balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = { tokenId:'_', name:'TRX', balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:'TRX',decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance === 0 && v.symbol) ),'abbr','symbol');
         tokens = [trx, ...tokens];
@@ -369,14 +375,14 @@ class AccountsPage extends React.Component {
                     this.renderDeleteAccount()
                 }
                 <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
-                <div className="space-controller">
+                <div className='space-controller'>
                     <Toast />
                     {
                       nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || id === 0 || (setting.advertising[id] && !setting.advertising[id][mode])?
                             null
                              :
-                            <div className="advertisingWrap">
-                                <div className="closed" onClick={async ()=>{
+                            <div className='advertisingWrap'>
+                                <div className='closed' onClick={async ()=>{
                                     let advertising = setting.advertising ? setting.advertising : {};
                                     advertising[id] = {developmentMode:true,productionMode:true};
                                     advertising[id][mode] = false;

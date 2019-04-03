@@ -603,6 +603,7 @@ class Wallet extends EventEmitter {
                 balance: account.balance + account.frozenBalance,
                 energyUsed: account.energyUsed,
                 totalEnergyWeight: account.totalEnergyWeight,
+                TotalEnergyLimit: account.TotalEnergyLimit,
                 energy: account.energy,
                 netUsed: account.netUsed,
                 netLimit: account.netLimit,

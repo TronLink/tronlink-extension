@@ -604,6 +604,43 @@
                         }
                     }
                 }
+                
+            }
+            .bankSingle{
+                position: relative;
+                .bankPopover{
+                    display: none;
+                    padding: 5px;
+                    position: absolute;
+                    left: -8px;
+                    top: 17px;
+                    line-height: 22px;
+                    font-family:PingFang-SC-Medium;
+                    font-size: 10px;
+                    transform: scale(0.8);
+                    color: #f7f8fa;
+                    background: url('../../assets/images/new/popover.svg') no-repeat top left;
+                    background-size: contain;
+                    border-radius: 3px;
+                }
+                .hoverArrow{
+                    display: inline-block;
+                    position: absolute;
+                    width: 5px;
+                    height: 5px;
+                    top: 10px;
+                }
+                .bankBox:hover{
+                    .bankPopover{
+                        display: block;
+                    }
+                }
+            }
+            .bankArrow{
+                display: inline-block;
+                width: 6px;
+                height:8px;
+                margin-left: 2px;
             }
         }
         .tokens{

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 20:48:47
+ * @Last Modified time: 2019-04-03 17:01:53
  * BankOrderDetail
  */
 import React from 'react';
@@ -40,9 +40,9 @@ class BankDetailController extends React.Component {
             { id: 'BANK.RENTDETAIL.ORDERNUM', type: 0, value: recordDetail.id },
             { id: 'BANK.RENTDETAIL.PAYACCOUNT', type: 0, value: recordDetail.pay_address },
             { id: 'BANK.RENTDETAIL.TOACCOUNT', type: 0, value: recordDetail.energy_address },
-            { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: `${recordDetail.freeze_amount}TRX` },
+            { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: `${recordDetail.freeze_amount / Math.pow(10, 6)}TRX` },
             { id: 'BANK.RENTDETAIL.RENTTIME', type: 2, value: recordDetail.days },
-            { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: `${recordDetail.pay_amount}TRX` },
+            { id: 'BANK.RENTDETAIL.PAYNUM', type: 0, value: `${recordDetail.pay_amount / Math.pow(10, 6)}TRX` },
             { id: 'BANK.RENTDETAIL.PAYTIME', type: 0, value: Utils.timetransTime(recordDetail.create_time) },
             { id: 'BANK.RENTDETAIL.EXPIRESTIME', type: 0, value: Utils.timetransTime(recordDetail.expire_time) },
         ];

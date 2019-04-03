@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-02 19:55:06
+ * @Last Modified time: 2019-04-03 17:00:03
  * TronBankPage
  */
 import React from 'react';
@@ -34,7 +34,7 @@ class BankController extends React.Component {
                 error: false
             },
             rentDay: {
-                value: '',
+                value: 7,
                 valid: false,
                 error: false,
                 formatError: false
@@ -251,8 +251,9 @@ class BankController extends React.Component {
         }else{
             const { selected } = this.props.accounts;
             const totalEnergyWeight = selected.totalEnergyWeight;
+            const totalenergyLimitNum = selected.TotalEnergyLimit;
             // predict num energy
-            if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * 50000000000);else rentNum.predictVal = 0;
+            if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * totalenergyLimitNum);else rentNum.predictVal = 0;
             const accountMaxBalance = {
                 value: defaultUnit.totalEnergyWeight,
                 valid: BANK_STATE.INVALID
@@ -372,6 +373,8 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID,
             formatError: BANK_STATE.INVALID
         };
+        console.log(`当前rentVal为${rentVal},${rentVal === ''}`);
+        if(rentVal === '')return;
 
         if(!Utils.validatInteger(rentVal)) {
             rentDay.value = rentDayMin;
@@ -386,34 +389,31 @@ class BankController extends React.Component {
         rentVal = Number(rentVal); // valid number
         rentDay.formatError = false;
         if(_type === 1) {
-            if(rentVal <= rentDayMin ) {
-                rentDay.value = rentDayMin;
+            rentDay.value = rentVal - 1;
+            if(rentVal - 1 < rentDayMin ) {
+                if(rentVal == 1) rentDay.value = 1;
                 rentDay.valid = false;
                 rentDay.error = true;
             }else {
-                if(rentVal > rentDayMax) {
-                    rentDay.value = rentDayMax;
+                if(rentVal - 1 > rentDayMax) {
                     rentDay.valid = false;
                     rentDay.error = true;
                 }else{
-                    rentDay.value = rentVal - 1;
                     rentDay.valid = true;
                     rentDay.error = false;
                 }
             }
         }
         else {
-            if(rentVal >= rentDayMax ) {
-                rentDay.value = rentDayMax;
+            rentDay.value = rentVal + 1;
+            if(rentVal + 1 > rentDayMax ) {
                 rentDay.valid = false;
                 rentDay.error = true;
             }else {
-                if(rentVal < rentDayMin) {
-                    rentDay.value = rentDayMin;
+                if(rentVal + 1 < rentDayMin) {
                     rentDay.valid = false;
                     rentDay.error = true;
                 }else{
-                    rentDay.value = rentVal + 1;
                     rentDay.valid = true;
                     rentDay.error = false;
                 }
@@ -537,7 +537,7 @@ class BankController extends React.Component {
                         <section className='accountInfo infoSec'>
                             <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
                             <div className='selectedAccount'>
-                                <FormattedMessage id='BANK.INDEX.ACCOUNT'/>一<span>{ selected.address }</span>
+                                <FormattedMessage id='BANK.INDEX.ACCOUNT'/>{ selected.name } <span>{ selected.address }</span>
                             </div>
                             <div className='balance'>
                                 <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>

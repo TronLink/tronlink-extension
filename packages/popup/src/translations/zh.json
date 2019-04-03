@@ -242,6 +242,7 @@
     "TRANSACTION.TOKEN_INFO.CONTRACT":"合约地址",
     "TRANSACTION.TOKEN_INFO.DETAIL":"详情",
 
+    "BANK.INDEX.ENTRANCE":"能量租赁",
     "BANK.INDEX.ACCOUNT":"账户",
     "BANK.INDEX.BALANCE":"余额 {amount}TRX",
     "BANK.INDEX.PLACEHOLDER":"不填默认为当前支付账户地址",
