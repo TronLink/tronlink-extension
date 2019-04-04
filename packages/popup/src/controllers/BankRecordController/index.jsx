@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-04 16:10:12
+ * @Last Modified time: 2019-04-04 21:42:43
  * BankRecordController
  */
 import React from 'react';
@@ -18,22 +18,7 @@ class BankRecordController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            recordList: [
-                // { id: 0, energy_address: 'st1TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 1 },
-                // { id: 1, energy_address: 'st2TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 2 },
-                // { id: 2, energy_address: 'st3TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 3 },
-                // { id: 3, energy_address: 'st4TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 4 },
-                // { id: 4, energy_address: 'st5TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 5 },
-                // { id: 5, energy_address: 'st6TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 6 },
-                // { id: 6, energy_address: 'st7TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 7 },
-                // { id: 7, energy_address: 'st8TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 8 },
-                // { id: 8, energy_address: 'st9TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 9 },
-                // { id: 9, energy_address: 'st8TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 8 },
-                // { id: 10, energy_address: 'st7TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 7 },
-                // { id: 11, energy_address: 'st6TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 6 },
-                // { id: 12, energy_address: 'st5TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 5 },
-                // { id: 13, energy_address: 'st4TVTs7Aznrp4NgkzhjAXeK31X3QxKFKwJ4e', freeze_amount: 1000000, days: 5, expire_time: '2019.05.07 11:00', pay_amount: 12000000, create_time: '2018/09/09  23:12', status: 4 },
-            ],
+            recordList: [],
             recordListData: [],
             hasMore: false,
             isLoadingMore: false,
@@ -77,14 +62,18 @@ class BankRecordController extends React.Component {
         );
         const recordListData = this.state.recordListData.concat(json.data);
         const total = json.total;
-        let hasMore;
+        let hasMore = false;
+        console.log(`当前length为${recordListData.length},total为${total}`);
         if(recordListData.length >= total) hasMore = false; else hasMore = true;
         // const newRecordList = recordListData.filter((item) => { return item.status > 2 && item.status !== 7; });
+        console.log(`hasMore为${hasMore}`);
+        console.log('%O', this.rentListContent);
         this.setState({
             recordListData,
             start,
             hasMore
         });
+        console.log(`hasMore为${this.state.hasMore}`);
         Toast.hide();
     }
 
@@ -138,37 +127,40 @@ class BankRecordController extends React.Component {
                         onChange={(tab, index) => { console.log('onChange', index, tab); }}
                         onTabClick={(tab, index) => { this.rentRecordTabChange(tab, index); }}
                     >
-                        <div className='rentListContent'>
+                        <div className='rentListContent' ref={ ref => this.rentListContentOne = ref }>
                             {
                                 recordListData.length ? <RecordList recordList={ recordListData }/> : null
                             }
                             {
                                 hasMore ?
                                     <LoadMore isLoadingMore={ isLoadingMore }
+                                        rentListContentDom ={ this.rentListContentOne }
                                         loadMoreFn={this.loadMoreData.bind(this)}
                                     />
                                     : ''
                             }
                         </div>
-                        <div className='rentListContent'>
+                        <div className='rentListContent' ref={ ref => this.rentListContentTwo = ref }>
                             {
                                 recordListData.length ? <RecordList recordList={ recordListData }/> : null
                             }
                             {
                                 hasMore ?
                                     <LoadMore isLoadingMore={ isLoadingMore }
+                                        rentListContentDom ={ this.rentListContentTwo }
                                         loadMoreFn={this.loadMoreData.bind(this)}
                                     />
                                     : ''
                             }
                         </div>
-                        <div className='rentListContent'>
+                        <div className='rentListContent' ref={ ref => this.rentListContentThree = ref }>
                             {
                                 recordListData.length ? <RecordList recordList={ recordListData }/> : null
                             }
                             {
                                 hasMore ?
                                     <LoadMore isLoadingMore={ isLoadingMore }
+                                        rentListContentDom ={ this.rentListContentThree }
                                         loadMoreFn={this.loadMoreData.bind(this)}
                                     />
                                     : ''

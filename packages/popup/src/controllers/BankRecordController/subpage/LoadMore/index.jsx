@@ -23,9 +23,15 @@ class LoadMore extends React.Component {
 
     componentDidMount() {
         // 使用滚动时自动加载更多
+        console.log('看看我执行了吗');
         const loadMoreFn = this.props.loadMoreFn;
         const wrapper = this.wrapper;
         let timeoutId;
+        console.log("数据的高-------------------------", wrapper.clientHeight);
+        console.log("滚动的高------------------------", document.documentElement.scrollTop);
+        console.log("滚动的高------------------------", document.body.scrollTop);
+        console.log("屏幕的高------------------------", document.documentElement.clientHeight);
+        console.log('%O', this.props.rentListContentDom);
         const callback = () => {
             const top = wrapper.getBoundingClientRect().top;
             const windowHeight = window.screen.height;
@@ -36,7 +42,8 @@ class LoadMore extends React.Component {
             }
         };
 
-        window.addEventListener('scroll', () => {
+        this.props.rentListContentDom.addEventListener('scroll', () => {
+            console.log('看看能不能监听到滚动事件');
             if (this.props.isLoadingMore) return;
             if (timeoutId) clearTimeout(timeoutId);
             timeoutId = setTimeout(callback, 50);
