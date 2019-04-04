@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-04 21:42:43
+ * @Last Modified time: 2019-04-04 22:37:05
  * BankRecordController
  */
 import React from 'react';
@@ -81,6 +81,9 @@ class BankRecordController extends React.Component {
     // 有效3-6 8   失效:7 单独  0-2 处理
     rentRecordTabChange(tab, ind) {
         console.log(`当前ind是${ind}`);
+        this.setState({
+            recordListData: []
+        });
         const newRecordList = this.state.recordListData;
         // let newRecordList;
         // if(ind == 0)
@@ -91,6 +94,7 @@ class BankRecordController extends React.Component {
         // // newRecordList = recordListData.filter((item) => { return item.status === 7; });
         // else
         //     newRecordList = recordListData;
+        this.getBankRecordList(0);
         this.setState({
             recordListData: newRecordList
         });
@@ -127,49 +131,20 @@ class BankRecordController extends React.Component {
                         onChange={(tab, index) => { console.log('onChange', index, tab); }}
                         onTabClick={(tab, index) => { this.rentRecordTabChange(tab, index); }}
                     >
-                        <div className='rentListContent' ref={ ref => this.rentListContentOne = ref }>
-                            {
-                                recordListData.length ? <RecordList recordList={ recordListData }/> : null
-                            }
-                            {
-                                hasMore ?
-                                    <LoadMore isLoadingMore={ isLoadingMore }
-                                        rentListContentDom ={ this.rentListContentOne }
-                                        loadMoreFn={this.loadMoreData.bind(this)}
-                                    />
-                                    : ''
-                            }
-                        </div>
-                        <div className='rentListContent' ref={ ref => this.rentListContentTwo = ref }>
-                            {
-                                recordListData.length ? <RecordList recordList={ recordListData }/> : null
-                            }
-                            {
-                                hasMore ?
-                                    <LoadMore isLoadingMore={ isLoadingMore }
-                                        rentListContentDom ={ this.rentListContentTwo }
-                                        loadMoreFn={this.loadMoreData.bind(this)}
-                                    />
-                                    : ''
-                            }
-                        </div>
-                        <div className='rentListContent' ref={ ref => this.rentListContentThree = ref }>
-                            {
-                                recordListData.length ? <RecordList recordList={ recordListData }/> : null
-                            }
-                            {
-                                hasMore ?
-                                    <LoadMore isLoadingMore={ isLoadingMore }
-                                        rentListContentDom ={ this.rentListContentThree }
-                                        loadMoreFn={this.loadMoreData.bind(this)}
-                                    />
-                                    : ''
-                                    // <span style={{ textAlign: 'center', padding: '10px 0', backgroundColor: '#fff', color: '#999' }}>
-                                    //     <FormattedMessage id='BANK.RENTRECORD.NODATE' />
-                                    // </span>
-                            }
-                        </div>
                     </Tabs>
+                    <div className='rentListContent' ref={ ref => this.rentListContentOne = ref }>
+                        {
+                            recordListData.length ? <RecordList recordList={ recordListData }/> : null
+                        }
+                        {
+                            hasMore ?
+                                <LoadMore isLoadingMore={ isLoadingMore }
+                                    rentListContentDom ={ this.rentListContentOne }
+                                    loadMoreFn={this.loadMoreData.bind(this)}
+                                />
+                                : ''
+                        }
+                    </div>
                 </section>
             </div>
         );
