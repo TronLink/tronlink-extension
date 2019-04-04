@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-30 19:12:39
+ * @Last Modified time: 2019-04-04 10:53:06
  * BankRecordController
  */
 import React from 'react';
@@ -12,7 +12,7 @@ import { APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Tabs, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
 import './BankRecodConntroller.scss';
-import RecordList from '../../components/RecordList';
+import RecordList from './subpage/RecordList';
 
 class BankRecordController extends React.Component {
     constructor(props) {
