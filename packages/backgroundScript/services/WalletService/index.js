@@ -790,12 +790,11 @@ class Wallet extends EventEmitter {
     }
 
     async getBankRecordList({ address, limit, start, requestUrl }) {
-        const { data: { data: bankRecordList } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, } })
-            .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!bankRecordList)
+        const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, } })
+        console.log(`recordData${recordData}`);
+        if(!recordData)
             return logger.warn('Failed to get bank record data');
-        return bankRecordList;
+        return recordData;
     }
 
     //setting bank record id
