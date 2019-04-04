@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-04 22:37:05
+ * @Last Modified time: 2019-04-04 22:39:42
  * BankRecordController
  */
 import React from 'react';
@@ -81,10 +81,10 @@ class BankRecordController extends React.Component {
     // 有效3-6 8   失效:7 单独  0-2 处理
     rentRecordTabChange(tab, ind) {
         console.log(`当前ind是${ind}`);
-        this.setState({
-            recordListData: []
-        });
-        const newRecordList = this.state.recordListData;
+        // this.setState({
+        //     recordListData: []
+        // });
+        // const newRecordList = this.state.recordListData;
         // let newRecordList;
         // if(ind == 0)
         //     newRecordList =  recordListData.concat(json.data);
@@ -94,10 +94,10 @@ class BankRecordController extends React.Component {
         // // newRecordList = recordListData.filter((item) => { return item.status === 7; });
         // else
         //     newRecordList = recordListData;
-        this.getBankRecordList(0);
-        this.setState({
-            recordListData: newRecordList
-        });
+        // this.getBankRecordList(0);
+        // this.setState({
+        //     recordListData: newRecordList
+        // });
     }
 
     render() {
