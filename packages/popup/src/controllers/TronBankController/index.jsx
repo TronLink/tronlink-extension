@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 15:33:39
+ * @Last Modified time: 2019-04-08 21:05:22
  * TronBankPage
  */
 import React from 'react';
@@ -550,7 +550,7 @@ class BankController extends React.Component {
                             <section className='accountInfo infoSec'>
                                 <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
                                 <div className='selectedAccount'>
-                                    { selected.name.length > 6 ? selected.name.slice(0, 6) : selected.name } <span>{ selected.address }</span>
+                                    { selected.name.length > 6 ? `${selected.name.slice(0, 6)}…` : selected.name } <span>{ selected.address }</span>
                                 </div>
                                 <div className='balance'>
                                     <FormattedMessage id='BANK.INDEX.BALANCE' values={{ amount: selected.balance / Math.pow(10, 6) }}/>
