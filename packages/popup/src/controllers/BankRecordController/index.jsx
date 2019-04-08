@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-04 22:39:42
+ * @Last Modified time: 2019-04-08 12:00:52
  * BankRecordController
  */
 import React from 'react';
@@ -23,12 +23,13 @@ class BankRecordController extends React.Component {
             hasMore: false,
             isLoadingMore: false,
             start: 0,
-            limit: 8
+            limit: 20,
+            type: 1 // 1 valid 2 done 3 all
         };
     }
 
     componentDidMount() { // data by props
-        this.getBankRecordList(0);// index page
+        this.getBankRecordList(0, this.state.type);// index page
     }
 
     // 加载更多数据
@@ -37,9 +38,9 @@ class BankRecordController extends React.Component {
         this.setState({
             isLoadingMore: true
         });
-        const { start, limit } = this.state;
+        const { start, limit, type } = this.state;
         const loadMoreStart = start + limit ;
-        this.getBankRecordList(loadMoreStart);
+        this.getBankRecordList(loadMoreStart, type);
 
         // 增加 page
         this.setState({
@@ -48,7 +49,7 @@ class BankRecordController extends React.Component {
         });
     }
 
-    async getBankRecordList(start) {
+    async getBankRecordList(start, type) {
         Toast.loading();
         const requestUrl = `${Utils.requestUrl('test')}/api/bank/list`;
         const { selected } = this.props.accounts;
@@ -58,6 +59,7 @@ class BankRecordController extends React.Component {
             address,
             limit,
             start,
+            type,
             requestUrl
         );
         const recordListData = this.state.recordListData.concat(json.data);
@@ -77,27 +79,27 @@ class BankRecordController extends React.Component {
         Toast.hide();
     }
 
-    // 0-未处理，1-生成冻结交易，2-广播冻结交易， 3-已冻结， 4-冻结失败， 5-生成解冻交易，6-广播解冻交易， 7-已解冻， 8-解冻失败
-    // 有效3-6 8   失效:7 单独  0-2 处理
     rentRecordTabChange(tab, ind) {
         console.log(`当前ind是${ind}`);
-        // this.setState({
-        //     recordListData: []
-        // });
-        // const newRecordList = this.state.recordListData;
-        // let newRecordList;
-        // if(ind == 0)
-        //     newRecordList =  recordListData.concat(json.data);
-        // // newRecordList = recordListData.filter((item) => { return item.status > 2 && item.status !== 7; });
-        // else if(ind == 1)
-        //     newRecordList = recordListData;
-        // // newRecordList = recordListData.filter((item) => { return item.status === 7; });
-        // else
-        //     newRecordList = recordListData;
-        // this.getBankRecordList(0);
-        // this.setState({
-        //     recordListData: newRecordList
-        // });
+        let type;
+        this.setState({
+            recordListData: []
+        });
+        if(ind == 0) {
+            type = 1;
+            this.getBankRecordList(0, 1);
+        }
+        else if(ind == 1) {
+            type = 2;
+            this.getBankRecordList(0, 2);
+        }
+        else{
+            type = 0;
+            this.getBankRecordList(0, 0);
+        }
+        this.setState({
+            type
+        });
     }
 
     render() {

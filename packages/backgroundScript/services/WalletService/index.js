@@ -762,6 +762,16 @@ class Wallet extends EventEmitter {
         return defaultData;
     }
 
+    async isValidOverTotal ({ receiver_address, freezeAmount, requestUrl }) {
+        const { data: isValid } = await axios.get(requestUrl, { params: { receiver_address, freezeAmount } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        let isValidVal = 0;
+        if(isValid) isValidVal = 0;else isValidVal = 1;
+        console.log(`isValid是${isValidVal}`);
+        return isValidVal;
+    }
+
     async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
         const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days }})
             .then(res => res.data)
@@ -783,14 +793,13 @@ class Wallet extends EventEmitter {
     async isValidOnlineAddress({ address }) {
         // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
         const account = await NodeService.tronWeb.trx.getAccountResources(address);
-        if(!account.EnergyLimit)
+        if(!account.TotalEnergyLimit)
             return logger.warn('Failed to get online address data');
-        console.log(`account是${account.EnergyLimit},${account.EnergyUsed}`);
         return account;
     }
 
-    async getBankRecordList({ address, limit, start, requestUrl }) {
-        const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, } })
+    async getBankRecordList({ address, limit, start, type, requestUrl }) {
+        const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, type } })
         console.log(`recordData${recordData}`);
         if(!recordData)
             return logger.warn('Failed to get bank record data');

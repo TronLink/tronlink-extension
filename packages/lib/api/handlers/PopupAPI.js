@@ -186,9 +186,9 @@ export default {
         return this.duplex.send('getBankDefaultData', { requestUrl });
     },
 
-    // getTotalEnergyWeight(address) {
-    //     return this.duplex.send('getTotalEnergyWeight', { address });
-    // },
+    isValidOverTotal(address, rentVal, requestUrl) {
+        return this.duplex.send('isValidOverTotal', { address, rentVal, requestUrl });
+    },
 
     calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
         return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });
@@ -203,8 +203,8 @@ export default {
     },
 
     //record list
-    getBankRecordList(address, limit, start, requestUrl) {
-        return this.duplex.send('getBankRecordList', { address, limit, start, requestUrl });
+    getBankRecordList(address, limit, start, type, requestUrl) {
+        return this.duplex.send('getBankRecordList', { address, limit, start, type, requestUrl });
     },
 
     getBankRecordDetail(id, requestUrl) {
@@ -213,9 +213,5 @@ export default {
 
     setSelectedBankRecordId(id) {
         this.duplex.send('setSelectedBankRecordId', id, false);
-    },
-
-    // getSelectedBankRecordId() {
-    //     return this.duplex.send('getSelectedBankRecordId');
-    // }
+    }
 };

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-03 18:59:13
+ * @Last Modified time: 2019-04-08 11:37:04
  * TronBankPage
  */
 import React from 'react';
@@ -67,7 +67,8 @@ class BankController extends React.Component {
             },
             isOnlineAddress: {
                 error: false
-            }
+            },
+            currentEnv: 'test'
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
     }
@@ -79,7 +80,8 @@ class BankController extends React.Component {
     }
 
     async defaultDataFun() {
-        const requestUrl = `${Utils.requestUrl('test')}/api/bank/default_data`;
+        const env = this.state.currentEnv;
+        const requestUrl = `${Utils.requestUrl(env)}/api/bank/default_data`;
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
         const { accounts, selected } = this.props.accounts;
@@ -181,11 +183,12 @@ class BankController extends React.Component {
     async isValidRentAddress() {
         // valid order num > 3
         const curaAddress = this.rentAddressInput.value;
+        const env = this.state.currentEnv;
         let address;
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
         if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
-        const requestUrl = `${Utils.requestUrl('test')}/api/bank/is_rent`;
+        const requestUrl = `${Utils.requestUrl(env)}/api/bank/is_rent`;
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
         const recipient = {
             value: address,
@@ -199,8 +202,8 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID
         };
         const curentInputBalance = {
-            used: '',
-            total: '',
+            used: 0,
+            total: 0,
             show: true
         };
         // isRent => yes judge online address  => no tips
@@ -213,8 +216,9 @@ class BankController extends React.Component {
                 recipient.valid = false;
             }else {
                 let energyUsed = result.EnergyUsed;
-                const energyLimit = result.EnergyLimit;
+                let energyLimit = result.EnergyLimit;
                 if(typeof(energyUsed) == 'undefined') energyUsed = 0;
+                if(typeof(energyLimit) == 'undefined') energyLimit = 0;
                 isOnlineAddress.error = false;
                 recipient.error = false;
                 recipient.valid = true;
@@ -231,7 +235,7 @@ class BankController extends React.Component {
 
     async handlerRentNumChange(e, _type) {
         // rent num change  _type 1chage 2blur
-        const { rentNumMin, rentNumMax, defaultUnit } = this.state;
+        const { rentNumMin, rentNumMax, defaultUnit, currentEnv } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
@@ -262,18 +266,25 @@ class BankController extends React.Component {
                 if(_type === 2) {
                     rentNum.formatError = false;
                     rentNum.error = false;
-                    // overtake company account num
-                    if(rentVal > defaultUnit.totalEnergyWeight) {
+                    const requestUrl = `${Utils.requestUrl(currentEnv)}/api/bank/balance_enough`;
+                    const curaAddress = this.rentAddressInput.value;
+                    let address;
+                    const selectedaAddress = selected.address;
+                    if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
+                    const isValid = await PopupAPI.isValidOverTotal(address, rentVal, requestUrl);
+                    console.log(`isValidOverTotal是${isValid}`);
+                    // overtake company account num isValid 1 => valid 0 => invalid
+                    if(isValid === 1) {
                         accountMaxBalance.valid = true;
                         rentNum.valid = false;
                         rentNum.predictStatus = false;
-                    } else {
+                    }else{
                         rentNum.valid = true;
                         accountMaxBalance.valid = false;
                         rentNum.predictStatus = true;
                     }
-                    this.setState({ accountMaxBalance });
                     this.isValidRentAddress();
+                    this.setState({ accountMaxBalance });
                 }
                 this.setState({
                     rentNum
