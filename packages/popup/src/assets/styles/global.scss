@@ -1098,3 +1098,28 @@ html, body {
         background: transparent;
     }
 }
+
+.tronBankContent{
+    .am-accordion{
+        position: static;
+    }
+    .am-accordion .am-accordion-item .am-accordion-header:after{
+        display:none !important;
+        background-color: #fff;
+    }
+}
+.bankRecordContainer{
+    .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
+        background-color: #fff;
+    }
+    html:not([data-scale]) .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
+        background-color: #fff;
+    }
+    .am-tabs-default-bar-tab{
+        cursor: pointer;
+        height:37px;
+        line-height:37px;
+        font-family: PingFang-SC-Bold;
+        font-size: 14px;
+    }
+}

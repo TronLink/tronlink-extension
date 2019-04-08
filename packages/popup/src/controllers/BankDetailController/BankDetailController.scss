@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-22 11:57:31 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-24 19:47:36
+ * @Last Modified time: 2019-04-08 14:53:13
  */
  .navbar{
     width: 100%;
@@ -27,24 +27,42 @@
         background-position: center center;
     }
 }
+.orderAccount{
+	border-bottom: 1px solid #EFEFEF;
+	padding: 12px 0;
+	.accountName{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color:#888998; 
+		letter-spacing: 0 
+	}
+	.accountNum{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color: #505160;
+		letter-spacing: 0;
+		text-align: right;
+		margin-top: 12px;
+	}
+}
  .orderList{
-    border-bottom: 1px solid #EFEFEF;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 12px 0;
- }
- .orderIntroduce{
-    font-family: PingFangSC-Regular;
-    font-size: 14px;
-    color:#888998; 
-    letter-spacing: 0 
- }
- .orderStatus{
-    font-family: PingFangSC-Regular;
-    font-size: 14px;
-    color: #505160;
-    letter-spacing: 0;
-    display: flex;
-    flex-direction: row;
+	border-bottom: 1px solid #EFEFEF;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 12px 0;
+	.orderIntroduce{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color:#888998; 
+		letter-spacing: 0 
+	}
+	.orderStatus{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color: #505160;
+		letter-spacing: 0;
+		display: flex;
+		flex-direction: row;
+	}
  }

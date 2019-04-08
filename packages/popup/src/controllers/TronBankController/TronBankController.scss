@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-03 18:00:01
+ * @Last Modified time: 2019-04-08 15:33:04
  * TronBankPage
  */
 
@@ -239,7 +239,6 @@
         height:36px;
         width: 100%;
         margin:10px 0 5px;  
-        border: 1px solid #EFEFEF;
         border-radius: 2px;
         overflow: hidden;
         .am-button>.am-button-icon{
@@ -273,8 +272,6 @@
             height: 100%;
             text-align: center;
             border:none;
-            border-left:1px solid #EFEFEF;
-            border-right:1px solid #EFEFEF;
         }
     }
 
@@ -317,6 +314,19 @@
 .errorBorder{
     border: 1px solid #DB705C;
 }
+.norderRightBorder{
+    border-right:1px solid #EFEFEF;
+}
+.errorRightBorder{
+    border-right: 1px solid #DB705C;
+}
+.norderLeftBorder{
+    border-left:1px solid #EFEFEF;
+}
+.errorLeftBorder{
+    border-left: 1px solid #DB705C;
+}
+
 .normalValid{
     background: #636ACC;
     color: #FFFFFF;

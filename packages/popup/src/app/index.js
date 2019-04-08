@@ -22,10 +22,10 @@ import BankRecordController from '@tronlink/popup/src/controllers/BankRecordCont
 import BankDetailController from '@tronlink/popup/src/controllers/BankDetailController';
 import BankHelplController from '@tronlink/popup/src/controllers/TronBankHelp';
 
+import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
 import 'assets/styles/global.scss';
 import 'react-toast-mobile/lib/react-toast-mobile.css';
-import 'antd-mobile/dist/antd-mobile.css';
 
 import enMessages from '@tronlink/popup/src/translations/en.json';
 import zhMessages from '@tronlink/popup/src/translations/zh.json';

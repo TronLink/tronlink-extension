@@ -186,8 +186,8 @@ export default {
         return this.duplex.send('getBankDefaultData', { requestUrl });
     },
 
-    isValidOverTotal(address, rentVal, requestUrl) {
-        return this.duplex.send('isValidOverTotal', { address, rentVal, requestUrl });
+    isValidOverTotal(receiverAddress, freezeAmount, requestUrl) {
+        return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
     },
 
     calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {

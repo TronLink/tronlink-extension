@@ -257,7 +257,7 @@
     "BANK.INDEX.FORECASTNUM":"预计可得={num}Energy",
     "BANK.INDEX.OVERTAKEORDERNUM":"一个接收地址同时最多只能有五个生效中的订单",
     "BANK.INDEX.NOTONLINEADDRESS":"地址未激活,请向其转入任意token,以激活该地址",
-    "BANK.INDEX.OVERTAKEMAXNUM":"资源池剩余{max}TRX，请调小租用量",
+    "BANK.INDEX.OVERTAKEMAXNUM":"资源池可用余额不足，请调小租用量",
     "BANK.INDEX.RENTPLACEHOLDER":"租用天数",
     "BANK.INDEX.RENTDAYFORMATERROR":"格式错误，请输入{min}-{max}的整数",
     "BANK.INDEX.RENTDAYERROR":"请输入{min}-{max}的整数",

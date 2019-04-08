@@ -762,18 +762,17 @@ class Wallet extends EventEmitter {
         return defaultData;
     }
 
-    async isValidOverTotal ({ receiver_address, freezeAmount, requestUrl }) {
-        const { data: isValid } = await axios.get(requestUrl, { params: { receiver_address, freezeAmount } })
+    async isValidOverTotal ({ receiverAddress, freezeAmount, requestUrl }) {
+        const { data: isValid } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount } })
             .then(res => res.data)
             .catch(err => { logger.error(err); });
         let isValidVal = 0;
         if(isValid) isValidVal = 0;else isValidVal = 1;
-        console.log(`isValid是${isValidVal}`);
         return isValidVal;
     }
 
     async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
-        const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days }})
+        const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days } })
             .then(res => res.data)
             .catch(err => { logger.error(err); });
         if(!calculateData)

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 11:37:04
+ * @Last Modified time: 2019-04-08 15:33:39
  * TronBankPage
  */
 import React from 'react';
@@ -266,13 +266,13 @@ class BankController extends React.Component {
                 if(_type === 2) {
                     rentNum.formatError = false;
                     rentNum.error = false;
+                    Toast.loading();
                     const requestUrl = `${Utils.requestUrl(currentEnv)}/api/bank/balance_enough`;
                     const curaAddress = this.rentAddressInput.value;
                     let address;
                     const selectedaAddress = selected.address;
                     if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
-                    const isValid = await PopupAPI.isValidOverTotal(address, rentVal, requestUrl);
-                    console.log(`isValidOverTotal是${isValid}`);
+                    const isValid = await PopupAPI.isValidOverTotal(address, rentVal * Math.pow(10, 6), requestUrl);
                     // overtake company account num isValid 1 => valid 0 => invalid
                     if(isValid === 1) {
                         accountMaxBalance.valid = true;
@@ -285,6 +285,7 @@ class BankController extends React.Component {
                     }
                     this.isValidRentAddress();
                     this.setState({ accountMaxBalance });
+                    Toast.hide();
                 }
                 this.setState({
                     rentNum
@@ -495,7 +496,7 @@ class BankController extends React.Component {
             });
         }).catch(error => {
             console.log(error);
-            Toast.fail(JSON.stringify(error.error), 2);
+            Toast.info(JSON.stringify(error.error), 2);
         });
     }
 
@@ -557,7 +558,7 @@ class BankController extends React.Component {
                             </section>
                             <section className='infoSec'>
                                 <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
-                                <div className={recipient.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
+                                <div className={recipient.error || !validOrderOverLimit.valid || isOnlineAddress.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
                                     <input ref={ rentAddressInput => this.rentAddressInput = rentAddressInput}
                                         onChange={(e) => { this.onRecipientChange(e, 1); } }
                                         onBlur={(e) => this.onRecipientChange(e, 2)}
@@ -597,7 +598,7 @@ class BankController extends React.Component {
                                         alt={'question'}
                                     />
                                 </label>
-                                <div className={rentNum.error ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
+                                <div className={rentNum.error || rentNum.formatError || accountMaxBalance.valid ? 'rentNumWrapper errorBorder' : 'rentNumWrapper normalBorder'}>
                                     <input value={ rentNum.value }
                                         onChange={ (e) => { this.handlerRentNumChange(e, 1); }}
                                         onBlur={ (e) => this.handlerRentNumChange(e, 2)}
@@ -622,14 +623,14 @@ class BankController extends React.Component {
                                 }
                                 { accountMaxBalance.valid ?
                                     <div className='errorMsg'>
-                                        <FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' values={{ max: accountMaxBalance.value }} />
+                                        <FormattedMessage id='BANK.INDEX.OVERTAKEMAXNUM' />
                                     </div> : null
                                 }
                             </section>
                             <section className='infoSec singlgeSty'>
                                 <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
-                                <div className='dayRange'>
-                                    <span onClick={ (e) => this.handlerRentDayFun(1)}>
+                                <div className={rentDay.error || rentDay.formatError ? 'dayRange errorBorder' : 'dayRange normalBorder'}>
+                                    <span className={rentDay.error || rentDay.formatError ? 'errorRightBorder' : 'norderRightBorder'} onClick={ (e) => this.handlerRentDayFun(1)}>
                                         <Button className='operatingBtn'
                                             icon={<img className='operationReduceIcon' src={myImg('subtrac')} alt='subtrac' />}
                                             inline
@@ -644,7 +645,7 @@ class BankController extends React.Component {
                                         className='commonInput rentDay'
                                         placeholder={ formatMessage({ id: 'BANK.INDEX.RENTPLACEHOLDER' }) + `(${rentDayMin}-${rentDayMax})`} type='text'
                                     />
-                                    <span onClick={ (e) => this.handlerRentDayFun(2)}>
+                                    <span className={rentDay.error || rentDay.formatError ? 'errorLeftBorder' : 'norderLeftBorder'} onClick={ (e) => this.handlerRentDayFun(2)}>
                                         <Button className='operatingBtn' icon={<img className='operationAddIcon' src={myImg('add')} alt='add' />} inline size='small'>
                                         </Button>
                                     </span>
