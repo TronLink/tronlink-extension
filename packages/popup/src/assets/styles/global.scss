@@ -1102,6 +1102,10 @@ html, body {
 .tronBankContent{
     .am-accordion{
         position: static;
+        border:none;
+    }
+    .am-accordion .am-accordion-item .am-accordion-header{
+        border-bottom:none;
     }
     .am-accordion .am-accordion-item .am-accordion-header:after{
         display:none !important;
@@ -1109,6 +1113,9 @@ html, body {
     }
 }
 .bankRecordContainer{
+    .am-tabs-default-bar-top .am-tabs-default-bar-tab{
+        border-bottom:none;
+    }
     .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
         background-color: #fff;
     }
