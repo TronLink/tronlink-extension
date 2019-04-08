@@ -49,21 +49,18 @@ class AccountsPage extends React.Component {
     }
 
     async componentDidMount(){
-        const ieos = [{name:'Ace',imgUrl:trxImg,type:1,deadline:(new Date('2019-04-13 00:00:00').getTime())/1000}];
+        //const ieos = [{name:'Ace',imgUrl:trxImg,type:1,deadline:(new Date('2019-04-13 00:00:00').getTime())/1000}];
         //const ieos = [];
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
         tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
-        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
-        let news = [];
-        if(res) {
-            news = res.data.data;
-        } else {
-            news = [];
-        }
+        const res_news = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
+        const res_ieo = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
+        let news = res_news? res_news.data.data:[];
+        let ieos = res_ieo ? res_ieo.data.data : [];
         this.setState({news});
 
         this.runTime(ieos);
@@ -80,21 +77,22 @@ class AccountsPage extends React.Component {
 
     runTime(ieos){
         for(const o of ieos) {
-            if(o.type === 1) {
-                o.time = this.getTime(o.deadline);
+            if(o.time >= 0) {
+                o.timer = this.getTime(o.time);
+                o.time--;
             }
         }
+        console.log(ieos);
         this.setState({ieos});
         setTimeout(()=>{this.runTime(this.state.ieos)},1000);
     }
 
-    getTime(deadline) {
-       const time =  new Date().getTime()/1000;
-       const gap = deadline - time;
-       const hours = Math.floor( gap / ( 60  * 60 ) );
-       const minutes = Math.floor( ( gap % ( 60 * 60 ) ) / 60);
-       const seconds = Math.floor(gap % 60);
-       return [hours>9?hours:'0'+hours,minutes>9?minutes:'0'+minutes,seconds>9?seconds:'0'+seconds];
+    getTime(time) {
+       const day = Math.floor( time / ( 24 * 60 * 60 ) );
+       const hours = Math.floor( time / ( 60  *  60 ) ) - 24 * day;
+       const minutes = Math.floor( ( time % ( 60 * 60 ) ) / 60);
+       const seconds = Math.floor(time % 60);
+       return [hours>9?hours:'0'+hours,minutes>9?minutes:'0'+minutes,seconds>9?seconds:'0'+seconds,day];
     }
 
     addCount(id){
@@ -151,7 +149,7 @@ class AccountsPage extends React.Component {
                         const openAccountsMenu = true;
                         PopupAPI.setSetting({...setting,openAccountsMenu});
                     }}>
-                        <span>{accounts.selected.name}</span>
+                        <span>{accounts.selected.name.length>30?accounts.selected.name.substr(0,30)+'...':accounts.selected.name}</span>
                     </div>
                     <div className="menu" onClick={(e)=>{e.stopPropagation();this.setState({showMenuList:!showMenuList,showNodeList:false})}}>
                         <div className="dropList menuList" style={showMenuList?{width:'160px',height:30*6,opacity:1}:{}}>
@@ -238,7 +236,6 @@ class AccountsPage extends React.Component {
     }
 
     renderIeos(ieos){
-        const { time } = this.state;
         if(ieos.length === 0)
             return null;
 
@@ -246,20 +243,20 @@ class AccountsPage extends React.Component {
             <div className="ieos">
                 {
                     ieos.map(v=>(
-                        <div className="ieo">
-                            <img src={v.imgUrl} />
+                        <div className="ieo" onClick={()=>{window.open(v.ieoUrl)}}>
+                            <img src={v.logoUrl} />
                             <div className="name">{v.name}</div>
                             <div className="worth">
                                 {
-                                        v.type==1?
+                                        v.time + 1 > 0?
                                         <div className="ieo_will">
                                             <FormattedMessage id="IEOS.LEFT_TIME" />
                                             <div className="time">
-                                                <div className="cell">{v.time[0]}</div>
+                                                <div className="cell">{v.timer[0]}</div>
                                                 :
-                                                <div className="cell">{v.time[1]}</div>
+                                                <div className="cell">{v.timer[1]}</div>
                                                 :
-                                                <div className="cell">{v.time[2]}</div>
+                                                <div className="cell">{v.timer[2]}</div>
                                             </div>
                                         </div>
                                         :
@@ -516,7 +513,7 @@ class AccountsPage extends React.Component {
                                         }}>
                                             <div className="top">
                                                 <div className="name">
-                                                    {account.name}
+                                                    {account.name.length>30?account.name.substr(0,30)+'...':account.name}
                                                 </div>
                                                 <div className="asset">
                                                     <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
@@ -551,7 +548,15 @@ class AccountsPage extends React.Component {
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
-                        <div className="scroll">
+                        <div className="scroll" onScroll={(e)=> {
+                            //const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
+                            //if(transactionGroup && transactionGroup[key].length > 8){
+                            //    const isTop = e.target.scrollTop === 0 ? false : true;
+                            //    this.setState({isTop});
+                            //}
+                            //}}
+                        }}
+                        >
                             { this.renderTokens(tokens) }
                         </div>
                     </div>
