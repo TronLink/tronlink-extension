@@ -270,7 +270,7 @@
     "BANK.RENTNUMMODAL.HELP":"帮助",
     "BANK.HELP.ANNOUNCEMENTS":"注意事项",
     "BANK.HELP.TIPSONE":"1.付款完成后，能量约在1分钟后到账。由于广播延迟等原因，少数情况下，可能会存在5-10分钟的延迟。",
-    "BANK.HELP.TIPSTWO":"2.同一能源接收地址，同时最多只能拥有三笔有效订单。",
+    "BANK.HELP.TIPSTWO":"2.同一能源接收地址，同时最多只能拥有五笔有效订单。",
     "BANK.HELP.TIPSTHREE":"3.订单不可撤",
     "BANK.HELP.CONTACT":"联系我们",
     "BANK.HELP.JOINCOMMUNITY":"加入社群",

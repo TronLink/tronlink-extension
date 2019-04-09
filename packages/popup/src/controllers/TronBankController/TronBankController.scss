@@ -375,6 +375,12 @@
             color: #505160;
             line-height: 20px;
             letter-spacing: 0;
+            span{
+                word-wrap: break-word;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+                hyphens: auto;
+            }
         }
         .confirmRentContent{
             height: 210px;

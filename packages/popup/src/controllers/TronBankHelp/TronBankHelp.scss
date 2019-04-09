@@ -34,6 +34,12 @@
         padding:0 0 14px;
         line-height: 20px;
     }
+    .announcementsCont{
+        word-wrap: break-word;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+    }
     .am-accordion .am-accordion-item .am-accordion-header{
         font-family:PingFang-SC-Medium;
         font-size:14px;

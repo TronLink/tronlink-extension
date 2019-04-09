@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-21 18:38:20 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-03-28 14:48:05
+ * @Last Modified time: 2019-04-09 16:10:18
  */
  .recordList{
     cursor: pointer;
@@ -48,8 +48,9 @@
         }
         .validStatus{
             display: block;
-            width: 50px;
-            height: 20px;
+            min-width: 50px;
+            min-height: 20px;
+            padding:1px 7px;
             line-height: 20px;
             background: rgba(118,171,97,0.10);
             border-radius: 4px;

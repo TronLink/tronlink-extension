@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 21:05:22
+ * @Last Modified time: 2019-04-09 16:06:54
  * TronBankPage
  */
 import React from 'react';
@@ -46,8 +46,7 @@ class BankController extends React.Component {
             defaultUnit: {
                 num: 10,
                 day: 1,
-                cost: 0.5,
-                totalEnergyWeight: 999
+                cost: 0.5
             },
             rentUnit: { //caclulate data
                 ratio: 0,
@@ -100,8 +99,7 @@ class BankController extends React.Component {
             defaultUnit: {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
-                cost: defaultData.pay_amount / Math.pow(10, 6),
-                totalEnergyWeight: 999
+                cost: defaultData.pay_amount / Math.pow(10, 6)
             },
             curentInputBalance
         });
@@ -235,7 +233,7 @@ class BankController extends React.Component {
 
     async handlerRentNumChange(e, _type) {
         // rent num change  _type 1chage 2blur
-        const { rentNumMin, rentNumMax, defaultUnit, currentEnv } = this.state;
+        const { rentNumMin, rentNumMax, currentEnv } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
@@ -245,12 +243,18 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID,
             formatError: BANK_STATE.INVALID
         };
+        const accountMaxBalance = {
+            value: '',
+            valid: BANK_STATE.INVALID
+        };
         if(!rentVal.length)
             return this.setState({ rentNum });
         if(!Utils.validatInteger(rentVal)) {
             if(_type === 2) {
                 rentNum.formatError = true;
                 rentNum.error = false;
+                accountMaxBalance.valid = false;
+                this.setState({ accountMaxBalance });
             }
         }else{
             const { selected } = this.props.accounts;
@@ -258,10 +262,6 @@ class BankController extends React.Component {
             const totalenergyLimitNum = selected.TotalEnergyLimit;
             // predict num energy
             if(Number.isFinite(totalEnergyWeight)) rentNum.predictVal = Math.ceil(rentVal / totalEnergyWeight * totalenergyLimitNum);else rentNum.predictVal = 0;
-            const accountMaxBalance = {
-                value: defaultUnit.totalEnergyWeight,
-                valid: BANK_STATE.INVALID
-            };
             if(rentVal <= rentNumMax && rentVal >= rentNumMin) {
                 if(_type === 2) {
                     rentNum.formatError = false;
@@ -296,7 +296,6 @@ class BankController extends React.Component {
                 rentNum.valid = false;
                 rentNum.predictStatus = false;
                 accountMaxBalance.valid = false;
-                this.setState({ accountMaxBalance });
                 if(_type === 2) {
                     rentNum.error = true;
                     rentNum.formatError = false;
@@ -305,6 +304,7 @@ class BankController extends React.Component {
                     rentNum.error = false;
                     rentNum.formatError = false;
                 }
+                this.setState({ accountMaxBalance });
             }
         }
         this.setState({
