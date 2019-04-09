@@ -627,11 +627,11 @@
                 }
                 img{
                     width: 28px;
+                    border-radius: 100%;
                 }
                 .name{
                     font-size: 14px;
                     color: #505160;
-                    width: 100px;
                     margin-left: 10px;
                 }
                 .worth{
@@ -642,12 +642,13 @@
                     .ieo_will{
                         display: flex;
                         flex-direction: row;
-                        height: 17px;
+                        height: 18px;
+                        align-items: center;
                         span {
                             font-size: 13px;
-                            margin-right: 3px;
                         }
                         .time{
+                            margin-left: 4px;
                             display: flex;
                             flex-direction: row;
                             color: #e2bd53;

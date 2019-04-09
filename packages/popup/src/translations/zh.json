@@ -243,6 +243,6 @@
     "TRANSACTION.TOKEN_INFO.DETAIL":"详情",
 
     "IEOS.BUY_ING":"抢购中",
-    "IEOS.LEFT_TIME":"距开抢",
-    "IEOS.LAUNCH_BASE":"立即登录"
+    "IEOS.LEFT_TIME":"距开抢{day}",
+    "IEOS.LAUNCH_BASE":"LaunchBase"
 }

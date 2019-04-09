@@ -49,8 +49,6 @@ class AccountsPage extends React.Component {
     }
 
     async componentDidMount(){
-        //const ieos = [{name:'Ace',imgUrl:trxImg,type:1,deadline:(new Date('2019-04-13 00:00:00').getTime())/1000}];
-        //const ieos = [];
         const { prices } = this.props;
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
@@ -62,17 +60,7 @@ class AccountsPage extends React.Component {
         let news = res_news? res_news.data.data:[];
         let ieos = res_ieo ? res_ieo.data.data : [];
         this.setState({news});
-
         this.runTime(ieos);
-        // setInterval(()=>{
-        //     for(const o of ieos) {
-        //         if(o.type === 1) {
-        //             o.time = this.getTime(o.deadline);
-        //         }
-        //     }
-        //     this.setState({ieos});
-        // },1000)
-        //PopupAPI.refresh();
     }
 
     runTime(ieos){
@@ -82,7 +70,6 @@ class AccountsPage extends React.Component {
                 o.time--;
             }
         }
-        console.log(ieos);
         this.setState({ieos});
         setTimeout(()=>{this.runTime(this.state.ieos)},1000);
     }
@@ -238,7 +225,7 @@ class AccountsPage extends React.Component {
     renderIeos(ieos){
         if(ieos.length === 0)
             return null;
-
+        const {language} = this.props;
         return (
             <div className="ieos">
                 {
@@ -250,7 +237,16 @@ class AccountsPage extends React.Component {
                                 {
                                         v.time + 1 > 0?
                                         <div className="ieo_will">
-                                            <FormattedMessage id="IEOS.LEFT_TIME" />
+                                            {/*<FormattedMessage id="IEOS.LEFT_TIME" values={{day:v.timer[3]}} />*/}
+                                                {
+                                                    language === 'en'?
+                                                        <span>
+                                                            {v.timer[3]>1?v.timer[3]+' days until the sale':(v.timer[3] === 1 ? '1 day until the sale': 'until the sale')}
+                                                        </span>
+                                                        :
+                                                        <FormattedMessage id="IEOS.LEFT_TIME" values={{day:(v.timer[3]>0?(language==='zh'?v.timer[3]+'天':v.timer[3]+'日'):'')}} />
+
+                                                }
                                             <div className="time">
                                                 <div className="cell">{v.timer[0]}</div>
                                                 :

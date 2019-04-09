@@ -289,6 +289,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }else{
                     this.tokens.smart[ tokenId ].balance = 0;
+                    this.tokens.smart[ tokenId ].price = 0;
                 }
             });
             let sentDelegateBandwidth = 0;
@@ -444,6 +445,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }else{
                     this.tokens.smart[ tokenId ].balance = 0;
+                    this.tokens.smart[ tokenId ].price = 0;
                 }
             });
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );

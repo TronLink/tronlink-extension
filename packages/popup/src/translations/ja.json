@@ -244,7 +244,7 @@
   "TRANSACTION.TOKEN_INFO.CONTRACT":"契約",
   "TRANSACTION.TOKEN_INFO.DETAIL":"詳細",
 
-  "IEOS.BUY_ING":"抢购中",
-  "IEOS.LEFT_TIME":"距开抢",
+  "IEOS.BUY_ING":"その場で",
+  "IEOS.LEFT_TIME":"{day}間オープン",
   "IEOS.LAUNCH_BASE":"LaunchBase"
 }

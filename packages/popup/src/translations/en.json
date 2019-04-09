@@ -243,8 +243,7 @@
     "TRANSACTION.TOKEN_INFO.CONTRACT":"Contract",
     "TRANSACTION.TOKEN_INFO.DETAIL":"Detail",
 
-    "IEOS.BUY_ING":"抢购中",
-    "IEOS.LEFT_TIME":"距开抢",
-    "IEOS.LAUNCH_BASE":"立即登录",
-    "IEOS.DAY":"天"
+    "IEOS.BUY_ING":"Sale started",
+    "IEOS.LEFT_TIME":"{day} days until the sale",
+    "IEOS.LAUNCH_BASE":"LaunchBase"
 }
