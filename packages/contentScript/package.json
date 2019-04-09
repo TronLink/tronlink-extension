@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "extensionizer": "^1.0.1",
-    "tronweb": "^2.3.4"
+    "tronweb": "^2.3.8"
   }
 }
