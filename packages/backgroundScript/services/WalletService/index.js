@@ -742,6 +742,40 @@ class Wallet extends EventEmitter {
         let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
         return {all:ALL, send:SEND, receive:RECEIVE};
     }
+
+    async getNews(){
+        const developmentMode = StorageService.setting.developmentMode;
+        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
+        if(res) {
+            return res.data.data;
+        } else {
+            return [];
+        }
+    }
+
+    async getIeos(){
+        const developmentMode = StorageService.setting.developmentMode;
+        const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
+        const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
+        if(res) {
+            return res.data.data;
+        } else {
+            return [];
+        }
+    }
+
+    async addCount(id){
+        const developmentMode = StorageService.setting.developmentMode;
+        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
+        if(res && res.data.code === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 export default Wallet;

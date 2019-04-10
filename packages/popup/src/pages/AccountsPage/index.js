@@ -10,7 +10,6 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 import {
     FormattedMessage,
@@ -27,7 +26,6 @@ import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
-let apiUrl = '';
 let tronscanUrl = '';
 class AccountsPage extends React.Component {
 
@@ -53,12 +51,9 @@ class AccountsPage extends React.Component {
         const t = {name:'TRX',id:'_',amount:0,decimals:6,price:prices.priceList[prices.selected],imgUrl:trxImg};
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
         tronscanUrl = developmentMode? 'http://18.188.214.126:8686/#':'https://tronscan.org/#';
-        const res_news = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
-        const res_ieo = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
-        let news = res_news? res_news.data.data:[];
-        let ieos = res_ieo ? res_ieo.data.data : [];
+        const news = await PopupAPI.getNews();
+        const ieos = await PopupAPI.getIeos();
         this.setState({news});
         this.runTime(ieos);
     }
@@ -80,10 +75,6 @@ class AccountsPage extends React.Component {
        const minutes = Math.floor( ( time % ( 60 * 60 ) ) / 60);
        const seconds = Math.floor(time % 60);
        return [hours>9?hours:'0'+hours,minutes>9?minutes:'0'+minutes,seconds>9?seconds:'0'+seconds,day];
-    }
-
-    addCount(id){
-        return axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
     }
 
     onClick(address) {
@@ -463,7 +454,7 @@ class AccountsPage extends React.Component {
                                         return (
                                             language === l ?
                                                 <div  onClick={async ()=>{
-                                                    const r = await this.addCount(news.id);
+                                                    const r = await PopupAPI.addCount(news.id);
                                                     if(r)
                                                         window.open(news.content_url);
                                                 }}>

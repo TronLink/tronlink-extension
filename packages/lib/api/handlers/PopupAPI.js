@@ -167,7 +167,20 @@ export default {
 
     getTransactionsByTokenId(tokenId){
         return this.duplex.send('getTransactionsByTokenId',tokenId);
+    },
+
+    getNews(){
+        return this.duplex.send('getNews');
+    },
+
+    getIeos(){
+        return this.duplex.send('getIeos');
+    },
+
+    addCount(){
+        return this.duplex.send('addCount');
     }
+
 
 
 };
