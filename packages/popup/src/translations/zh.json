@@ -262,7 +262,7 @@
     "BANK.INDEX.RENTDAYFORMATERROR":"格式错误，请输入{min}-{max}的整数",
     "BANK.INDEX.RENTDAYERROR":"请输入{min}-{max}的整数",
     "BANK.INDEX.RENTINTRODUCE":"当前租用{num}万能量*{day}天，约花费{cost}TRX",
-    "BANK.INDEX.CURRENTRATE":"(当前获取同等能量需至少烧毁1trx 或 冻结{totalCost}trx)",
+    "BANK.INDEX.CURRENTRATE":"(当前获取同等能量需至少烧毁{min}trx 或 冻结{total}trx)",
     "BANK.INDEX.ESTIMATECOMPARE":"较直接烧毁约",
     "BANK.INDEX.ESTIMATESAVE":"省",
     "BANK.INDEX.ESTIMATEINFO":"获取同等能量需冻结",

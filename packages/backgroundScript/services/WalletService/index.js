@@ -734,12 +734,34 @@ class Wallet extends EventEmitter {
     }
 
     async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
-        await this.accounts[ this.selectedAccount ].rentEnergy(
-            _freezeAmount,
-            _payAmount,
-            _days,
-            _energyAddress
-        );
+        const {
+            privateKey
+        } = this.accounts[ this.selectedAccount ];
+        try {
+            const contractInstance = await NodeService.tronWeb.contract().at('TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux');
+            const result = await contractInstance.entrustOrder(_freezeAmount, _payAmount, _days, _energyAddress).send(
+                {
+                    callValue: _payAmount,
+                    shouldPollResponse: false
+                },
+                privateKey
+            );
+            console.log(`result为${result}`);
+            return result;
+        } catch(ex) {
+            logger.error('Failed to rent energy:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async bankOrderNotice({ energyAddress, trxHash, requestUrl }) {
+        const { data: isValid } = await axios.post(requestUrl, { receiver_address: energyAddress, trxHash } )
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        console.log(`isValid值${isValid}`);
+        if(!isValid)
+            return logger.warn('Failed to get bank order data');
+        return isValid;
     }
 
     async getDetaultRatioFun() {

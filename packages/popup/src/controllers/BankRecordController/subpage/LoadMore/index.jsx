@@ -27,10 +27,10 @@ class LoadMore extends React.Component {
         const loadMoreFn = this.props.loadMoreFn;
         const wrapper = this.wrapper;
         let timeoutId;
-        console.log("数据的高-------------------------", wrapper.clientHeight);
-        console.log("滚动的高------------------------", document.documentElement.scrollTop);
-        console.log("滚动的高------------------------", document.body.scrollTop);
-        console.log("屏幕的高------------------------", document.documentElement.clientHeight);
+        console.log('数据的高-------------------------', wrapper.clientHeight);
+        console.log('滚动的高------------------------', document.documentElement.scrollTop);
+        console.log('滚动的高------------------------', document.body.scrollTop);
+        console.log('屏幕的高------------------------', document.documentElement.clientHeight);
         console.log('%O', this.props.rentListContentDom);
         const callback = () => {
             const top = wrapper.getBoundingClientRect().top;

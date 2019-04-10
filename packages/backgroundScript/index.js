@@ -146,7 +146,7 @@ const backgroundScript = {
         duplex.on('getBankRecordList', this.walletService.getBankRecordList);
         duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
         duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);
-        // duplex.on('getSelectedBankRecordId', this.walletService.getSelectedBankRecordId);
+        duplex.on('bankOrderNotice', this.walletService.bankOrderNotice);
     },
 
     bindTabDuplex() {

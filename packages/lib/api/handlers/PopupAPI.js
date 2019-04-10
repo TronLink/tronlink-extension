@@ -177,6 +177,14 @@ export default {
         });
     },
 
+    bankOrderNotice(energyAddress, trxHash, requestUrl) {
+        return this.duplex.send('bankOrderNotice', {
+            energyAddress,
+            trxHash,
+            requestUrl
+        });
+    },
+
     getDetaultRatioFun() {
         return this.duplex.send('getDetaultRatioFun');
     },

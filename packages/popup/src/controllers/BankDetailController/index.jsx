@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-09 16:21:24
+ * @Last Modified time: 2019-04-10 19:51:24
  * BankOrderDetail
  */
 import React from 'react';
@@ -20,7 +20,8 @@ class BankDetailController extends React.Component {
             selected: '',
             loading: false,
             orderList: [],
-            recordDetail: {}
+            recordDetail: {},
+            currentEnv: 'test'
         };
     }
 
@@ -33,7 +34,8 @@ class BankDetailController extends React.Component {
 
     async getBankRecordDetail(_id) {
         Toast.loading();
-        const requestUrl = `${Utils.requestUrl('test')}/api/bank/order_info`;
+        const env = this.state.currentEnv;
+        const requestUrl = `${Utils.requestUrl(env)}/api/bank/order_info`;
         console.log(`——id为${_id}`);
         const recordDetail = await PopupAPI.getBankRecordDetail(_id, requestUrl);
         const orderList = [

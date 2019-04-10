@@ -631,24 +631,6 @@ class Account {
             return Promise.reject(ex);
         }
     }
-
-    async rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
-        // contract TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux
-        try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux');
-            await contractInstance.entrustOrder(_freezeAmount, _payAmount, _days, _energyAddress).send(
-                {
-                    callValue: _payAmount,
-                    shouldPollResponse: false
-                },
-                this.privateKey
-            );
-            return true;
-        } catch(ex) {
-            logger.error('Failed to rent energy:', ex);
-            return Promise.reject(ex);
-        }
-    }
 }
 
 export default Account;

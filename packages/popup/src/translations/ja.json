@@ -264,7 +264,7 @@
   "BANK.INDEX.RENTDAYFORMATERROR":"フォーマットが間違っているので、{min}-{max}の整数をご入力ください",
   "BANK.INDEX.RENTDAYERROR":"{min}-{max}の整数をご入力ください",
   "BANK.INDEX.RENTINTRODUCE":"現在は{num}万エネルギーを*{day}日間賃借し，凡そ{cost}TRX掛かっています",
-  "BANK.INDEX.CURRENTRATE":"(当前获取同等能量需至少烧毁{minCost}trx 或 冻结{totalCost}trx)",
+  "BANK.INDEX.CURRENTRATE":"(当前获取同等能量需至少烧毁{min}trx 或 冻结{total}trx)",
   "BANK.INDEX.ESTIMATECOMPARE":"较直接烧毁约",
   "BANK.INDEX.ESTIMATESAVE":"省",
   "BANK.INDEX.ESTIMATEINFO":"获取同等能量需冻结",

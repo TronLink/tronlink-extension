@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 12:00:52
+ * @Last Modified time: 2019-04-10 19:51:50
  * BankRecordController
  */
 import React from 'react';
@@ -18,6 +18,7 @@ class BankRecordController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentEnv: 'test',
             recordList: [],
             recordListData: [],
             hasMore: false,
@@ -51,7 +52,8 @@ class BankRecordController extends React.Component {
 
     async getBankRecordList(start, type) {
         Toast.loading();
-        const requestUrl = `${Utils.requestUrl('test')}/api/bank/list`;
+        const env = this.state.currentEnv;
+        const requestUrl = `${Utils.requestUrl(env)}/api/bank/list`;
         const { selected } = this.props.accounts;
         const address = selected.address;
         const { limit } = this.state;

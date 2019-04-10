@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 17:47:17
+ * @Last Modified time: 2019-04-10 20:46:41
  * TronBankPage
  */
 import React from 'react';
@@ -48,7 +48,8 @@ class BankController extends React.Component {
                 num: 10,
                 day: 1,
                 cost: 0.5,
-                minCost: 0
+                min: 0,
+                total: 0
             },
             rentUnit: { //caclulate data
                 ratio: 0,
@@ -107,8 +108,8 @@ class BankController extends React.Component {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
                 cost: defaultData.pay_amount / Math.pow(10, 6),
-                minCost: 1,
-                totalCost: costTrx
+                min: 1,
+                total: costTrx
             },
             curentInputBalance
         });
@@ -276,7 +277,8 @@ class BankController extends React.Component {
                     rentNum.formatError = false;
                     rentNum.error = false;
                     Toast.loading();
-                    const requestUrl = `${Utils.requestUrl(currentEnv)}/api/bank/balance_enough`;
+                    const env = this.state.currentEnv;
+                    const requestUrl = `${Utils.requestUrl(env)}/api/bank/balance_enough`;
                     const curaAddress = this.rentAddressInput.value;
                     let address;
                     const selectedaAddress = selected.address;
@@ -474,12 +476,23 @@ class BankController extends React.Component {
         const payAmount = freezeAmount * ratio * rentDayValue;
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
-        PopupAPI.rentEnergy(
+        const hashResult = PopupAPI.rentEnergy(
             freezeAmount,
             payAmount,
             rentDayValue,
             recipientAddress
-        ).then(() => {
+        );
+        const env = this.state.currentEnv;
+        const requestUrl = `${Utils.requestUrl(env)}/api/bank/order`;
+        hashResult.then((res) => {
+            console.log(`res为${res}`);
+            console.log(`recipientAddress${recipientAddress},当前Url ${requestUrl}`);
+            const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
+            successRes.catch(err => {
+                console.log(err);
+                Toast.info(JSON.stringify(err), 2);
+            });
+            console.log(`successRes为${successRes}`);
             Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
             this.setState({
                 rentConfirmVisible: false,
@@ -528,7 +541,6 @@ class BankController extends React.Component {
             { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: `${rentUnit.cost}TRX` },
         ];
         const saveCost = parseFloat(rentUnit.cost / saveRatio * (1 - saveRatio));
-        console.log(`saveCost${saveCost}`);
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
