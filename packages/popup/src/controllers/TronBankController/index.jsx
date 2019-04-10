@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 20:46:41
+ * @Last Modified time: 2019-04-10 20:51:02
  * TronBankPage
  */
 import React from 'react';
@@ -485,14 +485,11 @@ class BankController extends React.Component {
         const env = this.state.currentEnv;
         const requestUrl = `${Utils.requestUrl(env)}/api/bank/order`;
         hashResult.then((res) => {
-            console.log(`res为${res}`);
-            console.log(`recipientAddress${recipientAddress},当前Url ${requestUrl}`);
             const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
             successRes.catch(err => {
                 console.log(err);
                 Toast.info(JSON.stringify(err), 2);
             });
-            console.log(`successRes为${successRes}`);
             Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
             this.setState({
                 rentConfirmVisible: false,
