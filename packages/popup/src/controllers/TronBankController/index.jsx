@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 20:51:02
+ * @Last Modified time: 2019-04-10 21:01:58
  * TronBankPage
  */
 import React from 'react';
@@ -43,7 +43,7 @@ class BankController extends React.Component {
             rentNumMax: 1000,
             rentDayMin: 3,
             rentDayMax: 30,
-            saveRatio: 1,
+            discount: 1,
             defaultUnit: {
                 num: 10,
                 day: 1,
@@ -83,6 +83,8 @@ class BankController extends React.Component {
 
     async defaultDataFun() {
         const env = this.state.currentEnv;
+        const { nodes } = this.props;
+        console.log(`nodes.selected${nodes.selected}`);
         const requestUrl = `${Utils.requestUrl(env)}/api/bank/default_data`;
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
@@ -103,12 +105,12 @@ class BankController extends React.Component {
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
             rentDayMin: defaultData.rental_days_min,
             rentDayMax: defaultData.rental_days_max,
-            saveRatio: 0.9,
+            discount: defaultData.discount,
             defaultUnit: {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
                 cost: defaultData.pay_amount / Math.pow(10, 6),
-                min: 1,
+                min: 1, // min distroy 1trx
                 total: costTrx
             },
             curentInputBalance
@@ -243,7 +245,7 @@ class BankController extends React.Component {
 
     async handlerRentNumChange(e, _type) {
         // rent num change  _type 1chage 2blur
-        const { rentNumMin, rentNumMax, currentEnv } = this.state;
+        const { rentNumMin, rentNumMax } = this.state;
         const rentVal = e.target.value;
         const rentNum = {
             value: rentVal,
@@ -527,7 +529,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, saveRatio } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, discount } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -537,7 +539,7 @@ class BankController extends React.Component {
             { id: 'BANK.RENTINFO.RENTDAY', type: 3, value: rentDay.value },
             { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: `${rentUnit.cost}TRX` },
         ];
-        const saveCost = parseFloat(rentUnit.cost / saveRatio * (1 - saveRatio));
+        const saveCost = parseFloat(rentUnit.cost / discount * (1 - discount));
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
