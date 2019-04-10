@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-09 16:06:54
+ * @Last Modified time: 2019-04-10 10:26:02
  * TronBankPage
  */
 import React from 'react';
@@ -627,7 +627,7 @@ class BankController extends React.Component {
                                     </div> : null
                                 }
                             </section>
-                            <section className='infoSec singlgeSty'>
+                            <section className='infoSec'>
                                 <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
                                 <div className={rentDay.error || rentDay.formatError ? 'dayRange errorBorder' : 'dayRange normalBorder'}>
                                     <span className={rentDay.error || rentDay.formatError ? 'errorRightBorder' : 'norderRightBorder'} onClick={ (e) => this.handlerRentDayFun(1)}>
@@ -663,10 +663,16 @@ class BankController extends React.Component {
                             </section>
                             {rentNum.valid && rentDay.valid ?
                                 <section className='calculation'>
-                                    {rentNum.value}TRX*{rentUnit.ratio}({rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>)<FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
+                                    <div className='info'>
+                                        {rentNum.value}TRX*{rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>*{rentUnit.ratio}(<FormattedMessage id='BANK.INDEX.RATIO' />) <span className='pointColor'><FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX</span>
+                                    </div>
+                                    <div className='curNum'>
+                                        (<FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/><span className='pointColor'><FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>12.11trx</span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/>)
+                                    </div>
                                 </section> :
                                 <section className='rentIntroduce'>
-                                    <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} />
+                                    <div className='info'><FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} /></div>
+                                    <div className='curNum'><FormattedMessage id='BANK.INDEX.CURRENTRATE' values={{ rentNum: '123' }} /></div>
                                 </section>
                             }
                         </div>

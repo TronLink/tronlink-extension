@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 15:33:04
+ * @Last Modified time: 2019-04-10 10:37:45
  * TronBankPage
  */
 
@@ -96,17 +96,17 @@
         margin:0 18px;
     }
     .accountContent,.rentContent{
-        padding:0px 12px;
         background: #FFFFFF;
         border-radius: 2px;
     }
     .accountContent{
+        padding:0px 12px;
         margin:10px 0 8px;
         min-height:180px;
     }
     .rentContent{
         margin:0 0 10px; 
-        min-height: 220px;
+        min-height: 230px;
         .rentNumEntrance{
             cursor: pointer;
             width: 14px;
@@ -115,6 +115,12 @@
         }
         .rentNumEntrance:active{
             transform: scale(0.9)
+        }
+        section:nth-child(1){
+            padding:10px 12px;
+        }
+        section:nth-child(2){
+            padding:0 12px 15px; 
         }
     }
 
@@ -125,7 +131,7 @@
 
     // common
     .infoSec{
-        padding:10px 0;
+        padding:10px 0px;
         label{
             line-height: 20px;
             font-family: PingFang-SC-Bold;
@@ -202,35 +208,45 @@
             letter-spacing: 0;
         }
     }
-    .singlgeSty{
-        padding:0 0 10px; 
-    }
+
     // rent 
     .rentIntroduce{
         margin:0 auto 18px auto;
-        max-width: 274px;
-        height:27px;
-        line-height: 27px;
-        background: #F7F8FA;
         border-radius: 2px;
         font-family: PingFang-SC-Medium;
         font-size: 14px;
         color: #888998;
         letter-spacing: 0;
         text-align: center;
+        .info{
+            line-height: 27px;
+        }
+        .curNum{
+            font-size: 12px;
+            margin-top:5px;
+        }
+        .pointColor{
+            color: #DE8200;
+        }
     }
     .calculation{
-        min-width: 274px;
         margin:0 auto 18px auto;
-        height:27px;
-        line-height: 27px;
         border-radius: 2px;
         font-size: 14px;
-        background: rgba(87,107,148,0.10);
         color: #576B94;
         font-family: PingFang-SC-Bold;
         letter-spacing: 0;
         text-align: center;
+        .info{
+            line-height: 27px;
+        }
+        .curNum{
+            font-size: 12px;
+            margin-top:5px;
+        }
+        .pointColor{
+            color: #DE8200;
+        }
     }
 
     // danRange
