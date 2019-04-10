@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 10:26:02
+ * @Last Modified time: 2019-04-10 17:47:17
  * TronBankPage
  */
 import React from 'react';
@@ -43,10 +43,12 @@ class BankController extends React.Component {
             rentNumMax: 1000,
             rentDayMin: 3,
             rentDayMax: 30,
+            saveRatio: 1,
             defaultUnit: {
                 num: 10,
                 day: 1,
-                cost: 0.5
+                cost: 0.5,
+                minCost: 0
             },
             rentUnit: { //caclulate data
                 ratio: 0,
@@ -91,15 +93,22 @@ class BankController extends React.Component {
             total: totalEnergy,
             show: true
         };
+        let costTrx;
+        const totalEnergyWeight = selected.totalEnergyWeight;
+        const totalenergyLimitNum = selected.TotalEnergyLimit;
+        if(Number.isFinite(defaultData.energy)) costTrx = Math.ceil(defaultData.energy / totalenergyLimitNum * totalEnergyWeight);else costTrx = 0;
         this.setState({
             rentNumMin: defaultData.rental_amount_min / Math.pow(10, 6),
             rentNumMax: defaultData.rental_amount_max / Math.pow(10, 6),
             rentDayMin: defaultData.rental_days_min,
             rentDayMax: defaultData.rental_days_max,
+            saveRatio: 0.9,
             defaultUnit: {
                 num: defaultData.energy / 10000,
                 day: defaultData.days,
-                cost: defaultData.pay_amount / Math.pow(10, 6)
+                cost: defaultData.pay_amount / Math.pow(10, 6),
+                minCost: 1,
+                totalCost: costTrx
             },
             curentInputBalance
         });
@@ -385,7 +394,6 @@ class BankController extends React.Component {
             error: BANK_STATE.INVALID,
             formatError: BANK_STATE.INVALID
         };
-        console.log(`当前rentVal为${rentVal},${rentVal === ''}`);
         if(rentVal === '')return;
 
         if(!Utils.validatInteger(rentVal)) {
@@ -509,7 +517,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { selected } = this.props.accounts;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, saveRatio } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -519,6 +527,8 @@ class BankController extends React.Component {
             { id: 'BANK.RENTINFO.RENTDAY', type: 3, value: rentDay.value },
             { id: 'BANK.RENTINFO.PAYNUM', type: 0, value: `${rentUnit.cost}TRX` },
         ];
+        const saveCost = parseFloat(rentUnit.cost / saveRatio * (1 - saveRatio));
+        console.log(`saveCost${saveCost}`);
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
             <div className='TronBankContainer'>
@@ -664,15 +674,15 @@ class BankController extends React.Component {
                             {rentNum.valid && rentDay.valid ?
                                 <section className='calculation'>
                                     <div className='info'>
-                                        {rentNum.value}TRX*{rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>*{rentUnit.ratio}(<FormattedMessage id='BANK.INDEX.RATIO' />) <span className='pointColor'><FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX</span>
+                                        {rentNum.value}TRX*{rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/> <span className='pointColor'><FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX</span>
                                     </div>
                                     <div className='curNum'>
-                                        (<FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/><span className='pointColor'><FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>12.11trx</span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/>)
+                                        (<FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/><span className='pointColor'><FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>{ saveCost.toFixed(2) }trx</span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/><span className='pointColor'>{rentNum.value}TRX</span>)
                                     </div>
                                 </section> :
                                 <section className='rentIntroduce'>
                                     <div className='info'><FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} /></div>
-                                    <div className='curNum'><FormattedMessage id='BANK.INDEX.CURRENTRATE' values={{ rentNum: '123' }} /></div>
+                                    <div className='curNum'><FormattedMessage id='BANK.INDEX.CURRENTRATE' values={{ ...defaultUnit }} /></div>
                                 </section>
                             }
                         </div>
