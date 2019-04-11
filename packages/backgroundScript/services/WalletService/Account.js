@@ -315,7 +315,7 @@ class Account {
             }
             this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
             this.balance = account2.balance || 0;
-            const filteredTokens = (account2.assetV2 || []).filter(({ value }) => { return value > 0 });
+            const filteredTokens = (account2.assetV2 || []).filter(({ value }) => { return value >= 0 });
             for(const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[ key ] || false;
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
@@ -347,7 +347,7 @@ class Account {
                     price
                 };
             }
-            const smartTokens = account.trc20token_balances.filter(v=>v.balance > 0);
+            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0);
             for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
                 let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
