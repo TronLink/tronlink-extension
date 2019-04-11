@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-11 11:17:35
+ * @Last Modified time: 2019-04-11 17:43:01
  * TronBankPage
  */
 import React from 'react';
@@ -117,9 +117,10 @@ class BankController extends React.Component {
 
     async getDetaultRatioFun() {
         // get default ratio
-        const ratio = await PopupAPI.getDetaultRatioFun();
+        const ratio = await PopupAPI.getDetaultRatioFun() ;
+        console.log(`ratio值${ratio}`);
         const rentUnit = {
-            ratio: 1 / ratio,
+            ratio
         };
         this.setState({
             rentUnit
@@ -132,7 +133,7 @@ class BankController extends React.Component {
         const ratio = this.state.rentUnit.ratio;
         const rentUnit = {
             ratio,
-            cost: (rentNum.value * rentDay.value * ratio).toFixed(1)
+            cost: (rentNum.value * rentDay.value / ratio).toFixed(1)
         };
         this.setState({
             rentUnit
@@ -456,7 +457,7 @@ class BankController extends React.Component {
         const currentBalance = selected.balance / Math.pow(10, 6);
         const { rentUnit } = this.state;
         if(rentUnit.cost > currentBalance) {
-            Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 2);
+            Toast.info( formatMessage({ id: 'BANK.RENTINFO.INSUFFICIENT' }), 4);
             return;
         }
         this.setState({
@@ -473,7 +474,7 @@ class BankController extends React.Component {
         const rentDayValue = Number(rentDay.value);
         const freezeAmount = rentNum.value * Math.pow(10, 6);
         const ratio = rentUnit.ratio;
-        const payAmount = freezeAmount * ratio * rentDayValue;
+        const payAmount = Math.floor(freezeAmount * rentDayValue / ratio);
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
         const hashResult = PopupAPI.rentEnergy(
@@ -488,7 +489,7 @@ class BankController extends React.Component {
             const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
             successRes.catch(err => {
                 console.log(err);
-                Toast.info(JSON.stringify(err), 2);
+                Toast.info(JSON.stringify(err), 4);
             });
             Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
             this.setState({
@@ -514,7 +515,7 @@ class BankController extends React.Component {
             });
         }).catch(error => {
             console.log(error);
-            Toast.info(JSON.stringify(error.error), 2);
+            Toast.info(JSON.stringify(error), 4);
         });
     }
 

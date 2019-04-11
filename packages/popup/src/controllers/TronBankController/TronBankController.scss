@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 11:27:04
+ * @Last Modified time: 2019-04-11 17:51:38
  * TronBankPage
  */
 
@@ -137,7 +137,7 @@
 
     // account
     .accountInfo{
-        border-bottom: 1px solid #EFEFEF; 
+        border-bottom: 1px dashed #EFEFEF; 
     }
 
     // common
@@ -230,8 +230,9 @@
         letter-spacing: 0;
         text-align: center;
         .curNum{
+            color: #888998;
             font-size: 12px;
-            margin-top:5px;
+            margin-top:9px;
         }
         .pointColor{
             color: #DE8200;
@@ -246,8 +247,9 @@
         letter-spacing: 0;
         text-align: center;
         .curNum{
+            color: #888998;
             font-size: 12px;
-            margin-top:5px;
+            margin-top:9px;
         }
         .pointColor{
             color: #DE8200;
@@ -470,6 +472,12 @@
     font-size: 14px;
     letter-spacing: 0;
     padding: 10px 24px;
+}
+
+// button 
+.am-button.am-button-disabled{
+    color: #fff;
+    opacity: 1;
 }
 
 

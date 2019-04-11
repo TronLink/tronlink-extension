@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-21 14:34:43 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-08 11:44:25
+ * @Last Modified time: 2019-04-11 18:11:09
  */
  .navbar{
     width: 100%;
@@ -37,25 +37,33 @@
 html:not([data-scale]) .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
     background-color: #fff;
 }
-.am-tabs-default-bar-tab{
-    cursor: pointer;
-    height:37px;
-    line-height:37px;
-    font-family: PingFang-SC-Bold;
-    font-size: 14px;
-}
+// .am-tabs-default-bar-tab{
+//     cursor: pointer;
+//     height:37px;
+//     line-height:37px;
+//     font-family: PingFang-SC-Bold;
+//     font-size: 14px;
+// }
 
-.am-tabs-default-bar-tab-active{
-    font-family: PingFang-SC-Bold;
-    font-size: 16px;
-}
+
 .bankRecordContainer{
-    overflow: hidden;
+    overflow: hidden; 
 }
 .rentListContent{
-    padding:0 10px 40px;
+    padding:0 18px 40px;
     height: 540px;
     overflow: auto;
+    &::-webkit-scrollbar {/*滚动条整体样式*/
+        width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+        height: 4px;
+    }
+    &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 4px;
+        background: #C2C8D5;
+    }
+    &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        background: transparent;
+    }
     .noData{
         text-align: center;
         font-family: PingFangSC-Regular;

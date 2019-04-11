@@ -32,6 +32,8 @@ class Wallet extends EventEmitter {
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
 
+        this.bankContractAddress = 'TS76F8t9THVbtLMnpuGZxUiq9QGpKDqp61';
+
         setInterval(() => {
             this._updatePrice();
         }, 30 * 60 * 1000);
@@ -738,15 +740,15 @@ class Wallet extends EventEmitter {
             privateKey
         } = this.accounts[ this.selectedAccount ];
         try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux');
-            const result = await contractInstance.entrustOrder(_freezeAmount, _payAmount, _days, _energyAddress).send(
+            const bankContractAddress = this.bankContractAddress;
+            const contractInstance = await NodeService.tronWeb.contract().at(bankContractAddress);
+            const result = await contractInstance.entrustOrder(_freezeAmount, _days, _energyAddress).send(
                 {
                     callValue: _payAmount,
                     shouldPollResponse: false
                 },
                 privateKey
             );
-            console.log(`result为${result}`);
             return result;
         } catch(ex) {
             logger.error('Failed to rent energy:', ex);
@@ -758,7 +760,6 @@ class Wallet extends EventEmitter {
         const { data: isValid } = await axios.post(requestUrl, { receiver_address: energyAddress, trxHash } )
             .then(res => res.data)
             .catch(err => { logger.error(err); });
-        console.log(`isValid值${isValid}`);
         if(!isValid)
             return logger.warn('Failed to get bank order data');
         return isValid;
@@ -766,7 +767,7 @@ class Wallet extends EventEmitter {
 
     async getDetaultRatioFun() {
         try {
-            const contractInstance = await NodeService.tronWeb.contract().at('TQrS1s2XiKoqr1Pz2u12ByrjGnunT3V7Ux');
+            const contractInstance = await NodeService.tronWeb.contract().at(this.bankContractAddress);
             const ratio = await contractInstance.ratio().call();
             return ratio.toString();
         } catch(ex) {
@@ -821,7 +822,6 @@ class Wallet extends EventEmitter {
 
     async getBankRecordList({ address, limit, start, type, requestUrl }) {
         const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, type } })
-        console.log(`recordData${recordData}`);
         if(!recordData)
             return logger.warn('Failed to get bank record data');
         return recordData;
