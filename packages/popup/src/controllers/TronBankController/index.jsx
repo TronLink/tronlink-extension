@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 21:01:58
+ * @Last Modified time: 2019-04-11 11:17:35
  * TronBankPage
  */
 import React from 'react';
@@ -48,7 +48,7 @@ class BankController extends React.Component {
                 num: 10,
                 day: 1,
                 cost: 0.5,
-                min: 0,
+                min: 1,
                 total: 0
             },
             rentUnit: { //caclulate data
@@ -83,8 +83,6 @@ class BankController extends React.Component {
 
     async defaultDataFun() {
         const env = this.state.currentEnv;
-        const { nodes } = this.props;
-        console.log(`nodes.selected${nodes.selected}`);
         const requestUrl = `${Utils.requestUrl(env)}/api/bank/default_data`;
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
