@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 14:59:08
+ * @Last Modified time: 2019-04-12 16:41:15
  * RecordList
  */
 
@@ -46,7 +46,7 @@ class RecordList extends React.Component {
                         );
                     } else {
                         statusMessage = (
-                            <span className='validStatus'>
+                            <span className='validStatus dealStatus'>
                                 <FormattedMessage id='BANK.RENTRECORD.DEALNAME'/>
                             </span>
                         );

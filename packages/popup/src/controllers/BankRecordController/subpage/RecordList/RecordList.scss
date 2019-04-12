@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-21 18:38:20 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 10:36:40
+ * @Last Modified time: 2019-04-12 16:40:47
  */
  .recordList{
     cursor: pointer;
@@ -58,6 +58,10 @@
             font-size: 12px;
             color: #76AB61;
             text-align: center;
+        }
+        .dealStatus{
+            color:#F5A623;
+            background: rgba(245, 166, 35, 0.10);
         }
         .doneStatus{
             display: block;
