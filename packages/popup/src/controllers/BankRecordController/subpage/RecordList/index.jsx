@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-04 10:53:54
+ * @Last Modified time: 2019-04-12 14:59:08
  * RecordList
  */
 
@@ -51,6 +51,7 @@ class RecordList extends React.Component {
                             </span>
                         );
                     }
+                    const payMonkey = val.pay_amount / Math.pow(10, 6);
                     return(
                         <div key='key' className='recordList' onClick={ () => { this.toMoreDetail(val.id); } }>
                             <div className='address'><img src={require('../../../../assets/images/new/tronBank/receive.svg')} alt='receive'/><span>{`${val.energy_address.substr(0, 4)}...${val.energy_address.substr(-12)}`}</span></div>
@@ -61,7 +62,12 @@ class RecordList extends React.Component {
                                     <div className='time'>{Utils.timeFormatTime(val.create_time)}</div>
                                 </section>
                                 <section className='recordRightInfo'>
-                                    <div className='cost'><FormattedMessage id='BANK.RENTRECORD.COST'/>{val.pay_amount / Math.pow(10, 6)}TRX</div>
+                                    <div className='cost'>
+                                        <FormattedMessage id='BANK.RENTRECORD.COST'/>
+                                        {
+                                            String(payMonkey).indexOf('.') > -1 ? payMonkey.toFixed(2) : payMonkey
+                                        }TRX
+                                    </div>
                                     <div className='recordValStatus'>
                                         { statusMessage }
                                     </div>

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-11 17:43:01
+ * @Last Modified time: 2019-04-12 15:33:28
  * TronBankPage
  */
 import React from 'react';
@@ -541,17 +541,17 @@ class BankController extends React.Component {
         const saveCost = parseFloat(rentUnit.cost / discount * (1 - discount));
         const myImg = src => { return require(`../../assets/images/new/tronBank/${src}.svg`); };
         return (
-            <div className='TronBankContainer'>
+            <div className='TronBankContainer' onClick={(e) => { this.setState({ popoverVisible: false }); }}>
                 <NavBar
                     className='navbar'
                     mode='light'
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
-                    rightContent={<img onClick={() => { this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
+                    rightContent={<img onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible });  }} className='rightMore' src={myImg('more')} alt={'more'}/>}
                 >TronLending
                 </NavBar>
                 {/* navModal */}
-                <div className='navBarMoreMenu' onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible }); } }>
+                <div className='navBarMoreMenu'>
                     <div className={ this.state.popoverVisible ? 'dropList menuList menuVisible' : 'dropList menuList'}>
                         <div onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK_RECORD); } } className='item'>
                             <img onClick={() => { this.setState({ popoverVisible: true }); }} className='rightMoreIcon' src={myImg('record')} alt={'record'}/>
