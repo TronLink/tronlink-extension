@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 12:18:18
+ * @Last Modified time: 2019-04-12 16:05:54
  * BankRecordController
  */
 import React from 'react';
@@ -75,16 +75,18 @@ class BankRecordController extends React.Component {
         this.setState({
             recordListData,
             start,
-            hasMore,
-            nodata
+            hasMore
         });
         Toast.hide();
+        this.setState({
+            nodata
+        });
     }
 
     rentRecordTabChange(tab, ind) {
-        console.log(`当前ind是${ind}`);
         let type;
         this.setState({
+            nodata: false,
             recordListData: []
         });
         if(ind == 0) {
