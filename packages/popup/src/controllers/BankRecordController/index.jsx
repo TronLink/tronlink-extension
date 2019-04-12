@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-10 19:51:50
+ * @Last Modified time: 2019-04-12 12:18:18
  * BankRecordController
  */
 import React from 'react';
@@ -20,6 +20,8 @@ class BankRecordController extends React.Component {
         this.state = {
             currentEnv: 'test',
             recordList: [],
+            nodata: false, //isover
+            isFoot: true, //prevent Frequent
             recordListData: [],
             hasMore: false,
             isLoadingMore: false,
@@ -64,20 +66,18 @@ class BankRecordController extends React.Component {
             type,
             requestUrl
         );
+        let nodata = true;
+        if (json.data && json.data.length === 0) nodata = true; else nodata = false;
         const recordListData = this.state.recordListData.concat(json.data);
         const total = json.total;
         let hasMore = false;
-        console.log(`当前length为${recordListData.length},total为${total}`);
         if(recordListData.length >= total) hasMore = false; else hasMore = true;
-        // const newRecordList = recordListData.filter((item) => { return item.status > 2 && item.status !== 7; });
-        console.log(`hasMore为${hasMore}`);
-        console.log('%O', this.rentListContent);
         this.setState({
             recordListData,
             start,
-            hasMore
+            hasMore,
+            nodata
         });
-        console.log(`hasMore为${this.state.hasMore}`);
         Toast.hide();
     }
 
@@ -110,12 +110,7 @@ class BankRecordController extends React.Component {
             { title: <FormattedMessage id='BANK.RENTRECORD.INVALID' /> },
             { title: <FormattedMessage id='BANK.RENTRECORD.ALLSTATUS' /> },
         ];
-        // const menuContent = [
-        //     { label: 1 },
-        //     { label: 2 },
-        //     { label: 3 }
-        // ];
-        const { recordListData, hasMore, isLoadingMore } = this.state;
+        const { recordListData, hasMore, isLoadingMore, nodata } = this.state;
         return (
             <div className='bankRecordContainer'>
                 <NavBar
@@ -147,6 +142,9 @@ class BankRecordController extends React.Component {
                                     loadMoreFn={this.loadMoreData.bind(this)}
                                 />
                                 : ''
+                        }
+                        {
+                            nodata ? <div className='nodata'><FormattedMessage id='BANK.RENTRECORD.NORECORD' /></div> : null
                         }
                     </div>
                 </section>

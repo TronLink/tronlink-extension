@@ -296,6 +296,7 @@
     "BANK.RENTRECORD.LOADMORE":"LoadMore",
     "BANK.RENTRECORD.LOADING":"Loading",
     "BANK.RENTRECORD.NODATE":"No Data",
+    "BANK.RENTRECORD.NORECORD":"无记录",
 
     "BANK.RENTDETAIL.TITLE":"Order details",
     "BANK.RENTDETAIL.STATUS":"Order status",
