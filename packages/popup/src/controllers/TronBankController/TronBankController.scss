@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-11 17:51:38
+ * @Last Modified time: 2019-04-11 18:27:22
  * TronBankPage
  */
 
@@ -229,6 +229,9 @@
         color: #888998;
         letter-spacing: 0;
         text-align: center;
+        .info{
+            padding: 0 12px;
+        }
         .curNum{
             color: #888998;
             font-size: 12px;
