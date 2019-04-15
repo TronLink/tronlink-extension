@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 17:03:56
+ * @Last Modified time: 2019-04-15 17:19:52
  * TronBankPage
  */
 import React from 'react';
@@ -117,7 +117,6 @@ class BankController extends React.Component {
     calculateRentCost() {
         // calculate bank rent cost
         const { rentNum, rentDay, ratio } = this.state;
-        console.log(ratio);
         const rentUnit = {
             cost: (rentNum.value * rentDay.value / ratio).toFixed(1)
         };
