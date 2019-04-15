@@ -391,7 +391,7 @@ class AccountsPage extends React.Component {
     }
 
     render() {
-        BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
+        BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalMoney = '0';
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
@@ -401,7 +401,7 @@ class AccountsPage extends React.Component {
         const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        const trx = {tokenId:'_',name:'TRX',balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:'TRX',decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=>typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
         tokens = [trx,...tokens];
@@ -432,25 +432,23 @@ class AccountsPage extends React.Component {
                     this.renderDeleteAccount()
                 }
                 <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
-                <div className='space-controller'>
+                <div className="space-controller">
                     <Toast />
                     {
-                        nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
+                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
                             null
-                            :
-                            <div className='advertisingWrap'>
-                                <div className='closed' onClick={async () => {
+                             :
+                            <div className="advertisingWrap">
+                                <div className="closed" onClick={async ()=>{
                                     let advertising = setting.advertising ? setting.advertising : {};
-                                    advertising[id] = { developmentMode: true, productionMode: true };
+                                    advertising[id] = {developmentMode:true,productionMode:true};
                                     advertising[id][mode] = false;
-                                    PopupAPI.setSetting({ ...setting, advertising });
-                                }}
-                                >
-                                </div>
+                                    PopupAPI.setSetting({...setting,advertising});
+                                }}></div>
                                 {
-                                    news.map(({ language, ...news }) => {
+                                    news.map(({language,...news})=>{
                                         let l = 1;
-                                        switch(lng) {
+                                        switch(lng){
                                             case 'en':
                                                 l = 1;
                                                 break;
@@ -465,92 +463,89 @@ class AccountsPage extends React.Component {
                                         }
                                         return (
                                             language === l ?
-                                                <div onClick={async () => {
+                                                <div  onClick={async ()=>{
                                                     const r = await PopupAPI.addCount(news.id);
                                                     if(r)
                                                         window.open(news.content_url);
-                                                }}
-                                                >
-                                                    {news.pic_url ? <img src={news.pic_url} alt=''/> : null}
-                                                    {news.content ? <div><span style={{ webkitBoxOrient: 'vertical' }}>{news.content}</span></div> : null}
-                                                </div> : null
-                                        );
+                                                }}>
+                                                    {news.pic_url?<img src={news.pic_url} alt=""/>:null}
+                                                    {news.content?<div><span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span></div>:null}
+                                                </div>:null
+                                        )
                                     })
                                 }
                             </div>
                     }
-                    <div className={'accountsWrap' + (setting.openAccountsMenu ? 'show' : '')}>
-                        <div className='accounts'>
-                            <div className='row1'>
-                                <div className='cell' onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
-                                    <FormattedMessage id='CREATION.CREATE.TITLE' />
+                    <div className={"accountsWrap"+(setting.openAccountsMenu?" show":"")}>
+                        <div className="accounts">
+                            <div className="row1">
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.CREATING) }>
+                                    <FormattedMessage id="CREATION.CREATE.TITLE" />
                                 </div>
-                                <div className='cell' onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
-                                    <FormattedMessage id='CREATION.RESTORE.TITLE' />
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
+                                    <FormattedMessage id="CREATION.RESTORE.TITLE" />
                                 </div>
                             </div>
-                            <div className='row2'>
-                                <div className='cell'>
+                            <div className="row2">
+                                <div className="cell">
                                     <span>TRX:</span>
                                     <span>{new BigNumber(totalTrx.toFixed(2)).toFormat()}</span>
                                 </div>
-                                <div className='cell'>
-                                    <FormattedMessage id='MENU.ACCOUNTS.TOTAL_ASSET' values={{ sign: ':' }} />
+                                <div className="cell">
+                                    <FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} />
                                     <span>{new BigNumber(totalAsset.multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
                                 </div>
                             </div>
-                            <div className='row3'>
-                                {
-                                    Object.entries(accounts.accounts).map(([address, account], i) => {
-                                        return (
-                                            <div className={'cell cell'+ (i%5+1) +(accounts.selected.address === address?' selected':'')} 
-                                            onClick={async()=>{
-                                                const setting = await PopupAPI.getSetting();
-                                                const openAccountsMenu = false;
-                                                PopupAPI.setSetting({ ...setting,openAccountsMenu });
-                                                if(accounts.selected.address === address)
-                                                    return;
-                                                PopupAPI.selectAccount(address);
-                                            }}>
-                                                <div className='top'>
-                                                    <div className='name'>
-                                                        {account.name.length>30 ? account.name.substr(0,30)+'...' : account.name}
-                                                    </div>
-                                                    <div className='asset'>
-                                                        <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
-                                                        <span><FormattedMessage id='MENU.ACCOUNTS.TOTAL_ASSET' values={{sign:':'}} /> {new BigNumber(new BigNumber(account.asset).multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
-                                                    </div>
+                            <div className="row3">
+                            {
+                                Object.entries(accounts.accounts).map(([address,account],i)=>{
+                                    return (
+                                        <div className={"cell cell"+ (i%5+1) +(accounts.selected.address === address?" selected":"")} onClick={async()=>{
+                                            const setting = await PopupAPI.getSetting();
+                                            const openAccountsMenu = false;
+                                            PopupAPI.setSetting({...setting,openAccountsMenu});
+                                            if(accounts.selected.address === address)
+                                                return;
+                                            PopupAPI.selectAccount(address);
+                                        }}>
+                                            <div className="top">
+                                                <div className="name">
+                                                    {account.name.length>30?account.name.substr(0,30)+'...':account.name}
                                                 </div>
-                                                <div className='bottom'>
-                                                    <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
-                                                    <div onClick={(e)=>{e.stopPropagation()}}>
-                                                        <CopyToClipboard text={address}
-                                                                        onCopy={(e) => {
-                                                                            T.notify(formatMessage({id:'TOAST.COPY'}));
-                                                                        }}>
-                                                            <span className='copy'></span>
-                                                        </CopyToClipboard>
-                                                    </div>
+                                                <div className="asset">
+                                                    <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
+                                                    <span><FormattedMessage id="MENU.ACCOUNTS.TOTAL_ASSET" values={{sign:':'}} /> {new BigNumber(new BigNumber(account.asset).multipliedBy(trx_price).toFixed(2)).toFormat()}{ prices.selected }</span>
                                                 </div>
                                             </div>
-                                        );
-                                    })
-                                }
+                                            <div className="bottom">
+                                                <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
+                                                <div onClick={(e)=>{e.stopPropagation()}}>
+                                                    <CopyToClipboard text={address}
+                                                                     onCopy={(e) => {
+                                                                         T.notify(formatMessage({id:'TOAST.COPY'}));
+                                                                     }}>
+                                                        <span className='copy'></span>
+                                                    </CopyToClipboard>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                             </div>
                         </div>
-                        <div className='closed' onClick={async() => {
+                        <div className="closed" onClick={async()=>{
                             const setting = await PopupAPI.getSetting();
                             const openAccountsMenu = false;
-                            PopupAPI.setSetting({ ...setting, openAccountsMenu });
-                        }}
-                        >
+                            PopupAPI.setSetting({...setting,openAccountsMenu});
+                        }}>
                         </div>
                     </div>
-                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney) : null }
-                    <div className='listWrap'>
-                        { this.renderResource(accounts.accounts[ accounts.selected.address ]) }
+                    { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
+                    <div className="listWrap">
+                        { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
-                        <div className='scroll' onScroll={(e) => {
+                        <div className="scroll" onScroll={(e)=> {
                             //const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
                             //if(transactionGroup && transactionGroup[key].length > 8){
                             //    const isTop = e.target.scrollTop === 0 ? false : true;
