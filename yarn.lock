@@ -7332,10 +7332,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jssha@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/jssha/-/jssha-2.3.1.tgz#147b2125369035ca4b2f7d210dc539f009b3de9a"
-
 jsx-ast-utils@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/jsx-ast-utils/-/jsx-ast-utils-2.0.1.tgz#e801b1b39985e20fffc87b40e3748080e2dcac7f"
@@ -11698,9 +11694,9 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-tronweb@^2.2.7:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.3.4.tgz#e6bcee3062fbf144cdb4ed22924b937f9de037bf"
+tronweb@^2.3.7:
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.3.8.tgz#03d64cb8fb65c06d2a71d07a931cb8d91c96a6b7"
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"
@@ -11709,7 +11705,6 @@ tronweb@^2.2.7:
     elliptic "^6.4.1"
     ethers "^4.0.7"
     eventemitter3 "^3.1.0"
-    jssha "^2.3.1"
     semver "^5.6.0"
     validator "^10.7.1"
 

@@ -10,6 +10,6 @@
     "lint": "npx eslint . --fix"
   },
   "dependencies": {
-    "tronweb": "^2.2.7"
+    "tronweb": "^2.3.8"
   }
 }

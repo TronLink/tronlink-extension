@@ -325,6 +325,11 @@
     "BANK.RENTINFO.INSUFFICIENT":"Balance insufficient",
 
     "BANK.RENTINFO.SUCCESS":"Your payment was successful, energy will arrive in your account in 1 min",
-    "BANK.RENTINFO.FAILED":"Renting failed, you cannot place three orders within 1 minute."
+    "BANK.RENTINFO.FAILED":"Renting failed, you cannot place three orders within 1 minute.",
+
+
+    "IEOS.BUY_ING":"Sale started",
+    "IEOS.LEFT_TIME":"{day} days until the sale",
+    "IEOS.LAUNCH_BASE":"LaunchBase"
 
 }

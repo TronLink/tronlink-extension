@@ -163,9 +163,6 @@ export default {
         this.duplex.send('setSetting', setting, false);
     },
 
-    getTransactionsByTokenId(tokenId) {
-        return this.duplex.send('getTransactionsByTokenId', tokenId);
-    },
 
     //tronbank contract
     rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
@@ -198,6 +195,22 @@ export default {
         return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
     },
 
+    getTransactionsByTokenId(tokenId) {
+        return this.duplex.send('getTransactionsByTokenId', tokenId);
+    },
+
+    getNews() {
+        return this.duplex.send('getNews');
+    },
+
+    getIeos() {
+        return this.duplex.send('getIeos');
+    },
+
+    addCount() {
+        return this.duplex.send('addCount');
+    },
+
     calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
         return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });
     },
@@ -222,4 +235,5 @@ export default {
     setSelectedBankRecordId(id) {
         this.duplex.send('setSelectedBankRecordId', id, false);
     }
+
 };

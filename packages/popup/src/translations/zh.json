@@ -324,9 +324,12 @@
     "BANK.RENTINFO.INSUFFICIENT":"余额不足",
 
     "BANK.RENTINFO.SUCCESS":"支付成功，能量约1分钟后到账",
-    "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下三笔订单"
+    "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下三笔订单",
 
 
 
 
+    "IEOS.BUY_ING":"抢购中",
+    "IEOS.LEFT_TIME":"距开抢{day}",
+    "IEOS.LAUNCH_BASE":"LaunchBase"
 }

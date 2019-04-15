@@ -601,7 +601,7 @@
                     }
                     .num{
                         transform: scale(0.8);
-                        transform-origin:center right;
+                        transform-origin:(center,right);
                         font-size: 12px;
                         span{
                             color: #c3c4ca;
@@ -651,6 +651,113 @@
                 width: 6px;
                 height:8px;
                 margin-left: 2px;
+            }
+        }
+        .ieos{
+            margin-bottom: 10px;
+            .ieo{
+                background-color: #fff;
+                border-radius: 2px;
+                height: 50px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding:0 14px;
+                margin-top: 10px;
+                transition: all .2s ease-in-out;
+                &:first-child{
+                    margin-top: 0;
+                }
+                &:hover{
+                    transform: translate(-1px,-1px);
+                    background-color: rgba(255,255,255,.8);
+                }
+                img{
+                    width: 28px;
+                    border-radius: 100%;
+                }
+                .name{
+                    font-size: 14px;
+                    color: #505160;
+                    margin-left: 10px;
+                }
+                .worth{
+                    flex:1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    .ieo_will{
+                        display: flex;
+                        flex-direction: row;
+                        height: 18px;
+                        align-items: center;
+                        span {
+                            font-size: 13px;
+                        }
+                        .time{
+                            margin-left: 4px;
+                            display: flex;
+                            flex-direction: row;
+                            color: #e2bd53;
+                            align-items: center;
+                            .cell{
+                                display:flex;
+                                align-items:center;
+                                justify-content: center;
+                                margin: 0 2px;
+                                width: 18px;
+                                height: 18px;
+                                color: #fff;
+                                font-size: 12px;
+                                background-color: #e2bd53;
+                                border-radius:2px;
+                                &:last-child{
+                                    margin-right: 0;
+                                }
+                            }
+                        }
+                    }
+                    .launch {
+                        margin-top: 3px;
+                        cursor: pointer;
+                        border: 1px solid #e2bd53;
+                        border-radius: 12.5px;
+                        width: 109px;
+                        height: 19px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: space-around;
+                        color: #e2bd53;
+                        &:before {
+                            content: "";
+                            width: 15px;
+                            height: 15px;
+                            background-image: url('../../assets/images/new/market_logo.svg');
+                        }
+                        &:after {
+                            content: "";
+                            width: 4px;
+                            height: 6px;
+                            background-image: url('../../assets/images/new/icon-enter2.svg');
+                            background-size:100%;
+                        }
+                    }
+                    .ieo_ing{
+                        display: flex;
+                        flex-direction: row;
+                        height: 17px;
+                        align-items: center;
+                        font-size: 13px;
+                        &:before{
+                            content:'';
+                            width: 12px;
+                            height: 15px;
+                            background-image: url('../../assets/images/new/icon-hot.svg');
+                            margin-right: 5px;
+                        }
+                    }
+                }
             }
         }
         .tokens{

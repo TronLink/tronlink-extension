@@ -295,6 +295,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }else{
                     this.tokens.smart[ tokenId ].balance = 0;
+                    this.tokens.smart[ tokenId ].price = 0;
                 }
             });
             let sentDelegateBandwidth = 0;
@@ -320,7 +321,7 @@ class Account {
             }
             this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
             this.balance = account2.balance || 0;
-            const filteredTokens = (account2.assetV2 || []).filter(({ value }) => { return value > 0 });
+            const filteredTokens = (account2.assetV2 || []).filter(({ value }) => { return value >= 0 });
             for(const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[ key ] || false;
                 const filter = basicTokenPriceList.filter(({first_token_id})=>first_token_id === key);
@@ -352,8 +353,9 @@ class Account {
                     price
                 };
             }
-            const smartTokens = account.trc20token_balances.filter(v=>v.balance > 0);
-            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens) {
+
+            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0);
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
                 let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
                     const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
@@ -386,6 +388,11 @@ class Account {
             }
         } else {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+            if (!account.address) {
+                logger.info(`Account ${ address } does not exist on the network`);
+                this.reset();
+                return true;
+            }
             const filteredTokens = (account.assetV2 || []).filter(({ value }) => { return value > 0 });
             if(filteredTokens.length > 0) {
                 for(const { key, value } of filteredTokens) {
@@ -445,6 +452,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }else{
                     this.tokens.smart[ tokenId ].balance = 0;
+                    this.tokens.smart[ tokenId ].price = 0;
                 }
             });
             this.frozenBalance = ( account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance: 0 ) + ( account.frozen ? account.frozen[0].frozen_balance:0 );

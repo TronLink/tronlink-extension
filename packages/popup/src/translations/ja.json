@@ -326,7 +326,10 @@
   "BANK.RENTINFO.INSUFFICIENT":"残高が不足しています",
 
   "BANK.RENTINFO.SUCCESS":"お支払いは成功しました。エネルギーは約1分後に入金されます。",
-  "BANK.RENTINFO.FAILED":"賃借が失敗しました。1分間に3つ通りで注文できません"
+  "BANK.RENTINFO.FAILED":"賃借が失敗しました。1分間に3つ通りで注文できません",
 
 
+  "IEOS.BUY_ING":"その場で",
+  "IEOS.LEFT_TIME":"{day}間オープン",
+  "IEOS.LAUNCH_BASE":"LaunchBase"
 }
