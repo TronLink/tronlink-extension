@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 15:33:28
+ * @Last Modified time: 2019-04-15 11:13:33
  * TronBankPage
  */
 import React from 'react';
@@ -12,6 +12,7 @@ import TronWeb from 'tronweb';
 import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
+import { getBankDefaultData, getBankIsRent, getBankBalanceEnough, postBankOrder } from '@tronlink/popup/src/fetch/tronLending/tronLending';
 import './TronBankController.scss';
 class BankController extends React.Component {
     constructor(props) {
@@ -83,7 +84,7 @@ class BankController extends React.Component {
 
     async defaultDataFun() {
         const env = this.state.currentEnv;
-        const requestUrl = `${Utils.requestUrl(env)}/api/bank/default_data`;
+        const requestUrl = getBankDefaultData(env);
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
         const { accounts, selected } = this.props.accounts;
@@ -197,7 +198,7 @@ class BankController extends React.Component {
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
         if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
-        const requestUrl = `${Utils.requestUrl(env)}/api/bank/is_rent`;
+        const requestUrl = getBankIsRent(env);
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
         const recipient = {
             value: address,
@@ -279,7 +280,7 @@ class BankController extends React.Component {
                     rentNum.error = false;
                     Toast.loading();
                     const env = this.state.currentEnv;
-                    const requestUrl = `${Utils.requestUrl(env)}/api/bank/balance_enough`;
+                    const requestUrl = getBankBalanceEnough(env);
                     const curaAddress = this.rentAddressInput.value;
                     let address;
                     const selectedaAddress = selected.address;
@@ -484,7 +485,7 @@ class BankController extends React.Component {
             recipientAddress
         );
         const env = this.state.currentEnv;
-        const requestUrl = `${Utils.requestUrl(env)}/api/bank/order`;
+        const requestUrl = postBankOrder(env);
         hashResult.then((res) => {
             const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
             successRes.catch(err => {
@@ -547,7 +548,7 @@ class BankController extends React.Component {
                     mode='light'
                     icon={<div className='commonBack'></div>}
                     onLeftClick={() => PopupAPI.changeState(APP_STATE.READY)}
-                    rightContent={<img onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible });  }} className='rightMore' src={myImg('more')} alt={'more'}/>}
+                    rightContent={<img onClick={(e) => { e.stopPropagation();this.setState({ popoverVisible: !this.state.popoverVisible }); }} className='rightMore' src={myImg('more')} alt={'more'}/>}
                 >TronLending
                 </NavBar>
                 {/* navModal */}
