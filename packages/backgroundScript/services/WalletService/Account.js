@@ -555,6 +555,9 @@ class Account {
             balance: this.balance,
             frozenBalance: this.frozenBalance,
             energy: this.energy,
+            energyUsed: this.energyUsed,
+            netLimit:this.netLimit,
+            netUsed:this.netUsed,
             transactions: this.transactions,
             lastUpdated: this.lastUpdated
         };
@@ -620,10 +623,9 @@ class Account {
             const contract = await NodeService.tronWeb.contract().at(token);
 
             await contract.transfer(recipient, amount).send(
-                {},
+                {feeLimit:10 * Math.pow(10,6)},
                 this.privateKey
             );
-
             return true;
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);

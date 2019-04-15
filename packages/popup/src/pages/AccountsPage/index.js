@@ -425,7 +425,7 @@ class AccountsPage extends React.Component {
                 <div className="space-controller">
                     <Toast />
                     {
-                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || id === 0 || (setting.advertising[id] && !setting.advertising[id][mode])?
+                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
                             null
                              :
                             <div className="advertisingWrap">

@@ -34,7 +34,7 @@ class App extends React.Component {
         ja:jaMessages
     }
     render() {
-        const { appState,accounts,prices,nodes,language,lock } = this.props;
+        const { appState,accounts,prices,nodes,language,lock,version } = this.props;
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -68,7 +68,7 @@ class App extends React.Component {
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.SETTING:
-                dom = <SettingController lock={lock} language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <SettingController lock={lock} version={version} language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
@@ -94,5 +94,6 @@ export default connect(state => ({
     accounts: state.accounts,
     nodes: state.app.nodes,
     prices: state.app.prices,
-    lock:state.app.setting.lock
+    lock:state.app.setting.lock,
+    version:state.app.version
 }))(App);
