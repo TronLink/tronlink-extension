@@ -175,12 +175,12 @@ const Utils = {
         return needArray;
     },
 
-    validatInteger(str) {
+    validatInteger(str) { // integer
         const reg = /^\+?[1-9][0-9]*$/;
         return reg.test(str);
     },
 
-    requestUrl() {
+    requestUrl() { // request url
         const curHost = location.hostname;
         let curApiHost;
         switch (curHost) {
