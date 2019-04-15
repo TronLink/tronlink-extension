@@ -20,8 +20,6 @@ export const APP_STATE = {
     TRONBANK_RECORD: 13, //[x] show TronBankRecord page
     TRONBANK_DETAIL: 14, //[X] show TronBankDetail page
     TRONBANK_HELP: 15,
-    TESTHMTL: 16 // 测试
-
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {

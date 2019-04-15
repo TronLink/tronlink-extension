@@ -180,17 +180,18 @@ const Utils = {
         return reg.test(str);
     },
 
-    requestUrl(_type) {
+    requestUrl() {
+        const curHost = location.hostname;
         let curApiHost;
-        switch (_type) {
-            case 'test':
+        switch (curHost) {
+            case 'nnceancbokoldkjjbpopcffaoekebnnb':
                 curApiHost = 'http://52.14.133.221:8990';
                 break;
-            case 'online':
-                curApiHost = '';
+            case 'ibnejdfjmmkpcnlpebklmnkoeoihofec':
+                curApiHost = 'https://list.tronlink.org';
                 break;
             default:
-                curApiHost = 'http://52.14.133.221:8950';
+                curApiHost = 'http://52.14.133.221:8990';
                 break;
         }
         return curApiHost;

@@ -182,10 +182,6 @@ export default {
         });
     },
 
-    getDetaultRatioFun() {
-        return this.duplex.send('getDetaultRatioFun');
-    },
-
     //tronbank  index
     getBankDefaultData(requestUrl) {
         return this.duplex.send('getBankDefaultData', { requestUrl });

@@ -116,7 +116,6 @@ export const app = {
         }else{
             language = language || 'en';
         }
-        console.log(`当前state为${appState}`);
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));

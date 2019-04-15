@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 11:10:43
+ * @Last Modified time: 2019-04-15 16:15:18
  * BankRecordController
  */
 import React from 'react';
@@ -10,7 +10,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import { APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Tabs, Toast } from 'antd-mobile';
-import { getBankList } from '@tronlink/popup/src/fetch/tronLending/tronLending';
+import { getBankListApi } from '@tronlink/popup/src/fetch/tronLending/tronLending';
 
 import './BankRecodConntroller.scss';
 import RecordList from './subpage/RecordList';
@@ -19,7 +19,6 @@ class BankRecordController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentEnv: 'test',
             recordList: [],
             nodata: false, //isover
             isFoot: true, //prevent Frequent
@@ -55,8 +54,7 @@ class BankRecordController extends React.Component {
 
     async getBankRecordList(start, type) {
         Toast.loading();
-        const env = this.state.currentEnv;
-        const requestUrl = getBankList(env);
+        const requestUrl = getBankListApi();
         const { selected } = this.props.accounts;
         const address = selected.address;
         const { limit } = this.state;

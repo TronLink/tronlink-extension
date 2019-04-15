@@ -1,34 +1,34 @@
 import Utils from '@tronlink/lib/utils';
 
 // TronLending index
-export const getBankDefaultData = (env) => {
+export const getBankDefaultDataApi = (env) => {
     const requestUrl = `${Utils.requestUrl(env)}/api/bank/default_data`;
     return requestUrl;
 };
 
-export const getBankIsRent = (env) => {
+export const getBankIsRentApi = (env) => {
     const requestUrl = `${Utils.requestUrl(env)}/api/bank/is_rent`;
     return requestUrl;
 };
 
-export const getBankBalanceEnough = (env) => {
+export const getBankBalanceEnoughApi = (env) => {
     const requestUrl = `${Utils.requestUrl(env)}/api/bank/balance_enough`;
     return requestUrl;
 };
 
-export const postBankOrder = (env) => {
-    const requestUrl = `${Utils.requestUrl(env)}/api/bank/orde`;
+export const postBankOrderApi = (env) => {
+    const requestUrl = `${Utils.requestUrl(env)}/api/bank/order`;
     return requestUrl;
 };
 
 // TronLending page list
-export const getBankList = (env) => {
+export const getBankListApi = (env) => {
     const requestUrl = `${Utils.requestUrl(env)}/api/bank/list`;
     return requestUrl;
 };
 
 // TronLending record detail
-export const getBankOrderInfo = (env) => {
+export const getBankOrderInfoApi = (env) => {
     const requestUrl = `${Utils.requestUrl(env)}/api/bank/order_info`;
     return requestUrl;
 };

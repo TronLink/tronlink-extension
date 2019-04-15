@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 11:13:33
+ * @Last Modified time: 2019-04-15 17:03:56
  * TronBankPage
  */
 import React from 'react';
@@ -12,7 +12,7 @@ import TronWeb from 'tronweb';
 import { BANK_STATE, APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Button, Modal, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
-import { getBankDefaultData, getBankIsRent, getBankBalanceEnough, postBankOrder } from '@tronlink/popup/src/fetch/tronLending/tronLending';
+import { getBankDefaultDataApi, getBankIsRentApi, getBankBalanceEnoughApi, postBankOrderApi } from '@tronlink/popup/src/fetch/tronLending/tronLending';
 import './TronBankController.scss';
 class BankController extends React.Component {
     constructor(props) {
@@ -45,6 +45,7 @@ class BankController extends React.Component {
             rentDayMin: 3,
             rentDayMax: 30,
             discount: 1,
+            ratio: 0,
             defaultUnit: {
                 num: 10,
                 day: 1,
@@ -53,7 +54,6 @@ class BankController extends React.Component {
                 total: 0
             },
             rentUnit: { //caclulate data
-                ratio: 0,
                 cost: 0.5
             },
             accountMaxBalance: {
@@ -70,8 +70,7 @@ class BankController extends React.Component {
             },
             isOnlineAddress: {
                 error: false
-            },
-            currentEnv: 'test'
+            }
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
     }
@@ -79,12 +78,10 @@ class BankController extends React.Component {
     componentDidMount() {
         // data by props
         this.defaultDataFun();
-        this.getDetaultRatioFun();
     }
 
     async defaultDataFun() {
-        const env = this.state.currentEnv;
-        const requestUrl = getBankDefaultData(env);
+        const requestUrl = getBankDefaultDataApi();
         const defaultData = await PopupAPI.getBankDefaultData(requestUrl);
         // current account balance
         const { accounts, selected } = this.props.accounts;
@@ -112,28 +109,16 @@ class BankController extends React.Component {
                 min: 1, // min distroy 1trx
                 total: costTrx
             },
-            curentInputBalance
-        });
-    }
-
-    async getDetaultRatioFun() {
-        // get default ratio
-        const ratio = await PopupAPI.getDetaultRatioFun() ;
-        console.log(`ratio值${ratio}`);
-        const rentUnit = {
-            ratio
-        };
-        this.setState({
-            rentUnit
+            curentInputBalance,
+            ratio: defaultData.ratio
         });
     }
 
     calculateRentCost() {
         // calculate bank rent cost
-        const { rentNum, rentDay } = this.state;
-        const ratio = this.state.rentUnit.ratio;
+        const { rentNum, rentDay, ratio } = this.state;
+        console.log(ratio);
         const rentUnit = {
-            ratio,
             cost: (rentNum.value * rentDay.value / ratio).toFixed(1)
         };
         this.setState({
@@ -191,14 +176,13 @@ class BankController extends React.Component {
     }
 
     async isValidRentAddress() {
-        // valid order num > 3
+        // valid order num <= 5
         const curaAddress = this.rentAddressInput.value;
-        const env = this.state.currentEnv;
         let address;
         const { selected } = this.props.accounts;
         const selectedaAddress = selected.address;
         if(curaAddress === '') address = selectedaAddress; else address = curaAddress;
-        const requestUrl = getBankIsRent(env);
+        const requestUrl = getBankIsRentApi();
         const isRentDetail = await PopupAPI.isValidOrderAddress(address, requestUrl);
         const recipient = {
             value: address,
@@ -216,6 +200,9 @@ class BankController extends React.Component {
             total: 0,
             show: true
         };
+        this.setState({
+            ratio: isRentDetail.ratio
+        });
         // isRent => yes judge online address  => no tips
         if(isRentDetail.isRent) {
             const result = await PopupAPI.isValidOnlineAddress(address);
@@ -279,8 +266,7 @@ class BankController extends React.Component {
                     rentNum.formatError = false;
                     rentNum.error = false;
                     Toast.loading();
-                    const env = this.state.currentEnv;
-                    const requestUrl = getBankBalanceEnough(env);
+                    const requestUrl = getBankBalanceEnoughApi();
                     const curaAddress = this.rentAddressInput.value;
                     let address;
                     const selectedaAddress = selected.address;
@@ -367,12 +353,10 @@ class BankController extends React.Component {
             rentDay.valid = false;
             if(_type === 2) {
                 if(rentVal < rentDayMin ) {
-                    rentDay.value = rentDayMin;
                     rentDay.error = true;
                     rentDay.formatError = false;
                 }
                 if(rentVal > rentDayMax) {
-                    rentDay.value = rentDayMax;
                     rentDay.error = true;
                     rentDay.formatError = false;
                 }
@@ -469,12 +453,11 @@ class BankController extends React.Component {
     rentDealSendFun(e) {
         //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days*0.1
         const { formatMessage } = this.props.intl;
-        const { rentNum, rentDay, recipient, rentUnit } = this.state;
+        const { rentNum, rentDay, recipient, ratio } = this.state;
         const { selected } = this.props.accounts;
         const address = selected.address;
         const rentDayValue = Number(rentDay.value);
         const freezeAmount = rentNum.value * Math.pow(10, 6);
-        const ratio = rentUnit.ratio;
         const payAmount = Math.floor(freezeAmount * rentDayValue / ratio);
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
@@ -484,8 +467,7 @@ class BankController extends React.Component {
             rentDayValue,
             recipientAddress
         );
-        const env = this.state.currentEnv;
-        const requestUrl = postBankOrder(env);
+        const requestUrl = postBankOrderApi();
         hashResult.then((res) => {
             const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
             successRes.catch(err => {

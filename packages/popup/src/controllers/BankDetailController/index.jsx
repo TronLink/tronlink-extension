@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 11:11:08
+ * @Last Modified time: 2019-04-15 16:15:35
  * BankOrderDetail
  */
 import React from 'react';
@@ -11,7 +11,7 @@ import { PopupAPI } from '@tronlink/lib/api';
 import { APP_STATE } from '@tronlink/lib/constants';
 import { NavBar, Toast } from 'antd-mobile';
 import Utils from '@tronlink/lib/utils';
-import { getBankOrderInfo } from '@tronlink/popup/src/fetch/tronLending/tronLending';
+import { getBankOrderInfoApi } from '@tronlink/popup/src/fetch/tronLending/tronLending';
 
 import './BankDetailController.scss';
 
@@ -22,8 +22,7 @@ class BankDetailController extends React.Component {
             selected: '',
             loading: false,
             orderList: [],
-            recordDetail: {},
-            currentEnv: 'test'
+            recordDetail: {}
         };
     }
 
@@ -36,8 +35,7 @@ class BankDetailController extends React.Component {
 
     async getBankRecordDetail(_id) {
         Toast.loading();
-        const env = this.state.currentEnv;
-        const requestUrl = getBankOrderInfo(env);
+        const requestUrl = getBankOrderInfoApi();
         console.log(`——id为${_id}`);
         const recordDetail = await PopupAPI.getBankRecordDetail(_id, requestUrl);
         const orderList = [

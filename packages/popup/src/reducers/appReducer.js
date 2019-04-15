@@ -28,6 +28,9 @@ export const appReducer = createReducer({
         selected: false
     },
     language: 'en',
+    setting: {
+        developmentMode: false
+    }
 }, {
     [ setAppState ]: (state, { payload }) => {
         state.appState = payload;

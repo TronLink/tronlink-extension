@@ -21,7 +21,6 @@ class Account {
         this.name = false;
         this.updatingTransactions = false;
         this.selectedBankRecordId = 0;
-        this.bankRatio = 0; // Tron bank ratio
         this.energy = 0;
         this.energyUsed = 0;
         this.balance = 0;
