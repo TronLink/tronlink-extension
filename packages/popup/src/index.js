@@ -15,6 +15,7 @@ import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { version } from '@tronlink/popup/package';
 
 import {
     setAppState,
@@ -22,7 +23,8 @@ import {
     setNodes,
     setPriceList,
     setLanguage,
-    setSetting
+    setSetting,
+    setVersion
 } from 'reducers/appReducer';
 
 import {
@@ -125,6 +127,7 @@ export const app = {
         this.store.dispatch(setToken(selectedToken));
         this.store.dispatch(setLanguage(language));
         this.store.dispatch(setSetting(setting));
+        this.store.dispatch(setVersion(version));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 

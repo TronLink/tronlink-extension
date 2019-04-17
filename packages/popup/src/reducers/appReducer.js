@@ -15,6 +15,7 @@ export const setPriceList = createAction('setPriceList');
 export const setCurrency = createAction('setCurrency');
 export const setLanguage = createAction('setLanguage');
 export const setSetting = createAction('setSetting');
+export const setVersion = createAction('setVersion');
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
@@ -52,6 +53,8 @@ export const appReducer = createReducer({
     },
     [ setSetting ]: (state, { payload }) => {
         state.setting = payload;
+    },
+    [ setVersion ]: (state, { payload }) => {
+        state.version = payload;
     }
-
 });

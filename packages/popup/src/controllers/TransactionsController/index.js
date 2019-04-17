@@ -5,7 +5,7 @@ import Toast, { T } from 'react-toast-mobile';
 import { BigNumber } from 'bignumber.js';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
-import { APP_STATE } from "@tronlink/lib/constants";
+import { APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class  TransactionsController extends React.Component {
@@ -69,7 +69,7 @@ class  TransactionsController extends React.Component {
                             {amount}
                         </div>
                         <div className="worth">
-                            ≈ {id==='_' ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
+                            ≈ {id==='_' || id === CONTRACT_ADDRESS.USDT ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
                         </div>
                         {
                             id === "_"?

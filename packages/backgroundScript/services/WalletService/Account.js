@@ -7,7 +7,8 @@ import NodeService from '../NodeService';
 import { BigNumber } from 'bignumber.js';
 
 import {
-    ACCOUNT_TYPE
+    ACCOUNT_TYPE,
+    CONTRACT_ADDRESS
 } from '@tronlink/lib/constants';
 import axios from 'axios';
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
@@ -265,6 +266,12 @@ class Account {
         const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
         const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
+               symbol: "USDT",
+               name: "Tether USD",
+               decimal: 6,
+               tokenId: CONTRACT_ADDRESS.USDT
+            };
             const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
             if (!account2.address) {
@@ -272,6 +279,7 @@ class Account {
                 this.reset();
                 return true;
             }
+            console.log(this.tokens.smart)
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
             addSmartTokens.forEach(async ([tokenId,token])=>{
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
@@ -286,8 +294,6 @@ class Account {
                     if(typeof token.name === 'object' || (!token.decimals)) {
                         const token2 = await NodeService.getSmartToken(tokenId);
                         this.tokens.smart[ tokenId ] = token2;
-                    } else {
-                        this.tokens.smart[ tokenId ] = token;
                     }
                     this.tokens.smart[ tokenId ].imgUrl = false;
                     this.tokens.smart[ tokenId ].balance = balance;
@@ -352,37 +358,35 @@ class Account {
                     price
                 };
             }
-
-            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0);
-            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens) {
+            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
                 let token = this.tokens.smart[ contract_address ] || false;
                 const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
                 const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
                 if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
                     await StorageService.cacheToken({contract_address,decimals,name,abbr});
+                    if(!token && StorageService.tokenCache.hasOwnProperty(contract_address) && StorageService.tokenCache[contract_address].hasOwnProperty('abbr')) {
+                        const {
+                            name,
+                            abbr,
+                            decimals,
+                            imgUrl = false
+                        } = StorageService.tokenCache[ contract_address ];
 
-                if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
-                    const {
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl = false
-                    } = StorageService.tokenCache[ contract_address ];
-
-                    token = {
-                        price:0,
-                        balance: 0,
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl,
+                        token = {
+                            price:0,
+                            balance:0,
+                            name,
+                            abbr,
+                            decimals,
+                            imgUrl
+                        };
+                    }
+                    this.tokens.smart[ contract_address ] = {
+                        ...token,
+                        price,
+                        balance
                     };
-                }
-                this.tokens.smart[ contract_address ] = {
-                    ...token,
-                    balance,
-                    price
-                };
             }
         } else {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
@@ -424,7 +428,7 @@ class Account {
                         price
                     };
                 }
-            }else{
+            } else {
                 this.tokens.basic = {};
             }
             //this.tokens.smart = {};
@@ -561,6 +565,9 @@ class Account {
             TotalEnergyLimit: this.TotalEnergyLimit,
             bandwidth: this.bandwidth,
             energy: this.energy,
+            energyUsed: this.energyUsed,
+            netLimit:this.netLimit,
+            netUsed:this.netUsed,
             transactions: this.transactions,
             lastUpdated: this.lastUpdated,
             selectedBankRecordId: this.selectedBankRecordId
@@ -627,10 +634,9 @@ class Account {
             const contract = await NodeService.tronWeb.contract().at(token);
 
             await contract.transfer(recipient, amount).send(
-                {},
+                {feeLimit:10 * Math.pow(10,6)},
                 this.privateKey
             );
-
             return true;
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);

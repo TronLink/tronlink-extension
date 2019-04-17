@@ -5,6 +5,7 @@ import {PopupAPI} from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
 import {VALIDATION_STATE} from "@tronlink/lib/constants";
 import TronWeb from "tronweb";
+import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import swal from 'sweetalert2';
 import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
@@ -23,12 +24,16 @@ class SendController extends React.Component {
                 decimals:6
             },
             recipient:{
+                error:'',
                 value:'',
-                valid:false
+                valid:false,
+                isActivated:true
             },
             amount:{
+                error:'',
                 value:0,
-                valid:false
+                valid:false,
+                values:''
             },
             loading:false
         }
@@ -80,7 +85,8 @@ class SendController extends React.Component {
         PopupAPI.selectAccount(address);
     }
 
-    onRecipientChange(e) {
+    async onRecipientChange(e) {
+        const { selected } = this.props.accounts;
         const address = e.target.value;
 
         const recipient = {
@@ -91,10 +97,25 @@ class SendController extends React.Component {
         if(!address.length)
             return this.setState({ recipient });
 
-        if(!TronWeb.isAddress(address))
+        if(!TronWeb.isAddress(address)) {
             recipient.valid = false;
-        else recipient.valid = true;
-
+            recipient.error = 'EXCEPTION.SEND.ADDRESS_FORMAT_ERROR';
+        } else {
+            let account = await NodeService.tronWeb.trx.getAccount(address);
+            if(!account.address){
+                recipient.isActivated = false;
+                recipient.valid = true;
+                recipient.error = 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_ERROR';
+            }else if(address === selected.address){
+                recipient.isActivated = true;
+                recipient.valid = false;
+                recipient.error = 'EXCEPTION.SEND.ADDRESS_SAME_ERROR';
+            }else{
+                recipient.isActivated = true;
+                recipient.valid = true;
+                recipient.error = '';
+            }
+        }
         this.setState({
             recipient
         });
@@ -112,35 +133,124 @@ class SendController extends React.Component {
         });
     }
 
-    validateAmount() {
-        const {
-            amount,
-            decimals
-        } = this.state.selectedToken;
-        let {value} = this.state.amount;
-        value = new BigNumber(value);
-        if(
-            value.isNaN() ||
-            value.lte(0) ||
-            (
-                decimals === 0 &&
-                !value.isInteger()
-            )
-        ) {
-            return this.setState({
-                amount: {
-                    valid: false,
-                    value
-                }
-            });
-        }
-        this.setState({
+    validateAmount(){
+    const {
+        amount,
+        decimals,
+        id
+    } = this.state.selectedToken;
+    const { selected } = this.props.accounts;
+    let {value} = this.state.amount;
+    if(value === ''){
+        return this.setState({
             amount: {
-                valid: value.lte(amount) ? true : false,
-                value
+                valid: false,
+                value,
+                error:''
             }
         });
     }
+    value = new BigNumber(value);
+    if(value.isNaN() || value.lte(0)) {
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
+            }
+        });
+    }else if(value.gt(amount)){
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+            }
+        });
+    }else if(value.dp() > decimals) {
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
+                values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
+            }
+        });
+    } else {
+        if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance/Math.pow(10,6)).minus(0.1))) {
+            return this.setState({
+                amount: {
+                    valid: false,
+                    value,
+                    error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+                }
+            });
+        }
+        if(id.match(/^T/)){
+            const valid = this.state.recipient.isActivated ? true : false;
+            if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+                return  this.setState({
+                    amount: {
+                        valid,
+                        value,
+                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                    }
+                });
+            }else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000){
+                return  this.setState({
+                    amount: {
+                        valid,
+                        value,
+                        error:'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
+                    }
+                });
+            }else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000){
+                return  this.setState({
+                    amount: {
+                        valid,
+                        value,
+                        error:'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
+                    }
+                });
+
+            } else {
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:''
+                    }
+                });
+            }
+        } else {
+            if(selected.netLimit - selected.netUsed < 200){
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                    }
+                });
+            } else {
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:''
+                    }
+                });
+            }
+
+        }
+        return  this.setState({
+            amount: {
+                valid: true,
+                value,
+                error:''
+            }
+        });
+    }
+}
 
     onSend() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
@@ -201,7 +311,7 @@ class SendController extends React.Component {
     }
 
     render() {
-        const { isOpen,selectedToken,loading } = this.state;
+        const { isOpen,selectedToken,loading,amount,recipient } = this.state;
         const {onCancel} = this.props;
         const {selected, accounts} = this.props.accounts;
         const trx = {tokenId:'_',name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg};
@@ -230,10 +340,13 @@ class SendController extends React.Component {
                             {selected.balance/Math.pow(10,6)} TRX
                         </div>
                     </div>
-                    <div className="input-group">
+                    <div className={"input-group"+(recipient.error?' error':'')}>
                         <label><FormattedMessage id="ACCOUNT.SEND.RECEIVE_ADDRESS"/></label>
                         <div className="input">
                             <input type="text" onChange={(e)=>{this.onRecipientChange(e)} }/>
+                        </div>
+                        <div className="tipError">
+                            {recipient.error?<FormattedMessage id={recipient.error} />:null}
                         </div>
                     </div>
                     <div className="input-group">
@@ -259,18 +372,21 @@ class SendController extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="input-group hasBottomMargin">
+                    <div className={"input-group hasBottomMargin"+(amount.error?' error':'')}>
                         <label><FormattedMessage id="ACCOUNT.SEND.TRANSFER_AMOUNT"/></label>
                         <div className="input">
                             <input type="text" onChange={ (e)=>{this.onAmountChange(e)} }/>
+                        </div>
+                        <div className="tipError">
+                            {amount.error?(amount.values?<FormattedMessage id={amount.error} values={amount.values} />:<FormattedMessage id={amount.error} />):null}
                         </div>
                     </div>
                     <Button
                         id='ACCOUNT.SEND'
                         isLoading={ loading }
                         isValid={
-                            this.state.amount.valid &&
-                            this.state.recipient.valid
+                            amount.valid &&
+                            recipient.valid
                         }
                         onClick={ ()=>this.onSend() }
                     />

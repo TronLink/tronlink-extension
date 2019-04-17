@@ -10,6 +10,7 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
+import { CONTRACT_ADDRESS } from "@tronlink/lib/constants";
 
 import {
     FormattedMessage,
@@ -278,31 +279,33 @@ class AccountsPage extends React.Component {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
-                        const price = token.price === undefined ? 0 : token.price;
-                        const money = tokenId === '_' ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2);
-                        return (
-                            <div className='tokenItem' onClick={ ()=>{
-                                    let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
-                                    if(tokenId === '_'){
-                                        o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                        o.balance = new BigNumber(accounts.selected.balance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                    }
-                                    PopupAPI.setSelectedToken(o);
-                                    PopupAPI.changeState(APP_STATE.TRANSACTIONS);
-                                }}>
-                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=''/>
-                                <div className='name'>
-                                    {token.abbr || token.symbol || token.name}
+
+                            const price = token.price === undefined ? 0 : token.price;
+                            const money = tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
+                            return (
+                                <div className="tokenItem" onClick={ ()=>{
+                                        let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                        if(tokenId === '_'){
+                                            o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
+                                                .shiftedBy(-token.decimals)
+                                                .toString();
+                                            o.balance = new BigNumber(accounts.selected.balance)
+                                                .shiftedBy(-token.decimals)
+                                                .toString();
+                                        }
+                                        PopupAPI.setSelectedToken(o);
+                                        PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+                                    }}>
+                                    <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
+                                    <div className="name">
+                                        {token.abbr || token.symbol || token.name}
+                                    </div>
+                                    <div className="worth">
+                                        <span>{amount}</span>
+                                        <span>≈ {money} {prices.selected}</span>
+                                    </div>
                                 </div>
-                                <div className='worth'>
-                                    <span>{amount}</span>
-                                    <span>≈ {money} {prices.selected}</span>
-                                </div>
-                            </div>
+                                
                         )
                     })
                 }
@@ -401,17 +404,19 @@ class AccountsPage extends React.Component {
         const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
+        const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
+        const usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',income:'2.34',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT};
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=>typeof token === 'object' ).map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
-        tokens = [trx,...tokens];
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=> tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
+        tokens = [usdt,trx,...tokens];
         tokens = tokens.map(({tokenId,...token})=>{
             token.decimals = token.decimals || 0;
             const price = token.price === undefined ? 0 : token.price;
             const amount = new BigNumber(token.balance)
                 .shiftedBy(-token.decimals)
                 .toString();
-            const money = tokenId==='_' ?(price * amount).toFixed(2):(price * amount * trx_price).toFixed(2);
+            const money = (tokenId==='_' || tokenId === CONTRACT_ADDRESS.USDT) ?(price * amount).toFixed(2):(price * amount * trx_price).toFixed(2);
             totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
             return {tokenId,...token};
         });
@@ -435,7 +440,7 @@ class AccountsPage extends React.Component {
                 <div className="space-controller">
                     <Toast />
                     {
-                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
+                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || id === 0 || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
                             null
                              :
                             <div className="advertisingWrap">
