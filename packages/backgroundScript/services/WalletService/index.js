@@ -376,6 +376,12 @@ class Wallet extends EventEmitter {
             uuid
         });
 
+        if(this.state === APP_STATE.PASSWORD_SET){
+            this.emit('setConfirmations', this.confirmations);
+            this._openPopup();
+            return;
+        }
+
         if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
 
