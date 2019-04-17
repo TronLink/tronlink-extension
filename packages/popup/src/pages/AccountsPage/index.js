@@ -288,7 +288,14 @@ class AccountsPage extends React.Component {
                                     }}>
                                     <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
                                     <div className="name">
-                                        {token.abbr || token.symbol || token.name}
+                                        <span>{token.abbr || token.symbol || token.name}</span>
+                                        {
+                                            token.hasOwnProperty ?
+                                                <div className="income">
+
+                                                </div>
+                                                :null
+                                        }
                                     </div>
                                     <div className="worth">
                                         <span>{amount}</span>
@@ -393,7 +400,7 @@ class AccountsPage extends React.Component {
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
-        const usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',income:'2.34',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT};
+        const usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',income:'2.34',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT,isTop:true};
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=> tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
