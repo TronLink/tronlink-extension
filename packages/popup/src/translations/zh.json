@@ -98,7 +98,7 @@
     "ACCOUNT.RECEIVE.BUTTON":"复制地址",
     "ACCOUNT.SEND":"发送",
     "ACCOUNT.ALL":"全部",
-    "ACCOUNT.SEND.PAY_ACCOUNT":"支付账户",
+    "ACCOUNT.SEND.PAY_ACCOUNT":"支付地址",
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"接收地址",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"选择Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"发送数量",
@@ -223,6 +223,7 @@
     "LOGIN.PASSWORD.BACK":"欢迎回来",
 
     "COMMON.BALANCE":"余额",
+    "COMMON.CURRENT_VERSION":"当前版本v{version}",
 
     "MENU.ADD_TRC20_TOKEN":"添加TRC20token",
     "MENU.ACCOUNT_DETAIL":"账户明细",
@@ -244,5 +245,19 @@
 
     "IEOS.BUY_ING":"抢购中",
     "IEOS.LEFT_TIME":"距开抢{day}",
-    "IEOS.LAUNCH_BASE":"LaunchBase"
+    "IEOS.LAUNCH_BASE":"LaunchBase",
+
+    "EXCEPTION.FORMAT_ERROR":"格式错误",
+    "EXCEPTION.ACCOUNT_EXIST":"该地址已在账户列表中，请勿重复添加",
+    "EXCEPTION.ADD_NODE.NAME":"需大于四个字符",
+    "EXCEPTION.ADD_NODE.NODE_URL":"格式错误，请以http://或https://开头",
+    "EXCEPTION.SEND.ADDRESS_FORMAT_ERROR":"地址格式错误",
+    "EXCEPTION.SEND.ADDRESS_SAME_ERROR":"支付地址与接收地址不能相同",
+    "EXCEPTION.SEND.ADDRESS_UNACTIVATED_ERROR":"该地址未激活，将额外消耗您0.1个trx用于激活该地址",
+    "EXCEPTION.SEND.AMOUNT_FORMAT_ERROR":"格式错误",
+    "EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR":"余额不足",
+    "EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR":"精确到{decimals}，请调整小数点后数字位数",
+    "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"带宽不足，将额外消耗少量trx（约0.1）",
+    "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"能量不足，将额外消耗少量trx（约0.1）",
+    "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（约0.1）"
 }

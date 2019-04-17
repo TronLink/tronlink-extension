@@ -22,7 +22,8 @@ class MnemonicImport extends React.Component {
         subStage: IMPORT_STAGE.ENTERING_MNEMONIC,
         mnemonic: '',
         isValid: false,
-        isLoading: false
+        isLoading: false,
+        error:''
     };
 
     constructor() {
@@ -35,9 +36,12 @@ class MnemonicImport extends React.Component {
     }
 
     onChange({ target: { value } }) {
+        const isValid = Utils.validateMnemonic(value);
+        const error = !isValid ? 'EXCEPTION.FORMAT_ERROR' : '';
         this.setState({
             mnemonic: value,
-            isValid: Utils.validateMnemonic(value)
+            isValid,
+            error
         });
     }
 
@@ -194,7 +198,7 @@ class MnemonicImport extends React.Component {
             mnemonic,
             isValid,
             isLoading,
-            showWarning
+            error
         } = this.state;
 
         return (
@@ -203,20 +207,23 @@ class MnemonicImport extends React.Component {
                     <div className="back" onClick={ onCancel }></div>
                     <FormattedMessage id="CREATION.RESTORE.MNEMONIC.TITLE" />
                 </div>
-                <div className='greyModal'>
+                <div className={'greyModal'+(!isValid && error?' error':'')}>
                     <Toast />
                     <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>
-                    <textarea
-                        placeholder='Mnemonic Import'
-                        className='phraseInput'
-                        rows={ 5 }
-                        value={ mnemonic }
-                        onChange={ this.onChange }
-                        tabIndex={ 1 }
-                        disabled={ isLoading }
-                    />
+                    <div className="inputUnit">
+                        <textarea
+                            placeholder='Mnemonic Import'
+                            className='phraseInput'
+                            rows={ 5 }
+                            value={ mnemonic }
+                            onChange={ this.onChange }
+                            tabIndex={ 1 }
+                            disabled={ isLoading }
+                        />
+                        {!isValid?<div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
+                    </div>
                     <div className='buttonRow'>
                         <Button
                             id='BUTTON.CONTINUE'

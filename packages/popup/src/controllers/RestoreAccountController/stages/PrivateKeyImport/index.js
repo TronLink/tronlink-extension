@@ -11,7 +11,8 @@ import './PrivateKeyImport.scss';
 class PrivateKeyImport extends React.Component {
     state = {
         privateKey: '',
-        isValid: false
+        isValid: false,
+        error: ''
     };
 
     constructor() {
@@ -24,18 +25,24 @@ class PrivateKeyImport extends React.Component {
     onChange({ target: { value } }) {
         const { accounts } = this.props;
         const address = TronWeb.address.fromPrivateKey(value);
-
         let isValid = false;
-
-        if(address)
+        let error = '';
+        if(address) {
             isValid = true;
-
-        if(address in accounts)
+            error = '';
+        }else{
             isValid = false;
-
+            error = 'EXCEPTION.FORMAT_ERROR';
+        }
+        if(address in accounts) {
+            isValid = false;
+            error = 'EXCEPTION.ACCOUNT_EXIST';
+        }
+        if(value === '')error = '';
         this.setState({
             privateKey: value.trim(),
-            isValid
+            isValid,
+            error
         });
     }
 
@@ -56,7 +63,8 @@ class PrivateKeyImport extends React.Component {
 
         const {
             privateKey,
-            isValid
+            isValid,
+            error
         } = this.state;
 
         return (
@@ -65,18 +73,22 @@ class PrivateKeyImport extends React.Component {
                     <div className="back" onClick={ onCancel }></div>
                     <FormattedMessage id="CREATION.RESTORE.PRIVATE_KEY.TITLE" />
                 </div>
-                <div className='greyModal'>
+                <div className={'greyModal'+(!isValid && error?' error':'')}>
                     <div className='modalDesc hasBottomMargin'>
                         <FormattedMessage id='PRIVATE_KEY_IMPORT.DESC' />
                     </div>
-                    <textarea
-                        placeholder='Private Key Import'
-                        className='privateKeyInput'
-                        rows={ 5 }
-                        value={ privateKey }
-                        onChange={ this.onChange }
-                        tabIndex={ 1 }
-                    />
+                    <div className="inputUnit">
+                        <textarea
+                            placeholder='Private Key Import'
+                            className='privateKeyInput'
+                            rows={ 5 }
+                            value={ privateKey }
+                            onChange={ this.onChange }
+                            tabIndex={ 1 }
+                        />
+                        {!isValid?<div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
+                    </div>
+
                     <div className='buttonRow'>
                         <Button
                             id='BUTTON.CONTINUE'

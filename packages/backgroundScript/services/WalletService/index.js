@@ -128,8 +128,8 @@ class Wallet extends EventEmitter {
                     }
                 }).catch(e=>{console.log(e)});
             } else {
-                //await account.update();
-                continue;
+                await account.update();
+                //continue;
             }
         }
         this.emit('setAccounts', this.getAccounts());
@@ -243,8 +243,8 @@ class Wallet extends EventEmitter {
                     res = false;
                 }
             }else{
-                continue;
-                //await account.update();
+                //continue;
+                await account.update();
             }
         }
         this.emit('setAccounts', this.getAccounts());
