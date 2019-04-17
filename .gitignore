@@ -23,3 +23,4 @@ lerna-debug.log
 /chrome-extension.zip
 /.idea
 .zip
+.vscode
