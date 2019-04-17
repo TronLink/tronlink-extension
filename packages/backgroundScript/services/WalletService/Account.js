@@ -305,7 +305,7 @@ class Account {
                     this.tokens.smart[ o[0] ].price = 0;
                 }else{
                     this.tokens.smart[ o[0] ].balance = 0;
-                    this.tokens.smart[ o[0] ].price = 0;
+                    this.tokens.smart[ o[1] ].price = 0;
                 }
             }
             addSmartTokens.forEach(async ([tokenId,token])=>{
