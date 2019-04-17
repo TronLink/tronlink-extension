@@ -8,7 +8,7 @@ import { BigNumber } from 'bignumber.js';
 
 import {
     ACCOUNT_TYPE,
-    SUPPORTED_CONTRACTS
+    CONTRACT_ADDRESS
 } from '@tronlink/lib/constants';
 import axios from "axios";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
@@ -35,6 +35,15 @@ class Account {
         this.tokens = {
             basic: {},
             smart: {}
+
+        };
+        this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
+            symbol: "USDT",
+            name: "Tether USD",
+            decimal: 6,
+            tokenId: CONTRACT_ADDRESS.USDT,
+            price:0,
+            balance:0
         };
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
@@ -281,8 +290,6 @@ class Account {
                     if(typeof token.name === 'object' || (!token.decimals)) {
                         const token2 = await NodeService.getSmartToken(tokenId);
                         this.tokens.smart[ tokenId ] = token2;
-                    } else {
-                        this.tokens.smart[ tokenId ] = token;
                     }
                     this.tokens.smart[ tokenId ].imgUrl = false;
                     this.tokens.smart[ tokenId ].balance = balance;
@@ -347,7 +354,7 @@ class Account {
                     price
                 };
             }
-            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0);
+            const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
             for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
                 let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
@@ -355,7 +362,7 @@ class Account {
                     if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
                         await StorageService.cacheToken({contract_address,decimals,name,abbr});
 
-                    if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
+                    if(!token && StorageService.tokenCache.hasOwnProperty(contract_address) && StorageService.tokenCache[contract_address].hasOwnProperty('abbr')) {
                         const {
                             name,
                             abbr,
@@ -365,19 +372,18 @@ class Account {
 
                         token = {
                             price:0,
-                            balance: 0,
+                            balance:0,
                             name,
                             abbr,
                             decimals,
-                            imgUrl,
+                            imgUrl
                         };
                     }
                     this.tokens.smart[ contract_address ] = {
                         ...token,
-                        balance,
-                        price
+                        price,
+                        balance
                     };
-
             }
         } else {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
@@ -419,7 +425,7 @@ class Account {
                         price
                     };
                 }
-            }else{
+            } else {
                 this.tokens.basic = {};
             }
             //this.tokens.smart = {};

@@ -26,7 +26,7 @@ class AddTokenController extends React.Component {
             return;
         }
 
-        if(Object.values(smart).some(({ name, symbol }) => token.name === name || token.symbol === symbol)) {
+        if(Object.keys(smart).some((key) => key === address)) {
             T.notify(formatMessage({id:"ERRORS.TOKEN_ADDED"}));
             return;
         }
