@@ -245,6 +245,8 @@
   "TRANSACTION.TOKEN_INFO.DETAIL":"詳細",
 
   "BANK.INDEX.ENTRANCE":"ja能量租赁",
+  "BANK.SEND.PAY_ACCOUNT":"支払い口座",
+  "BANK.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "BANK.INDEX.ACCOUNT":"アカウント",
   "BANK.INDEX.BALANCE":"残高{amount}TRX",
   "BANK.INDEX.PLACEHOLDER":"記入しないと、当面の支払い口座のアドレスをデフォルトとして認めます",
@@ -269,6 +271,7 @@
   "BANK.INDEX.ESTIMATESAVE":"省",
   "BANK.INDEX.ESTIMATEINFO":"获取同等能量需冻结",
   "BANK.INDEX.RENTDAYUNIT":"日間",
+  "BANK.INDEX.RENTDAYUNITS":"Days",
   "BANK.INDEX.RENTCONST":"費用",
   "BANK.INDEX.RATIO":"比例",
   "BANK.INDEX.BUTTON":"賃借を決めました",

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 17:19:52
+ * @Last Modified time: 2019-04-17 14:41:01
  * TronBankPage
  */
 import React from 'react';
@@ -550,7 +550,7 @@ class BankController extends React.Component {
                         {/* account pay,receive */}
                         <div className='accountContent'>
                             <section className='accountInfo infoSec'>
-                                <label><FormattedMessage id='ACCOUNT.SEND.PAY_ACCOUNT'/></label>
+                                <label><FormattedMessage id='BANK.SEND.PAY_ACCOUNT'/></label>
                                 <div className='selectedAccount'>
                                     { selected.name.length > 6 ? `${selected.name.slice(0, 6)}…` : selected.name } <span>{ selected.address }</span>
                                 </div>
@@ -559,7 +559,7 @@ class BankController extends React.Component {
                                 </div>
                             </section>
                             <section className='infoSec'>
-                                <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS'/></label>
+                                <label><FormattedMessage id='BANK.SEND.RECEIVE_ADDRESS'/></label>
                                 <div className={recipient.error || !validOrderOverLimit.valid || isOnlineAddress.error ? 'receiveAccount errorBorder' : 'receiveAccount normalBorder'}>
                                     <input ref={ rentAddressInput => this.rentAddressInput = rentAddressInput}
                                         onChange={(e) => { this.onRecipientChange(e, 1); } }
@@ -666,7 +666,10 @@ class BankController extends React.Component {
                             {rentNum.valid && rentDay.valid ?
                                 <section className='calculation'>
                                     <div className='info'>
-                                        {rentNum.value}TRX*{rentDay.value}<FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/> <span className='pointColor'><FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX</span>
+                                        {rentNum.value}TRX*{rentDay.value} {rentDay.value > 2 ? <FormattedMessage id='BANK.INDEX.RENTDAYUNITS'/> : <FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>}
+                                        <span className='pointColor'>
+                                            <FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
+                                        </span>
                                     </div>
                                     <div className='curNum'>
                                         (<FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/><span className='pointColor'><FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>{ saveCost.toFixed(2) }trx</span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/><span className='pointColor'>{rentNum.value}TRX</span>)
@@ -725,7 +728,7 @@ class BankController extends React.Component {
                                             <FormattedMessage id={val.id}/>
                                         </span>
                                         <span className='orderStatus'>
-                                            {val.user === 1 ? `${val.value.substr(0, 4)}...${val.value.substr(-12)}` : val.value }
+                                            {val.user === 1 ? `${val.value.substr(0, 6)}...${val.value.substr(-6)}` : val.value }
                                             {val.tip === 1 ? <FormattedMessage id='BANK.RENTINFO.TIPS' values={{ num: rentNum.predictVal }} /> : null}
                                             {val.type === 3 ? <FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/> : null}
                                         </span>

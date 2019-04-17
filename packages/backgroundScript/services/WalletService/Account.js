@@ -354,36 +354,35 @@ class Account {
             }
 
             const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0);
-            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens) {
                 let token = this.tokens.smart[ contract_address ] || false;
-                    const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
-                    const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
-                    if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
-                        await StorageService.cacheToken({contract_address,decimals,name,abbr});
+                const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
+                const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
+                if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
+                    await StorageService.cacheToken({contract_address,decimals,name,abbr});
 
-                    if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
-                        const {
-                            name,
-                            abbr,
-                            decimals,
-                            imgUrl = false
-                        } = StorageService.tokenCache[ contract_address ];
+                if(!token && StorageService.tokenCache.hasOwnProperty(contract_address)) {
+                    const {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl = false
+                    } = StorageService.tokenCache[ contract_address ];
 
-                        token = {
-                            price:0,
-                            balance: 0,
-                            name,
-                            abbr,
-                            decimals,
-                            imgUrl,
-                        };
-                    }
-                    this.tokens.smart[ contract_address ] = {
-                        ...token,
-                        balance,
-                        price
+                    token = {
+                        price:0,
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl,
                     };
-
+                }
+                this.tokens.smart[ contract_address ] = {
+                    ...token,
+                    balance,
+                    price
+                };
             }
         } else {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);

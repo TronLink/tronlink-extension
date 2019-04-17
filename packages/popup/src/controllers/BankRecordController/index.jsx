@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 16:15:18
+ * @Last Modified time: 2019-04-16 14:41:57
  * BankRecordController
  */
 import React from 'react';
@@ -66,9 +66,9 @@ class BankRecordController extends React.Component {
             requestUrl
         );
         let nodata = true;
-        if (json.data && json.data.length === 0) nodata = true; else nodata = false;
-        const recordListData = this.state.recordListData.concat(json.data);
         const total = json.total;
+        if (total === 0) nodata = true; else nodata = false;
+        const recordListData = this.state.recordListData.concat(json.data);
         let hasMore = false;
         if(recordListData.length >= total) hasMore = false; else hasMore = true;
         this.setState({

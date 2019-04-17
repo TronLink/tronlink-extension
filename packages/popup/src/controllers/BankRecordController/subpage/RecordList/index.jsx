@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 18:38:28
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 16:41:15
+ * @Last Modified time: 2019-04-17 14:24:11
  * RecordList
  */
 
@@ -53,8 +53,8 @@ class RecordList extends React.Component {
                     }
                     const payMonkey = val.pay_amount / Math.pow(10, 6);
                     return(
-                        <div key='key' className='recordList' onClick={ () => { this.toMoreDetail(val.id); } }>
-                            <div className='address'><img src={require('../../../../assets/images/new/tronBank/receive.svg')} alt='receive'/><span>{`${val.energy_address.substr(0, 4)}...${val.energy_address.substr(-12)}`}</span></div>
+                        <div key={ key } className='recordList' onClick={ () => { this.toMoreDetail(val.id); } }>
+                            <div className='address'><img src={require('../../../../assets/images/new/tronBank/receive.svg')} alt='receive'/><span>{`${val.energy_address.substr(0, 8)}...${val.energy_address.substr(-8)}`}</span></div>
                             <div className='recordCont'>
                                 <section className='recordLeftInfo'>
                                     <div><FormattedMessage id='BANK.RENTRECORD.RENTDETAIL'/>{val.freeze_amount / Math.pow(10, 6)}TRX*{val.days}<FormattedMessage id='BANK.RENTRECORD.TIMEUNIT'/></div>
