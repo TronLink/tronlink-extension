@@ -286,10 +286,13 @@ class Account {
                 if(contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
+                    console.log(`numner${number}`)
                     if (number.balance) {
                         balance = new BigNumber(number.balance).toString();
+                        console.log(`1 balance${balance}`)
                     } else {
                         balance = new BigNumber(number).toString();
+                        console.log(`2 balance${balance}`)
                     }
                     if(typeof token.name === 'object' || (!token.decimals)) {
                         const token2 = await NodeService.getSmartToken(tokenId);
