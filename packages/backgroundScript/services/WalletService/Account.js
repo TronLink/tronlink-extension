@@ -441,18 +441,18 @@ class Account {
                     } else {
                         balance = new BigNumber(number).toString();
                     }
-                    if(typeof token.name === 'object') {
+                    if(typeof o[1].name === 'object') {
                         const token2 = await NodeService.getSmartToken(o[0]);
-                        this.tokens.smart[ o[1] ] = token2;
+                        this.tokens.smart[ o[0] ] = token2;
                     } else {
-                        this.tokens.smart[ o[1] ] = token;
+                        this.tokens.smart[ o[0] ] = o[1];
                     }
-                    this.tokens.smart[ o[1] ].imgUrl = false;
-                    this.tokens.smart[ o[1] ].balance = balance;
-                    this.tokens.smart[ o[1] ].price = 0;
+                    this.tokens.smart[ o[0] ].imgUrl = false;
+                    this.tokens.smart[ o[0] ].balance = balance;
+                    this.tokens.smart[ o[0] ].price = 0;
                 }else{
-                    this.tokens.smart[ o[1] ].balance = 0;
-                    this.tokens.smart[ o[1] ].price = 0;
+                    this.tokens.smart[ o[0] ].balance = 0;
+                    this.tokens.smart[ o[0] ].price = 0;
                 }
             }
             addSmartTokens.forEach(async ([tokenId, token]) => {
