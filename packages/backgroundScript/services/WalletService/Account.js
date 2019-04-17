@@ -281,8 +281,36 @@ class Account {
             }
             console.log(this.tokens.smart)
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
+            console.log("%0",addSmartTokens);
+            for(const o of addSmartTokens){
+                const contract = await NodeService.tronWeb.contract().at(o[0]).catch(e => false);
+                console.log(`contract${contract}`)
+                if(contract) {
+                    let balance;
+                    const number = await contract.balanceOf(address).call();
+                    console.log(`numner${number}`)
+                    if (number.balance) {
+                        balance = new BigNumber(number.balance).toString();
+                        console.log(`1 balance${balance}`)
+                    } else {
+                        balance = new BigNumber(number).toString();
+                        console.log(`2 balance${balance}`)
+                    }
+                    if(typeof o[1].name === 'object' || (!o[1].decimals)) {
+                        const token2 = await NodeService.getSmartToken(o[0]);
+                        this.tokens.smart[ o[0] ] = token2;
+                    }
+                    this.tokens.smart[ o[0] ].imgUrl = false;
+                    this.tokens.smart[ o[0] ].balance = balance;
+                    this.tokens.smart[ o[0] ].price = 0;
+                }else{
+                    this.tokens.smart[ o[0] ].balance = 0;
+                    this.tokens.smart[ o[0] ].price = 0;
+                }
+            }
             addSmartTokens.forEach(async ([tokenId,token])=>{
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                console.log(`contract${contract}`)
                 if(contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
@@ -438,13 +466,17 @@ class Account {
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => {return !token.abbr });
             addSmartTokens.forEach(async ([tokenId, token]) => {
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e=>false);
+                console.log(`contract${contract}`)
                 if(contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
+                     console.log(`addSmartTokensnumber${number}`)
                     if (number.balance) {
                         balance = new BigNumber(number.balance).toString();
+                        console.log(`addSmartTokensbalance${balance}`)
                     } else {
                         balance = new BigNumber(number).toString();
+                        console.log(`addSmartTokensbalance${balance}`)
                     }
                     if(typeof token.name === 'object') {
                         const token2 = await NodeService.getSmartToken(tokenId);
@@ -464,8 +496,11 @@ class Account {
             this.balance = account.balance || 0;
         }
         let totalOwnTrxCount = new BigNumber(this.balance + this.frozenBalance).shiftedBy(-6);
+        console.log(`totalOwnTrxCount${totalOwnTrxCount}`)
         Object.entries({...this.tokens.basic,...this.tokens.smart}).map(([tokenId,token])=>{
             if(token.price!==0){
+                console.log('%0',token)
+                console.log(`token.balance${token.balance}`)
                 totalOwnTrxCount = totalOwnTrxCount.plus(new BigNumber(token.balance).shiftedBy(-token.decimals).multipliedBy(token.price));
             }
         });
