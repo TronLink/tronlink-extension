@@ -60,8 +60,8 @@ class AccountsPage extends React.Component {
         if(ieos.length > 0){
             this.runTime(ieos);
         }
-
-        app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
+        await PopupAPI.setAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1')
+        //app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
     }
 
     runTime(ieos) {
@@ -421,7 +421,7 @@ class AccountsPage extends React.Component {
         const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
         let usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT};
         if(airdropInfo){
-            usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()}
+            usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
         }
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};

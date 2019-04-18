@@ -34,6 +34,7 @@ class Account {
         this.asset = 0;
         this.ignoredTransactions = [];
         this.transactions = {};
+        this.airdropInfo = {};
         this.tokens = {
             basic: {},
             smart: {}
@@ -42,7 +43,9 @@ class Account {
             symbol: "USDT",
             name: "Tether USD",
             decimal: 6,
-            tokenId: CONTRACT_ADDRESS.USDT
+            tokenId: CONTRACT_ADDRESS.USDT,
+            price:0,
+            balance:0
         };
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
@@ -564,14 +567,14 @@ class Account {
             frozenBalance: this.frozenBalance,
             totalEnergyWeight: this.totalEnergyWeight,
             TotalEnergyLimit: this.TotalEnergyLimit,
-            bandwidth: this.bandwidth,
             energy: this.energy,
             energyUsed: this.energyUsed,
             netLimit:this.netLimit,
             netUsed:this.netUsed,
             transactions: this.transactions,
             lastUpdated: this.lastUpdated,
-            selectedBankRecordId: this.selectedBankRecordId
+            selectedBankRecordId: this.selectedBankRecordId,
+            airdropInfo: this.airdropInfo
         };
     }
 

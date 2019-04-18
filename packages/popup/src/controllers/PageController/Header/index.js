@@ -83,7 +83,6 @@ class Header extends React.Component {
                                     this.setState({refresh:true}, async()=>{
                                         T.loading();
                                         const r = await PopupAPI.refresh();
-                                        console.log(r);
                                         if(r){
                                             this.setState({refresh:false});
                                             T.loaded()

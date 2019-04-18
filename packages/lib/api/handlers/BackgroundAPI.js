@@ -59,6 +59,10 @@ export default {
     },
     setSelectedBankRecordId(id) {
         this.duplex.send('popup', 'setSelectedBankRecordId', id, false);
+    },
+
+    setAirdropInfo(airdropInfo) {
+        this.duplex.send('popup', 'setAirdropInfo', airdropInfo, false);
     }
 
 };

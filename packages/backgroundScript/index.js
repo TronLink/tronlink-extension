@@ -152,7 +152,7 @@ const backgroundScript = {
         duplex.on('getIeos', this.walletService.getIeos);
         duplex.on('addCount', this.walletService.addCount);
 
-        duplex.on('getAirdropInfo', this.walletService.getAirdropInfo);
+        duplex.on('setAirdropInfo', this.walletService.setAirdropInfo);
 
     },
 
@@ -343,6 +343,10 @@ const backgroundScript = {
 
         this.walletService.on('setSelectedBankRecordId', id => (
             BackgroundAPI.setSelectedBankRecordId(id)
+        ));
+
+        this.walletService.on('setAirdropInfo', airdropInfo => (
+            BackgroundAPI.setAirdropInfo(airdropInfo)
         ));
     }
 };

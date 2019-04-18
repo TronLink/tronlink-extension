@@ -62,7 +62,7 @@ class  TransactionsController extends React.Component {
 
                 </div>
                 <div className='greyModal'>
-                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0}:{height:(id==='_'?216:176)}}>
+                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0}:{height:(id==='_'?216:(id===CONTRACT_ADDRESS.USDT?216:176))}}>
                         <Toast />
                         <img src={imgUrl} onError={(e)=>{e.target.src=token10DefaultImg}} />
                         <div className="amount">
@@ -95,6 +95,17 @@ class  TransactionsController extends React.Component {
                                 (
                                     id.match(/^T/)
                                     ?
+                                    (
+                                        id === CONTRACT_ADDRESS.USDT?
+                                    <div className="desc usdt">
+                                        <div className="usdt_inner">
+                                            <div className="usdt_inner_bg">
+                                                <div className="cell"></div>
+                                                <div className="cell"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    :
                                     <div className="desc token">
                                         <FormattedMessage id="TRANSACTION.TOKEN_INFO.CONTRACT" />:&nbsp;
                                         {id.substr(0,7)+'...'+id.substr(-7)}
@@ -103,6 +114,7 @@ class  TransactionsController extends React.Component {
                                             <span className='copy'></span>
                                         </CopyToClipboard>
                                     </div>
+                                    )
                                     :
                                     <div className="desc token">ID:&nbsp;{id}</div>
                                 )

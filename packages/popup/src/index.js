@@ -143,11 +143,6 @@ export const app = {
         );
     },
 
-    async getAirdropInfo(address){
-        const airdropInfo  = await PopupAPI.getAirdropInfo(address);
-        this.store.dispatch(setAirdropInfo(airdropInfo));
-    },
-
     bindDuplexRequests() {
         this.duplex.on('setState', appState => this.store.dispatch(
             setAppState(appState)
@@ -187,6 +182,10 @@ export const app = {
 
         this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
             setSelectedBankRecordId(id)
+        ));
+
+        this.duplex.on('setAirdropInfo', airdropInfo => this.store.dispatch(
+            setAirdropInfo(airdropInfo)
         ));
     },
 
