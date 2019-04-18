@@ -366,9 +366,11 @@ class Wallet extends EventEmitter {
             tokens[ newAddress ] = tokens[ oldAddress ];
             delete tokens[ oldAddress ];
         });
-
-        this._setState(APP_STATE.READY);
-
+        if(this.confirmations.length===0) {
+            this._setState(APP_STATE.READY);
+        }else{
+            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
+        }
         const node = NodeService.getCurrentNode();
 
         this.emit('setNode', {
@@ -394,6 +396,12 @@ class Wallet extends EventEmitter {
             callback,
             uuid
         });
+
+        if(this.state === APP_STATE.PASSWORD_SET){
+            this.emit('setConfirmations', this.confirmations);
+            this._openPopup();
+            return;
+        }
 
         if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -861,8 +869,9 @@ class Wallet extends EventEmitter {
 
     async getNews() {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode ? 'http://52.14.133.221:8920' : 'https://list.tronlink.org';
-        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e => false);
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
+        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         if(res) {
             return res.data.data;
         } else {
@@ -872,8 +881,9 @@ class Wallet extends EventEmitter {
 
     async getIeos() {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode ? 'http://172.16.22.43:8090' : 'https://list.tronlink.org';
-        const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e => false);
+        //const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
+        const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
         if(res) {
             return res.data.data;
         } else {
@@ -883,8 +893,9 @@ class Wallet extends EventEmitter {
 
     async addCount(id) {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode ? 'http://52.14.133.221:8920' : 'https://list.tronlink.org';
-        const res = await axios.post(apiUrl+'/api/activity/announcement/pv', { id }).catch(e => false);
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
+        const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
         if(res && res.data.code === 0) {
             return true;
         } else {

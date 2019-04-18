@@ -55,7 +55,8 @@ const backgroundScript = {
 
             m.parentNode.insertBefore(a, m);
         })(window, document, 'script', (this.developmentMode ?
-            'https://www.google-analytics.com/analytics_debug.js' :
+            //'https://www.google-analytics.com/analytics_debug.js' :
+            'https://www.google-analytics.com/analytics.js' :
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
