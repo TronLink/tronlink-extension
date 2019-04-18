@@ -1,0 +1,80 @@
+/*
+ * @Author: lxm 
+ * @Date: 2019-03-21 18:38:20 
+ * @Last Modified by: lxm
+ * @Last Modified time: 2019-04-12 16:40:47
+ */
+ .recordList{
+    cursor: pointer;
+    padding:10px 0;
+    border-bottom:1px solid #F7F8FA;
+    .address{
+        display: flex;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #505160;
+        img{
+            display: inline-block;
+            width: 13px;
+            height: 14px;
+            margin-right: 5px;
+        }
+    }
+    .recordCont{
+        flex-direction: row;
+        display: flex;
+        justify-content: space-between;
+        .recordLeftInfo{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #505160;
+            padding-top:6px; 
+        }
+        .time{
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #C2C2D5;
+        }
+        .cost{
+            font-family: PingFang-SC-Medium;
+            font-size: 14px;
+            color: #888998;
+            text-align: right;
+            margin-bottom: 6px;
+        }
+        .recordValStatus{
+            display: flex;
+            flex-direction: row-reverse;
+        }
+        .validStatus{
+            display: block;
+            min-width: 50px;
+            min-height: 20px;
+            padding:1px 7px;
+            line-height: 20px;
+            background: rgba(118,171,97,0.10);
+            border-radius: 4px;
+            font-family: PingFang-SC-Medium;
+            font-size: 12px;
+            color: #76AB61;
+            text-align: center;
+        }
+        .dealStatus{
+            color:#F5A623;
+            background: rgba(245, 166, 35, 0.10);
+        }
+        .doneStatus{
+            display: block;
+            min-width: 50px;
+            min-height: 20px;
+            padding:1px 7px;
+            line-height: 20px;
+            background: rgba(194,200,213,0.10);
+            border-radius: 4px;
+            font-family: PingFang-SC-Medium;
+            font-size: 12px;
+            color: #C2C8D5;
+            text-align: center;
+        }
+    }
+ }

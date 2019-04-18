@@ -914,7 +914,7 @@ html, body {
             &.error{
                 .inputUnit{
                     textarea{
-                        border:1px solid #EA8465;
+                        //border:1px solid #EA8465;
                     }
                     .tipError{
                         font-size: 13px;
@@ -922,13 +922,14 @@ html, body {
                         min-height: 18px;
                         line-height: 18px;
                         margin-top:5px;
+                        display: none;
                     }
                 }
             }
             .input-group{
                 &.error {
                     .input{
-                        border:1px solid #EA8465;
+                        //border:1px solid #EA8465;
                     }
                     .tipError{
                         font-size: 13px;
@@ -936,6 +937,7 @@ html, body {
                         min-height: 18px;
                         line-height: 18px;
                         margin-top:5px;
+                        display: none;
                     }
                 }
             }
@@ -1146,5 +1148,41 @@ html, body {
     }
     &::-webkit-scrollbar-track {
         background: transparent;
+    }
+}
+
+.tronBankContent{
+    .am-accordion{
+        position: static;
+        border:none;
+    }
+    .am-accordion .am-accordion-item .am-accordion-header{
+        border-bottom:none;
+    }
+    .am-accordion .am-accordion-item .am-accordion-header:after{
+        display:none !important;
+        background-color: #fff;
+    }
+}
+.bankRecordContainer{
+    .am-tabs-default-bar-top .am-tabs-default-bar-tab{
+        border-bottom:none;
+    }
+    .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
+        background-color: #fff;
+    }
+    html:not([data-scale]) .am-tabs-default-bar-top .am-tabs-default-bar-tab:after{
+        background-color: #fff;
+    }
+    .am-tabs-default-bar-tab{
+        cursor: pointer;
+        height:37px;
+        line-height:37px;
+        font-family: PingFang-SC-Bold;
+        font-size: 14px;
+    }
+    .am-tabs-default-bar-tab-active{
+        font-family: PingFang-SC-Bold;
+        font-size: 16px;
     }
 }

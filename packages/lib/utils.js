@@ -32,7 +32,6 @@ const Utils = {
         return bytes;
     },
 
-
     byteToString(arr) {
         if(typeof arr === 'string') {
             return arr;
@@ -56,7 +55,6 @@ const Utils = {
         }
         return str;
     },
-
 
     hash(string) {
         return crypto
@@ -158,25 +156,67 @@ const Utils = {
         return typeof obj === 'function';
     },
 
-
-    dataLetterSort (data,field,field2) {
+    dataLetterSort (data, field, field2) {
         let needArray = [];
         let list = {};
         let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_'];
         for (let i = 0; i < data.length; i++) {
             let letter = (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
-            if(!list[letter]){
+            if(!list[letter]) {
                 list[letter] = [];
             }
             list[letter].push(data[i]);
         }
-        LetterArray.forEach(v=>{
-            if(list[v]){
+        LetterArray.forEach( v => {
+            if(list[v]) {
                 needArray = needArray.concat(list[v])
             }
         });
         return needArray;
-    }
+    },
+
+    validatInteger(str) { // integer
+        const reg = /^\+?[1-9][0-9]*$/;
+        return reg.test(str);
+    },
+
+    requestUrl() { // request url
+        const curHost = location.hostname;
+        let curApiHost;
+        switch (curHost) {
+            case 'nnceancbokoldkjjbpopcffaoekebnnb':
+                curApiHost = 'http://52.14.133.221:8990';
+                break;
+            case 'ibnejdfjmmkpcnlpebklmnkoeoihofec':
+                curApiHost = 'https://list.tronlink.org';
+                break;
+            default:
+                curApiHost = 'http://52.14.133.221:8990';
+                break;
+        }
+        return curApiHost;
+    },
+
+    timetransTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}.${timeM}.${timeD} ${timeh}:${timem}`;
+    },
+
+    timeFormatTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}/${timeM}/${timeD} ${timeh}:${timem}`;
+    },
+
 };
 
 export default Utils;

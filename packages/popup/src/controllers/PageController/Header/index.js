@@ -1,10 +1,9 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { T } from 'react-toast-mobile';
-import { PAGES } from '@tronlink/lib/constants';
+import { PAGES,APP_STATE } from '@tronlink/lib/constants';
 import { app } from '@tronlink/popup/src/index';
-import {PopupAPI} from "@tronlink/lib/api";
-import {APP_STATE} from "@tronlink/lib/constants";
+import { PopupAPI } from '@tronlink/lib/api';
 const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
 const PageLink = props => {
     const {
@@ -32,7 +31,7 @@ const PageLink = props => {
 };
 
 class Header extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.onNodeChange = this.onNodeChange.bind(this);
         this.state={
@@ -41,17 +40,20 @@ class Header extends React.Component {
             refresh:false
         }
     }
-    componentDidMount(){
+
+    componentDidMount() {
         const {nodes} = this.props;
         const ns = Object.entries(nodes.nodes);
         const nodeIndex = ns.map(([nodeId,obj],i)=>{obj.index = i;return [nodeId,obj]}).filter(([nodeId,obj]) => nodeId === nodes.selected)[0][1].index;
         this.setState({nodeIndex});
     }
+
     onNodeChange(nodeId,index) {
         PopupAPI.selectNode(nodeId);
         app.getNodes();
         this.setState({nodeIndex:index,showNodeList:!this.state.showNodeList});
     }
+
     render() {
         const { refresh } = this.state;
         const {

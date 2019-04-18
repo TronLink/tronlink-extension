@@ -30,7 +30,9 @@ class Wallet extends EventEmitter {
         // This should be moved into its own component
         this.isPolling = false;
         this.shouldPoll = false;
-        this._checkStorage();
+        this._checkStorage(); //change store by judge
+
+        this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK';
 
         setInterval(() => {
             this._updatePrice();
@@ -38,8 +40,9 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
+        console.log(`StorageService的对象是否存在${StorageService},${StorageService.dataExists()},${StorageService.needsMigrating}`);
         if(await StorageService.dataExists() || StorageService.needsMigrating)
-            this._setState(APP_STATE.PASSWORD_SET);
+            this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
     }
 
     migrate(password) {
@@ -122,11 +125,11 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                Promise.all([account.update(),account.updateTransactions()]).then(()=>{
-                    if(account.address === this.selectedAccount){
+                Promise.all([account.update(), account.updateTransactions()]).then(() => {
+                    if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
                     }
-                }).catch(e=>{console.log(e)});
+                }).catch( e => { console.log(e); });
             } else {
                 await account.update();
                 //continue;
@@ -135,9 +138,8 @@ class Wallet extends EventEmitter {
         this.emit('setAccounts', this.getAccounts());
         this.isPolling = false;
         setTimeout(() => (
-            this._pollAccounts()
+            this._pollAccounts() // ??TODO repeatedly request
         ), 10 * 1000);
-
     }
 
     async _updatePrice() {
@@ -146,7 +148,7 @@ class Wallet extends EventEmitter {
 
         const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH')
             .then(res => res.data)
-            .catch(err => {logger.error(err)});
+            .catch(err => { logger.error(err); });
 
         if(!prices)
             return logger.warn('Failed to update prices');
@@ -235,11 +237,11 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const  r = await account.update().catch(e=>false);
-                if(r){
+                const r = await account.update().catch(e => false);
+                if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
-                }else{
+                }else {
                     res = false;
                 }
             }else{
@@ -252,7 +254,23 @@ class Wallet extends EventEmitter {
     }
 
     changeState(appState) {
-        if(![ APP_STATE.PASSWORD_SET,APP_STATE.RESTORING, APP_STATE.CREATING,APP_STATE.RECEIVE,APP_STATE.SEND,APP_STATE.TRANSACTIONS,APP_STATE.SETTING,APP_STATE.ADD_TRC20_TOKEN,APP_STATE.READY].includes(appState))
+        const stateAry = [
+            APP_STATE.PASSWORD_SET,
+            APP_STATE.RESTORING,
+            APP_STATE.CREATING,
+            APP_STATE.RECEIVE,
+            APP_STATE.SEND,
+            APP_STATE.TRANSACTIONS,
+            APP_STATE.SETTING,
+            APP_STATE.ADD_TRC20_TOKEN,
+            APP_STATE.READY,
+            APP_STATE.TESTHMTL,
+            APP_STATE.TRONBANK,
+            APP_STATE.TRONBANK_RECORD,
+            APP_STATE.TRONBANK_DETAIL,
+            APP_STATE.TRONBANK_HELP,
+        ];
+        if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
 
         this._setState(appState);
@@ -348,9 +366,11 @@ class Wallet extends EventEmitter {
             tokens[ newAddress ] = tokens[ oldAddress ];
             delete tokens[ oldAddress ];
         });
-
-        this._setState(APP_STATE.READY);
-
+        if(this.confirmations.length===0) {
+            this._setState(APP_STATE.READY);
+        }else{
+            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
+        }
         const node = NodeService.getCurrentNode();
 
         this.emit('setNode', {
@@ -360,21 +380,28 @@ class Wallet extends EventEmitter {
         });
 
         this.emit('setAccount', this.selectedAccount);
-        let setting = this.getSetting();
+        const setting = this.getSetting();
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
     }
-    async lockWallet(){
+
+    async lockWallet() {
         StorageService.lock();
         this._setState(APP_STATE.PASSWORD_SET);
-
     }
+
     queueConfirmation(confirmation, uuid, callback) {
         this.confirmations.push({
             confirmation,
             callback,
             uuid
         });
+
+        if(this.state === APP_STATE.PASSWORD_SET){
+            this.emit('setConfirmations', this.confirmations);
+            this._openPopup();
+            return;
+        }
 
         if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -459,7 +486,7 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-        if(this.confirmations.length){
+        if(this.confirmations.length) {
             this.emit('setConfirmations', this.confirmations);
         }
         this._closePopup();
@@ -554,7 +581,6 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', address);
     }
 
-
     async selectNode(nodeID) {
         NodeService.selectNode(nodeID);
 
@@ -585,12 +611,14 @@ class Wallet extends EventEmitter {
             accounts[ address ] = {
                 name: account.name,
                 balance: account.balance + account.frozenBalance,
-                energyUsed:account.energyUsed,
+                energyUsed: account.energyUsed,
+                totalEnergyWeight: account.totalEnergyWeight,
+                TotalEnergyLimit: account.TotalEnergyLimit,
                 energy: account.energy,
-                netUsed:account.netUsed,
-                netLimit:account.netLimit,
+                netUsed: account.netUsed,
+                netLimit: account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
-                asset:account.asset
+                asset: account.asset
             };
 
             return accounts;
@@ -605,7 +633,7 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedToken) === '{}' ? {id:'_',name:'TRX',amount:0,decimals:6}:StorageService.selectedToken;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', amount: 0, decimals: 6 } : StorageService.selectedToken;
     }
 
     setLanguage(language) {
@@ -715,6 +743,102 @@ class Wallet extends EventEmitter {
         this.refresh();
     }
 
+    async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
+        const {
+            privateKey
+        } = this.accounts[ this.selectedAccount ];
+        try {
+            const bankContractAddress = this.bankContractAddress;
+            const contractInstance = await NodeService.tronWeb.contract().at(bankContractAddress);
+            const result = await contractInstance.entrustOrder(_freezeAmount, _days, _energyAddress).send(
+                {
+                    callValue: _payAmount,
+                    shouldPollResponse: false
+                },
+                privateKey
+            );
+            return result;
+        } catch(ex) {
+            logger.error('Failed to rent energy:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async bankOrderNotice({ energyAddress, trxHash, requestUrl }) {
+        const { data: isValid } = await axios.post(requestUrl, { receiver_address: energyAddress, trxHash } )
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!isValid)
+            return logger.warn('Failed to get bank order data');
+        return isValid;
+    }
+
+    async getBankDefaultData({ requestUrl }) {
+        const { data: defaultData } = await axios(requestUrl)
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!defaultData)
+            return logger.warn('Failed to get default data');
+        return defaultData;
+    }
+
+    async isValidOverTotal ({ receiverAddress, freezeAmount, requestUrl }) {
+        const { data: isValid } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        let isValidVal = 0;
+        if(isValid) isValidVal = 0;else isValidVal = 1;
+        return isValidVal;
+    }
+
+    async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
+        const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!calculateData)
+            return logger.warn('Failed to get payMount data');
+        return calculateData;
+    }
+
+    async isValidOrderAddress({ address, requestUrl }) {
+        const { data: isRentData } = await axios.get(requestUrl, { params: { receiver_address: address } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!isRentData)
+            return logger.warn('Failed to get valid order address data');
+        return isRentData;
+    }
+
+    async isValidOnlineAddress({ address }) {
+        // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+        const account = await NodeService.tronWeb.trx.getAccountResources(address);
+        if(!account.TotalEnergyLimit)
+            return logger.warn('Failed to get online address data');
+        return account;
+    }
+
+    async getBankRecordList({ address, limit, start, type, requestUrl }) {
+        const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, type } })
+        if(!recordData)
+            return logger.warn('Failed to get bank record data');
+        return recordData;
+    }
+
+    //setting bank record id
+    setSelectedBankRecordId(id) {
+        this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
+        this.emit('setAccount', this.selectedAccount);
+    }
+
+    async getBankRecordDetail({ id, requestUrl }) {
+        const { data: bankRecordDetail } = await axios.get(requestUrl, { params: { id } })
+            .then(res => res.data)
+            .catch(err => { logger.error(err); });
+        if(!bankRecordDetail)
+            return logger.warn('Failed to get bank record detail data');
+        return bankRecordDetail;
+    }
+
     exportAccount() {
         const {
             mnemonic,
@@ -727,25 +851,26 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId(tokenId){
+    async getTransactionsByTokenId(tokenId) {
         let address = this.selectedAccount;
         let all, send, receive;
-        let params = {sort: '-timestamp', limit: 20, start: 0};
-        if(tokenId === '_'){
+        let params = { sort: '-timestamp', limit: 20, start: 0 };
+        if(tokenId === '_') {
             params.asset_name = 'TRX';
         } else {
             params.token_id = tokenId;
         }
-        all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-        send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-        receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
-        let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
-        return {all:ALL, send:SEND, receive:RECEIVE};
+        all = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, limit: 40, address } }).catch(err => { return { data: { data: [] } }; });
+        send = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, from: address } }).catch(err => { return { data: { data: [] } }; });
+        receive = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, to: address } }).catch(err => { return { data: { data: [] } }; });
+        let [{ data: { data: ALL } }, { data: { data: SEND } }, { data: { data: RECEIVE } }] = await Promise.all([all, send, receive]);
+        return { all: ALL, send: SEND, receive: RECEIVE };
     }
 
-    async getNews(){
+    async getNews() {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -754,9 +879,10 @@ class Wallet extends EventEmitter {
         }
     }
 
-    async getIeos(){
+    async getIeos() {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
+        //const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -765,9 +891,10 @@ class Wallet extends EventEmitter {
         }
     }
 
-    async addCount(id){
+    async addCount(id) {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
         const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
         if(res && res.data.code === 0) {
             return true;

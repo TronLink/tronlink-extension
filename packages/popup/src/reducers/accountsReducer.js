@@ -6,6 +6,7 @@ import {
 export const setAccount = createAction('setAccount');
 export const setToken = createAction('setToken');
 export const setAccounts = createAction('setAccounts');
+export const setSelectedBankRecordId = createAction('setSelectedBankRecordId');
 
 export const accountsReducer = createReducer({
     selected: {
@@ -21,12 +22,13 @@ export const accountsReducer = createReducer({
             // cached: [],
             // uncached: 0
         },
-        selectedToken:{}
+        selectedToken: {},
+        selectedBankRecordId: 0
     },
     accounts: { },
-    selectedToken : {id:'_',name:'TRX',decimals:6,amount:0},
+    selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 }
 }, {
-    [ setAccount ]: (state, { payload: { transactions,...account } }) => {
+    [ setAccount ]: (state, { payload: { transactions, ...account } }) => {
         state.selected = account;
         state.selected.transactions = transactions;
         // const {
@@ -53,5 +55,8 @@ export const accountsReducer = createReducer({
     },
     [ setToken ]: (state, { payload }) => {
         state.selectedToken = payload;
-    }
+    },
+    [ setSelectedBankRecordId ]: (state, { payload }) => {
+        state.selected.setSelectedBankRecordId = payload;
+    },
 });

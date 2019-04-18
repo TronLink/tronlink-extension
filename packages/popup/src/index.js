@@ -30,7 +30,8 @@ import {
 import {
     setAccount,
     setAccounts,
-    setToken
+    setToken,
+    setSelectedBankRecordId
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -86,7 +87,7 @@ export const app = {
     async getAppState() {
         PopupAPI.init(this.duplex);
         const setting = await PopupAPI.getSetting();
-        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration){
+        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration) {
             PopupAPI.lockWallet();
         }
         let [
@@ -106,12 +107,13 @@ export const app = {
             PopupAPI.getPrices(),
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
-            PopupAPI.getLanguage()
+            PopupAPI.getLanguage(),
+            // PopupAPI.getSelectedBankRecordId()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
-        if(lang.indexOf('zh')>-1){
+        if(lang.indexOf('zh')>-1) {
             language = language || 'zh';
-        }else if(lang.indexOf('ja')>-1){
+        }else if(lang.indexOf('ja')>-1) {
             language = language || 'ja';
         }else{
             language = language || 'en';
@@ -177,6 +179,9 @@ export const app = {
             setSetting(setting)
         ));
 
+        this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
+            setSelectedBankRecordId(id)
+        ));
     },
 
     render() {

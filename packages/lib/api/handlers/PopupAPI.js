@@ -4,7 +4,7 @@ export default {
     },
 
     //Data refresh
-    refresh(){
+    refresh() {
         return this.duplex.send('refresh');
     },
     // Data requesting
@@ -131,8 +131,6 @@ export default {
     lockWallet() {
         return this.duplex.send('lockWallet');
     },
-
-
     // Misc
 
     selectCurrency(currency) {
@@ -143,44 +141,95 @@ export default {
         this.duplex.send('setSelectedToken', token, false);
     },
 
-    getSelectedToken(){
+    getSelectedToken() {
         return this.duplex.send('getSelectedToken');
     },
 
     //get type of language package
 
-    getLanguage(){
+    getLanguage() {
         return this.duplex.send('getLanguage');
     },
 
-    setLanguage(language){
-        this.duplex.send('setLanguage',language,false);
+    setLanguage(language) {
+        this.duplex.send('setLanguage', language, false);
     },
 
-    getSetting(){
+    getSetting() {
         return this.duplex.send('getSetting');
     },
 
-    setSetting(setting){
-        this.duplex.send('setSetting',setting,false);
+    setSetting(setting) {
+        this.duplex.send('setSetting', setting, false);
     },
 
-    getTransactionsByTokenId(tokenId){
-        return this.duplex.send('getTransactionsByTokenId',tokenId);
+
+    //tronbank contract
+    rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
+        return this.duplex.send('rentEnergy', {
+            _freezeAmount,
+            _payAmount,
+            _days,
+            _energyAddress
+        });
     },
 
-    getNews(){
+    bankOrderNotice(energyAddress, trxHash, requestUrl) {
+        return this.duplex.send('bankOrderNotice', {
+            energyAddress,
+            trxHash,
+            requestUrl
+        });
+    },
+
+    //tronbank  index
+    getBankDefaultData(requestUrl) {
+        return this.duplex.send('getBankDefaultData', { requestUrl });
+    },
+
+    isValidOverTotal(receiverAddress, freezeAmount, requestUrl) {
+        return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
+    },
+
+    getTransactionsByTokenId(tokenId) {
+        return this.duplex.send('getTransactionsByTokenId', tokenId);
+    },
+
+    getNews() {
         return this.duplex.send('getNews');
     },
 
-    getIeos(){
+    getIeos() {
         return this.duplex.send('getIeos');
     },
 
-    addCount(){
+    addCount() {
         return this.duplex.send('addCount');
+    },
+
+    calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
+        return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });
+    },
+
+    isValidOrderAddress(address, requestUrl) {
+        return this.duplex.send('isValidOrderAddress', { address, requestUrl });
+    },
+
+    isValidOnlineAddress(address) {
+        return this.duplex.send('isValidOnlineAddress', { address });
+    },
+
+    //record list
+    getBankRecordList(address, limit, start, type, requestUrl) {
+        return this.duplex.send('getBankRecordList', { address, limit, start, type, requestUrl });
+    },
+
+    getBankRecordDetail(id, requestUrl) {
+        return this.duplex.send('getBankRecordDetail', { id, requestUrl });
+    },
+
+    setSelectedBankRecordId(id) {
+        this.duplex.send('setSelectedBankRecordId', id, false);
     }
-
-
 
 };

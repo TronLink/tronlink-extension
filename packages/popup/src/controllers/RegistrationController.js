@@ -23,10 +23,10 @@ class RegistrationController extends React.Component {
         },
         loading: false,
         error: false,
-        languages:[
-            {name:'English',key:'en',selected:true},
-            {name:'中文',key:'zh',selected:false},
-            {name:'日本語',key:'ja',selected:false},
+        languages: [
+            { name: 'English', key: 'en', selected: true },
+            { name: '中文', key: 'zh', selected: false },
+            { name: '日本語', key: 'ja', selected: false },
         ]
     };
 

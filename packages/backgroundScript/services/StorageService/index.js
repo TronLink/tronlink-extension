@@ -2,7 +2,7 @@ import extensionizer from 'extensionizer';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-import axios from "axios";
+import axios from 'axios';
 const logger = new Logger('StorageService');
 
 const StorageService = {
@@ -74,10 +74,11 @@ const StorageService = {
     },
 
     async dataExists() {
+        console.log(`extensionizer里面的值为${extensionizer.storage.local}`);
         return !!(await this.getStorage('accounts'));
     },
 
-    lock(){
+    lock() {
         this.ready = false;
     },
 
@@ -201,21 +202,20 @@ const StorageService = {
         this.save('selectedToken');
     },
 
-    setLanguage(language){
+    setLanguage(language) {
         logger.info('Saving language', language);
         this.language = language;
         this.save('language');
     },
 
-    setSetting(setting){
+    setSetting(setting) {
         logger.info('Saving setting', setting);
         this.setting = setting;
         this.save('setting');
-
     },
 
-    getSetting(){
-        return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
+    getSetting() {
+        return {...this.setting, developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec' };
     },
 
     migrate() {
@@ -331,22 +331,21 @@ const StorageService = {
     },
 
     async cacheToken(tokenID) {
-
         if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            if(typeof tokenID === 'string' ){
-                if(tokenID === '_'){
-                   this.tokenCache[ tokenID ] = {
-                        name:'TRX',
-                        abbr:'TRX',
-                        decimals:6
+            if(typeof tokenID === 'string' ) {
+                if(tokenID === '_') {
+                    this.tokenCache[ tokenID ] = {
+                        name: 'TRX',
+                        abbr: 'TRX',
+                        decimals: 6
                     };
                 }else{
-                    const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
+                    const { data } = await axios.get('https://apilist.tronscan.org/api/token', { params: { id: tokenID, showAll: 1 } });
                     const {
                         name,
                         abbr,
                         precision: decimals = 0,
-                        imgUrl=false
+                        imgUrl = false
                     } = data.data[0];
                     this.tokenCache[ tokenID ] = {
                         name,
@@ -356,8 +355,8 @@ const StorageService = {
                     };
                 }
             } else {
-                const {contract_address,decimals,name,abbr} = tokenID;
-                const {data:{trc20_tokens:[{icon_url=false}]}} = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
+                const { contract_address, decimals, name, abbr} = tokenID;
+                const { data: { trc20_tokens: [{ icon_url = false }] } } = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
                 this.tokenCache[ contract_address ] = {
                     name,
                     abbr,
@@ -378,7 +377,6 @@ const StorageService = {
                 decimals
             };
         }
-
 
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
 

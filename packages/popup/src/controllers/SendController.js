@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage,injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import {PopupAPI} from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
@@ -10,7 +10,7 @@ import swal from 'sweetalert2';
 import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 class SendController extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             isOpen:{
@@ -38,18 +38,20 @@ class SendController extends React.Component {
             loading:false
         }
     }
+
     componentDidMount() {
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 , 6) : selectedToken.amount;
         this.setState({selectedToken});
     }
-    componentWillReceiveProps(nextProps){
-        const {selected} = nextProps.accounts;
-        const {selectedToken} = this.state;
-        if(selectedToken.id === '_'){
+
+    componentWillReceiveProps(nextProps) {
+        const { selected } = nextProps.accounts;
+        const { selectedToken } = this.state;
+        if(selectedToken.id === '_') {
             selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
-            if(selectedToken.id.match(/^T/)){
+            if(selectedToken.id.match(/^T/)) {
                 selectedToken.amount = selected.tokens.smart[selectedToken.id].balance / Math.pow(10, selected.tokens.smart[selectedToken.id].decimals);
             }else{
                 selectedToken.amount = selected.tokens.basic[selectedToken.id].balance / Math.pow(10, selected.tokens.basic[selectedToken.id].decimals);
@@ -57,14 +59,16 @@ class SendController extends React.Component {
         }
         this.setState({selectedToken});
     }
-    changeToken(selectedToken,e){
+
+    changeToken(selectedToken,e) {
         e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.token = !isOpen.token;
         this.setState({isOpen,selectedToken},() => this.validateAmount());
         PopupAPI.setSelectedToken(selectedToken);
     }
-    changeAccount(address,e){
+
+    changeAccount(address,e) {
         e.stopPropagation();
         const {isOpen} = this.state;
         isOpen.account = !isOpen.account;
@@ -80,6 +84,7 @@ class SendController extends React.Component {
             return;
         PopupAPI.selectAccount(address);
     }
+
     async onRecipientChange(e) {
         const { selected } = this.props.accounts;
         const address = e.target.value;
@@ -115,6 +120,7 @@ class SendController extends React.Component {
             recipient
         });
     }
+
     onAmountChange(e) {
         const amount = e.target.value;
         this.setState({
@@ -123,36 +129,55 @@ class SendController extends React.Component {
                 valid: false
             }
         }, () => {
-             this.validateAmount()
+            this.validateAmount()
         });
     }
+
     validateAmount(){
-        const {
-            amount,
-            decimals,
-            id
-        } = this.state.selectedToken;
-        const { selected } = this.props.accounts;
-        let {value} = this.state.amount;
-        if(value === ''){
-            return this.setState({
-                amount: {
-                    valid: false,
-                    value,
-                    error:''
-                }
-            });
-        }
-        value = new BigNumber(value);
-        if(value.isNaN() || value.lte(0)) {
-            return this.setState({
-                amount: {
-                    valid: false,
-                    value,
-                    error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
-                }
-            });
-        }else if(value.gt(amount)){
+    const {
+        amount,
+        decimals,
+        id
+    } = this.state.selectedToken;
+    const { selected } = this.props.accounts;
+    let {value} = this.state.amount;
+    if(value === ''){
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:''
+            }
+        });
+    }
+    value = new BigNumber(value);
+    if(value.isNaN() || value.lte(0)) {
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
+            }
+        });
+    }else if(value.gt(amount)){
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+            }
+        });
+    }else if(value.dp() > decimals) {
+        return this.setState({
+            amount: {
+                valid: false,
+                value,
+                error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
+                values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
+            }
+        });
+    } else {
+        if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance/Math.pow(10,6)).minus(0.1))) {
             return this.setState({
                 amount: {
                     valid: false,
@@ -160,91 +185,74 @@ class SendController extends React.Component {
                     error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
                 }
             });
-        }else if(value.dp() > decimals) {
-            return this.setState({
-                amount: {
-                    valid: false,
-                    value,
-                    error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
-                    values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
-                }
-            });
-        } else {
-            if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance/Math.pow(10,6)).minus(0.1))) {
-                return this.setState({
+        }
+        if(id.match(/^T/)){
+            const valid = this.state.recipient.isActivated ? true : false;
+            if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+                return  this.setState({
                     amount: {
-                        valid: false,
+                        valid,
                         value,
-                        error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                    }
+                });
+            }else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000){
+                return  this.setState({
+                    amount: {
+                        valid,
+                        value,
+                        error:'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
+                    }
+                });
+            }else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000){
+                return  this.setState({
+                    amount: {
+                        valid,
+                        value,
+                        error:'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
+                    }
+                });
+
+            } else {
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:''
                     }
                 });
             }
-            if(id.match(/^T/)){
-                const valid = this.state.recipient.isActivated ? true : false;
-                if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
-                    return  this.setState({
-                        amount: {
-                            valid,
-                            value,
-                            error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                }else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000){
-                    return  this.setState({
-                        amount: {
-                            valid,
-                            value,
-                            error:'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                }else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000){
-                    return  this.setState({
-                        amount: {
-                            valid,
-                            value,
-                            error:'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
-                        }
-                    });
-
-                } else {
-                    return  this.setState({
-                        amount: {
-                            valid: true,
-                            value,
-                            error:''
-                        }
-                    });
-                }
+        } else {
+            if(selected.netLimit - selected.netUsed < 200){
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                    }
+                });
             } else {
-                if(selected.netLimit - selected.netUsed < 200){
-                    return  this.setState({
-                        amount: {
-                            valid: true,
-                            value,
-                            error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                } else {
-                    return  this.setState({
-                        amount: {
-                            valid: true,
-                            value,
-                            error:''
-                        }
-                    });
-                }
-
+                return  this.setState({
+                    amount: {
+                        valid: true,
+                        value,
+                        error:''
+                    }
+                });
             }
-            return  this.setState({
-                amount: {
-                    valid: true,
-                    value,
-                    error:''
-                }
-            });
+
         }
+        return  this.setState({
+            amount: {
+                valid: true,
+                value,
+                error:''
+            }
+        });
     }
-    onSend(){
+}
+
+    onSend() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
         this.setState({
             loading: true,
@@ -301,6 +309,7 @@ class SendController extends React.Component {
         });
 
     }
+
     render() {
         const { isOpen,selectedToken,loading,amount,recipient } = this.state;
         const {onCancel} = this.props;
@@ -344,7 +353,7 @@ class SendController extends React.Component {
                         <label><FormattedMessage id="ACCOUNT.SEND.CHOOSE_TOKEN"/></label>
                         <div className={"input dropDown"+(isOpen.token?" isOpen":"")} onClick={ (e)=>{e.stopPropagation();isOpen.account=false;isOpen.token = !isOpen.token; this.setState({isOpen})} }>
                             <div className="selected">
-                                <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
+                                <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id!=='_'?(<span>id:{selectedToken.id.length===7?selectedToken.id:selectedToken.id.substr(0,6)+'...'+selectedToken.id.substr(-6)}</span>):''}</div>
                             <div className="dropWrap" style={isOpen.token?(tokens.length<=5?{height:36*tokens.length}:{height:180,overflow:'scroll'}):{}}>
                                 {
                                     tokens.filter(({balance})=>balance>0).map(({tokenId:id,balance,name,decimals})=>{
@@ -356,7 +365,7 @@ class SendController extends React.Component {
                                             .shiftedBy(-decimals)
                                             .toString();
                                         return (
-                                            <div onClick={(e)=>{this.changeToken({id,amount,name,decimals},e)}} className={"dropItem"+(id===selectedToken.id?" selected":"")}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id!='_'?(<span>id:{id.length===7?id:id.substr(0,6)+'...'+id.substr(-6)}</span>):''}</div>
+                                            <div onClick={(e)=>{this.changeToken({id,amount,name,decimals},e)}} className={"dropItem"+(id===selectedToken.id?" selected":"")}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id!=='_'?(<span>id:{id.length===7?id:id.substr(0,6)+'...'+id.substr(-6)}</span>):''}</div>
                                         )
                                     })
                                 }
@@ -385,6 +394,6 @@ class SendController extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default injectIntl(SendController);

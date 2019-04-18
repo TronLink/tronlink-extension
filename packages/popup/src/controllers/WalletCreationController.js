@@ -1,7 +1,7 @@
 import React from 'react';
 import WalletOption from '@tronlink/popup/src/components/WalletOption';
 
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 import { APP_STATE } from '@tronlink/lib/constants';
 import { PopupAPI } from '@tronlink/lib/api';
 

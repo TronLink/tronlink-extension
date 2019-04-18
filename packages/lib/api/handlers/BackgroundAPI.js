@@ -56,8 +56,9 @@ export default {
 
     setSetting(setting) {
         this.duplex.send('popup', 'setSetting', setting, false);
+    },
+    setSelectedBankRecordId(id) {
+        this.duplex.send('popup', 'setSelectedBankRecordId', id, false);
     }
-
-
 
 };

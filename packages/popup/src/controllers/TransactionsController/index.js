@@ -1,25 +1,26 @@
 import React from 'react';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard'
-import Toast,{ T } from 'react-toast-mobile';
+import Toast, { T } from 'react-toast-mobile';
 import { BigNumber } from 'bignumber.js';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 import { APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
-class  TransactionsController extends React.Component{
-    constructor(props){
+class  TransactionsController extends React.Component {
+    constructor(props) {
         super(props);
-        this.state={index :0,isTop:false ,transactionGroup:{all:[],send:[],receive:[]}};
+        this.state = { index: 0, isTop: false, transactionGroup: { all: [], send: [], receive: [] } };
     }
-    async componentDidMount(){
+
+    async componentDidMount() {
         let transactionGroup;
         const {
             accounts
         } = this.props;
-        const {id="_"} = accounts.selectedToken;
-        if(id.match(/^T/)){
+        const { id = "_"} = accounts.selectedToken;
+        if(id.match(/^T/)) {
             transactionGroup = accounts.selected.transactions[id];
         } else {
             T.loading();
@@ -28,6 +29,7 @@ class  TransactionsController extends React.Component{
         }
         this.setState({transactionGroup})
     }
+
     render() {
         const { index,isTop,transactionGroup } = this.state;
         const {

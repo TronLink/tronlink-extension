@@ -55,7 +55,8 @@ const backgroundScript = {
 
             m.parentNode.insertBefore(a, m);
         })(window, document, 'script', (this.developmentMode ?
-            'https://www.google-analytics.com/analytics_debug.js' :
+            //'https://www.google-analytics.com/analytics_debug.js' :
+            'https://www.google-analytics.com/analytics.js' :
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
@@ -82,7 +83,6 @@ const backgroundScript = {
         duplex.on('requestState', ({ resolve }) => resolve(
             this.walletService.state
         ));
-
 
         //get the transaction records of token that need to selected
         duplex.on('setSelectedToken', this.walletService.setSelectedToken);
@@ -135,6 +135,18 @@ const backgroundScript = {
         duplex.on('setSetting', this.walletService.setSetting);
 
         duplex.on('getTransactionsByTokenId', this.walletService.getTransactionsByTokenId);
+
+        // tronBank energy
+        duplex.on('rentEnergy', this.walletService.rentEnergy);
+        duplex.on('isValidOverTotal', this.walletService.isValidOverTotal);
+        duplex.on('getBankDefaultData', this.walletService.getBankDefaultData);
+        duplex.on('calculateRentCost', this.walletService.calculateRentCost);
+        duplex.on('isValidOrderAddress', this.walletService.isValidOrderAddress);
+        duplex.on('isValidOnlineAddress', this.walletService.isValidOnlineAddress);
+        duplex.on('getBankRecordList', this.walletService.getBankRecordList);
+        duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
+        duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);
+        duplex.on('bankOrderNotice', this.walletService.bankOrderNotice);
 
         duplex.on('getNews', this.walletService.getNews);
         duplex.on('getIeos', this.walletService.getIeos);
@@ -324,6 +336,10 @@ const backgroundScript = {
 
         this.walletService.on('setSetting', setting => (
             BackgroundAPI.setSetting(setting)
+        ));
+
+        this.walletService.on('setSelectedBankRecordId', id => (
+            BackgroundAPI.setSelectedBankRecordId(id)
         ));
     }
 };

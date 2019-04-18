@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { setPage } from '@tronlink/popup/src/reducers/appReducer';
 
 import AccountsPage from '@tronlink/popup/src/pages/AccountsPage';
-import TransactionsPage from '@tronlink/popup/src/pages/TransactionsPage';
-import TokensPage from '@tronlink/popup/src/pages/TokensPage';
-import SendPage from '@tronlink/popup/src/pages/SendPage';
-import SettingsPage from '@tronlink/popup/src/pages/SettingsPage';
+// import TransactionsPage from '@tronlink/popup/src/pages/TransactionsPage';
+//import TokensPage from '@tronlink/popup/src/pages/TokensPage';
+// import SendPage from '@tronlink/popup/src/pages/SendPage';
+// import SettingsPage from '@tronlink/popup/src/pages/SettingsPage';
 
 import './PageController.scss';
 
@@ -70,7 +70,7 @@ class PageController extends React.Component {
         const { currentPage } = this.props;
         //const { subTitle } = this.state;
 
-        const title = Object.keys(this.pages)[ currentPage ];
+        // const title = Object.keys(this.pages)[ currentPage ];
         const pages = this.pages;
 
         return (

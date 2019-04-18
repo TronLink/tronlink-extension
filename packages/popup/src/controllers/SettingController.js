@@ -1,18 +1,16 @@
 import React from 'react';
 import swal from 'sweetalert2';
-import {PopupAPI} from "@tronlink/lib/api";
-import { FormattedMessage,injectIntl } from 'react-intl';
+import { PopupAPI } from "@tronlink/lib/api";
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from "@tronlink/popup/src/components/Button";
-
-import {VALIDATION_STATE} from "@tronlink/lib/constants";
-import {app} from "@tronlink/popup/src";
-
+import { VALIDATION_STATE } from "@tronlink/lib/constants";
+import { app } from "@tronlink/popup/src";
 
 class SettingController extends  React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            customNode:{
+            customNode: {
                 name: {
                     value: '',
                     state: VALIDATION_STATE.NONE
@@ -31,10 +29,10 @@ class SettingController extends  React.Component {
                 },
                 isValid: false
             },
-            languages:[
-                {name:'English',key:'en',selected:true},
-                {name:'中文',key:'zh',selected:false},
-                {name:'日本語',key:'ja',selected:false},
+            languages: [
+                { name: 'English', key: 'en', selected: true },
+                { name: '中文', key: 'zh', selected: false },
+                { name: '日本語', key: 'ja', selected: false },
             ],
             autoLock:[{
                 time:60 * 1000,
@@ -208,6 +206,7 @@ class SettingController extends  React.Component {
             }
         });
     }
+
 
     render(){
         const { prices,nodes,onCancel,language,lock,version} = this.props;

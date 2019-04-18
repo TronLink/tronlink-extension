@@ -593,7 +593,11 @@
                     justify-content: space-between;
                     color:#505160;
                     &>span{
-                        font-size:12px;
+                        font-size:14px;
+                    }
+                    .bankBox{
+                        cursor: pointer;
+                        color:#636acc;
                     }
                     .num{
                         transform: scale(0.8);
@@ -604,6 +608,49 @@
                         }
                     }
                 }
+                
+            }
+            .bankSingle{
+                position: relative;
+                .bankPopover{
+                    display: none;
+                    position: absolute;
+                    left: 0px;
+                    top: 19px;
+                    width: 62px;
+                    height: 28px;
+                    line-height: 32px;
+                    font-family:PingFang-SC-Medium;
+                    background: url('../../assets/images/new/popover.svg') no-repeat top left;
+                    background-size: contain;
+                    border-radius: 3px;
+                    box-sizing: border-box;
+                    .popoverTitle{
+                        text-align: center;
+                        font-size: 12px;
+                        color:#ffffff;
+                        font-family:PingFang-SC-Medium;
+                    }
+                }
+                .hoverArrow{
+                    display: inline-block;
+                    position: absolute;
+                    width: 4px;
+                    height: 7px;
+                    top: 10px;
+                    background:#636acc;
+                }
+                .bankBox:hover{
+                    .bankPopover{
+                        display: block;
+                    }
+                }
+            }
+            .bankArrow{
+                display: inline-block;
+                width: 6px;
+                height:8px;
+                margin-left: 2px;
             }
         }
         .ieos{

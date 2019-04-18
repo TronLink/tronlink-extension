@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@tronlink/popup/src/components/Button';
-import Toast,{ T } from 'react-toast-mobile';
-import { FormattedMessage, injectIntl} from 'react-intl';
+import Toast, { T } from 'react-toast-mobile';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import './ConfirmingPhrase.scss';
 
@@ -13,9 +13,9 @@ class ConfirmingPhrase extends React.Component {
         isValid: false
     };
 
-    onClick(wordIndex,word) {
+    onClick(wordIndex, word) {
         const {
-            correctOrder,
+            // correctOrder,
             selected
         } = this.state;
 

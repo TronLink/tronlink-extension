@@ -28,7 +28,10 @@ export const appReducer = createReducer({
         priceList: {},
         selected: false
     },
-    language:'en',
+    language: 'en',
+    setting: {
+        developmentMode: false
+    }
 }, {
     [ setAppState ]: (state, { payload }) => {
         state.appState = payload;
