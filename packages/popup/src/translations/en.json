@@ -91,7 +91,7 @@
     "ACCOUNT.NO_TOKENS": "No Tokens",
     "ACCOUNT.BANDWIDTH": "{amount, number} Bandwidth",
     "ACCOUNT.NO_BANDWIDTH": "No Bandwidth",
-    "ACCOUNT.ENERGY": "{amount, number} Energy",
+    "ACCOUNT.ENERGY": "{amount, number} energy",
     "ACCOUNT.NO_ENERGY": "No Energy",
     "ACCOUNT.RECEIVE":"Receive",
     "ACCOUNT.RECEIVE.DESC":"This address supports transferring to TRX and its token",
@@ -269,7 +269,6 @@
     "BANK.INDEX.ESTIMATECOMPARE":"More burned ",
     "BANK.INDEX.ESTIMATESAVE":"province",
     "BANK.INDEX.ESTIMATEINFO":"or freeze",
-    "BANK.INDEX.RATIO":"比例",
     "BANK.INDEX.RENTDAYUNIT":"Day",
     "BANK.INDEX.RENTDAYUNITS":"Days",
     "BANK.INDEX.RENTCONST":"Cost",
@@ -328,7 +327,7 @@
     "BANK.RENTINFO.INSUFFICIENT":"Balance insufficient",
 
     "BANK.RENTINFO.SUCCESS":"Your payment was successful, energy will arrive in your account in 1 min",
-    "BANK.RENTINFO.FAILED":"Renting failed, you cannot place three orders within 1 minute.",
+    "BANK.RENTINFO.FAILED":"Renting failed, you cannot place five orders within 1 minute.",
 
 
     "IEOS.BUY_ING":"Sale started",
