@@ -268,7 +268,7 @@
     "BANK.INDEX.CURRENTRATE":"(Get equal energy to burn at least {min}trx or freeze {total}trx)",
     "BANK.INDEX.ESTIMATECOMPARE":"More burned ",
     "BANK.INDEX.ESTIMATESAVE":"province",
-    "BANK.INDEX.ESTIMATEINFO":"or freeze",
+    "BANK.INDEX.ESTIMATEINFO":"freeze requires",
     "BANK.INDEX.RENTDAYUNIT":"Day",
     "BANK.INDEX.RENTDAYUNITS":"Days",
     "BANK.INDEX.RENTCONST":"Cost",
