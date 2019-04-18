@@ -28,7 +28,8 @@ class TronBankHelp extends React.Component {
                             <section className='announcementsCont'>
                                 <FormattedMessage id='BANK.HELP.TIPSONE' /><br />
                                 <FormattedMessage id='BANK.HELP.TIPSTWO' /><br />
-                                <FormattedMessage id='BANK.HELP.TIPSTHREE' />
+                                <FormattedMessage id='BANK.HELP.TIPSTHREE' /><br/>
+                                <FormattedMessage id='BANK.HELP.TIPSFOUT' />
                             </section>
                         </Accordion.Panel>
                         <Accordion.Panel header={formatMessage({ id: 'BANK.HELP.CONTACT' })}π className='feedback'>
