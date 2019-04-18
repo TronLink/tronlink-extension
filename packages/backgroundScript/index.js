@@ -151,6 +151,9 @@ const backgroundScript = {
         duplex.on('getNews', this.walletService.getNews);
         duplex.on('getIeos', this.walletService.getIeos);
         duplex.on('addCount', this.walletService.addCount);
+
+        duplex.on('getAirdropInfo', this.walletService.getAirdropInfo);
+
     },
 
     bindTabDuplex() {

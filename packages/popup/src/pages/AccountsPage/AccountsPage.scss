@@ -778,6 +778,9 @@
                 }
                 &:first-child{
                     margin-top: 0;
+                    .name{
+                        flex:2;
+                    }
                 }
                 img{
                     width: 28px;
@@ -785,8 +788,24 @@
                 .name{
                     font-size: 14px;
                     color: #505160;
-                    width: 100px;
                     margin-left: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    .income{
+                        margin-top: 2px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        font-size: 12px;
+                        color: #E2AB58;
+                        &:before{
+                            content: '';
+                            width: 8px;
+                            height: 9px;
+                            background-image: url('../../assets/images/new/icon-income.svg');
+                            margin-right:3px;
+                        }
+                    }
                 }
                 .worth{
                     flex:1;

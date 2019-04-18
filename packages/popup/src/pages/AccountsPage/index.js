@@ -11,7 +11,7 @@ import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
 import { CONTRACT_ADDRESS } from "@tronlink/lib/constants";
-
+import { app } from "@tronlink/popup/src";
 import {
     FormattedMessage,
     injectIntl
@@ -47,15 +47,21 @@ class AccountsPage extends React.Component {
     }
 
     async componentDidMount() {
-        const { prices } = this.props;
+        const { prices,accounts } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
         tronscanUrl = developmentMode ? 'http://18.188.214.126:8686/#' : 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
-        this.setState({ news });
-        this.runTime(ieos);
+        if(news.length > 0){
+            this.setState({ news });
+        }
+        if(ieos.length > 0){
+            this.runTime(ieos);
+        }
+
+        app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
     }
 
     runTime(ieos) {
@@ -300,9 +306,9 @@ class AccountsPage extends React.Component {
                                     <div className="name">
                                         <span>{token.abbr || token.symbol || token.name}</span>
                                         {
-                                            token.hasOwnProperty ?
+                                            token.isShow ?
                                                 <div className="income">
-
+                                                    <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+token.income+'USDT'}} />
                                                 </div>
                                                 :null
                                         }
@@ -408,11 +414,15 @@ class AccountsPage extends React.Component {
         const { showNodeList,mnemonic,privateKey,news,ieos }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng } = this.props;
+        const { selected: { airdropInfo } } = accounts;
         const mode = setting.developmentMode?'developmentMode':'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
-        const usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',income:'2.34',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT,isTop:true};
+        let usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT};
+        if(airdropInfo){
+            usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()}
+        }
         const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=> tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');

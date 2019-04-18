@@ -349,5 +349,7 @@
   "EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR":"精确到{decimals}，请调整小数点后数字位数",
   "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"带宽不足，将额外消耗少量trx（约0.1）",
   "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"能量不足，将额外消耗少量trx（约0.1）",
-  "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（约0.1）"
+  "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（约0.1）",
+
+  "USDT.MAIN.INCOME_YESTERDAY":"昨日收益 {earning}"
 }

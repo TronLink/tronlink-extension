@@ -230,6 +230,10 @@ export default {
 
     setSelectedBankRecordId(id) {
         this.duplex.send('setSelectedBankRecordId', id, false);
+    },
+
+    getAirdropInfo(address) {
+        return this.duplex.send('getAirdropInfo', address);
     }
 
 };

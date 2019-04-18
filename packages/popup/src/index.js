@@ -31,7 +31,8 @@ import {
     setAccount,
     setAccounts,
     setToken,
-    setSelectedBankRecordId
+    setSelectedBankRecordId,
+    setAirdropInfo
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -140,6 +141,11 @@ export const app = {
         this.store.dispatch(
             setNodes(nodes)
         );
+    },
+
+    async getAirdropInfo(address){
+        const airdropInfo  = await PopupAPI.getAirdropInfo(address);
+        this.store.dispatch(setAirdropInfo(airdropInfo));
     },
 
     bindDuplexRequests() {

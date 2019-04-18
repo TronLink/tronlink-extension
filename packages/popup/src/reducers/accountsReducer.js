@@ -7,6 +7,7 @@ export const setAccount = createAction('setAccount');
 export const setToken = createAction('setToken');
 export const setAccounts = createAction('setAccounts');
 export const setSelectedBankRecordId = createAction('setSelectedBankRecordId');
+export const setAirdropInfo = createAction('setAirdropInfo');
 
 export const accountsReducer = createReducer({
     selected: {
@@ -23,7 +24,8 @@ export const accountsReducer = createReducer({
             // uncached: 0
         },
         selectedToken: {},
-        selectedBankRecordId: 0
+        selectedBankRecordId: 0,
+        airdropInfo:{}
     },
     accounts: { },
     selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 }
@@ -59,4 +61,7 @@ export const accountsReducer = createReducer({
     [ setSelectedBankRecordId ]: (state, { payload }) => {
         state.selected.setSelectedBankRecordId = payload;
     },
+    [ setAirdropInfo ] :( state, { payload } ) =>{
+        state.selected.airdropInfo = payload;
+    }
 });
