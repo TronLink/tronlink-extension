@@ -263,10 +263,7 @@ class Account {
     }
 
     async update() {
-        const {
-            address,
-            tokens
-        } = this;
+        const { address } = this;
         logger.info(`Requested update for ${ address }`);
         const node = NodeService.getNodes().selected;
         const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e=>{
@@ -276,12 +273,6 @@ class Account {
             return { data: { data: { rows: [] } } }
         });
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
-               symbol: "USDT",
-               name: "Tether USD",
-               decimal: 6,
-               tokenId: CONTRACT_ADDRESS.USDT
-            };
             const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
             if (!account2.address) {

@@ -250,7 +250,7 @@
   "BANK.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "BANK.INDEX.ACCOUNT":"アカウント",
   "BANK.INDEX.BALANCE":"残高{amount}TRX",
-  "BANK.INDEX.PLACEHOLDER":"記入しないと、当面の支払い口座のアドレスをデフォルトとして認めます",
+  "BANK.INDEX.PLACEHOLDER":"デフォルトは支払いアカウントです",
   "BANK.INDEX.RECEIVEERROR":"フォーマットが間違っているので、もう一度ご入力ください",
   "BANK.INDEX.USED":"使用済み{used}energy",
   "BANK.INDEX.TOTAL":"計{total}energy",
@@ -266,7 +266,7 @@
   "BANK.INDEX.RENTPLACEHOLDER":"賃借日数",
   "BANK.INDEX.RENTDAYFORMATERROR":"フォーマットが間違っているので、{min}-{max}の整数をご入力ください",
   "BANK.INDEX.RENTDAYERROR":"{min}-{max}の整数をご入力ください",
-  "BANK.INDEX.RENTINTRODUCE":"現在は{num}万エネルギーを*{day}日間賃借し，凡そ{cost}TRX掛かっています",
+  "BANK.INDEX.RENTINTRODUCE":"家賃 {num}万energy*{day}日，約{cost} trx",
   "BANK.INDEX.CURRENTRATE":"(当前获取同等能量需至少烧毁{min}trx 或 冻结{total}trx)",
   "BANK.INDEX.ESTIMATECOMPARE":"较直接烧毁约",
   "BANK.INDEX.ESTIMATESAVE":"省",
@@ -324,12 +324,13 @@
   "BANK.RENTINFO.RENTDAY":"賃借日数",
   "BANK.RENTINFO.PAYNUM":"支払金額",
   "BANK.RENTINFO.CANCELBTN":"取り消し",
-  "BANK.RENTINFO.PAYBTN":"直ちに支払います",
+  "BANK.RENTINFO.PAYBTN":"支払う",
   "BANK.RENTINFO.TIPS":"(約{num}energy)",
   "BANK.RENTINFO.INSUFFICIENT":"残高が不足しています",
 
   "BANK.RENTINFO.SUCCESS":"お支払いは成功しました。エネルギーは約1分後に入金されます。",
   "BANK.RENTINFO.FAILED":"賃借が失敗しました。1分間に5つ通りで注文できません",
+
 
 
   "IEOS.BUY_ING":"その場で",
