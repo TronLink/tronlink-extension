@@ -263,14 +263,15 @@ class Account {
     }
 
     async update() {
-        const {
-            address,
-            tokens
-        } = this;
+        const { address } = this;
         logger.info(`Requested update for ${ address }`);
         const node = NodeService.getNodes().selected;
-        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance');
-        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list');
+        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e=>{
+            return { data: { data: [] } }
+        });
+        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e=>{
+            return { data: { data: { rows: [] } } }
+        });
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
                symbol: "USDT",
