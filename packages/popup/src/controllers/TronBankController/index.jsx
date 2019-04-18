@@ -666,7 +666,8 @@ class BankController extends React.Component {
                             {rentNum.valid && rentDay.valid ?
                                 <section className='calculation'>
                                     <div className='info'>
-                                        {rentNum.value}TRX*{rentDay.value} {rentDay.value > 2 ? <FormattedMessage id='BANK.INDEX.RENTDAYUNITS'/> : <FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>}
+                                        <span>{rentNum.value}TRX*{rentDay.value}</span>
+                                        <span className='numInfo'>{rentDay.value > 2 ? <FormattedMessage id='BANK.INDEX.RENTDAYUNITS'/> : <FormattedMessage id='BANK.INDEX.RENTDAYUNIT'/>}</span>
                                         <span className='pointColor'>
                                             <FormattedMessage id='BANK.INDEX.RENTCONST' /> {rentUnit.cost} TRX
                                         </span>

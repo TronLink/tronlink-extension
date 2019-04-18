@@ -38,6 +38,12 @@ class Account {
             basic: {},
             smart: {}
         };
+        this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
+            symbol: "USDT",
+            name: "Tether USD",
+            decimal: 6,
+            tokenId: CONTRACT_ADDRESS.USDT
+        };
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
@@ -279,9 +285,8 @@ class Account {
                 this.reset();
                 return true;
             }
-            console.log(this.tokens.smart)
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId,token])=>{return !token.abbr });
-            for(const [tokenId,token] of addSmartTokens){
+            for(const [tokenId,token] of addSmartTokens) {
                 const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
                 if(contract) {
                     let balance;
@@ -303,7 +308,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }
             }
-
+    
             let sentDelegateBandwidth = 0;
             let delegated = account.delegated;
             if(delegated && delegated.sentDelegatedBandwidth) {
@@ -336,7 +341,7 @@ class Account {
                 price = price/Math.pow(10,precision);
                 if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl === undefined))
                     await StorageService.cacheToken(key);
-
+    
                 if(StorageService.tokenCache.hasOwnProperty(key)) {
                     const {
                         name,
@@ -344,7 +349,7 @@ class Account {
                         decimals,
                         imgUrl
                     } = StorageService.tokenCache[ key ];
-
+    
                     token = {
                         balance: 0,
                         name,
@@ -360,7 +365,7 @@ class Account {
                 };
             }
             const smartTokens = account.trc20token_balances.filter(v=>v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
-            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens){
+            for(let {contract_address,decimals,name,symbol:abbr,balance} of smartTokens) {
                 let token = this.tokens.smart[ contract_address ] || false;
                 const filter = smartTokenPriceList.filter(({fTokenAddr})=>fTokenAddr===contract_address);
                 const price = filter.length ? filter[0].price/Math.pow(10,decimals) : 0;
@@ -373,7 +378,7 @@ class Account {
                             decimals,
                             imgUrl = false
                         } = StorageService.tokenCache[ contract_address ];
-
+    
                         token = {
                             price:0,
                             balance:0,
@@ -406,7 +411,7 @@ class Account {
                     price = price/Math.pow(10,precision);
                     if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
                         await StorageService.cacheToken(key);
-
+    
                     if(StorageService.tokenCache.hasOwnProperty(key)) {
                         const {
                             name,
@@ -414,7 +419,7 @@ class Account {
                             decimals,
                             imgUrl
                         } = StorageService.tokenCache[ key ];
-
+    
                         token = {
                             balance: 0,
                             name,
