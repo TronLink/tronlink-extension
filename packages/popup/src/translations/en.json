@@ -253,7 +253,7 @@
     "BANK.INDEX.USED":"Consumed {used}energy",
     "BANK.INDEX.TOTAL":"Total {total}energy",
     "BANK.INDEX.RENTNUM":"Rental amount",
-    "BANK.INDEX.RENTDAY":"Rental duration",
+    "BANK.INDEX.RENTDAY":"Rental duration({min}-{max})",
     "BANK.INDEX.FREEZEPLACEHOLDER":"Frozen quantity",
     "BANK.INDEX.RENTNUMFORMATERROR":"Invalid format. Please re-enter an integrid between {min}-{max}",
     "BANK.INDEX.RENTNUMERROR":"Please enter an integrid between {min}-{max}",

@@ -255,7 +255,7 @@
   "BANK.INDEX.USED":"使用済み{used}energy",
   "BANK.INDEX.TOTAL":"計{total}energy",
   "BANK.INDEX.RENTNUM":"賃借量",
-  "BANK.INDEX.RENTDAY":"賃借日数",
+  "BANK.INDEX.RENTDAY":"賃借日数({min}-{max})",
   "BANK.INDEX.FREEZEPLACEHOLDER":"TRXの凍結量",
   "BANK.INDEX.RENTNUMFORMATERROR":"フォーマットが間違っているので、{min}-{max}の整数をもう一度ご入力ください",
   "BANK.INDEX.RENTNUMERROR":"{min}-{max}の整数をご入力ください",

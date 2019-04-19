@@ -253,7 +253,7 @@
     "BANK.INDEX.USED":"已用{used}energy",
     "BANK.INDEX.TOTAL":"共{total}energy",
     "BANK.INDEX.RENTNUM":"租用量",
-    "BANK.INDEX.RENTDAY":"租用天数",
+    "BANK.INDEX.RENTDAY":"租用天数({min}-{max})",
     "BANK.INDEX.FREEZEPLACEHOLDER":"冻结数量",
     "BANK.INDEX.RENTNUMFORMATERROR":"格式错误，请重新输入{min}-{max}的整数",
     "BANK.INDEX.RENTNUMERROR":"请输入{min}-{max}的整数",

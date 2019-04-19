@@ -639,7 +639,7 @@ class BankController extends React.Component {
                                 }
                             </section>
                             <section className='infoSec'>
-                                <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
+                                <label><FormattedMessage id='BANK.INDEX.RENTDAY' values={{ min: rentDayMin, max:rentDayMax }} /></label>
                                 <div className={rentDay.error || rentDay.formatError ? 'dayRange errorBorder' : 'dayRange normalBorder'}>
                                     <span className={rentDay.error || rentDay.formatError ? 'errorRightBorder' : 'norderRightBorder'} onClick={ (e) => this.handlerRentDayFun(1)}>
                                         <Button className='operatingBtn'
