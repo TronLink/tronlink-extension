@@ -203,8 +203,8 @@ export default {
         return this.duplex.send('getIeos');
     },
 
-    addCount() {
-        return this.duplex.send('addCount');
+    addCount(id) {
+        return this.duplex.send('addCount',id);
     },
 
     calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
