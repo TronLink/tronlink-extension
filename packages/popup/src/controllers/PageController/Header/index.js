@@ -62,7 +62,8 @@ class Header extends React.Component {
         } = this.props;
         const ns = Object.entries(nodes.nodes);
         const name = ns.filter(v => v[0] === nodes.selected)[0][1].name;
-        const trxMarketUrl = developmentMode ? 'http://18.222.178.103:83?from=tronlink' : 'https://trx.market?from=tronlink';
+        //const trxMarketUrl = developmentMode ? 'http://18.222.178.103:83?from=tronlink' : 'https://trx.market?from=tronlink';
+        const trxMarketUrl = developmentMode ? 'https://trx.market?from=tronlink' : 'https://trx.market?from=tronlink';
         return (
             <div className='header'>
                 <div className='titleContainer'>
