@@ -131,8 +131,8 @@ class Wallet extends EventEmitter {
                     }
                 }).catch( e => { console.log(e); });
             } else {
-                await account.update();
-                //continue;
+                //await account.update();
+                continue;
             }
         }
         this.emit('setAccounts', this.getAccounts());

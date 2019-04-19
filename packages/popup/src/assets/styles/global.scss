@@ -568,11 +568,12 @@ html, body {
     &.transactions{
         .greyModal{
             padding-top:0;
+            padding-left:20px;
+            padding-right:20px;
             .showTokenInfo{
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                overflow:hidden;
                 padding-top: 10px;
                 transition: all ease-in-out 0.2s;
                 img{
@@ -642,13 +643,17 @@ html, body {
                         .usdt_inner{
                             width: 320px;
                             height: 60px;
-                            background-image: linear-gradient(-135deg, #6D72CC 0%, #565BA7 100%);
+                            background-image: linear-gradient(-135deg, #6D72CC 0%, #565BA7 100%);;
                             border-radius: 30px;
+                            box-shadow:0px 6px 11px 0px rgba(86, 91, 167, 0.2);
                             .usdt_inner_bg{
                                 display: flex;
                                 flex-direction: row;
                                 width: 100%;
                                 height: 100%;
+                                border-radius: 30px;
+                                overflow:hidden;
+                                background-position: center;
                                 background-image: url('../../assets/images/new/usdt_income_decorate1.svg');
                                 .cell {
                                     flex:1;

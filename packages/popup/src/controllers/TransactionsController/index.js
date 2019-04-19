@@ -62,7 +62,7 @@ class  TransactionsController extends React.Component {
 
                 </div>
                 <div className='greyModal'>
-                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0}:{height:(id==='_'?216:(id===CONTRACT_ADDRESS.USDT?216:176))}}>
+                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0,overflow:'hidden'}:{overflow:'visible',height:(id==='_' || id===CONTRACT_ADDRESS.USDT ? 216 : 176)}}>
                         <Toast />
                         <img src={imgUrl} onError={(e)=>{e.target.src=token10DefaultImg}} />
                         <div className="amount">
