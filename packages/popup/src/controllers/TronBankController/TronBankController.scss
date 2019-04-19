@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-12 15:16:27
+ * @Last Modified time: 2019-04-18 17:42:13
  * TronBankPage
  */
 
@@ -373,7 +373,7 @@
 }
 .modalContent{
     width: 300px;
-    height: 344px;
+    min-height: 222px;
     background: #FFFFFF;
     border-radius: 2px;
     .am-modal-header{
@@ -392,12 +392,13 @@
         padding: 0;
         .am-modal-body{
             padding:0 20px;
-            max-height:282px;
+            height: auto;
+            margin-bottom: 20px;
         }
     }
     .rentIntroduceCont{
         .modalRentContent{
-            height: 195px;
+            height:auto;
             text-align: justify;
             overflow: hidden;
             font-family: PingFang-SC-Medium;

@@ -44,8 +44,8 @@ class Account {
             name: "Tether USD",
             decimal: 6,
             tokenId: CONTRACT_ADDRESS.USDT,
-            price:0,
-            balance:0
+            balance: 0,
+            price:0
         };
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);

@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-17 14:41:01
+ * @Last Modified time: 2019-04-18 16:49:26
  * TronBankPage
  */
 import React from 'react';
@@ -70,7 +70,8 @@ class BankController extends React.Component {
             },
             isOnlineAddress: {
                 error: false
-            }
+            },
+            submitBtnIsClick: true
         };
         this.handlerInfoConfirm = this.handlerInfoConfirm.bind(this);
     }
@@ -450,9 +451,9 @@ class BankController extends React.Component {
     }
 
     rentDealSendFun(e) {
-        //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days*0.1
+        //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days* ratio
         const { formatMessage } = this.props.intl;
-        const { rentNum, rentDay, recipient, ratio } = this.state;
+        const { rentNum, rentDay, recipient, ratio, submitBtnIsClick } = this.state;
         const { selected } = this.props.accounts;
         const address = selected.address;
         const rentDayValue = Number(rentDay.value);
@@ -460,45 +461,53 @@ class BankController extends React.Component {
         const payAmount = Math.floor(freezeAmount * rentDayValue / ratio);
         let recipientAddress;
         if(recipient.value === '') recipientAddress = address; else recipientAddress = recipient.value;
-        const hashResult = PopupAPI.rentEnergy(
-            freezeAmount,
-            payAmount,
-            rentDayValue,
-            recipientAddress
-        );
-        const requestUrl = postBankOrderApi();
-        hashResult.then((res) => {
-            const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
-            successRes.catch(err => {
-                console.log(err);
-                Toast.info(JSON.stringify(err), 4);
-            });
-            Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
+        if (submitBtnIsClick) {
             this.setState({
-                rentConfirmVisible: false,
-                recipient: {
-                    value: '',
-                    valid: true,
-                    error: false
-                },
-                rentNum: {
-                    value: '',
-                    predictVal: '',
-                    predictStatus: false,
-                    valid: false,
-                    error: false
-                },
-                rentDay: {
-                    value: 7,
-                    valid: true,
-                    error: false,
-                    formatError: false
-                },
+                submitBtnIsClick: false
             });
-        }).catch(error => {
-            console.log(error);
-            Toast.info(JSON.stringify(error), 4);
-        });
+            const hashResult = PopupAPI.rentEnergy(
+                freezeAmount,
+                payAmount,
+                rentDayValue,
+                recipientAddress
+            );
+            const requestUrl = postBankOrderApi();
+            hashResult.then((res) => {
+                const successRes = PopupAPI.bankOrderNotice(recipientAddress, res, requestUrl);
+                successRes.catch(err => {
+                    console.log(err);
+                    Toast.info(JSON.stringify(err), 4);
+                });
+                Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
+                this.setState({
+                    rentConfirmVisible: false,
+                    recipient: {
+                        value: '',
+                        valid: true,
+                        error: false
+                    },
+                    rentNum: {
+                        value: '',
+                        predictVal: '',
+                        predictStatus: false,
+                        valid: false,
+                        error: false
+                    },
+                    rentDay: {
+                        value: 7,
+                        valid: true,
+                        error: false,
+                        formatError: false
+                    }
+                });
+            }).catch(error => {
+                console.log(error);
+                Toast.info(JSON.stringify(error), 4);
+            });
+            setTimeout(() => {
+                this.setState({ submitBtnIsClick: true });
+            }, 4000);
+        }
     }
 
     onModalClose = key => () => {

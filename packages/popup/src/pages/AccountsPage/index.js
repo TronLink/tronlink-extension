@@ -51,7 +51,8 @@ class AccountsPage extends React.Component {
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
-        tronscanUrl = developmentMode ? 'http://18.188.214.126:8686/#' : 'https://tronscan.org/#';
+        //tronscanUrl = developmentMode ? 'http://18.188.214.126:8686/#' : 'https://tronscan.org/#';
+        tronscanUrl = developmentMode ? 'https://tronscan.org/#' : 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
         if(news.length > 0){
@@ -207,7 +208,8 @@ class AccountsPage extends React.Component {
                     <div className='cell bankSingle'>
                         <div className='title'>
                             {
-                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
+                                //nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf306812' ?
                                     <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
@@ -415,7 +417,9 @@ class AccountsPage extends React.Component {
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng } = this.props;
         const { selected: { airdropInfo } } = accounts;
-        const mode = setting.developmentMode?'developmentMode':'productionMode';
+        //const mode = setting.developmentMode?'developmentMode':'productionMode';
+        const mode = 'productionMode';
+
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
@@ -464,6 +468,7 @@ class AccountsPage extends React.Component {
                                 <div className="closed" onClick={async ()=>{
                                     let advertising = setting.advertising ? setting.advertising : {};
                                     advertising[id] = {developmentMode:true,productionMode:true};
+                                    advertising[id][mode] = false;
                                     advertising[id][mode] = false;
                                     PopupAPI.setSetting({...setting,advertising});
                                 }}></div>
