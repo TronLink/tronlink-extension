@@ -461,9 +461,7 @@ class AccountsPage extends React.Component {
                 <div className="space-controller">
                     <Toast />
                     {
-                      nodes.selected !== 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || id === 0 || !setting.advertising[id] || (setting.advertising[id] && !setting.advertising[id][mode])?
-                            null
-                             :
+                      nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !==0 && (!setting.advertising[id] || (setting.advertising[id] && setting.advertising[id][mode])) ?
                             <div className="advertisingWrap">
                                 <div className="closed" onClick={async ()=>{
                                     let advertising = setting.advertising ? setting.advertising : {};
@@ -501,7 +499,7 @@ class AccountsPage extends React.Component {
                                         )
                                     })
                                 }
-                            </div>
+                            </div>:null
                     }
                     <div className={"accountsWrap"+(setting.openAccountsMenu?" show":"")}>
                         <div className="accounts">
