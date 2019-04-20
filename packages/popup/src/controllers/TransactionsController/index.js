@@ -38,7 +38,7 @@ class  TransactionsController extends React.Component {
             prices
         } = this.props;
         const {formatMessage} = this.props.intl;
-        const {address} = accounts.selected;
+        const { address, airdropInfo } = accounts.selected;
         const {id='_',name='TRX',decimals=6,imgUrl,price = 0,amount,balance,frozenBalance} = accounts.selectedToken;
         return (
             <div className='insetContainer transactions'>
@@ -96,12 +96,30 @@ class  TransactionsController extends React.Component {
                                     id.match(/^T/)
                                     ?
                                     (
-                                        id === CONTRACT_ADDRESS.USDT?
+                                        id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow ?
                                     <div className="desc usdt">
                                         <div className="usdt_inner">
                                             <div className="usdt_inner_bg">
-                                                <div className="cell"></div>
-                                                <div className="cell"></div>
+                                                <div className="cell">
+                                                    <div className="income">
+                                                        <div className="txt">
+                                                            <FormattedMessage id="USDT.TEXT.YESTERDAY_INCOME" />
+                                                        </div>
+                                                        <div className="number">
+                                                            +{new BigNumber(new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toFixed(2)).toFormat()}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="cell">
+                                                    <div className="income">
+                                                        <div className="txt">
+                                                            <FormattedMessage id="USDT.TEXT.TOTAL_INCOME" />
+                                                        </div>
+                                                        <div className="number">
+                                                            +{new BigNumber(new BigNumber(airdropInfo.totalEarnings).shiftedBy(-6).toFixed(2)).toFormat()}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

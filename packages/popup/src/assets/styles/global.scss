@@ -643,7 +643,7 @@ html, body {
                         .usdt_inner{
                             width: 320px;
                             height: 60px;
-                            background-image: linear-gradient(-135deg, #6D72CC 0%, #565BA7 100%);;
+                            background-image: linear-gradient(30deg, #6D72CC 0%, #565BA7 100%);
                             border-radius: 30px;
                             box-shadow:0px 6px 11px 0px rgba(86, 91, 167, 0.2);
                             .usdt_inner_bg{
@@ -654,10 +654,47 @@ html, body {
                                 border-radius: 30px;
                                 overflow:hidden;
                                 background-position: center;
-                                background-image: url('../../assets/images/new/usdt_income_decorate1.svg');
+                                background-image: url('../images/new/usdt/usdt_income_decorate1.svg');
                                 .cell {
                                     flex:1;
                                     margin-left: 14px;
+                                    display: flex;
+                                    flex-direction:row;
+                                    align-items:center;
+                                    &:before {
+                                        content:'';
+                                        width: 36px;
+                                        height: 36px;
+                                        border-radius:100%;
+                                        background-color: rgba(255,255,255,0.90);
+                                        background-position: center;
+                                        background-repeat:no-repeat;
+                                    }
+                                    &:first-child {
+                                        &:before {
+                                            background-image: url("../../assets/images/new/usdt/icon1.svg");
+                                        }
+                                    }
+                                    &:last-child {
+                                        &:before {
+                                            background-image: url("../../assets/images/new/usdt/icon2.svg");
+                                        }
+                                    }
+                                    .income{
+                                        margin-left: 12px;
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: center;
+                                        .txt{
+                                            font-size: 12px;
+                                            color: rgba(255,255,255,0.80);
+                                        }
+                                        .number{
+                                            margin-top: 2px;
+                                            font-size: 15px;
+                                            color: #fff;
+                                        }
+                                    }
                                 }
                             }
                         }
