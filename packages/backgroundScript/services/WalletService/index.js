@@ -41,7 +41,6 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
-        console.log(`StorageService的对象是否存在${StorageService},${StorageService.dataExists()},${StorageService.needsMigrating}`);
         if(await StorageService.dataExists() || StorageService.needsMigrating)
             this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
     }
@@ -132,8 +131,8 @@ class Wallet extends EventEmitter {
                     }
                 }).catch( e => { console.log(e); });
             } else {
-                await account.update();
-                //continue;
+                //await account.update();
+                continue;
             }
         }
         this.emit('setAccounts', this.getAccounts());

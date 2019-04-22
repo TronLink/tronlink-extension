@@ -159,9 +159,10 @@ const Utils = {
     dataLetterSort (data, field, field2) {
         let needArray = [];
         let list = {};
-        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','_'];
+        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'];
         for (let i = 0; i < data.length; i++) {
-            let letter = (data[i][field] || data[i][field2] || data[i]['name']).substr(0, 1).toUpperCase();
+            const d = data[i][field] || data[i][field2] || data[i]['name'];
+            let letter =  d.split('').filter(v=> v.match(/[a-zA-Z0-9]/)).join('').substr(0, 1).toUpperCase();
             if(!list[letter]) {
                 list[letter] = [];
             }
