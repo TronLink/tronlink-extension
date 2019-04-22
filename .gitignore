@@ -24,3 +24,4 @@ lerna-debug.log
 /.idea
 .zip
 .vscode
+.vscode/

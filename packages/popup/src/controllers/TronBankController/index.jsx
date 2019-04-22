@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-18 16:49:26
+ * @Last Modified time: 2019-04-22 17:29:56
  * TronBankPage
  */
 import React from 'react';
@@ -322,8 +322,11 @@ class BankController extends React.Component {
             valid: BANK_STATE.VALID,
             error: BANK_STATE.INVALID
         };
-        if(!rentVal.length)
+        if(!rentVal.length) {
+            rentDay.valid = false;
             return this.setState({ rentDay });
+        }
+
         if(!Utils.validatInteger(rentVal)) {
             rentDay.valid = false;
             rentDay.error = false;

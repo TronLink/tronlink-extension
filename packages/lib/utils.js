@@ -186,7 +186,6 @@ const Utils = {
         let curApiHost;
         switch (curHost) {
             case 'nnceancbokoldkjjbpopcffaoekebnnb':
-                // curApiHost = 'http://52.14.133.221:8990';
                 curApiHost = 'https://manger.tronlending.org';
                 break;
             case 'ibnejdfjmmkpcnlpebklmnkoeoihofec':
