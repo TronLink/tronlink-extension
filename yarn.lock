@@ -11708,6 +11708,21 @@ tronweb@^2.3.7:
     semver "^5.6.0"
     validator "^10.7.1"
 
+tronweb@^2.3.8:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.4.3.tgz#bed716f4e9c83cf38a509f9b00978280f18990c8"
+  integrity sha512-0/GBj1AMmeei5FxuoUHB1nv0lPi8LJ2aaaCj3xauxkgWHkfPjVgwwBNeDZ2sudBRtfCP9P+eygXnIO7OCJ/yDA==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    axios "^0.18.0"
+    babel-runtime "^6.26.0"
+    bignumber.js "^7.2.1"
+    elliptic "^6.4.1"
+    ethers "^4.0.7"
+    eventemitter3 "^3.1.0"
+    semver "^5.6.0"
+    validator "^10.7.1"
+
 "true-case-path@^1.0.2":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/true-case-path/-/true-case-path-1.0.3.tgz#f813b5a8c86b40da59606722b144e3225799f47d"
@@ -12213,7 +12228,7 @@ whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3, whatwg-encoding@^1.0.5:
   dependencies:
     iconv-lite "0.4.24"
 
-whatwg-fetch@3.0.0, whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
+whatwg-fetch@3.0.0, whatwg-fetch@>=0.10.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.0.0.tgz#fc804e458cc460009b1a2b966bc8817d2578aefb"
 

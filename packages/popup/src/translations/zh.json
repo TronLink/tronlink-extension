@@ -346,7 +346,10 @@
     "EXCEPTION.SEND.AMOUNT_FORMAT_ERROR":"格式错误",
     "EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR":"余额不足",
     "EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR":"精确到{decimals}，请调整小数点后数字位数",
-    "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"带宽不足，将额外消耗少量trx（约0.1）",
-    "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"能量不足，将额外消耗少量trx（约0.1）",
-    "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（约0.1）"
+    "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"带宽不足，将额外消耗少量trx（不超过1trx）",
+    "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"能量不足，将额外消耗少量trx（不超过1trx）",
+    "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（不超过1trx）",
+    "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"该地址未激活，请向其转入trx，以激活该地址",
+
+    "USDT.MAIN.INCOME_YESTERDAY":"昨日收益 {earning}"
 }
