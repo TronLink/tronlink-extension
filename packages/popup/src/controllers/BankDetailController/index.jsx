@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-15 16:15:35
+ * @Last Modified time: 2019-04-22 18:49:25
  * BankOrderDetail
  */
 import React from 'react';
@@ -36,7 +36,6 @@ class BankDetailController extends React.Component {
     async getBankRecordDetail(_id) {
         Toast.loading();
         const requestUrl = getBankOrderInfoApi();
-        console.log(`——id为${_id}`);
         const recordDetail = await PopupAPI.getBankRecordDetail(_id, requestUrl);
         const orderList = [
             { id: 'BANK.RENTDETAIL.RENTNUM', type: 0, value: `${recordDetail.freeze_amount / Math.pow(10, 6)}TRX` },
@@ -107,7 +106,7 @@ class BankDetailController extends React.Component {
                             <FormattedMessage id='BANK.RENTDETAIL.ORDERNUM'/>
                         </span>
                         <span className='orderStatus'>
-                            {recordDetail.id}
+                            {recordDetail.orderId}
                         </span>
                     </div>
                     <div className='orderAccount'>
