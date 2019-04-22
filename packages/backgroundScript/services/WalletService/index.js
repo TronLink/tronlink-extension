@@ -32,7 +32,8 @@ class Wallet extends EventEmitter {
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
 
-        this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK';
+        // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
+        this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
 
         setInterval(() => {
             this._updatePrice();
