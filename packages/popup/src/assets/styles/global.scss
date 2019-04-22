@@ -23,6 +23,7 @@ html,body,#root {
 }
 
 html, body {
+    font-size: 12px;
     background: #353A4E;
 }
 
@@ -977,7 +978,7 @@ html, body {
             &.error{
                 .inputUnit{
                     textarea{
-                        //border:1px solid #EA8465;
+                        border:1px solid #EA8465;
                     }
                     .tipError{
                         font-size: 13px;
@@ -985,14 +986,13 @@ html, body {
                         min-height: 18px;
                         line-height: 18px;
                         margin-top:5px;
-                        display: none;
                     }
                 }
             }
             .input-group{
                 &.error {
                     .input{
-                        //border:1px solid #EA8465;
+                        border:1px solid #EA8465;
                     }
                     .tipError{
                         font-size: 13px;
@@ -1000,7 +1000,6 @@ html, body {
                         min-height: 18px;
                         line-height: 18px;
                         margin-top:5px;
-                        display: none;
                     }
                 }
             }

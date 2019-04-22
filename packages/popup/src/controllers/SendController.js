@@ -74,10 +74,10 @@ class SendController extends React.Component {
         isOpen.account = !isOpen.account;
         const { selected,accounts } = this.props.accounts;
         const selectedToken = {
-            id:'_',
-            name:'TRX',
-            decimals:6,
-            amount:new BigNumber(accounts[address].balance).shiftedBy(-6).toString()
+            id: '_',
+            name: 'TRX',
+            decimals: 6,
+            amount: new BigNumber(accounts[address].balance).shiftedBy(-6).toString()
         };
         this.setState({isOpen,selectedToken},()=>{this.validateAmount()});
         if(selected.address === address)
@@ -101,16 +101,16 @@ class SendController extends React.Component {
             recipient.valid = false;
             recipient.error = 'EXCEPTION.SEND.ADDRESS_FORMAT_ERROR';
         } else {
-            let account = await NodeService.tronWeb.trx.getAccount(address);
-            if(!account.address){
+            const account = await NodeService.tronWeb.trx.getAccount(address);
+            if(!account.address) {
                 recipient.isActivated = false;
                 recipient.valid = true;
                 recipient.error = 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_ERROR';
-            }else if(address === selected.address){
+            } else if(address === selected.address) {
                 recipient.isActivated = true;
                 recipient.valid = false;
                 recipient.error = 'EXCEPTION.SEND.ADDRESS_SAME_ERROR';
-            }else{
+            } else {
                 recipient.isActivated = true;
                 recipient.valid = true;
                 recipient.error = '';
@@ -134,50 +134,32 @@ class SendController extends React.Component {
     }
 
     validateAmount(){
-    const {
-        amount,
-        decimals,
-        id
-    } = this.state.selectedToken;
-    const { selected } = this.props.accounts;
-    let {value} = this.state.amount;
-    if(value === ''){
-        return this.setState({
-            amount: {
-                valid: false,
-                value,
-                error:''
-            }
-        });
-    }
-    value = new BigNumber(value);
-    if(value.isNaN() || value.lte(0)) {
-        return this.setState({
-            amount: {
-                valid: false,
-                value,
-                error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
-            }
-        });
-    }else if(value.gt(amount)){
-        return this.setState({
-            amount: {
-                valid: false,
-                value,
-                error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
-            }
-        });
-    }else if(value.dp() > decimals) {
-        return this.setState({
-            amount: {
-                valid: false,
-                value,
-                error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
-                values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
-            }
-        });
-    } else {
-        if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance/Math.pow(10,6)).minus(0.1))) {
+        const {
+            amount,
+            decimals,
+            id
+        } = this.state.selectedToken;
+        const { selected } = this.props.accounts;
+        let {value} = this.state.amount;
+        if(value === ''){
+            return this.setState({
+                amount: {
+                    valid: false,
+                    value,
+                    error:''
+                }
+            });
+        }
+        value = new BigNumber(value);
+        if(value.isNaN() || value.lte(0)) {
+            return this.setState({
+                amount: {
+                    valid: false,
+                    value,
+                    error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
+                }
+            });
+        }else if(value.gt(amount)){
             return this.setState({
                 amount: {
                     valid: false,
@@ -185,72 +167,100 @@ class SendController extends React.Component {
                     error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
                 }
             });
-        }
-        if(id.match(/^T/)){
-            const valid = this.state.recipient.isActivated ? true : false;
-            if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
-                return  this.setState({
-                    amount: {
-                        valid,
-                        value,
-                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                    }
-                });
-            }else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000){
-                return  this.setState({
-                    amount: {
-                        valid,
-                        value,
-                        error:'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
-                    }
-                });
-            }else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000){
-                return  this.setState({
-                    amount: {
-                        valid,
-                        value,
-                        error:'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
-                    }
-                });
-
-            } else {
-                return  this.setState({
-                    amount: {
-                        valid: true,
-                        value,
-                        error:''
-                    }
-                });
-            }
+        }else if(value.dp() > decimals) {
+            return this.setState({
+                amount: {
+                    valid: false,
+                    value,
+                    error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
+                    values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
+                }
+            });
         } else {
-            if(selected.netLimit - selected.netUsed < 200){
-                return  this.setState({
+            if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance/Math.pow(10,6)).minus(0.1))) {
+                return this.setState({
                     amount: {
-                        valid: true,
+                        valid: false,
                         value,
-                        error:'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                    }
-                });
-            } else {
-                return  this.setState({
-                    amount: {
-                        valid: true,
-                        value,
-                        error:''
+                        error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
                     }
                 });
             }
+            if(id.match(/^T/)) {
+                const valid = this.state.recipient.isActivated ? true : false;
+                if(valid) {
+                    if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+                        return this.setState({
+                            amount: {
+                                valid,
+                                value,
+                                error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                            }
+                        });
+                    } else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000) {
+                        return this.setState({
+                            amount: {
+                                valid,
+                                value,
+                                error: 'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
+                            }
+                        });
+                    } else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000) {
+                        return this.setState({
+                            amount: {
+                                valid,
+                                value,
+                                error: 'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
+                            }
+                        });
 
-        }
-        return  this.setState({
-            amount: {
-                valid: true,
-                value,
-                error:''
+                    } else {
+                        return this.setState({
+                            amount: {
+                                valid: true,
+                                value,
+                                error: ''
+                            }
+                        });
+                    }
+                } else {
+                    return this.setState({
+                        amount: {
+                            valid,
+                            value,
+                            error: 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR'
+                        }
+                    });
+                }
+            } else {
+                if(selected.netLimit - selected.netUsed < 200){
+                    return this.setState({
+                        amount: {
+                            valid: true,
+                            value,
+                            error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
+                        }
+                    });
+                } else {
+                    return this.setState({
+                        amount: {
+                            valid: true,
+                            value,
+                            error: ''
+                        }
+                    });
+                }
+
             }
-        });
+            return this.setState({
+                amount: {
+                    valid: true,
+                    value,
+                    error: ''
+                }
+            });
+        }
     }
-}
 
     onSend() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
