@@ -78,7 +78,7 @@ class App extends React.Component {
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRONBANK:
-                dom = <BankController accounts={accounts}></BankController>;
+                dom = <BankController accounts={accounts} language={language} ></BankController>;
                 break;
             case APP_STATE.TRONBANK_RECORD:
                 dom = <BankRecordController accounts={accounts}></BankRecordController>;
@@ -110,6 +110,6 @@ export default connect(state => ({
     accounts: state.accounts,
     nodes: state.app.nodes,
     prices: state.app.prices,
-    lock:state.app.setting.lock,
-    version:state.app.version
+    lock: state.app.setting.lock,
+    version: state.app.version
 }))(App);
