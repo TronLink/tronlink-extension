@@ -274,6 +274,16 @@ class Account {
         const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e=>{
             return { data: { data: { rows: [] } } }
         });
+        if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)){
+            this.tokens.smart[CONTRACT_ADDRESS.USDT] = {
+                symbol: "USDT",
+                name: "Tether USD",
+                decimal: 6,
+                tokenId: CONTRACT_ADDRESS.USDT,
+                balance: 0,
+                price:0
+            };
+        }
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
