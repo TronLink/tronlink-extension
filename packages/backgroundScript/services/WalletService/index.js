@@ -145,7 +145,7 @@ class Wallet extends EventEmitter {
         if(!StorageService.ready)
             return;
 
-        const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH')
+        const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,USDT,GBP,EUR,BTC,ETH')
             .then(res => res.data)
             .catch(err => { logger.error(err); });
 
@@ -268,6 +268,8 @@ class Wallet extends EventEmitter {
             APP_STATE.TRONBANK_RECORD,
             APP_STATE.TRONBANK_DETAIL,
             APP_STATE.TRONBANK_HELP,
+            APP_STATE.USDT_INCOME_RECORD,
+            APP_STATE.USDT_ACTIVITY_DETAIL
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);

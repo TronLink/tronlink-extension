@@ -47,7 +47,7 @@ class AccountsPage extends React.Component {
     }
 
     async componentDidMount() {
-        const { prices,accounts } = this.props;
+        const { prices } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
@@ -61,7 +61,7 @@ class AccountsPage extends React.Component {
         if(ieos.length > 0){
             this.runTime(ieos);
         }
-        await PopupAPI.setAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1')
+
         //app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
     }
 
@@ -310,7 +310,7 @@ class AccountsPage extends React.Component {
                                         {
                                             token.isShow ?
                                                 <div className="income">
-                                                    <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+token.income+'USDT'}} />
+                                                    <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()+'USDT'}} />
                                                 </div>
                                                 :null
                                         }
@@ -422,12 +422,12 @@ class AccountsPage extends React.Component {
 
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        const usdt_price = prices.selected === 'USD' ? 1 : (prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8);
+        const usdt_price = prices.selected === 'USD' ? new BigNumber(prices.priceList.USD/prices.priceList.USDT).toFixed(8).toString() : new BigNumber(prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8).toString();
         let usdt = {...accounts.selected.tokens.smart[CONTRACT_ADDRESS.USDT],name:'Tether USD',symbol:'USDT',imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',price:usdt_price,tokenId:CONTRACT_ADDRESS.USDT};
         if(airdropInfo){
             usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
         }
-        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance?accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
         let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=> tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
         tokens = [usdt,trx,...tokens];

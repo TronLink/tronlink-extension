@@ -20,6 +20,8 @@ export const APP_STATE = {
     TRONBANK_RECORD: 13, //[x] show TronBankRecord page
     TRONBANK_DETAIL: 14, //[X] show TronBankDetail page
     TRONBANK_HELP: 15,
+    USDT_INCOME_RECORD: 16,  //[X]income record for usdt
+    USDT_ACTIVITY_DETAIL:17
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {
@@ -88,3 +90,56 @@ export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
     //USDT:"TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA"
 };
+
+export const USDT_ACTIVITY_STAGE = {
+    1:{
+        rate:20,
+        start:'4.30',
+        end:'5.4',
+        days:5,
+        stage:1
+    },
+    2:{
+        rate:12,
+        start:'5.5',
+        end:'5.9',
+        days:5,
+        stage:2
+    },
+    3:{
+        rate:10,
+        start:'5.10',
+        end:'5.14',
+        days:5,
+        stage:3
+    },
+    4:{
+        rate:8,
+        start:'5.15',
+        end:'5.21',
+        days:7,
+        stage:4
+    },
+    5:{
+        rate:5,
+        start:'5.22',
+        end:'5.31',
+        days:10,
+        stage:5
+    },
+    6:{
+        rate:3,
+        start:'6.1',
+        end:'6.14',
+        days:14,
+        stage:6
+    },
+    7:{
+        rate:1,
+        start:'6.15',
+        end:'8.7',
+        days:54,
+        stage:7
+    }
+
+}

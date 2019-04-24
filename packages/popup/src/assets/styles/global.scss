@@ -647,6 +647,7 @@ html, body {
                             background-image: linear-gradient(30deg, #6D72CC 0%, #565BA7 100%);
                             border-radius: 30px;
                             box-shadow:0px 6px 11px 0px rgba(86, 91, 167, 0.2);
+                            cursor: pointer;
                             .usdt_inner_bg{
                                 display: flex;
                                 flex-direction: row;
@@ -782,6 +783,142 @@ html, body {
                         }
                     }
                 }
+            }
+            .incomeRecord{
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                .top {
+                    margin-top: 6px;
+                    width: 320px;
+                    height: 172px;
+                    background-image: linear-gradient(30deg, #6D72CC 0%, #565BA7 100%);
+                    border-radius: 10px;
+                    box-shadow:0px 6px 11px 0px rgba(86, 91, 167, 0.2);
+                    .top_inner{
+                        width: 100%;
+                        height: 100%;
+                        background-image: url("../../assets/images/new/usdt/usdt_income_decorate2.svg");
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        padding:20px 18px;
+                        .row1{
+                            font-size: 12px;
+                            color: rgba(255,255,255,0.80);
+                            height: 18px;
+                            line-height: 18px;
+                        }
+                        .row2{
+                            height: 30px;
+                            line-height: 30px;
+                            margin-top: 6px;
+                            font-size: 22px;
+                            color: #FFFFFF;
+                        }
+                        .row3{
+                            margin-top: 3px;
+                            font-size: 14px;
+                            color: rgba(255,255,255,0.80);
+                        }
+                        .row4{
+                            display: flex;
+                            flex-direction: row;
+                            .cell{
+                                flex:1;
+                                display: flex;
+                                flex-direction:column;
+                                height: 18px;
+                                &:first-child{
+                                    border-right: 1px solid rgba(255,255,255,0.20);
+                                }
+                                &:last-child{
+                                    margin-left: 18px;
+                                }
+                                .text,.number{
+                                    position: relative;
+                                    top:-10px;
+                                }
+                                .text{
+                                    height: 18px;
+                                    line-height: 18px;
+                                    font-size: 12px;
+                                    color: rgba(255,255,255,0.50);
+                                }
+                                .number{
+                                    height: 20px;
+                                    line-height: 20px;
+                                    font-size: 14px;
+                                    color: rgba(255,255,255,0.90);
+                                }
+                            }
+                        }
+                    }
+                }
+                .incomeTitle{
+                    margin-top: 24px;
+                    height: 22px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    font-size: 16px;
+                    color: #515060;
+                    &:before {
+                        width: 4px;
+                        height: 16px;
+                        content:'';
+                        background: #636ACC;
+                        margin-right: 14px;
+                    }
+                }
+                .record{
+                    flex:1;
+                    overflow: auto;
+                    .noData{
+                        height: 50px;
+                        text-align: center;
+                        line-height: 50px;
+                        color: #888998;
+                    }
+                    .item{
+                        width: 100%;
+                        height: 60px;
+                        border-bottom: 1px solid #F7F8FA;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        .left{
+                            display: flex;
+                            flex-direction: column;
+                            .type{
+                                font-size: 14px;
+                                color: #515060;
+                                height: 20px;
+                                line-height: 20px;
+                            }
+                            .date{
+                                margin-top: 4px;
+                                height: 18px;
+                                line-height: 18px;
+                                font-size: 12px;
+                                color: #888998;
+                            }
+                        }
+                        .right{
+                            font-size: 14px;
+                            color: #76AB61;
+                            margin-right: 6px;
+                        }
+                    }
+                }
+
+            }
+            .banner{
+                position: relative;
+                width: 100%;
+                height: 80px;
+                background-image: url("../../assets/images/new/usdt/activity.svg");
             }
         }
         .buttonGroup{

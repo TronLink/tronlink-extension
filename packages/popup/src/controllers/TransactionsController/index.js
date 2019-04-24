@@ -98,7 +98,7 @@ class  TransactionsController extends React.Component {
                                     (
                                         id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow ?
                                     <div className="desc usdt">
-                                        <div className="usdt_inner">
+                                        <div className="usdt_inner" onClick={()=>{PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD)}}>
                                             <div className="usdt_inner_bg">
                                                 <div className="cell">
                                                     <div className="income">

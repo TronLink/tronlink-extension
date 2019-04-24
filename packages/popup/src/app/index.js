@@ -21,6 +21,8 @@ import BankController from '@tronlink/popup/src/controllers/TronBankController';
 import BankRecordController from '@tronlink/popup/src/controllers/BankRecordController';
 import BankDetailController from '@tronlink/popup/src/controllers/BankDetailController';
 import BankHelplController from '@tronlink/popup/src/controllers/TronBankHelp';
+import IncomeRecordController from '@tronlink/popup/src/controllers/IncomeRecordController';
+import ActivityDetailController from '@tronlink/popup/src/controllers/ActivityDetailController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -89,9 +91,15 @@ class App extends React.Component {
             case APP_STATE.TRONBANK_HELP:
                 dom = <BankHelplController></BankHelplController>;
                 break;
+            case APP_STATE.USDT_INCOME_RECORD:
+                dom = <IncomeRecordController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
+                break;
+            case APP_STATE.USDT_ACTIVITY_DETAIL:
+                dom = <ActivityDetailController onCancel={ () => PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD) } />;
+                break;
             default:
                 dom =
-                    <div className='unsupportedState' onClick={ () => PopupAPI.resetState() }>
+                    <div className='unsupportedState' onClick={ () => PopupAPI.resetState(APP_STATE.USDT_INCOME_RECORD) }>
                         <FormattedMessage id='ERRORS.UNSUPPORTED_STATE' values={{ appState }} />
                     </div>;
         }

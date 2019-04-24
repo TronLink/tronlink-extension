@@ -331,7 +331,7 @@ class SettingController extends  React.Component {
                                 </div>
                                 <div className="settingWrap">
                                     {
-                                        Object.entries(prices.priceList).map(([key,val])=><div key={key} onClick={(e)=>{e.stopPropagation();PopupAPI.selectCurrency(key);}} className={"unit"+(key === prices.selected?" selected":"")}>{key} ({val})</div>)
+                                        Object.entries(prices.priceList).filter(([key,val])=>key !== 'USDT').map(([key,val])=><div key={key} onClick={(e)=>{e.stopPropagation();PopupAPI.selectCurrency(key);}} className={"unit"+(key === prices.selected?" selected":"")}>{key} ({val})</div>)
                                     }
                                 </div>
                             </div>

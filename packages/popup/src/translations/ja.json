@@ -355,5 +355,9 @@
 
   "USDT.MAIN.INCOME_YESTERDAY":"昨日收益 {earning}",
   "USDT.TEXT.YESTERDAY_INCOME":"昨日收益",
-  "USDT.TEXT.TOTAL_INCOME":"累计收益"
+  "USDT.TEXT.TOTAL_INCOME":"累计收益",
+  "USDT.TEXT.INCOME":"收益",
+  "USDT.TEXT.INCOME_RECORD":"收益记录",
+  "USDT.TEXT.CURRENT_STAGE": "当前阶段{stage} ({start}-{end}，年化{rate}%)",
+  "USDT.TEXT.ACTIVITY_DETAIL": "活动详情"
 }

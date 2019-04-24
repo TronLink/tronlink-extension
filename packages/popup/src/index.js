@@ -129,8 +129,10 @@ export const app = {
         this.store.dispatch(setLanguage(language));
         this.store.dispatch(setSetting(setting));
         this.store.dispatch(setVersion(version));
-        if(selectedAccount)
+        if(selectedAccount) {
             this.store.dispatch(setAccount(selectedAccount));
+            await PopupAPI.setAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
+        }
 
         logger.info('Set application state');
     },
