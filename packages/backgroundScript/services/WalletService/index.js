@@ -27,7 +27,7 @@ class Wallet extends EventEmitter {
         this.accounts = {};
         this.contractWhitelist = {};
         this.confirmations = [];
-
+        this.timer = {};
         // This should be moved into its own component
         this.isPolling = false;
         this.shouldPoll = false;
@@ -114,6 +114,8 @@ class Wallet extends EventEmitter {
     }
 
     async _pollAccounts() {
+        clearTimeout(this.timer);
+        console.log('-----------------------间隔—---------------------');
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
             return this.isPolling = false;
@@ -146,9 +148,9 @@ class Wallet extends EventEmitter {
         }
         this.emit('setAccounts', this.getAccounts());
         this.isPolling = false;
-        setTimeout(() => (
-            this._pollAccounts() // ??TODO repeatedly request
-        ), 10 * 1000);
+        this.timer = setTimeout(() => {
+            this._pollAccounts(); // ??TODO repeatedly request
+        }, 10000);
     }
 
     async _updatePrice() {
