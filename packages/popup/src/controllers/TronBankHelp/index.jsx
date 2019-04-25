@@ -42,7 +42,7 @@ class TronBankHelp extends React.Component {
                                     <FormattedMessage id='BANK.HELP.FEEDBACK' />
                                 </h2>
                                 <p className='content single'>
-                                    tronlending@gmail.com
+                                    tronlending@tronlink.org
                                 </p>
                             </section>
                         </Accordion.Panel>

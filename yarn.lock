@@ -11694,24 +11694,10 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
-tronweb@^2.3.7:
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.3.8.tgz#03d64cb8fb65c06d2a71d07a931cb8d91c96a6b7"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    axios "^0.18.0"
-    babel-runtime "^6.26.0"
-    bignumber.js "^7.2.1"
-    elliptic "^6.4.1"
-    ethers "^4.0.7"
-    eventemitter3 "^3.1.0"
-    semver "^5.6.0"
-    validator "^10.7.1"
-
-tronweb@^2.3.8:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.4.3.tgz#bed716f4e9c83cf38a509f9b00978280f18990c8"
-  integrity sha512-0/GBj1AMmeei5FxuoUHB1nv0lPi8LJ2aaaCj3xauxkgWHkfPjVgwwBNeDZ2sudBRtfCP9P+eygXnIO7OCJ/yDA==
+tronweb@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.5.0.tgz#a05f7ba7a353bc2aeb3146d484341aa2659cf7d4"
+  integrity sha512-dcBGVGSToLq9dQzbMFb3kO9PhBf57OJJxsUcJ71xs8yXWveyNfIdy4AQyZp5SfMMt2qw09cfukOuq33EezfBhA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.18.0"

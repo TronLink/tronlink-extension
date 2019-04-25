@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-18 16:49:26
+ * @Last Modified time: 2019-04-23 15:32:40
  * TronBankPage
  */
 import React from 'react';
@@ -322,8 +322,11 @@ class BankController extends React.Component {
             valid: BANK_STATE.VALID,
             error: BANK_STATE.INVALID
         };
-        if(!rentVal.length)
+        if(!rentVal.length) {
+            rentDay.valid = false;
             return this.setState({ rentDay });
+        }
+
         if(!Utils.validatInteger(rentVal)) {
             rentDay.valid = false;
             rentDay.error = false;
@@ -519,6 +522,7 @@ class BankController extends React.Component {
     render() {
         const { formatMessage } = this.props.intl;
         const { selected } = this.props.accounts;
+        const { language } = this.props;
         const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, discount } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
@@ -639,7 +643,7 @@ class BankController extends React.Component {
                                 }
                             </section>
                             <section className='infoSec'>
-                                <label><FormattedMessage id='BANK.INDEX.RENTDAY'/></label>
+                                <label><FormattedMessage id='BANK.INDEX.RENTDAY' values={{ min: rentDayMin, max: rentDayMax }} /></label>
                                 <div className={rentDay.error || rentDay.formatError ? 'dayRange errorBorder' : 'dayRange normalBorder'}>
                                     <span className={rentDay.error || rentDay.formatError ? 'errorRightBorder' : 'norderRightBorder'} onClick={ (e) => this.handlerRentDayFun(1)}>
                                         <Button className='operatingBtn'
@@ -682,11 +686,35 @@ class BankController extends React.Component {
                                         </span>
                                     </div>
                                     <div className='curNum'>
-                                        (<FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/><span className='pointColor'><FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>{ saveCost.toFixed(2) }trx</span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/><span className='pointColor'>{rentNum.value}TRX</span>)
+                                        {
+                                            language === 'en' ?
+                                                <span>
+                                                    (<span className='pointColor'>{ saveCost.toFixed(2) }TRX </span>saved than burn-TRX,<span className='pointColor'>{rentNum.value}TRX</span> required to freeze)
+                                                </span>
+                                                :
+                                                <span>
+                                                    (
+                                                    <FormattedMessage id='BANK.INDEX.ESTIMATECOMPARE'/>
+                                                    <span className='pointColor'>
+                                                        <FormattedMessage id='BANK.INDEX.ESTIMATESAVE'/>{ saveCost.toFixed(2) }trx
+                                                    </span>,<FormattedMessage id='BANK.INDEX.ESTIMATEINFO'/>
+                                                    <span className='pointColor'>{rentNum.value}TRX</span>
+                                                    )
+                                                </span>
+                                        }
                                     </div>
                                 </section> :
                                 <section className='rentIntroduce'>
-                                    <div className='info'><FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} /></div>
+                                    <div className='info'>
+                                        {
+                                            language === 'en' ?
+                                                <span>
+                                                    renting {defaultUnit.num * 10}k energy * {defaultUnit.day} day costs {defaultUnit.cost}TRX
+                                                </span>
+                                                :
+                                                <FormattedMessage id='BANK.INDEX.RENTINTRODUCE' values={{ ...defaultUnit }} />
+                                        }
+                                    </div>
                                     <div className='curNum'><FormattedMessage id='BANK.INDEX.CURRENTRATE' values={{ ...defaultUnit }} /></div>
                                 </section>
                             }

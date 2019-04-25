@@ -33,7 +33,8 @@ class Wallet extends EventEmitter {
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
 
-        this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK';
+        // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
+        this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
 
         setInterval(() => {
             this._updatePrice();
@@ -926,7 +927,7 @@ class Wallet extends EventEmitter {
         const developmentMode = StorageService.setting.developmentMode;
         //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
         const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
-        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal').catch(e=>false);
+        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal_v2').catch(e=>false);
         if(res) {
             return res.data.data;
         } else {

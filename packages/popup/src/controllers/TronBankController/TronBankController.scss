@@ -427,6 +427,11 @@
             text-align: center;
             border: 1px solid #636ACC;
             border-radius: 2px;
+            &:hover{
+                cursor: pointer;
+                color: #fff;
+                background: #636ACC;
+            }
         }
     }
 }
