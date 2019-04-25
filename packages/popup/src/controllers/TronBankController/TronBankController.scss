@@ -408,6 +408,7 @@
             letter-spacing: 0;
             span{
                 word-wrap: break-word;
+                word-break: break-all;
                 -webkit-hyphens: auto;
                 -ms-hyphens: auto;
                 hyphens: auto;
