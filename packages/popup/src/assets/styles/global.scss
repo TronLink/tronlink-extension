@@ -914,12 +914,96 @@ html, body {
                 }
 
             }
-            .banner{
-                position: relative;
-                width: 100%;
-                height: 80px;
-                background-image: url("../../assets/images/new/usdt/activity.svg");
+            &.activity{
+                display: flex;
+                flex-direction: column;
+                .banner{
+                    position: relative;
+                    width: 100%;
+                    height: 80px;
+                    background-image: url("../../assets/images/new/usdt/activity.svg");
+                    .name{
+                        position: absolute;
+                        left: 85px;
+                        bottom:0;
+                        width: 100px;
+                        height: 24px;
+                        line-height:24px;
+                        color: #fff;
+                        font-size: 17px;
+                    }
+                    .icon{
+                        position: absolute;
+                        width: 58px;
+                        height: 58px;
+                        background-color: #fff;
+                        border-radius: 100%;
+                        bottom:-29px;
+                        left:20px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: center;
+                        img{
+                            width: 48px;
+                            height: 48px;
+                        }
+                    }
+                }
+                .content{
+                    padding-left:20px;
+                    padding-right:4px;
+                    margin-right: 6px;
+                    flex: 1;
+                    margin-top: 40px;
+                    .content2{
+                        margin-top: 24px;
+                        margin-bottom: 30px;
+                    }
+                    .main-title{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        height: 22px;
+                        line-height:22px;
+                        font-size: 16px;
+                        color: #515060;
+                        &:before{
+                            content:'';
+                            width: 3px;
+                            height: 14px;
+                            background-color: #515060;
+                            margin-right: 8px;
+                        }
+                    }
+                    .sub-title{
+                        margin-top: 12px;
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        height: 20px;
+                        line-height:20px;
+                        font-size: 14px;
+                        color: #888998;
+                        &:before{
+                            content:'';
+                            width: 3px;
+                            height: 3px;
+                            border-radius:100%;
+                            background-color: #888998;
+                            margin-right: 8px;
+                        }
+                    }
+                    .description{
+                        margin-top: 6px;
+                        line-height:20px;
+                        font-size: 14px;
+                        color: #505160;
+                    }
+
+                }
             }
+
         }
         .buttonGroup{
             height: 46px;

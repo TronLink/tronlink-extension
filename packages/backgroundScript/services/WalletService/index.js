@@ -14,7 +14,8 @@ import {
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService');
-
+let basicPrice;
+let smartPrice;
 class Wallet extends EventEmitter {
     constructor() {
         super();
@@ -121,17 +122,25 @@ class Wallet extends EventEmitter {
             return;
 
         this.isPolling = true;
+        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e=>{
+            return { data: { data: [] } }
+        });
+        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e=>{
+            return { data: { data: { rows: [] } } }
+        });
+        basicPrice = basicTokenPriceList;
+        smartPrice = smartTokenPriceList;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                Promise.all([account.update(), account.updateTransactions()]).then(() => {
+                Promise.all([account.update(basicPrice,smartPrice)]).then(() => {
                     if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
                     }
                 }).catch( e => { console.log(e); });
             } else {
-                //await account.update();
-                continue;
+                await account.update(basicPrice,smartPrice);
+                //continue;
             }
         }
         this.emit('setAccounts', this.getAccounts());
@@ -236,7 +245,7 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const r = await account.update().catch(e => false);
+                const r = await account.update(basicPrice, smartPrice).catch(e => false);
                 if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
@@ -244,8 +253,8 @@ class Wallet extends EventEmitter {
                     res = false;
                 }
             }else{
-                //continue;
-                await account.update();
+                continue;
+                //await account.update(basicPrice,smartPrice);
             }
         }
         this.emit('setAccounts', this.getAccounts());
@@ -852,20 +861,65 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId(tokenId) {
+    async getTransactionsByTokenId({tokenId,start = 0,direction="all"}) {
         let address = this.selectedAccount;
         let all, send, receive;
-        let params = { sort: '-timestamp', limit: 20, start: 0 };
-        if(tokenId === '_') {
-            params.asset_name = 'TRX';
+        const limit = 20;
+        let params = { limit, start: limit * start };
+        if(!tokenId.match(/^T/)) {
+            if(tokenId === '_') {
+                params.asset_name = 'TRX';
+            } else {
+                params.token_id = tokenId;
+            }
+            if(direction === 'all'){
+                const {data:{data:records,total}} = await axios.get('https://apilist.tronscan.org/api/simple-transfer', {
+                    params: {
+                        ...params,
+                        address
+                    }
+                }).catch(err => {
+                    return { data: { data: [],total:0 } };
+                });
+                return {records,total};
+            } else if(direction==="to") {
+                const {data:{data:records,total}} = await axios.get('https://apilist.tronscan.org/api/simple-transfer', {
+                    params: {
+                        ...params,
+                        from: address
+                    }
+                }).catch(err => {
+                    return { data: { data: [],total:0 } };
+                });
+                return {records,total};
+            } else {
+                const {data:{data:records,total}} = await axios.get('https://apilist.tronscan.org/api/simple-transfer', {
+                    params: {
+                        ...params,
+                        to: address
+                    }
+                }).catch(err => {
+                    return { data: { data: [],total:0 } };
+                });
+                return {records,total};
+            }
         } else {
-            params.token_id = tokenId;
+            params.limit = 50;
+            params.address = address;
+            params.contract = tokenId;
+            const { data : {data: transactions,total}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {
+                params
+            }).catch(err => {
+                return { data: { data: [],total:0 } };
+            });
+            if(direction === 'all'){
+                return {records:transactions,total};
+            }else if(direction === 'to'){
+                return {records:transactions.filter(({transferFromAddress})=>transferFromAddress === address),total};
+            }else{
+                return {records:transactions.filter(({transferToAddress})=>transferToAddress === address),total};
+            }
         }
-        all = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, limit: 40, address } }).catch(err => { return { data: { data: [] } }; });
-        send = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, from: address } }).catch(err => { return { data: { data: [] } }; });
-        receive = axios.get('https://apilist.tronscan.org/api/simple-transfer', { params: { ...params, to: address } }).catch(err => { return { data: { data: [] } }; });
-        let [{ data: { data: ALL } }, { data: { data: SEND } }, { data: { data: RECEIVE } }] = await Promise.all([all, send, receive]);
-        return { all: ALL, send: SEND, receive: RECEIVE };
     }
 
     async getNews() {

@@ -11,27 +11,23 @@ const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_1
 class  TransactionsController extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { index: 0, isTop: false, transactionGroup: { all: [], send: [], receive: [] } };
+        this.state = { index: 0, isTop: false, transactions:{records:[],total:0},isRequest:false,currentPage:1 };
     }
 
     async componentDidMount() {
-        let transactionGroup;
+        let transactions;
         const {
             accounts
         } = this.props;
         const { id = "_"} = accounts.selectedToken;
-        if(id.match(/^T/)) {
-            transactionGroup = accounts.selected.transactions[id];
-        } else {
-            T.loading();
-            transactionGroup = await PopupAPI.getTransactionsByTokenId(id);
-            T.loaded();
-        }
-        this.setState({transactionGroup})
+        T.loading();
+        transactions = await PopupAPI.getTransactionsByTokenId({tokenId:id});
+        T.loaded();
+        this.setState({transactions});
     }
 
     render() {
-        const { index,isTop,transactionGroup } = this.state;
+        const { index,isTop,transactions,isRequest,currentPage } = this.state;
         const {
             accounts,
             onCancel,
@@ -62,7 +58,7 @@ class  TransactionsController extends React.Component {
 
                 </div>
                 <div className='greyModal'>
-                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0,overflow:'hidden'}:{overflow:'visible',height:(id==='_' || id===CONTRACT_ADDRESS.USDT ? 216 : 176)}}>
+                    <div className="showTokenInfo" style={isTop?{height:0,paddingTop:0,overflow:'hidden'}:{overflow:id===CONTRACT_ADDRESS.USDT?'visible':'hidden',height:(id==='_' || id===CONTRACT_ADDRESS.USDT ? 216 : 176)}}>
                         <Toast />
                         <img src={imgUrl} onError={(e)=>{e.target.src=token10DefaultImg}} />
                         <div className="amount">
@@ -141,53 +137,84 @@ class  TransactionsController extends React.Component {
 
                     </div>
                     <div className="tabNav">
-                        <div className={index==0?"active":""} onClick={() => {
+                        <div className={index==0?"active":""} onClick={async () => {
                             this.setState({index:0});
+                            T.loading();
+                            const transactions = await PopupAPI.getTransactionsByTokenId({tokenId:id,start:0,direction:'all'});
+                            T.loaded();
+                            this.setState({transactions,currentPage:1,isRequest:false});
+
                         }}>
                             <FormattedMessage id="ACCOUNT.ALL"/>
                         </div>
-                        <div className={index==2?"active":""} onClick={() => { this.setState({index:2}) }}>
+                        <div className={index==2?"active":""} onClick={async () => {
+                            this.setState({index:2});
+                            T.loading();
+                            const transactions = await PopupAPI.getTransactionsByTokenId({tokenId:id,start:0,direction:'from'});
+                            T.loaded();
+                            this.setState({transactions,currentPage:1,isRequest:false});
+
+                        }}>
                             <FormattedMessage id="ACCOUNT.RECEIVE" />
                         </div>
-                        <div className={index==1?"active":""} onClick={() => { this.setState({index:1}) }}>
+                        <div className={index==1?"active":""} onClick={async () => {
+                            this.setState({index:1}) ;
+                            T.loading();
+                            const transactions = await PopupAPI.getTransactionsByTokenId({tokenId:id,start:0,direction:'to'});
+                            T.loaded();
+                            this.setState({transactions,currentPage:1,isRequest:false});
+                        }}>
                             <FormattedMessage id="ACCOUNT.SEND"  />
                         </div>
                     </div>
-                    <div className="transaction scroll" onScroll={(e)=>{
-                        const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
-                        if(transactionGroup && transactionGroup[key].length > 8){
+                    <div className="transaction scroll" onScroll={async(e)=>{
+                        const key = index === 0 ? 'all' : ( index === 1 ? 'to':'from');
+                        if(transactions.records.length > 8){
                             const isTop = e.target.scrollTop === 0 ? false : true;
                             this.setState({isTop});
+                            console.log(e.target.scrollTop,(58 * transactions.records.length + 36) - 484)
+                            if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)){
+                                if(!isRequest){
+                                    this.setState({isRequest:true});
+                                    const page = currentPage + 1;
+                                    T.loading();
+                                    const records = await PopupAPI.getTransactionsByTokenId({tokenId:id,start:page - 1,direction:key});
+                                    T.loaded();
+                                    if(records.records.length === 0){
+                                        this.setState({isRequest:true});
+
+                                    }else{
+                                        transactions.records = transactions.records.concat(records.records);
+                                        this.setState({transactions,currentPage:page,isRequest:false});
+                                    }
+                                }
+
+
+
+                            }
                         }
                     }}>
                         {
-                            transactionGroup ?
-                                Object.entries(transactionGroup).map(([v, transactions], i) =>
-                                    <div className="lists" style={i == index ? {display: 'flex'} : {display: 'none'}}>
+                            transactions.records.length > 0 ?
+                                    <div className="lists">
                                         {
-                                            transactions.length > 0 ?
-                                                transactions.map(v => {
-                                                    const direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
-                                                    const addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
-                                                    return (
-                                                        <div className={"item " + direction}>
-                                                            <div className="left">
-                                                                <div className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
-                                                                <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
-                                                            </div>
-                                                            <div className="right">
-                                                                {new BigNumber(v.amount).shiftedBy(-decimals).toString()}
-                                                            </div>
+                                            transactions.records.map(v => {
+                                                const direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
+                                                const addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
+                                                return (
+                                                    <div className={"item " + direction}>
+                                                        <div className="left">
+                                                            <div className="address">{addr.substr(0, 4) + '...' + addr.substr(-12)}</div>
+                                                            <div className="time">{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                         </div>
-                                                    )
-                                                })
-                                            :
-                                            <div className="noData">
-                                                <FormattedMessage id="TRANSACTIONS.NO_DATA"  />
-                                            </div>
+                                                        <div className="right">
+                                                            {new BigNumber(v.amount).shiftedBy(-decimals).toString()}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
                                         }
                                     </div>
-                                )
                                 :
                                 <div className="noData">
                                     <FormattedMessage id="TRANSACTIONS.NO_DATA"  />

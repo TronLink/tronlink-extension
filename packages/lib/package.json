@@ -12,7 +12,7 @@
     "dateformat": "^3.0.3",
     "eventemitter3": "^3.1.0",
     "extensionizer": "^1.0.1",
-    "tronweb": "^2.3.8",
+    "tronweb": "^2.5.0",
     "uuid": "^3.3.2"
   },
   "scripts": {

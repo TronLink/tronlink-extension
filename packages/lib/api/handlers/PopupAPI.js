@@ -191,8 +191,8 @@ export default {
         return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
     },
 
-    getTransactionsByTokenId(tokenId) {
-        return this.duplex.send('getTransactionsByTokenId', tokenId);
+    getTransactionsByTokenId({tokenId,start,direction}) {
+        return this.duplex.send('getTransactionsByTokenId', {tokenId,start,direction});
     },
 
     getNews() {

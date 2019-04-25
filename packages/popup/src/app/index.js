@@ -95,7 +95,7 @@ class App extends React.Component {
                 dom = <IncomeRecordController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
                 break;
             case APP_STATE.USDT_ACTIVITY_DETAIL:
-                dom = <ActivityDetailController onCancel={ () => PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD) } />;
+                dom = <ActivityDetailController selectedToken={accounts.selectedToken} onCancel={ () => PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD) } />;
                 break;
             default:
                 dom =
@@ -118,6 +118,6 @@ export default connect(state => ({
     accounts: state.accounts,
     nodes: state.app.nodes,
     prices: state.app.prices,
-    lock:state.app.setting.lock,
-    version:state.app.version
+    lock: state.app.setting.lock,
+    version: state.app.version
 }))(App);

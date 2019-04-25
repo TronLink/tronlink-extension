@@ -33,7 +33,7 @@
     "redux-starter-kit": "^0.2.0",
     "sweetalert2": "^7.29.2",
     "sweetalert2-react-content": "^1.0.1",
-    "tronweb": "^2.3.8"
+    "tronweb": "^2.5.0"
   },
   "scripts": {
     "start": "react-scripts start",

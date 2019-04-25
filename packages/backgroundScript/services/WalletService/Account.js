@@ -193,19 +193,6 @@ class Account {
             //const tokens = ['_',...Object.keys(this.tokens.basic)];
             let params = {sort: '-timestamp', limit: 20, start: 0};
             let all, send, receive;
-            // for(let key of tokens) {
-            //     if (key === '_') {
-            //         params.asset_name = 'TRX';
-            //     } else {
-            //         delete params.asset_name;
-            //         params.token_id = key;
-            //     }
-            //     all =   axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, limit:40,address}}).catch(err=>{return {data:{data:[]}}});
-            //     send =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params,from: address}}).catch(err=>{return {data:{data:[]}}});
-            //     receive =  axios.get('https://apilist.tronscan.org/api/simple-transfer', {params: {...params, to: address}}).catch(err=>{return {data:{data:[]}}});
-            //     let [{data:{data:ALL}},{data:{data:SEND}},{data:{data:RECEIVE}}] = await Promise.all([all, send, receive]);
-            //     transactions[key] = {all:ALL, send:SEND, receive:RECEIVE};
-            // }
             delete params.token_id;
             const {data:{data:trc20_res}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {params: {...params, limit:10000,address}}).catch(err=>{return {data:{data:[]}}});
             Object.entries(this.tokens.smart).filter(([tokenId,token])=> typeof token ==='object').filter(([tokenId,token])=>{
@@ -265,16 +252,10 @@ class Account {
         this.tokens.basic = {};
     }
 
-    async update() {
+    async update(basicTokenPriceList,smartTokenPriceList) {
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
         const node = NodeService.getNodes().selected;
-        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e=>{
-            return { data: { data: [] } }
-        });
-        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e=>{
-            return { data: { data: { rows: [] } } }
-        });
         if(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address='+address);
             const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
@@ -306,7 +287,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }
             }
-    
+
             let sentDelegateBandwidth = 0;
             let delegated = account.delegated;
             if(delegated && delegated.sentDelegatedBandwidth) {
@@ -339,7 +320,7 @@ class Account {
                 price = price/Math.pow(10,precision);
                 if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl === undefined))
                     await StorageService.cacheToken(key);
-    
+
                 if(StorageService.tokenCache.hasOwnProperty(key)) {
                     const {
                         name,
@@ -347,7 +328,7 @@ class Account {
                         decimals,
                         imgUrl
                     } = StorageService.tokenCache[ key ];
-    
+
                     token = {
                         balance: 0,
                         name,
@@ -376,7 +357,7 @@ class Account {
                             decimals,
                             imgUrl = false
                         } = StorageService.tokenCache[ contract_address ];
-    
+
                         token = {
                             price:0,
                             balance:0,
@@ -409,7 +390,7 @@ class Account {
                     price = price/Math.pow(10,precision);
                     if((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
                         await StorageService.cacheToken(key);
-    
+
                     if(StorageService.tokenCache.hasOwnProperty(key)) {
                         const {
                             name,
@@ -417,7 +398,7 @@ class Account {
                             decimals,
                             imgUrl
                         } = StorageService.tokenCache[ key ];
-    
+
                         token = {
                             balance: 0,
                             name,

@@ -11,7 +11,6 @@ import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
 import { CONTRACT_ADDRESS } from "@tronlink/lib/constants";
-import { app } from "@tronlink/popup/src";
 import {
     FormattedMessage,
     injectIntl
@@ -47,7 +46,7 @@ class AccountsPage extends React.Component {
     }
 
     async componentDidMount() {
-        const { prices } = this.props;
+        const { prices, accounts } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         const { developmentMode } = this.props.setting;
@@ -61,7 +60,8 @@ class AccountsPage extends React.Component {
         if(ieos.length > 0){
             this.runTime(ieos);
         }
-
+        await PopupAPI.setAirdropInfo(accounts.selected.address);
+        //await PopupAPI.setAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
         //app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
     }
 
@@ -292,7 +292,7 @@ class AccountsPage extends React.Component {
                             const money = tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
                             return (
                                 <div className="tokenItem" onClick={ ()=>{
-                                        let o = {id:tokenId,name:token.name,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                        let o = {id:tokenId,name:token.name,abbr: token.abbr || token.symbol,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
                                         if(tokenId === '_'){
                                             o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                                 .shiftedBy(-token.decimals)
@@ -320,7 +320,7 @@ class AccountsPage extends React.Component {
                                         <span>≈ {money} {prices.selected}</span>
                                     </div>
                                 </div>
-                                
+
                         )
                     })
                 }
