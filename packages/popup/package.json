@@ -47,6 +47,11 @@
       "react-app"
     ]
   },
+  "eslintConfig": {
+    "rules": {
+      "quotes": [1, "single"]
+    }
+  },
   "homepage": "./",
   "browserslist": [
     ">0.2%",

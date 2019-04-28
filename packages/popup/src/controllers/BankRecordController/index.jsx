@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-21 14:06:13
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-16 14:41:57
+ * @Last Modified time: 2019-04-28 14:33:12
  * BankRecordController
  */
 import React from 'react';
@@ -88,11 +88,11 @@ class BankRecordController extends React.Component {
             nodata: false,
             recordListData: []
         });
-        if(ind == 0) {
+        if(ind === 0) {
             type = 1;
             this.getBankRecordList(0, 1);
         }
-        else if(ind == 1) {
+        else if(ind === 1) {
             type = 2;
             this.getBankRecordList(0, 2);
         }

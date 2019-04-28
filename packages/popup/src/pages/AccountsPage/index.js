@@ -2,7 +2,7 @@ import React from 'react';
 
 import CopyToClipboard from 'react-copy-to-clipboard';
 import swal from 'sweetalert2';
-import Toast, { T } from 'react-toast-mobile';
+import { Toast } from 'antd-mobile';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from '@tronlink/lib/api';
 import Utils from '@tronlink/lib/utils';
@@ -10,17 +10,8 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
-import { CONTRACT_ADDRESS } from "@tronlink/lib/constants";
-import {
-    FormattedMessage,
-    injectIntl
-} from 'react-intl';
-
-import {
-    APP_STATE,
-    BUTTON_TYPE
-} from '@tronlink/lib/constants';
-
+import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE } from '@tronlink/lib/constants';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 
@@ -54,10 +45,10 @@ class AccountsPage extends React.Component {
         tronscanUrl = developmentMode ? 'https://tronscan.org/#' : 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
-        if(news.length > 0){
+        if(news.length > 0) {
             this.setState({ news });
         }
-        if(ieos.length > 0){
+        if(ieos.length > 0) {
             this.runTime(ieos);
         }
         await PopupAPI.setAirdropInfo(accounts.selected.address);
@@ -168,7 +159,7 @@ class AccountsPage extends React.Component {
                 </div>
                 <div className='row2'>
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
-                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { T.notify(formatMessage({ id: 'TOAST.COPY' })); }}>
+                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }),2); }}>
                         <span className='copy'></span>
                     </CopyToClipboard>
 
@@ -459,7 +450,7 @@ class AccountsPage extends React.Component {
                 }
                 <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
                 <div className="space-controller">
-                    <Toast />
+                    {/* <Toast /> */}
                     {
                       nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !==0 && (!setting.advertising[id] || (setting.advertising[id] && setting.advertising[id][mode])) ?
                             <div className="advertisingWrap">
@@ -547,7 +538,7 @@ class AccountsPage extends React.Component {
                                                 <div onClick={(e)=>{e.stopPropagation()}}>
                                                     <CopyToClipboard text={address}
                                                                      onCopy={(e) => {
-                                                                         T.notify(formatMessage({id:'TOAST.COPY'}));
+                                                                        Toast.info(formatMessage({id:'TOAST.COPY'}));
                                                                      }}>
                                                         <span className='copy'></span>
                                                     </CopyToClipboard>

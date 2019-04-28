@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-22 10:04:59
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-22 18:49:25
+ * @Last Modified time: 2019-04-28 14:32:35
  * BankOrderDetail
  */
 import React from 'react';
@@ -68,7 +68,7 @@ class BankDetailController extends React.Component {
                     <FormattedMessage id='BANK.RENTRECORD.INVALIDNAME'/>
                 </span>
             );
-        } else if(recordDetail.status < 5 && recordDetail.status != 3) {
+        } else if(recordDetail.status < 5 && recordDetail.status !== 3) {
             statusMessage = (
                 <span className='validStatus'>
                     <FormattedMessage id='BANK.RENTRECORD.DEALNAME'/>
