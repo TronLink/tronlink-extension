@@ -379,23 +379,22 @@ class Wallet extends EventEmitter {
             tokens[ newAddress ] = tokens[ oldAddress ];
             delete tokens[ oldAddress ];
         });
-        if(this.confirmations.length===0) {
-            this._setState(APP_STATE.READY);
-        }else{
-            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
-        }
-        const node = NodeService.getCurrentNode();
 
+        const node = NodeService.getCurrentNode();
         this.emit('setNode', {
             fullNode: node.fullNode,
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-
         this.emit('setAccount', this.selectedAccount);
         const setting = this.getSetting();
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
+        if(this.confirmations.length===0) {
+            this._setState(APP_STATE.READY);
+        }else{
+            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
+        }
     }
 
     async lockWallet() {
