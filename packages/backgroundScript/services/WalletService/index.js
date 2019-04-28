@@ -105,7 +105,7 @@ class Wallet extends EventEmitter {
             );
 
             accountObj.loadCache();
-            accountObj.update();
+            accountObj.update([],[]);
 
             this.accounts[ address ] = accountObj;
         });
@@ -115,7 +115,6 @@ class Wallet extends EventEmitter {
 
     async _pollAccounts() {
         clearTimeout(this.timer);
-        console.log('-----------------------间隔—---------------------');
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
             return this.isPolling = false;
