@@ -184,15 +184,17 @@ const Utils = {
     requestUrl() { // request url
         const curHost = location.hostname;
         let curApiHost;
+        const defaultUrl = 'http://52.14.133.221:8990'; //test
+        // const defaultUrl = 'https://manger.tronlending.org'; //online
         switch (curHost) {
             case 'nnceancbokoldkjjbpopcffaoekebnnb':
-                curApiHost = 'https://manger.tronlending.org';
+                curApiHost = defaultUrl;
                 break;
             case 'ibnejdfjmmkpcnlpebklmnkoeoihofec':
-                curApiHost = 'https://manger.tronlending.org';
+                curApiHost = defaultUrl;
                 break;
             default:
-                curApiHost = 'https://manger.tronlending.org';
+                curApiHost = defaultUrl;
                 break;
         }
         return curApiHost;
