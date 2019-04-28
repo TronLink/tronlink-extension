@@ -25,63 +25,65 @@ class ActivityDetailController extends React.Component {
                         </div>
                     </div>
                     <div className="content scroll">
-                        <div className="main-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE1" />
+                        <div className="contents">
+                            <div className="main-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE1" />
+                            </div>
+                            <div className="sub-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE1" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE1.CONTENT" />
+                            </div>
+                            <div className="sub-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE2" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE2.CONTENT" />
+                            </div>
+                            <div className="sub-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE3" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE3.CONTENT" />
+                            </div>
+                            <div className="sub-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE4" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE4.CONTENT" />
+                            </div>
+                            <div className="main-title" style={{marginTop:'20px'}}>
+                                <FormattedMessage id="USDT.MAIN_TITLE2" />
+                            </div>
+                            <div className="sub-title">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT1" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT2" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT3" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT4" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT5" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT6" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT7" />
+                            </div>
+                            <div className="description">
+                                <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8" />
+                             </div>
                         </div>
-                        <div className="sub-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE1" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE1.CONTENT" />
-                        </div>
-                        <div className="sub-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE2" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE2.CONTENT" />
-                        </div>
-                        <div className="sub-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE3" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE3.CONTENT" />
-                        </div>
-                        <div className="sub-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE4" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE4.CONTENT" />
-                        </div>
-                        <div className="main-title" style={{marginTop:'20px'}}>
-                            <FormattedMessage id="USDT.MAIN_TITLE2" />
-                        </div>
-                        <div className="sub-title">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT1" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT2" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT3" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT4" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT5" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT6" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT7" />
-                        </div>
-                        <div className="description">
-                            <FormattedMessage id="USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8" />
-                         </div>
                     </div>
 
                 </div>
