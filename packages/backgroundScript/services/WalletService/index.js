@@ -961,13 +961,13 @@ class Wallet extends EventEmitter {
 
     async setAirdropInfo(address) {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
+        const apiUrl = 'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
-        const res = await axios.get(apiUrl+'/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
+        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
         if(res && res.data.code === 0) {
             this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
-            //this.emit('setAccount', this.selectedAccount);
         }
     }
 
