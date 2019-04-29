@@ -683,7 +683,7 @@ html, body {
                                         }
                                     }
                                     .income{
-                                        margin-left: 12px;
+                                        margin-left: 6px;
                                         display: flex;
                                         flex-direction: column;
                                         justify-content: center;
@@ -789,6 +789,7 @@ html, body {
                 display: flex;
                 flex-direction: column;
                 .top {
+                    overflow: hidden;
                     margin-top: 6px;
                     width: 320px;
                     height: 172px;
@@ -828,7 +829,7 @@ html, body {
                                 flex:1;
                                 display: flex;
                                 flex-direction:column;
-                                height: 18px;
+                                height: 24px;
                                 &:first-child{
                                     border-right: 1px solid rgba(255,255,255,0.20);
                                 }
@@ -837,7 +838,7 @@ html, body {
                                 }
                                 .text,.number{
                                     position: relative;
-                                    top:-10px;
+                                    top:-7px;
                                 }
                                 .text{
                                     height: 18px;

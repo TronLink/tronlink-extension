@@ -34,7 +34,7 @@ class IncomeRecordController extends React.Component {
                                         <FormattedMessage id="USDT.TEXT.CURRENT_STAGE" values={info} />
                                     </div>
                                     <div className="row2">
-                                        <FormattedMessage id="COMMON.BALANCE" /> {selectedToken.amount} USDT
+                                        <FormattedMessage id="COMMON.BALANCE" /> {new BigNumber(selectedToken.amount).toFixed(2)} USDT
                                     </div>
                                     <div className="row3">
                                         ≈ {new BigNumber(new BigNumber(selectedToken.amount * selectedToken.price).toFixed(2)).toFormat()} {prices.selected}

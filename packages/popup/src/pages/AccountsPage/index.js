@@ -310,7 +310,7 @@ class AccountsPage extends React.Component {
                                         {
                                             token.isShow ?
                                                 <div className="income">
-                                                    <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()+'USDT'}} />
+                                                    <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()}} />
                                                 </div>
                                                 :null
                                         }
