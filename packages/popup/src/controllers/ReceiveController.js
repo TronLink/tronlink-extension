@@ -1,7 +1,7 @@
 import React from 'react';
 import QRCode from 'qrcode-react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Toast, { T } from 'react-toast-mobile';
+import { Toast } from 'antd-mobile';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 const ReceiveController = props => {
@@ -17,7 +17,6 @@ const ReceiveController = props => {
                 <FormattedMessage id="ACCOUNT.RECEIVE" />
             </div>
             <div className='greyModal'>
-                <Toast />
                 <div className="desc">
                     <FormattedMessage id="ACCOUNT.RECEIVE.DESC" />
                 </div>
@@ -27,7 +26,7 @@ const ReceiveController = props => {
                 <div class="address">
                     {address}
                 </div>
-                <CopyToClipboard text={address} onCopy={ () => { T.notify(formatMessage({ id: 'TOAST.COPY' })); }}>
+                <CopyToClipboard text={address} onCopy={ () => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                     <a className="copyAddressBtn">
                         <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
                     </a>

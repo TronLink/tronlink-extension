@@ -31,8 +31,10 @@ class TransactionsController extends React.Component {
         T.loading();
         const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
         T.loaded();
+        console.log('%0', transactions);
         this.setState({ transactions });
     }
+
 
     render() {
         const { index, isTop, transactions, isRequest, currentPage } = this.state;
@@ -72,7 +74,7 @@ class TransactionsController extends React.Component {
                             {amount}
                         </div>
                         <div className="worth">
-                            ≈ {id==='_' || id === CONTRACT_ADDRESS.USDT ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
+                            ≈ { id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2)} {prices.selected}
                         </div>
                         {
                             id === "_"?
@@ -101,7 +103,7 @@ class TransactionsController extends React.Component {
                                         (
                                             id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow ?
                                                 <div className="desc usdt">
-                                                    <div className="usdt_inner" onClick={()=>{PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD)}}>
+                                                    <div className="usdt_inner" onClick={() => { PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD); }}>
                                                         <div className="usdt_inner_bg">
                                                             <div className="cell">
                                                                 <div className="income">
@@ -189,6 +191,8 @@ class TransactionsController extends React.Component {
                                     if(records.records.length === 0) {
                                         this.setState({ isRequest: true });
                                     }else{
+                                        console.log('0%', records.records);
+                                        console.log('0%', transactions);
                                         transactions.records = transactions.records.concat(records.records);
                                         this.setState({ transactions, currentPage: page, isRequest: false });
                                     }
@@ -202,11 +206,18 @@ class TransactionsController extends React.Component {
                                 <div className="lists">
                                     {
                                         transactions.records.map((v, transIndex) => {
-                                            const direction = v.toAddress === v.ownerAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
-                                            const addr = v.toAddress;// trigger => ownerAddress show toAddress
                                             let callValue = 0;
-                                            if(v.contractData.call_value) callValue = v.contractData.call_value;
-                                            if(v.contractData.amount) callValue = v.contractData.amount;
+                                            let direction;
+                                            let addr;
+                                            if(v.contractData) {
+                                                if(v.contractData.call_value) callValue = v.contractData.call_value;
+                                                if(v.contractData.amount) callValue = v.contractData.amount;
+                                                direction = v.toAddress === v.ownerAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
+                                                addr = v.toAddress;// trigger => ownerAddress show toAddress
+                                            }else{
+                                                direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
+                                                addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
+                                            }
                                             return (
                                                 <div className={`item ${direction}`} key={transIndex}>
                                                     <div className="left">

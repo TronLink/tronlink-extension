@@ -159,7 +159,7 @@ class AccountsPage extends React.Component {
                 </div>
                 <div className='row2'>
                     <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
-                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }),2); }}>
+                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                         <span className='copy'></span>
                     </CopyToClipboard>
 

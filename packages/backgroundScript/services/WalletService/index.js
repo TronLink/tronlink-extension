@@ -866,16 +866,19 @@ class Wallet extends EventEmitter {
 
     async getTransactionsByTokenId({ tokenId, start = 0, direction = "all" }) {
         const address = this.selectedAccount;
-        const limit = 20;
+        const limit = 30;
         let params = { limit, start: limit * start };
-        const requestUrl = 'https://apilist.tronscan.org/api/simple-transaction';
+        let requestUrl;
+        let newRecord = [];
         if(!tokenId.match(/^T/)) {
+            console.log(tokenId);
             if(tokenId === '_') {
+                requestUrl = 'https://apilist.tronscan.org/api/simple-transaction';
                 // params.asset_name = 'TRX';
             } else {
+                requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
                 params.token_id = tokenId;
             }
-
             if(direction === 'all') {
                 const { data: { data: records, total } } = await axios.get(requestUrl, {
                     params: {
@@ -885,7 +888,20 @@ class Wallet extends EventEmitter {
                 }).catch((e) => {
                     return { data: { data: [], total: 0 } };
                 });
-                return { records, total };
+                if(tokenId !== '_') {
+                    newRecord = records;
+                }else {
+                    if(records.length > 0) {
+                        records.forEach((val, index) => {
+                            if(val.contractData.call_value || val.contractData.amount) {
+                                newRecord.push(val);
+                            }
+                        });
+                    }else {
+                        newRecord = [];
+                    }
+                }
+                return { records: newRecord, total };
             } else if(direction === 'to') {
                 const { data: { data: records, total } } = await axios.get(requestUrl, {
                     params: {
@@ -895,7 +911,20 @@ class Wallet extends EventEmitter {
                 }).catch(err => {
                     return { data: { data: [], total: 0 } };
                 });
-                return { records, total };
+                if(tokenId !== '_') {
+                    newRecord = records;
+                }else {
+                    if(records.length > 0) {
+                        records.forEach((val, index) => {
+                            if(val.contractData.call_value || val.contractData.amount) {
+                                newRecord.push(val);
+                            }
+                        });
+                    }else {
+                        newRecord = [];
+                    }
+                }
+                return { records: newRecord, total };
             } else {
                 const { data: { data: records, total } } = await axios.get(requestUrl, {
                     params: {
@@ -905,7 +934,20 @@ class Wallet extends EventEmitter {
                 }).catch(err => {
                     return { data: { data: [], total: 0 } };
                 });
-                return { records, total };
+                if(tokenId !== '_') {
+                    newRecord = records;
+                }else {
+                    if(records.length > 0) {
+                        records.forEach((val, index) => {
+                            if(val.contractData.call_value || val.contractData.amount) {
+                                newRecord.push(val);
+                            }
+                        });
+                    }else {
+                        newRecord = [];
+                    }
+                }
+                return { records: newRecord, total };
             }
         } else {
             params.limit = 50;
