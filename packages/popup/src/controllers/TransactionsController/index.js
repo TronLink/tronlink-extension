@@ -217,6 +217,7 @@ class TransactionsController extends React.Component {
                                             }else{
                                                 direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
                                                 addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
+                                                callValue = v.amount;
                                             }
                                             return (
                                                 <div className={`item ${direction}`} key={transIndex}>

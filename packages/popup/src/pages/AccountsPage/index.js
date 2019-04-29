@@ -158,8 +158,8 @@ class AccountsPage extends React.Component {
                     </div>
                 </div>
                 <div className='row2'>
-                    <span>{accounts.selected.address.substr(0,10)+'...'+accounts.selected.address.substr(-10)}</span>
-                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
+                    <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
+                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { console.log(e); Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                         <span className='copy'></span>
                     </CopyToClipboard>
 
@@ -555,7 +555,7 @@ class AccountsPage extends React.Component {
                         }}>
                         </div>
                     </div>
-                    { accounts.selected.address ? this.renderAccountInfo(accounts,prices,totalMoney):null }
+                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney) : null }
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
