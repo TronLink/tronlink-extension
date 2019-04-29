@@ -234,6 +234,9 @@ export default {
 
     setAirdropInfo(address) {
         this.duplex.send('setAirdropInfo', address, false);
-    }
+    },
 
+    getAccountInfo(address) {
+        return this.duplex.send('getAccountInfo', address);
+    }
 };

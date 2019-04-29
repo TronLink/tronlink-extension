@@ -153,6 +153,7 @@ const backgroundScript = {
         duplex.on('addCount', this.walletService.addCount);
 
         duplex.on('setAirdropInfo', this.walletService.setAirdropInfo);
+        duplex.on('getAccountInfo', this.walletService.getAccountInfo);
 
     },
 

@@ -971,6 +971,10 @@ class Wallet extends EventEmitter {
         }
     }
 
+    async getAccountInfo(address) {
+        return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+    }
+
 }
 
 export default Wallet;
