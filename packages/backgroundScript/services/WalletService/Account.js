@@ -22,6 +22,7 @@ class Account {
         this.name = false;
         this.updatingTransactions = false;
         this.selectedBankRecordId = 0;
+        this.dealCurrencyPage = 0;
         this.energy = 0;
         this.energyUsed = 0;
         this.balance = 0;
@@ -562,11 +563,12 @@ class Account {
             TotalEnergyLimit: this.TotalEnergyLimit,
             energy: this.energy,
             energyUsed: this.energyUsed,
-            netLimit:this.netLimit,
-            netUsed:this.netUsed,
+            netLimit: this.netLimit,
+            netUsed: this.netUsed,
             transactions: this.transactions,
             lastUpdated: this.lastUpdated,
             selectedBankRecordId: this.selectedBankRecordId,
+            dealCurrencyPage: this.dealCurrencyPage,
             airdropInfo: this.airdropInfo
         };
     }

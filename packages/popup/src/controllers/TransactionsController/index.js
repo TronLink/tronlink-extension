@@ -241,10 +241,17 @@ class TransactionsController extends React.Component {
                     </div>
                 </div>
                 <div className="buttonGroup">
-                    <button className="receive" onClick={ () => PopupAPI.changeState(APP_STATE.RECEIVE) }>
+                    <button className="receive" onClick={ (e) => {
+                        PopupAPI.changeDealCurrencyPage(1);
+                        PopupAPI.changeState(APP_STATE.RECEIVE);
+                    }}
+                    >
                         <FormattedMessage id="ACCOUNT.RECEIVE"/>
                     </button>
-                    <button className="send" onClick={ () => PopupAPI.changeState(APP_STATE.SEND) }>
+                    <button className="send" onClick={ (e) => {
+                        PopupAPI.changeDealCurrencyPage(1);
+                        PopupAPI.changeState(APP_STATE.SEND);
+                    }}>
                         <FormattedMessage id="ACCOUNT.SEND"/>
                     </button>
                 </div>

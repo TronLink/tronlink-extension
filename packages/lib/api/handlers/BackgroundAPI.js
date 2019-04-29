@@ -61,6 +61,10 @@ export default {
         this.duplex.send('popup', 'setSelectedBankRecordId', id, false);
     },
 
+    changeDealCurrencyPage(status) {
+        this.duplex.send('popup', 'changeDealCurrencyPage', status, false);
+    },
+
     setAirdropInfo(airdropInfo) {
         this.duplex.send('popup', 'setAirdropInfo', airdropInfo, false);
     }

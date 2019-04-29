@@ -65,10 +65,10 @@ class App extends React.Component {
                 dom = <ConfirmationController />;
                 break;
             case APP_STATE.RECEIVE:
-                dom = <ReceiveController address={accounts.selected.address} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <ReceiveController accounts={accounts} address={accounts.selected.address} />;
                 break;
             case APP_STATE.SEND:
-                dom = <SendController accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <SendController accounts={accounts} />;
                 break;
             case APP_STATE.TRANSACTIONS:
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;

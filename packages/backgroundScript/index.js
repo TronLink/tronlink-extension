@@ -146,6 +146,7 @@ const backgroundScript = {
         duplex.on('getBankRecordList', this.walletService.getBankRecordList);
         duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
         duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);
+        duplex.on('changeDealCurrencyPage', this.walletService.changeDealCurrencyPage);
         duplex.on('bankOrderNotice', this.walletService.bankOrderNotice);
 
         duplex.on('getNews', this.walletService.getNews);
@@ -343,6 +344,10 @@ const backgroundScript = {
 
         this.walletService.on('setSelectedBankRecordId', id => (
             BackgroundAPI.setSelectedBankRecordId(id)
+        ));
+
+        this.walletService.on('changeDealCurrencyPage', status => (
+            BackgroundAPI.changeDealCurrencyPage(status)
         ));
 
         this.walletService.on('setAirdropInfo', airdropInfo => (

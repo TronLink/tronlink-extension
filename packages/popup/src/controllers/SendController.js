@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
-import {PopupAPI} from "@tronlink/lib/api";
+import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
-import {VALIDATION_STATE} from "@tronlink/lib/constants";
+import { VALIDATION_STATE, APP_STATE } from "@tronlink/lib/constants";
 import TronWeb from "tronweb";
 import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import swal from 'sweetalert2';
@@ -133,7 +133,7 @@ class SendController extends React.Component {
         });
     }
 
-    validateAmount(){
+    validateAmount() {
         const {
             amount,
             decimals,
@@ -141,7 +141,7 @@ class SendController extends React.Component {
         } = this.state.selectedToken;
         const { selected } = this.props.accounts;
         let {value} = this.state.amount;
-        if(value === ''){
+        if(value === '') {
             return this.setState({
                 amount: {
                     valid: false,
@@ -159,7 +159,7 @@ class SendController extends React.Component {
                     error:'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
                 }
             });
-        }else if(value.gt(amount)){
+        }else if(value.gt(amount)) {
             return this.setState({
                 amount: {
                     valid: false,
@@ -284,7 +284,7 @@ class SendController extends React.Component {
                 recipient,
                 new BigNumber(amount).shiftedBy(6).toString()
             );
-        }else if(id.match(/^T/)){
+        }else if(id.match(/^T/)) {
             func = PopupAPI.sendSmartToken(
                     recipient,
                     new BigNumber(amount).shiftedBy(decimals).toString(),
@@ -296,7 +296,6 @@ class SendController extends React.Component {
                 new BigNumber(amount).shiftedBy(decimals).toString(),
                 id
             );
-
         }
 
         // if(address) {
@@ -311,19 +310,38 @@ class SendController extends React.Component {
             swal(formatMessage({id:'SEND.SUCCESS'}),'','success');
             this.setState({
                 loading: false
-            })
+            });
         }).catch(error => {
             swal(JSON.stringify(error),'','error');
             this.setState({
                 loading: false
-            })
+            });
         });
+    }
 
+    onCancel() {
+        const { selected, selectedToken } = this.props.accounts;
+        const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
+        if( selected.dealCurrencyPage == 1) {
+            const selectedCurrency = {
+                id: selectedToken.id,
+                name: selectedToken.name,
+                abbr: selectedToken.abbr || selectedToken.symbol,
+                decimals: selectedToken.decimals,
+                amount: selectedToken.amount,
+                price: selectedToken.price,
+                imgUrl: selectedToken.imgUrl ? selectedToken.imgUrl : token10DefaultImg
+            };
+            PopupAPI.setSelectedToken(selectedCurrency);
+            PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+            PopupAPI.changeDealCurrencyPage(0);
+        }else {
+            PopupAPI.changeState(APP_STATE.READY);
+        }
     }
 
     render() {
         const { isOpen,selectedToken,loading,amount,recipient } = this.state;
-        const {onCancel} = this.props;
         const {selected, accounts} = this.props.accounts;
         const trx = {tokenId:'_',name:"TRX",balance:selected.balance,abbr:"TRX",decimals:6,imgUrl:trxImg};
         let tokens = {...selected.tokens.basic,...selected.tokens.smart};
@@ -332,7 +350,7 @@ class SendController extends React.Component {
         return (
             <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
                 <div className='pageHeader'>
-                    <div className="back" onClick={onCancel}></div>
+                    <div className="back" onClick={(e)=>this.onCancel()}></div>
                     <FormattedMessage id="ACCOUNT.SEND"/>
                 </div>
                 <div className='greyModal'>

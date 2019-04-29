@@ -32,6 +32,7 @@ import {
     setAccounts,
     setToken,
     setSelectedBankRecordId,
+    changeDealCurrencyPage,
     setAirdropInfo
 } from 'reducers/accountsReducer';
 
@@ -182,6 +183,10 @@ export const app = {
 
         this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
             setSelectedBankRecordId(id)
+        ));
+
+        this.duplex.on('changeDealCurrencyPage', status => this.store.dispatch(
+            changeDealCurrencyPage(status)
         ));
 
         this.duplex.on('setAirdropInfo', airdropInfo => this.store.dispatch(

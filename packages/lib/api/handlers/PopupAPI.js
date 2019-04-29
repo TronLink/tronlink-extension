@@ -232,6 +232,10 @@ export default {
         this.duplex.send('setSelectedBankRecordId', id, false);
     },
 
+    changeDealCurrencyPage(status) {
+        this.duplex.send('changeDealCurrencyPage', status, false);
+    },
+
     setAirdropInfo(address) {
         this.duplex.send('setAirdropInfo', address, false);
     }
