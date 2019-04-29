@@ -10,7 +10,7 @@ class ActivityDetailController extends React.Component {
     render() {
         const { onCancel,selectedToken } = this.props;
         return (
-            <div className='insetContainer transactions'>
+            <div className='insetContainer transactions' style={{overflow: 'auto'}}>
                 <div className='pageHeader'>
                     <div className="back" onClick={onCancel}></div>
                     <FormattedMessage id="USDT.TEXT.ACTIVITY_DETAIL"/>
