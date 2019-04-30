@@ -5,7 +5,7 @@ import Dropdown from 'react-dropdown';
 
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
-
+import axios from 'axios';
 import {
     FormattedMessage,
     FormattedHTMLMessage,
@@ -23,12 +23,26 @@ import './ConfirmationController.scss';
 class ConfirmationController extends React.Component {
     constructor({ intl }) {
         super();
-
+        this.state = {
+            dapp:{}
+        };
         this.loadWhitelistOptions(intl);
 
         this.onReject = this.onReject.bind(this);
         this.onAccept = this.onAccept.bind(this);
         this.onWhitelist = this.onWhitelist.bind(this);
+    }
+
+    async componentDidMount() {
+        const { hostname } = this.props.confirmation;
+        const { data: {data : {list:dapps} } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+        const { data: {data : {list:dapps2} } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+        const tronDapps = dapps.concat(dapps2).filter(({protocols:[type], url})=> type === 'tron' && url.match(new RegExp(hostname)));
+        if(tronDapps.length) {
+            const {logo:icon,url:href,title:name} = tronDapps[0];
+            const dapp = {icon,href,name};
+            this.setState({dapp});
+        }
     }
 
     loadWhitelistOptions({ formatMessage }) {
@@ -61,15 +75,30 @@ class ConfirmationController extends React.Component {
         };
     }
 
+    async addUsedDapp() {
+        const { dapp } = this.state;
+        if(dapp){
+            const dappList = await PopupAPI.getDappList();
+            console.log(dappList);
+            const { used } = dappList;
+            if(!used.length || used.every(({name})=> name !== dapp.name)) {
+                used.push(dapp);
+            }
+            dappList.used = used;
+            PopupAPI.setDappList(dappList);
+        }
+    }
+
     onReject() {
         PopupAPI.rejectConfirmation();
     }
 
-    onAccept() {
+    async onAccept() {
         const {
             selected
         } = this.state.whitelisting;
 
+        await this.addUsedDapp();
         PopupAPI.acceptConfirmation(selected.value);
     }
 

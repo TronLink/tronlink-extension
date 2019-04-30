@@ -1,3 +1,5 @@
+import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
+
 export default {
     init(duplex) {
         this.duplex = duplex;
@@ -238,6 +240,14 @@ export default {
 
     setAirdropInfo(address) {
         this.duplex.send('setAirdropInfo', address, false);
+    },
+
+    getDappList() {
+        return this.duplex.send('getDappList');
+    },
+
+    setDappList(dappList) {
+        this.duplex.send('setDappList', dappList, false);
     },
 
     getAccountInfo(address) {

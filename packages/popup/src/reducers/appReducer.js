@@ -16,6 +16,7 @@ export const setCurrency = createAction('setCurrency');
 export const setLanguage = createAction('setLanguage');
 export const setSetting = createAction('setSetting');
 export const setVersion = createAction('setVersion');
+export const setDappList = createAction('setDappList');
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
@@ -31,7 +32,13 @@ export const appReducer = createReducer({
     language: 'en',
     setting: {
         developmentMode: false
+    },
+    version: '',
+    dappList: {
+        recommend:[],
+        used:[]
     }
+
 }, {
     [ setAppState ]: (state, { payload }) => {
         state.appState = payload;
@@ -56,5 +63,8 @@ export const appReducer = createReducer({
     },
     [ setVersion ]: (state, { payload }) => {
         state.version = payload;
+    },
+    [ setDappList ]: (state, { payload }) => {
+        state.dappList = payload;
     }
 });

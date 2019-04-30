@@ -158,7 +158,17 @@ html, body {
         background-repeat: no-repeat;
         background-position: center center;
     }
-    &.createOrImportWallet,&.writingPhrase,&.confirmingPhrase,&.mnemonicImport,&.privateKeyImport,&.choosingType,&.choosingType2,&.receive,&.send,&.transactions{
+    &.createOrImportWallet,
+    &.writingPhrase,
+    &.confirmingPhrase,
+    &.mnemonicImport,
+    &.privateKeyImport,
+    &.choosingType,
+    &.choosingType2,
+    &.receive,
+    &.send,
+    &.transactions,
+    &.dapps{
         justify-content: flex-start;
         padding:0;
         .pageHeader{
@@ -261,7 +271,15 @@ html, body {
             }
         }
     }
-    &.writingPhrase,&.confirmingPhrase,&.choosingType,&.choosingType2,&.mnemonicImport,&.privateKeyImport,&.receive,&.send,&.transactions{ .greyModal{background-color: #fff;} }
+    &.writingPhrase,
+    &.confirmingPhrase,
+    &.choosingType,
+    &.choosingType2,
+    &.mnemonicImport,
+    &.privateKeyImport,
+    &.receive,
+    &.send,
+    &.transactions{ .greyModal{background-color: #fff;} }
     &.choosingType{
         .greyModal{
             padding:0 0 0 24px;
@@ -563,6 +581,105 @@ html, body {
                 justify-content: center;
                 font-size: 12px;
                 color: #888998;
+            }
+        }
+    }
+    &.dapps{
+        .greyModal{
+            padding:0;
+            .nav{
+                height: 40px;
+                background-color: #fff;
+                border-top:1px solid #EFEFEF;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                .item{
+                    cursor: pointer;
+                    height: 27px;
+                    flex: 1;
+                    &:first-child{border-right:1px solid #EFEFEF;}
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    span{
+                        font-size: 14px;
+                        color: #888998;
+                    }
+                    &.focus{
+                        span{
+                            font-size: 16px;
+                            color: #636ACC;
+                            height: 40px;
+                            line-height:40px;
+                            border-bottom:2px solid #636ACC;
+                        }
+                    }
+                }
+            }
+            .dappList{
+                flex:1;
+                padding:10px 10px 10px 14px;
+                .item{
+                    cursor: pointer;
+                    height: 70px;
+                    width: 100%;
+                    padding-left: 14px;
+                    background-color: #fff;
+                    border-radius: 4px;
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    margin-top: 8px;
+                    &:first-child{
+                        margin-top: 0;
+                    }
+                    img{
+                        width: 34px;
+                        height: 34px;
+                        border-radius:100%;
+                    }
+                    .content{
+                        margin-left: 8px;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        overflow: hidden;
+                        .title{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            height: 22px;
+                            font-size: 16px;
+                            color: #515060;
+                            &.isHot{
+                                &:after{
+                                    content:'';
+                                }
+                            }
+                        }
+                        .desc{
+                            height: 20px;
+                            font-size: 14px;
+                            color: #888998;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            margin-top: 4px;
+                        }
+                    }
+                    &:hover{
+                        transform: translate(-1px,-1px);
+                        background-color: rgba(255,255,255,.8);
+                    }
+                }
+                .noData{
+                    height: 50px;
+                    text-align: center;
+                    line-height: 50px;
+                    color: #888998;
+                }
             }
         }
     }

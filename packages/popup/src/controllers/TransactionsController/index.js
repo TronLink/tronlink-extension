@@ -177,11 +177,10 @@ class TransactionsController extends React.Component {
                         const key = index === 0 ? 'all' : ( index === 1 ? 'to' : 'from');
                         if(transactions.records.length > 8) {
                             const isTop = e.target.scrollTop === 0 ? false : true;
-                            this.setState({ isTop });
-                            console.log(e.target.scrollTop, (58 * transactions.records.length + 36) - 484)
+                            this.setState({isTop});
                             if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)) {
-                                if(!isRequest) {
-                                    this.setState({ isRequest: true });
+                                if(!isRequest){
+                                    this.setState({isRequest:true});
                                     const page = currentPage + 1;
                                     Toast.loading('', 0);
                                     const records = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: page - 1, direction: key });

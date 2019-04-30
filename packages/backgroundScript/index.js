@@ -154,8 +154,9 @@ const backgroundScript = {
         duplex.on('addCount', this.walletService.addCount);
 
         duplex.on('setAirdropInfo', this.walletService.setAirdropInfo);
+        duplex.on('getDappList', this.walletService.getDappList);
+        duplex.on('setDappList', this.walletService.setDappList);
         duplex.on('getAccountInfo', this.walletService.getAccountInfo);
-
     },
 
     bindTabDuplex() {
@@ -353,6 +354,10 @@ const backgroundScript = {
 
         this.walletService.on('setAirdropInfo', airdropInfo => (
             BackgroundAPI.setAirdropInfo(airdropInfo)
+        ));
+
+        this.walletService.on('setDappList', dappList => (
+            BackgroundAPI.setDappList(dappList)
         ));
     }
 };

@@ -96,7 +96,6 @@ class Wallet extends EventEmitter {
     _loadAccounts() {
         const accounts = StorageService.getAccounts();
         const selected = StorageService.selectedAccount;
-
         Object.entries(accounts).forEach(([ address, account ]) => {
             const accountObj = new Account(
                 account.type,
@@ -115,7 +114,6 @@ class Wallet extends EventEmitter {
 
     async _pollAccounts() {
         clearTimeout(this.timer);
-        console.log('-------------------------10s interval—---------------------—-------');
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
             return this.isPolling = false;
@@ -281,7 +279,8 @@ class Wallet extends EventEmitter {
             APP_STATE.TRONBANK_DETAIL,
             APP_STATE.TRONBANK_HELP,
             APP_STATE.USDT_INCOME_RECORD,
-            APP_STATE.USDT_ACTIVITY_DETAIL
+            APP_STATE.USDT_ACTIVITY_DETAIL,
+            APP_STATE.DAPP_LIST
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -1019,10 +1018,17 @@ class Wallet extends EventEmitter {
         }
     }
 
+    async getDappList() {
+        return await StorageService.getDappList();
+    }
+
+    async setDappList(dappList) {
+        await StorageService.saveDappList(dappList);
+        this.emit('setDappList',dappList);
+    }
+
     async getAccountInfo(address) {
         return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
     }
-
 }
-
 export default Wallet;
