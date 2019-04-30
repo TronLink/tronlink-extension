@@ -243,6 +243,10 @@ export default {
     },
 
     setDappList(dappList) {
-        this.duplex.send('setDappList',dappList, false);
+        this.duplex.send('setDappList', dappList, false);
+    },
+
+    getAccountInfo(address) {
+        return this.duplex.send('getAccountInfo', address);
     }
 };

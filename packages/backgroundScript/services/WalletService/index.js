@@ -114,7 +114,10 @@ class Wallet extends EventEmitter {
 
     async _pollAccounts() {
         clearTimeout(this.timer);
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/master
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
             return this.isPolling = false;
@@ -379,6 +382,10 @@ class Wallet extends EventEmitter {
             tokens[ newAddress ] = tokens[ oldAddress ];
             delete tokens[ oldAddress ];
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/master
         const node = NodeService.getCurrentNode();
         this.emit('setNode', {
             fullNode: node.fullNode,
@@ -961,9 +968,10 @@ class Wallet extends EventEmitter {
 
     async setAirdropInfo(address) {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
+        //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
+        const apiUrl = 'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
-        const res = await axios.get(apiUrl+'/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
+        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
         if(res && res.data.code === 0) {
             this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
@@ -978,6 +986,9 @@ class Wallet extends EventEmitter {
         await StorageService.saveDappList(dappList);
         this.emit('setDappList',dappList);
     }
-}
 
+    async getAccountInfo(address) {
+        return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+    }
+}
 export default Wallet;
