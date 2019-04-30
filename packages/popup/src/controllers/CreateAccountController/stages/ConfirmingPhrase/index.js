@@ -73,18 +73,20 @@ class ConfirmingPhrase extends React.Component {
             </div>
         );
     }
-    onSubmit(selected,correctOrder){
+
+    onSubmit(selected, correctOrder) {
         const { formatMessage } = this.props.intl;
         const { onSubmit } = this.props;
         const selected2 = selected.map(v=>v.wordIndex);
-        for(let v of correctOrder){
-            if(v !== selected2[v]){
+        for(let v of correctOrder) {
+            if(v !== selected2[v]) {
                 T.notify(formatMessage({id:'CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG'}));
                 return;
             }
         }
         onSubmit();
     }
+
     render() {
         const {
             onCancel

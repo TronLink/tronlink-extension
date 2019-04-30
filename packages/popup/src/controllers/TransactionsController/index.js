@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Toast, { T } from 'react-toast-mobile';
+import { Toast } from 'antd-mobile';
 import { BigNumber } from 'bignumber.js';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
@@ -28,13 +28,12 @@ class TransactionsController extends React.Component {
             accounts
         } = this.props;
         const { id = "_" } = accounts.selectedToken;
-        T.loading();
+        Toast.loading('', 0);
         const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
-        T.loaded();
+        Toast.hide();
         console.log('%0', transactions);
         this.setState({ transactions });
     }
-
 
     render() {
         const { index, isTop, transactions, isRequest, currentPage } = this.state;
@@ -68,7 +67,6 @@ class TransactionsController extends React.Component {
                 </div>
                 <div className='greyModal'>
                     <div className="showTokenInfo" style={ isTop ? { height: 0, paddingTop: 0, overflow: 'hidden' } : { overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden', height: (id === '_' || id === CONTRACT_ADDRESS.USDT ? 216 : 176) }}>
-                        <Toast />
                         <img src={imgUrl} onError={(e) => { e.target.src = token10DefaultImg }} />
                         <div className="amount">
                             {amount}
@@ -132,7 +130,7 @@ class TransactionsController extends React.Component {
                                                 <div className="desc token">
                                                     <FormattedMessage id="TRANSACTION.TOKEN_INFO.CONTRACT" />:&nbsp;
                                                     {id.substr(0,7)+'...'+id.substr(-7)}
-                                                    <CopyToClipboard text={id} onCopy={() => { T.notify(formatMessage({ id: 'TOAST.COPY' })); } }>
+                                                    <CopyToClipboard text={id} onCopy={() => { Toast.info(formatMessage({ id: 'TOAST.COPY' })); } }>
                                                         <span className='copy'></span>
                                                     </CopyToClipboard>
                                                 </div>
@@ -147,9 +145,9 @@ class TransactionsController extends React.Component {
                     <div className="tabNav">
                         <div className={index == 0 ? "active" : "" } onClick={async () => {
                             this.setState({ index: 0 });
-                            T.loading();
+                            Toast.loading('', 0);
                             const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'all' });
-                            T.loaded();
+                            Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
                         }}>
@@ -157,9 +155,9 @@ class TransactionsController extends React.Component {
                         </div>
                         <div className={ index == 2 ? "active" : "" } onClick={async () => {
                             this.setState({ index: 2 });
-                            T.loading();
+                            Toast.loading('', 0);
                             const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'from' });
-                            T.loaded();
+                            Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
                         }}>
@@ -167,9 +165,9 @@ class TransactionsController extends React.Component {
                         </div>
                         <div className={index == 1 ? "active" : ""} onClick={async () => {
                             this.setState({ index: 1 }) ;
-                            T.loading();
+                            Toast.loading('', 0);
                             const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'to' });
-                            T.loaded();
+                            Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
                         }}>
                             <FormattedMessage id="ACCOUNT.SEND" />
@@ -185,9 +183,9 @@ class TransactionsController extends React.Component {
                                 if(!isRequest) {
                                     this.setState({ isRequest: true });
                                     const page = currentPage + 1;
-                                    T.loading();
+                                    Toast.loading('', 0);
                                     const records = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: page - 1, direction: key });
-                                    T.loaded();
+                                    Toast.hide();
                                     if(records.records.length === 0) {
                                         this.setState({ isRequest: true });
                                     }else{
