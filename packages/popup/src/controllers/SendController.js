@@ -350,7 +350,7 @@ class SendController extends React.Component {
         return (
             <div className='insetContainer send' onClick={()=>{this.setState({isOpen:{account:false,token:false}})}}>
                 <div className='pageHeader'>
-                    <div className="back" onClick={(e)=>this.onCancel()}></div>
+                    <div className="back" onClick={(e) => this.onCancel() }></div>
                     <FormattedMessage id="ACCOUNT.SEND"/>
                 </div>
                 <div className='greyModal'>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { T } from 'react-toast-mobile';
-import { PAGES,APP_STATE } from '@tronlink/lib/constants';
+import { Toast } from 'antd-mobile';
+import { PAGES, APP_STATE } from '@tronlink/lib/constants';
 import { app } from '@tronlink/popup/src/index';
 import { PopupAPI } from '@tronlink/lib/api';
 const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
@@ -78,15 +78,15 @@ class Header extends React.Component {
                             <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
                         </div>
                         <div>
-                            <div className="fun" onClick={ ()=>{ PopupAPI.lockWallet() } }></div>
-                            <div className="fun" onClick={()=>{
-                                if(!refresh){
-                                    this.setState({refresh:true}, async()=>{
-                                        T.loading();
+                            <div className="fun" onClick={ () => { PopupAPI.lockWallet(); } }></div>
+                            <div className="fun" onClick={() => {
+                                if(!refresh) {
+                                    this.setState({ refresh: true }, async() => {
+                                        Toast.loading();
                                         const r = await PopupAPI.refresh();
-                                        if(r){
-                                            this.setState({refresh:false});
-                                            T.loaded()
+                                        if(r) {
+                                            this.setState({ refresh: false });
+                                            Toast.hide();
                                         }
                                     });
                                 }
