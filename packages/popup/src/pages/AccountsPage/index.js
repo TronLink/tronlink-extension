@@ -1,5 +1,4 @@
 import React from 'react';
-
 import CopyToClipboard from 'react-copy-to-clipboard';
 import swal from 'sweetalert2';
 import { Toast } from 'antd-mobile';
@@ -18,7 +17,7 @@ import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 let tronscanUrl = '';
-class AccountsPage extends React.Component { 
+class AccountsPage extends React.Component {
     constructor() {
         super();
         this.onClick = this.onClick.bind(this);
