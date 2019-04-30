@@ -68,7 +68,7 @@ class Header extends React.Component {
                     </div>
                     <div>
                         <div className="linkWrap">
-                            <a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>
+                            {/*<a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>*/}
                             <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                             <a href="https://www.tronlink.org" target="_blank" className="link link-home"></a>
                             <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
