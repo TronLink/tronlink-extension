@@ -96,7 +96,6 @@ class Wallet extends EventEmitter {
     _loadAccounts() {
         const accounts = StorageService.getAccounts();
         const selected = StorageService.selectedAccount;
-
         Object.entries(accounts).forEach(([ address, account ]) => {
             const accountObj = new Account(
                 account.type,
@@ -105,7 +104,7 @@ class Wallet extends EventEmitter {
             );
 
             accountObj.loadCache();
-            accountObj.update();
+            accountObj.update([],[]);
 
             this.accounts[ address ] = accountObj;
         });
@@ -115,7 +114,7 @@ class Wallet extends EventEmitter {
 
     async _pollAccounts() {
         clearTimeout(this.timer);
-        console.log('-----------------------间隔—---------------------');
+
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
             return this.isPolling = false;
@@ -281,7 +280,8 @@ class Wallet extends EventEmitter {
             APP_STATE.TRONBANK_DETAIL,
             APP_STATE.TRONBANK_HELP,
             APP_STATE.USDT_INCOME_RECORD,
-            APP_STATE.USDT_ACTIVITY_DETAIL
+            APP_STATE.USDT_ACTIVITY_DETAIL,
+            APP_STATE.DAPP_LIST
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -379,23 +379,21 @@ class Wallet extends EventEmitter {
             tokens[ newAddress ] = tokens[ oldAddress ];
             delete tokens[ oldAddress ];
         });
-        if(this.confirmations.length===0) {
-            this._setState(APP_STATE.READY);
-        }else{
-            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
-        }
         const node = NodeService.getCurrentNode();
-
         this.emit('setNode', {
             fullNode: node.fullNode,
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-
         this.emit('setAccount', this.selectedAccount);
         const setting = this.getSetting();
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
+        if(this.confirmations.length===0) {
+            this._setState(APP_STATE.READY);
+        }else{
+            this._setState(APP_STATE.REQUESTING_CONFIRMATION);
+        }
     }
 
     async lockWallet() {
@@ -963,16 +961,23 @@ class Wallet extends EventEmitter {
 
     async setAirdropInfo(address) {
         const developmentMode = StorageService.setting.developmentMode;
-        const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
+        const apiUrl = developmentMode? 'https://list.tronlink.org':'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
         const res = await axios.get(apiUrl+'/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
         if(res && res.data.code === 0) {
             this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
-            //this.emit('setAccount', this.selectedAccount);
         }
     }
 
+    async getDappList() {
+        return await StorageService.getDappList();
+    }
+
+    async setDappList(dappList) {
+        await StorageService.saveDappList(dappList);
+        this.emit('setDappList',dappList);
+    }
 }
 
 export default Wallet;

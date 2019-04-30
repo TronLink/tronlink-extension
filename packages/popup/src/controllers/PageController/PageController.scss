@@ -55,6 +55,12 @@
                                 background-image: url('../../assets/images/new/icon-exchange-hover.svg');
                             }
                         }
+                        &.link-dapp{
+                            background-image: url('../../assets/images/new/dapp/icon-dapp.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/dapp/icon-dapp-hover.svg');
+                            }
+                        }
                     }
                 }
                 &>div{
@@ -229,7 +235,7 @@
     .pageView {
         flex: 1;
         position: relative;
-    
+
         .page {
             transition: transform 250ms ease;
             position: absolute;
@@ -241,5 +247,5 @@
             flex-direction: column;
             overflow: hidden;
         }
-    }    
+    }
 }

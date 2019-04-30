@@ -172,8 +172,7 @@ class  TransactionsController extends React.Component {
                         if(transactions.records.length > 8){
                             const isTop = e.target.scrollTop === 0 ? false : true;
                             this.setState({isTop});
-                            console.log(e.target.scrollTop,(58 * transactions.records.length + 36) - 484)
-                            if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)){
+                            if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)) {
                                 if(!isRequest){
                                     this.setState({isRequest:true});
                                     const page = currentPage + 1;
@@ -188,9 +187,6 @@ class  TransactionsController extends React.Component {
                                         this.setState({transactions,currentPage:page,isRequest:false});
                                     }
                                 }
-
-
-
                             }
                         }
                     }}>

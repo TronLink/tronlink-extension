@@ -63,6 +63,10 @@ export default {
 
     setAirdropInfo(airdropInfo) {
         this.duplex.send('popup', 'setAirdropInfo', airdropInfo, false);
+    },
+
+    setDappList(dappList) {
+        this.duplex.send('popup', 'setDappList',dappList ,false);
     }
 
 };

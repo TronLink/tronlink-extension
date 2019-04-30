@@ -186,43 +186,6 @@ class Account {
         this.asset = asset;
     }
 
-    async getTransactions() {
-        let transactions = {};
-        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            const address = this.address;
-            //const tokens = ['_',...Object.keys(this.tokens.basic)];
-            let params = {sort: '-timestamp', limit: 20, start: 0};
-            let all, send, receive;
-            delete params.token_id;
-            const {data:{data:trc20_res}} = await axios.get('https://apilist.tronscan.org/api/contract/events', {params: {...params, limit:10000,address}}).catch(err=>{return {data:{data:[]}}});
-            Object.entries(this.tokens.smart).filter(([tokenId,token])=> typeof token ==='object').filter(([tokenId,token])=>{
-                all =  trc20_res.filter(v =>  token.name === v.tokenName).length ? trc20_res.filter(v =>  token.name === v.tokenName) : [];
-                send = trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferFromAddress === address) : [];
-                receive = trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address).length ? trc20_res.filter(v =>  token.name === v.tokenName && v.transferToAddress === address) : [];
-                transactions[tokenId] = {all, send, receive};
-            });
-            return transactions;
-        } else {
-            // let hasMoreTransactions = true;
-            // let offset = 0;
-            // while(hasMoreTransactions) {
-            //     const newTransactions = (await NodeService.tronWeb.trx
-            //         .getTransactionsRelated(this.address, 'all', 90, offset))
-            //         .map(transaction => {
-            //             transaction.offset = offset;
-            //             return transaction;
-            //         });
-            //
-            //     if(!newTransactions.length)
-            //         hasMoreTransactions = false;
-            //     else offset += 90;
-            //
-            //     transactions.push(...newTransactions);
-            // }
-            return transactions;
-        }
-    }
-
     matches(accountType, importData) {
         if(this.type !== accountType)
             return false;
@@ -475,41 +438,6 @@ class Account {
         this.netUsed = NetUsed + freeNetUsed;
         this.totalEnergyWeight = TotalEnergyWeight;
         this.TotalEnergyLimit = TotalEnergyLimit;
-    }
-
-    async updateTransactions() {
-        const transactions = await this.getTransactions().catch((e) => {
-            logger.error(e);
-            logger.error('Failed to update transactions for', this.address);
-            return [];
-        });
-        this.transactions = transactions;
-        this.save();
-    }
-
-    async updateTokens(tokens) {
-        const { address } = this;
-
-        for(const tokenAddress in tokens) {
-            try {
-                const contract = await NodeService.tronWeb.contract().at(tokenAddress);
-                const balance = await contract.balanceOf(address).call();
-                const bn = new BigNumber(balance.balance || balance);
-
-                if(bn.isNaN())
-                    tokens[ tokenAddress ].balance = '0';
-                else tokens[ tokenAddress ].balance = bn.toString();
-            } catch(ex) {
-                if(ex.toString().includes('not been deployed')) {
-                    tokens[ tokenAddress ].balance = 0;
-                    continue;
-                }
-
-                logger.error(`Failed to fetch token balance of ${ tokenAddress }:`, ex);
-            }
-        }
-
-        this.tokens.smart = tokens;
     }
 
     async addSmartToken({ address, name, decimals, symbol }) {

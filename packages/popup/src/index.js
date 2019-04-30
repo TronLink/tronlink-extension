@@ -24,7 +24,8 @@ import {
     setPriceList,
     setLanguage,
     setSetting,
-    setVersion
+    setVersion,
+    setDappList
 } from 'reducers/appReducer';
 
 import {
@@ -99,7 +100,7 @@ export const app = {
             prices,
             confirmations,
             selectedToken,
-            language,
+            language
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -109,7 +110,6 @@ export const app = {
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
             PopupAPI.getLanguage(),
-            // PopupAPI.getSelectedBankRecordId()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
         if ( lang.indexOf('zh') > -1 ) {
@@ -131,6 +131,7 @@ export const app = {
         this.store.dispatch(setVersion(version));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
+
 
         logger.info('Set application state');
     },
@@ -187,6 +188,11 @@ export const app = {
         this.duplex.on('setAirdropInfo', airdropInfo => this.store.dispatch(
             setAirdropInfo(airdropInfo)
         ));
+
+        this.duplex.on('setDappList', dappList => this.store.dispatch(
+            setDappList(dappList)
+        ));
+
     },
 
     render() {

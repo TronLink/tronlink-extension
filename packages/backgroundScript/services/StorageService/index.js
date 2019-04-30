@@ -16,7 +16,8 @@ const StorageService = {
         'pendingTransactions',
         'tokenCache',
         'setting',
-        'language'
+        'language',
+        'dappList'
     ],
 
     storage: extensionizer.storage.local,
@@ -53,6 +54,10 @@ const StorageService = {
     language: '',
     ready: false,
     password: false,
+    dappList:{
+        recommend:[],
+        used:[]
+    },
 
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
@@ -385,6 +390,25 @@ const StorageService = {
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
 
         this.save('tokenCache');
+    },
+
+    async getDappList(){
+        if(!this.hasOwnProperty('dappList')) {
+            this.dappList = { recommend:[], used:[] };
+        }
+
+        const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
+            return { data: { data: this.dappList.recommend } };
+        });
+
+        this.dappList.recommend = recommend;
+        this.save('dappList');
+        return this.dappList;
+
+    },
+    async saveDappList(dappList){
+        this.dappList = dappList;
+        this.save('dappList');
     },
 
     purge() {

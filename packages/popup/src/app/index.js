@@ -23,6 +23,7 @@ import BankDetailController from '@tronlink/popup/src/controllers/BankDetailCont
 import BankHelplController from '@tronlink/popup/src/controllers/TronBankHelp';
 import IncomeRecordController from '@tronlink/popup/src/controllers/IncomeRecordController';
 import ActivityDetailController from '@tronlink/popup/src/controllers/ActivityDetailController';
+import DappListController from '@tronlink/popup/src/controllers/DappListController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -96,6 +97,9 @@ class App extends React.Component {
                 break;
             case APP_STATE.USDT_ACTIVITY_DETAIL:
                 dom = <ActivityDetailController selectedToken={accounts.selectedToken} onCancel={ () => PopupAPI.changeState(APP_STATE.USDT_INCOME_RECORD) } />;
+                break;
+            case APP_STATE.DAPP_LIST:
+                dom = <DappListController onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             default:
                 dom =

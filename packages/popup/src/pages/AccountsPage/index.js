@@ -21,7 +21,7 @@ import {
     BUTTON_TYPE
 } from '@tronlink/lib/constants';
 
-import './AccountsPage.scss';
+import '@tronlink/popup/src/pages/AccountsPage/AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
