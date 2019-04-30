@@ -10,7 +10,7 @@ class ActivityDetailController extends React.Component {
     render() {
         const { onCancel,selectedToken } = this.props;
         return (
-            <div className='insetContainer transactions'>
+            <div className='insetContainer transactions' style={{overflow: 'auto'}}>
                 <div className='pageHeader'>
                     <div className="back" onClick={onCancel}></div>
                     <FormattedMessage id="USDT.TEXT.ACTIVITY_DETAIL"/>
@@ -25,7 +25,7 @@ class ActivityDetailController extends React.Component {
                         </div>
                     </div>
                     <div className="content scroll">
-                        <div className="content1">
+                        <div className="contents">
                             <div className="main-title">
                                 <FormattedMessage id="USDT.MAIN_TITLE1" />
                             </div>
@@ -53,9 +53,7 @@ class ActivityDetailController extends React.Component {
                             <div className="description">
                                 <FormattedMessage id="USDT.MAIN_TITLE1.SUBTITLE4.CONTENT" />
                             </div>
-                        </div>
-                        <div className="content2">
-                            <div className="main-title">
+                            <div className="main-title" style={{marginTop:'20px'}}>
                                 <FormattedMessage id="USDT.MAIN_TITLE2" />
                             </div>
                             <div className="sub-title">

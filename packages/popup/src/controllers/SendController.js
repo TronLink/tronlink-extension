@@ -101,7 +101,7 @@ class SendController extends React.Component {
             recipient.valid = false;
             recipient.error = 'EXCEPTION.SEND.ADDRESS_FORMAT_ERROR';
         } else {
-            const account = await NodeService.tronWeb.trx.getAccount(address);
+            const account = await PopupAPI.getAccountInfo(address);
             if(!account.address) {
                 recipient.isActivated = false;
                 recipient.valid = true;

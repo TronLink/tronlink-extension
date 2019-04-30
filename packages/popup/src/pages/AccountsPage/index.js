@@ -280,26 +280,27 @@ class AccountsPage extends React.Component {
                         const price = token.price === undefined ? 0 : token.price;
                         const money = tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT ?(price * amount).toFixed(2):(price * amount * prices.priceList[prices.selected]).toFixed(2);
                         return (
-                            <div className="tokenItem" onClick={ ()=>{
-                                    let o = {id:tokenId,name:token.name,abbr: token.abbr || token.symbol,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
-                                    if(tokenId === '_'){
-                                        o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                        o.balance = new BigNumber(accounts.selected.balance)
-                                            .shiftedBy(-token.decimals)
-                                            .toString();
-                                    }
-                                    PopupAPI.setSelectedToken(o);
-                                    PopupAPI.changeState(APP_STATE.TRANSACTIONS);
-                                }}>
+                            <div className="tokenItem" onClick={ ()=> {
+                                let o = {id:tokenId,name:token.name,abbr: token.abbr || token.symbol,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                                if(tokenId === '_'){
+                                    o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
+                                        .shiftedBy(-token.decimals)
+                                        .toString();
+                                    o.balance = new BigNumber(accounts.selected.balance)
+                                        .shiftedBy(-token.decimals)
+                                        .toString();
+                                }
+                                PopupAPI.setSelectedToken(o);
+                                PopupAPI.changeState(APP_STATE.TRANSACTIONS);
+                            }}
+                            >
                                 <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
                                 <div className="name">
                                     <span>{token.abbr || token.symbol || token.name}</span>
                                     {
                                         token.isShow ?
                                             <div className="income">
-                                                <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()+'USDT'}} />
+                                                <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()}} />
                                             </div>
                                             :null
                                     }
@@ -309,7 +310,7 @@ class AccountsPage extends React.Component {
                                     <span>≈ {money} {prices.selected}</span>
                                 </div>
                             </div>
-                        )
+                        );
                     })
                 }
             </div>
