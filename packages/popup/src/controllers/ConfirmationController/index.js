@@ -1,4 +1,5 @@
 import React from 'react';
+import Toast,{ T } from 'react-toast-mobile';
 import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
@@ -23,9 +24,6 @@ import './ConfirmationController.scss';
 class ConfirmationController extends React.Component {
     constructor({ intl }) {
         super();
-        this.state = {
-            dapp:{}
-        };
         this.loadWhitelistOptions(intl);
 
         this.onReject = this.onReject.bind(this);
@@ -34,15 +32,7 @@ class ConfirmationController extends React.Component {
     }
 
     async componentDidMount() {
-        const { hostname } = this.props.confirmation;
-        const { data: {data : {list:dapps} } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-        const { data: {data : {list:dapps2} } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
-        const tronDapps = dapps.concat(dapps2).filter(({protocols:[type], url})=> type === 'tron' && url.match(new RegExp(hostname)));
-        if(tronDapps.length) {
-            const {logo:icon,url:href,title:name} = tronDapps[0];
-            const dapp = {icon,href,name};
-            this.setState({dapp});
-        }
+
     }
 
     loadWhitelistOptions({ formatMessage }) {
@@ -76,8 +66,13 @@ class ConfirmationController extends React.Component {
     }
 
     async addUsedDapp() {
-        const { dapp } = this.state;
-        if(dapp){
+        const { hostname } = this.props.confirmation;
+        const { data: { data : {list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+        const { data: { data : {list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+        const tronDapps = dapps.concat(dapps2).filter(({protocols:[type], url})=> type === 'tron' && url.match(new RegExp(hostname)));
+        if(tronDapps.length) {
+            const {logo:icon,url:href,title:name} = tronDapps[0];
+            const dapp = {icon,href,name};
             const dappList = await PopupAPI.getDappList();
             const { used } = dappList;
             if(!used.length || used.every(({name})=> name !== dapp.name)) {
@@ -100,8 +95,9 @@ class ConfirmationController extends React.Component {
         const {
             selected
         } = this.state.whitelisting;
-
+        T.loading();
         await this.addUsedDapp();
+        T.loaded();
         PopupAPI.acceptConfirmation(selected.value);
     }
 
@@ -293,6 +289,7 @@ class ConfirmationController extends React.Component {
         return (
             <div className='insetContainer confirmationController'>
                 <div className='greyModal confirmModal'>
+                    <Toast />
                     <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
                         <div className='pageHeader hasBottomMargin'>
                             { text }

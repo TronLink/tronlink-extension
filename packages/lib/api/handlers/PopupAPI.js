@@ -252,5 +252,9 @@ export default {
 
     getAccountInfo(address) {
         return this.duplex.send('getAccountInfo', address);
+    },
+
+    setGaEvent(eventCategory, eventAction, eventLabel) {
+        this.duplex.send('setGaEvent', { eventCategory, eventAction, eventLabel }, false);
     }
 };

@@ -14,13 +14,17 @@ class DappListController extends React.Component {
     async componentDidMount() {
         T.loading();
         const dappList = await PopupAPI.getDappList();
-        console.log(dappList);
         PopupAPI.setDappList(dappList);
         T.loaded();
     }
 
     tab(tab) {
         this.setState({ tab });
+        if (tab === 'recommend') {
+            PopupAPI.setGaEvent('Dapp List','Recommend','Recommend');
+        } else {
+            PopupAPI.setGaEvent('Dapp List','Used','Used');
+        }
     }
 
     render() {
@@ -47,8 +51,9 @@ class DappListController extends React.Component {
                         {
                             dapps.length > 0
                                 ?
-                                dapps.map(( { name, desc, icon, is_plug_hot, href } ) => (
+                                dapps.map(( { name, desc, icon, is_plug_hot, href, id } ) => (
                                     <div className={'item' + ( is_plug_hot === 1 ? ' isHot' : '')} onClick={ () => {
+                                        if(id) PopupAPI.setGaEvent('Dapp List', id, 'Recommend');
                                         window.open(href);
                                     }} title={ desc }>
                                         <img src={icon} />

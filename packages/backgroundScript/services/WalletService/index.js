@@ -89,6 +89,15 @@ class Wallet extends EventEmitter {
 
         this.state = appState;
         this.emit('newState', appState);
+        // if(appState === APP_STATE.DAPP_LIST) {
+        //     ga('send', 'event', {
+        //         eventCategory: 'Dapp List',
+        //         eventAction: 'Recommend',
+        //         eventLabel: 'Recommend',
+        //         eventValue: TronWeb.address.fromHex(this.selectedAccount),
+        //         userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
+        //     });
+        // }
 
         return appState;
     }
@@ -1029,6 +1038,17 @@ class Wallet extends EventEmitter {
 
     async getAccountInfo(address) {
         return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+    }
+
+    setGaEvent({ eventCategory, eventAction, eventLabel }) {
+        console.log(eventCategory,eventAction,eventLabel);
+        ga('send', 'event', {
+            eventCategory,
+            eventAction,
+            eventLabel,
+            eventValue: TronWeb.address.fromHex(this.selectedAccount),
+            userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
+        });
     }
 }
 export default Wallet;

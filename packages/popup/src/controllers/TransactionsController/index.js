@@ -31,7 +31,6 @@ class TransactionsController extends React.Component {
         Toast.loading('', 0);
         const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
         Toast.hide();
-        console.log('%0', transactions);
         this.setState({ transactions });
     }
 
@@ -66,7 +65,7 @@ class TransactionsController extends React.Component {
 
                 </div>
                 <div className='greyModal'>
-                    <div className="showTokenInfo" style={ isTop ? { height: 0, paddingTop: 0, overflow: 'hidden' } : { overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden', height: (id === '_' || id === CONTRACT_ADDRESS.USDT ? 216 : 176) }}>
+                    <div className="showTokenInfo" style={ isTop ? { height: 0, paddingTop: 0, overflow: 'hidden' } : { overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden', height: (id === '_' || (id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow) ? 216 : 176) }}>
                         <img src={imgUrl} onError={(e) => { e.target.src = token10DefaultImg }} />
                         <div className="amount">
                             {amount}

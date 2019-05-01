@@ -72,7 +72,10 @@ class Header extends React.Component {
                             <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
                             <a href="https://www.tronlink.org" target="_blank" className="link link-home"></a>
                             <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
-                            <a href="javascript:void(0)" onClick={()=>{ PopupAPI.changeState(APP_STATE.DAPP_LIST) }}  className="link link-dapp"></a>
+                            <a href="javascript:void(0)" onClick={()=>{
+                                PopupAPI.setGaEvent('Dapp List','Recommend','Recommend')
+                                PopupAPI.changeState(APP_STATE.DAPP_LIST)
+                            }}  className="link link-dapp"></a>
                         </div>
                         <div>
                             <div className="fun" onClick={ () => { PopupAPI.lockWallet(); } }></div>
