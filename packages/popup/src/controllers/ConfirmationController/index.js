@@ -79,10 +79,13 @@ class ConfirmationController extends React.Component {
         const { dapp } = this.state;
         if(dapp){
             const dappList = await PopupAPI.getDappList();
-            console.log(dappList);
             const { used } = dappList;
             if(!used.length || used.every(({name})=> name !== dapp.name)) {
-                used.push(dapp);
+                used.unshift(dapp);
+            } else {
+                const index = used.findIndex(({name})=> name === dapp.name);
+                used.splice(index);
+                used.unshift(dapp);
             }
             dappList.used = used;
             PopupAPI.setDappList(dappList);
