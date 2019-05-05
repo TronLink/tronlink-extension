@@ -28,7 +28,7 @@ class DappListController extends React.Component {
     }
 
     render() {
-        const { onCancel, dappList } = this.props;
+        const { onCancel, dappList, address } = this.props;
         const { tab } = this.state;
         const dapps = dappList[ tab ];
         return (
@@ -52,14 +52,23 @@ class DappListController extends React.Component {
                             dapps.length > 0
                                 ?
                                 dapps.map(( { name, desc, icon, is_plug_hot, href, id } ) => (
-                                    <div className={'item' + ( is_plug_hot === 1 ? ' isHot' : '')} onClick={ async () => {
-                                        if(id && tab === 'recommend') await PopupAPI.setGaEvent('Dapp List', name, 'Recommend', href);
+                                    <div className='item' onClick={ async () => {
+                                        if(id && tab === 'recommend') await PopupAPI.setGaEvent('Dapp List', name, address, href);
                                         window.open(href);
                                     }} title={ desc }>
                                         <img src={icon} />
                                         <div className='content'>
-                                            <div className='title'>{name}</div>
-                                            {desc && desc !== ''? <div className='desc'>{desc}</div>:null}
+                                            <div className={ 'title' + (is_plug_hot === "1" ? ' isHot' : '') }>{name}{
+                                                tab === 'used' ?
+                                                    <div className='delete' onClick={(e)=>{
+                                                        e.stopPropagation();
+                                                        const n = name;
+                                                        const a = dappList.used.filter(({ name }) => name !== n);
+                                                        dappList.used = a;
+                                                        PopupAPI.setDappList(dappList);
+                                                    }}></div> : null
+                                            }</div>
+                                            {desc && desc !== '' ? <div className='desc'>{desc}</div> : null}
                                         </div>
                                     </div>
                                 ))
@@ -76,5 +85,6 @@ class DappListController extends React.Component {
 }
 
 export default connect(state => ({
+    address: state.accounts.selected.address,
     dappList: state.app.dappList
 }))(DappListController);

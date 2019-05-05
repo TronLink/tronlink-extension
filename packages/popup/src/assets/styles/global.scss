@@ -609,6 +609,7 @@ html, body {
                     }
                     &.focus{
                         span{
+                            font-weight: bold;
                             font-size: 16px;
                             color: #636ACC;
                             height: 40px;
@@ -626,12 +627,14 @@ html, body {
                     height: 70px;
                     width: 100%;
                     padding-left: 14px;
+                    padding-right: 14px;
                     background-color: #fff;
                     border-radius: 4px;
                     display: flex;
                     flex-direction: row;
                     align-items: center;
                     margin-top: 8px;
+                    transition:all .2s ease-in-out;
                     &:first-child{
                         margin-top: 0;
                     }
@@ -649,14 +652,28 @@ html, body {
                         .title{
                             display: flex;
                             flex-direction: row;
+                            justify-content: space-between;
                             align-items: center;
                             height: 22px;
                             font-size: 16px;
                             color: #515060;
                             &.isHot{
+                                justify-content:flex-start;
                                 &:after{
+                                    margin-left: 4px;
                                     content:'';
+                                    width: 13px;
+                                    height: 15px;
+                                    background-image: url('../images/new/dapp/icon-fire.svg');
                                 }
+                            }
+                            .delete{
+                                transition:all .2s ease-in-out;
+                                opacity:0;
+                                cursor: pointer;
+                                width: 16px;
+                                height: 16px;
+                                background-image: url('../images/new/icon-close.svg');
                             }
                         }
                         .desc{
@@ -672,6 +689,9 @@ html, body {
                     &:hover{
                         transform: translate(-1px,-1px);
                         background-color: rgba(255,255,255,.8);
+                        .content .title .delete{
+                            opacity: 1;
+                        }
                     }
                 }
                 .noData{

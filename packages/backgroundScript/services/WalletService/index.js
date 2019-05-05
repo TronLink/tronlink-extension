@@ -1036,7 +1036,7 @@ class Wallet extends EventEmitter {
 
     async setDappList(dappList) {
         await StorageService.saveDappList(dappList);
-        this.emit('setDappList',dappList);
+        this.emit('setDappList', dappList);
     }
 
     async getAccountInfo(address) {
