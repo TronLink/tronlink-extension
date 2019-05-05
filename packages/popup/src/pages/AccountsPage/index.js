@@ -399,7 +399,6 @@ class AccountsPage extends React.Component {
 
     render() {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
-        let totalMoney = '0';
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
         const { showNodeList,mnemonic,privateKey,news,ieos }  = this.state;
@@ -408,7 +407,6 @@ class AccountsPage extends React.Component {
         const { selected: { airdropInfo } } = accounts;
         //const mode = setting.developmentMode?'developmentMode':'productionMode';
         const mode = 'productionMode';
-
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const usdt_price = prices.selected === 'USD' ? new BigNumber(prices.priceList.USD/prices.priceList.USDT).toFixed(8).toString() : new BigNumber(prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8).toString();
@@ -416,29 +414,25 @@ class AccountsPage extends React.Component {
         if(airdropInfo){
             usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
         }
-        const trx = {tokenId:"_",name:"TRX",balance:(accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
-        let tokens = {...accounts.selected.tokens.basic,...accounts.selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId,token])=> tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
-        tokens = [usdt,trx,...tokens];
-        tokens = tokens.map(({tokenId,...token})=>{
+        const trx = {tokenId: "_", name: "TRX", balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
+        tokens = [usdt, trx, ...tokens];
+        tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;
-            const price = token.price === undefined ? 0 : token.price;
-            const amount = new BigNumber(token.balance)
-                .shiftedBy(-token.decimals)
-                .toString();
-            const money = (tokenId==='_' || tokenId === CONTRACT_ADDRESS.USDT) ?(price * amount).toFixed(2):(price * amount * trx_price).toFixed(2);
-            totalMoney = new BigNumber(totalMoney).plus(new BigNumber(money)).toString();
-            return {tokenId,...token};
+            return { tokenId, ...token };
         });
-        Object.entries(accounts.accounts).map(([address,account])=>{
+        Object.entries(accounts.accounts).map(([address,account]) => {
             totalAsset = totalAsset.plus(new BigNumber(account.asset));
             totalTrx   = totalTrx.plus(new BigNumber(account.balance).shiftedBy(-6));
         });
+        const asset = accounts.accounts[ accounts.selected.address ] && accounts.accounts[ accounts.selected.address ].asset ? accounts.accounts[accounts.selected.address].asset : 0;
+        const totalMoney = new BigNumber(asset).multipliedBy(prices.priceList[ prices.selected ]).toFixed(2);
         return (
-            <div className='accountsPage' onClick={()=>{
+            <div className='accountsPage' onClick={() => {
                 this.setState({
-                    showMenuList:false
-                })
+                    showMenuList: false
+                });
             }}>
                 {
                     this.renderBackup(mnemonic,privateKey)

@@ -61,6 +61,7 @@ const backgroundScript = {
         ), 'ga');
 
         ga('create', 'UA-126129673-2', 'auto');
+        ga('send', 'pageview');
         ga('set', 'checkProtocolTask', null);
         ga('set', 'appName', 'TronLink');
         ga('set', 'appVersion', version);

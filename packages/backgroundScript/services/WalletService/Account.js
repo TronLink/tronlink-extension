@@ -216,7 +216,7 @@ class Account {
         this.tokens.basic = {};
     }
 
-    async update(basicTokenPriceList, smartTokenPriceList) {
+    async update(basicTokenPriceList, smartTokenPriceList, usdtPrice) {
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
         const node = NodeService.getNodes().selected;
@@ -251,7 +251,7 @@ class Account {
                     this.tokens.smart[ tokenId ].price = 0;
                 }
             }
-
+            this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
             let sentDelegateBandwidth = 0;
             const delegated = account.delegated;
             if(delegated && delegated.sentDelegatedBandwidth) {
@@ -322,8 +322,8 @@ class Account {
                         balance = new BigNumber(number).toString();
                     }
                 } else {
-                    balance = 0;        
-                }    
+                    balance = 0;
+                }
                 if(!token && !StorageService.tokenCache.hasOwnProperty(contract_address))
                     await StorageService.cacheToken({contract_address,decimals,name,abbr});
                     if(!token && StorageService.tokenCache.hasOwnProperty(contract_address) && StorageService.tokenCache[contract_address].hasOwnProperty('abbr')) {
@@ -422,9 +422,11 @@ class Account {
             this.balance = account.balance || 0;
         }
         let totalOwnTrxCount = new BigNumber(this.balance + this.frozenBalance).shiftedBy(-6);
-        Object.entries({...this.tokens.basic,...this.tokens.smart}).map(([tokenId,token])=>{
-            if(token.price!==0){
-                totalOwnTrxCount = totalOwnTrxCount.plus(new BigNumber(token.balance).shiftedBy(-token.decimals).multipliedBy(token.price));
+        Object.entries({ ...this.tokens.basic, ...this.tokens.smart }).map(([tokenId,token]) => {
+            if(token.price !== 0) {
+                const prices = StorageService.prices;
+                const price = tokenId === CONTRACT_ADDRESS.USDT ? token.price / prices.priceList[prices.selected] : token.price;
+                totalOwnTrxCount = totalOwnTrxCount.plus(new BigNumber(token.balance).shiftedBy(-token.decimals).multipliedBy(price));
             }
         });
         this.asset = totalOwnTrxCount.toNumber();

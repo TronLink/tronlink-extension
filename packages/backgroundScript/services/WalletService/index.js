@@ -7,6 +7,7 @@ import axios from 'axios';
 import extensionizer from 'extensionizer';
 import Utils from '@tronlink/lib/utils';
 import TronWeb from 'tronweb';
+import { BigNumber } from 'bignumber.js';
 
 import {
     APP_STATE,
@@ -113,7 +114,7 @@ class Wallet extends EventEmitter {
             );
 
             accountObj.loadCache();
-            accountObj.update([],[]);
+            accountObj.update([],[],0);
 
             this.accounts[ address ] = accountObj;
         });
@@ -138,18 +139,20 @@ class Wallet extends EventEmitter {
         const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
             return { data: { data: { rows: [] } } };
         });
-        basicPrice = basicTokenPriceList;
-        smartPrice = smartTokenPriceList;
+        const prices = StorageService.prices;
+        const basicPrice = basicTokenPriceList;
+        const smartPrice = smartTokenPriceList;
+        const usdtPrice = prices.selected === 'USD' ? new BigNumber(prices.priceList.USD/prices.priceList.USDT).toFixed(8).toString() : new BigNumber(prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8).toString();;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                Promise.all([account.update(basicPrice, smartPrice)]).then(() => {
+                Promise.all([account.update(basicPrice, smartPrice, usdtPrice)]).then(() => {
                     if(account.address === this.selectedAccount) {
                         this.emit('setAccount', this.selectedAccount);
                     }
                 }).catch( e => { console.log(e); });
             } else {
-                await account.update(basicPrice, smartPrice);
+                await account.update(basicPrice, smartPrice, usdtPrice);
                 //continue;
             }
         }
@@ -1040,13 +1043,12 @@ class Wallet extends EventEmitter {
         return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
     }
 
-    setGaEvent({ eventCategory, eventAction, eventLabel }) {
-        console.log(eventCategory,eventAction,eventLabel);
+    setGaEvent({ eventCategory, eventAction, eventLabel, referrer }) {
         ga('send', 'event', {
             eventCategory,
             eventAction,
             eventLabel,
-            eventValue: TronWeb.address.fromHex(this.selectedAccount),
+            referrer,
             userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
         });
     }
