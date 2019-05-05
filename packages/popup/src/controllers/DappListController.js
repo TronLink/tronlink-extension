@@ -53,7 +53,7 @@ class DappListController extends React.Component {
                                 ?
                                 dapps.map(( { name, desc, icon, is_plug_hot, href, id } ) => (
                                     <div className='item' onClick={ async () => {
-                                        if(id && tab === 'recommend') await PopupAPI.setGaEvent('Dapp List', name, address, href);
+                                        if(id && tab === 'recommend') await PopupAPI.setGaEvent('Dapp List', name, 'Recommend', href);
                                         window.open(href);
                                     }} title={ desc }>
                                         <img src={icon} />
