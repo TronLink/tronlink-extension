@@ -599,9 +599,17 @@
                     .bankBox{
                         cursor: pointer;
                         color:#636acc;
+                        max-width: 52px;
                         display: block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                     }
                     .num{
+                        max-width: 83px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                         transform: scale(0.8);
                         transform-origin:(center,right);
                         font-size: 12px;
