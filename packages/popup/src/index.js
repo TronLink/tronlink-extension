@@ -123,7 +123,7 @@ export const app = {
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
-        this.store.dispatch(setPriceList(prices.priceList));
+        this.store.dispatch(setPriceList([prices.priceList,prices.usdtPriceList]));
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
         this.store.dispatch(setToken(selectedToken));

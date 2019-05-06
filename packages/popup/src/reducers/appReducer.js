@@ -27,6 +27,7 @@ export const appReducer = createReducer({
     },
     prices: {
         priceList: {},
+        usdtPriceList:{},
         selected: false
     },
     language: 'en',
@@ -44,7 +45,8 @@ export const appReducer = createReducer({
         state.appState = payload;
     },
     [ setPriceList ]: (state, { payload }) => {
-        state.prices.priceList = payload;
+        state.prices.priceList = payload[0];
+        state.prices.usdtPriceList = payload[1];
     },
     [ setCurrency ]: (state, { payload }) => {
         state.prices.selected = payload;

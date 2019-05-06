@@ -30,6 +30,13 @@ const StorageService = {
             BTC: 0,
             ETH: 0
         },
+        usdtPriceList:{
+            USD: 0,
+            GBP: 0,
+            EUR: 0,
+            BTC: 0,
+            ETH: 0
+        },
         selected: 'USD'
     },
     nodes: {
@@ -309,8 +316,9 @@ const StorageService = {
         return transaction.txID;
     },
 
-    setPrices(priceList) {
+    setPrices(priceList,usdtPriceList) {
         this.prices.priceList = priceList;
+        this.prices.usdtPriceList = usdtPriceList;
         this.save('prices');
     },
 

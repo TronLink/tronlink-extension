@@ -142,7 +142,7 @@ class Wallet extends EventEmitter {
         const prices = StorageService.prices;
         const basicPrice = basicTokenPriceList;
         const smartPrice = smartTokenPriceList;
-        const usdtPrice = prices.selected === 'USD' ? new BigNumber(prices.priceList.USD/prices.priceList.USDT).toFixed(8).toString() : new BigNumber(prices.priceList[prices.selected]/prices.priceList.USD).toFixed(8).toString();;
+        const usdtPrice = prices.usdtPriceList[prices.selected];
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
@@ -167,15 +167,13 @@ class Wallet extends EventEmitter {
         if(!StorageService.ready)
             return;
 
-        const prices = await axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,USDT,GBP,EUR,BTC,ETH')
-            .then(res => res.data)
-            .catch(err => { logger.error(err); });
+        const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH');
+        const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,GBP,EUR,BTC,ETH');
+        Promise.all([prices, usdtPrices]).then(res => {
+            StorageService.setPrices(res[0].data, res[1].data);
+            this.emit('setPriceList', [res[0].data, res[1].data]);
+        }).catch(e => logger.warn('Failed to update prices'));
 
-        if(!prices)
-            return logger.warn('Failed to update prices');
-
-        StorageService.setPrices(prices);
-        this.emit('setPriceList', prices);
     }
 
     selectCurrency(currency) {
