@@ -49,7 +49,7 @@ const StorageService = {
     tokenCache: {},
     selectedAccount: false,
     selectedToken:{},
-    setting:{
+    setting: {
         lock:{
             lockTime:0,
             duration:0

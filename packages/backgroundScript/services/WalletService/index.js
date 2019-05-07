@@ -17,6 +17,7 @@ import {
 const logger = new Logger('WalletService');
 let basicPrice;
 let smartPrice;
+let usdtPrice;
 class Wallet extends EventEmitter {
     constructor() {
         super();
@@ -140,9 +141,9 @@ class Wallet extends EventEmitter {
             return { data: { data: { rows: [] } } };
         });
         const prices = StorageService.prices;
-        const basicPrice = basicTokenPriceList;
-        const smartPrice = smartTokenPriceList;
-        const usdtPrice = prices.usdtPriceList[prices.selected];
+        basicPrice = basicTokenPriceList;
+        smartPrice = smartTokenPriceList;
+        usdtPrice = prices.usdtPriceList[prices.selected];
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
@@ -256,11 +257,11 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
             if(account.address === this.selectedAccount) {
-                const r = await account.update(basicPrice, smartPrice).catch(e => false);
+                const r = await account.update(basicPrice, smartPrice, usdtPrice).catch(e => false);
                 if(r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
-                }else {
+                } else {
                     res = false;
                 }
             }else{
@@ -358,7 +359,6 @@ class Wallet extends EventEmitter {
         }
 
         const unlockFailed = await StorageService.unlock(password);
-
         if(unlockFailed) {
             logger.error(`Failed to unlock wallet: ${ unlockFailed }`);
             return Promise.reject(unlockFailed);
@@ -398,9 +398,9 @@ class Wallet extends EventEmitter {
         const setting = this.getSetting();
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
-        if(this.confirmations.length === 0) {
+        if (this.confirmations.length === 0) {
             this._setState(APP_STATE.READY);
-        }else{
+        } else {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
         }
     }
