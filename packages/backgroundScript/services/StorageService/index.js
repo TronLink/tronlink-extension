@@ -30,6 +30,13 @@ const StorageService = {
             BTC: 0,
             ETH: 0
         },
+        usdtPriceList: {
+            USD: 0,
+            GBP: 0,
+            EUR: 0,
+            BTC: 0,
+            ETH: 0
+        },
         selected: 'USD'
     },
     nodes: {
@@ -42,21 +49,21 @@ const StorageService = {
     tokenCache: {},
     selectedAccount: false,
     selectedToken:{},
-    setting:{
+    setting: {
         lock:{
             lockTime:0,
             duration:0
         },
         openAccountsMenu:false,
-        advertising:{},
-        developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
+        advertising: {},
+        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
     },
     language: '',
     ready: false,
     password: false,
-    dappList:{
-        recommend:[],
-        used:[]
+    dappList: {
+        recommend: [],
+        used: []
     },
 
     get needsMigrating() {
@@ -309,8 +316,9 @@ const StorageService = {
         return transaction.txID;
     },
 
-    setPrices(priceList) {
+    setPrices(priceList,usdtPriceList) {
         this.prices.priceList = priceList;
+        this.prices.usdtPriceList = usdtPriceList;
         this.save('prices');
     },
 

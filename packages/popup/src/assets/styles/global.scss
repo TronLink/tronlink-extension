@@ -678,12 +678,12 @@ html, body {
                         }
                         .desc{
                             height: 20px;
-                            font-size: 14px;
+                            line-height: 20px;
+                            font-size: 12px;
                             color: #888998;
                             overflow: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
-                            margin-top: 4px;
                         }
                     }
                     &:hover{
