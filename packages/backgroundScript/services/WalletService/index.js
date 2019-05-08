@@ -7,7 +7,6 @@ import axios from 'axios';
 import extensionizer from 'extensionizer';
 import Utils from '@tronlink/lib/utils';
 import TronWeb from 'tronweb';
-import { BigNumber } from 'bignumber.js';
 
 import {
     APP_STATE,
@@ -44,6 +43,7 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
+        console.log('!!!!!!@@@@@@########',StorageService.ready);
         if(await StorageService.dataExists() || StorageService.needsMigrating)
             this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
     }

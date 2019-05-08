@@ -61,9 +61,9 @@ const StorageService = {
     language: '',
     ready: false,
     password: false,
-    dappList:{
-        recommend:[],
-        used:[]
+    dappList: {
+        recommend: [],
+        used: []
     },
 
     get needsMigrating() {

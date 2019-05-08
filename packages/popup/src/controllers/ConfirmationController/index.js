@@ -96,9 +96,12 @@ class ConfirmationController extends React.Component {
         const {
             selected
         } = this.state.whitelisting;
-        T.loading();
-        await this.addUsedDapp();
-        T.loaded();
+        const { confirmation } = this.props;
+        if( confirmation.contractType === 'TriggerSmartContract' ) {
+            T.loading();
+            await this.addUsedDapp();
+            T.loaded();
+        }
         PopupAPI.acceptConfirmation(selected.value);
     }
 

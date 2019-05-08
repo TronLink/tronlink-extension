@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: auto;
     .advertisingWrap{
         position: absolute;
         bottom:0;
@@ -519,7 +520,7 @@
                     text-align: center;
                     font-size: 12px;
                 }
-            }            
+            }
 
             &.active {
                 background: #707897;
@@ -618,7 +619,7 @@
                         }
                     }
                 }
-                
+
             }
             .bankSingle{
                 position: relative;

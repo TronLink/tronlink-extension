@@ -280,8 +280,8 @@ class AccountsPage extends React.Component {
                         const price = token.price === undefined ? 0 : token.price;
                         const money = (tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT) ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2);
                         return (
-                            <div className='tokenItem' onClick={ ()=> {
-                                let o = {id:tokenId,name:token.name,abbr: token.abbr || token.symbol,decimals:token.decimals,amount,price:token.price,imgUrl:token.imgUrl?token.imgUrl:token10DefaultImg};
+                            <div className='tokenItem' onClick={ () => {
+                                let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg };
                                 if(tokenId === '_'){
                                     o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                         .shiftedBy(-token.decimals)
@@ -409,7 +409,7 @@ class AccountsPage extends React.Component {
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl:'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',tokenId: CONTRACT_ADDRESS.USDT};
+        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.usdtPriceList[prices.selected] };
         if(airdropInfo){
             usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
         }
@@ -421,7 +421,7 @@ class AccountsPage extends React.Component {
             token.decimals = token.decimals || 0;
             return { tokenId, ...token };
         });
-        Object.entries(accounts.accounts).map(([address,account]) => {
+        Object.entries(accounts.accounts).map(([address, account]) => {
             totalAsset = totalAsset.plus(new BigNumber(account.asset));
             totalTrx   = totalTrx.plus(new BigNumber(account.balance).shiftedBy(-6));
         });
@@ -434,27 +434,28 @@ class AccountsPage extends React.Component {
                 });
             }}>
                 {
-                    this.renderBackup(mnemonic,privateKey)
+                    this.renderBackup(mnemonic, privateKey)
                 }
                 {
                     this.renderDeleteAccount()
                 }
                 <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
-                <div className="space-controller">
+                <div className='space-controller'>
                     {
-                        nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !==0 && (!setting.advertising[id] || (setting.advertising[id] && setting.advertising[id][mode])) ?
-                            <div className="advertisingWrap">
-                                <div className="closed" onClick={async ()=>{
-                                    let advertising = setting.advertising ? setting.advertising : {};
-                                    advertising[id] = {developmentMode:true,productionMode:true};
-                                    advertising[id][mode] = false;
-                                    advertising[id][mode] = false;
-                                    PopupAPI.setSetting({...setting,advertising});
-                                }}></div>
+                        nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
+                            <div className='advertisingWrap'>
+                                <div className='closed' onClick={async () => {
+                                    const advertising = setting.advertising ? setting.advertising : {};
+                                    advertising[ id ] = { developmentMode: true, productionMode: true };
+                                    advertising[ id ][ mode ] = false;
+                                    advertising[ id ][ mode ] = false;
+                                    PopupAPI.setSetting({ ...setting, advertising });
+                                }}>
+                                </div>
                                 {
-                                    news.map(({language,...news})=>{
+                                    news.map(({ language, ...news }) => {
                                         let l = 1;
-                                        switch(lng){
+                                        switch(lng) {
                                             case 'en':
                                                 l = 1;
                                                 break;
@@ -469,14 +470,14 @@ class AccountsPage extends React.Component {
                                         }
                                         return (
                                             language === l ?
-                                                <div  onClick={async ()=>{
+                                                <div onClick={ async () => {
                                                     const r = await PopupAPI.addCount(news.id);
                                                     if(r)
                                                         window.open(news.content_url);
                                                 }}>
-                                                    {news.pic_url?<img src={news.pic_url} alt=""/>:null}
-                                                    {news.content?<div><span style={{webkitBoxOrient: 'vertical'}}>{news.content}</span></div>:null}
-                                                </div>:null
+                                                    { news.pic_url ? <img src={news.pic_url} alt='' /> : null }
+                                                    { news.content ? <div><span style={{ webkitBoxOrient: 'vertical' }}>{news.content}</span></div> : null }
+                                                </div> : null
                                         )
                                     })
                                 }
