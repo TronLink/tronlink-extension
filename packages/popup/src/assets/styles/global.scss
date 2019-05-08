@@ -585,6 +585,7 @@ html, body {
         }
     }
     &.dapps{
+        overflow:auto;
         .greyModal{
             padding:0;
             .nav{
