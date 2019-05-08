@@ -282,7 +282,7 @@ class AccountsPage extends React.Component {
                         return (
                             <div className='tokenItem' onClick={ () => {
                                 let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg };
-                                if(tokenId === '_'){
+                                if(tokenId === '_') {
                                     o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                         .shiftedBy(-token.decimals)
                                         .toString();
@@ -409,7 +409,7 @@ class AccountsPage extends React.Component {
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.usdtPriceList[prices.selected] };
+        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
         if(airdropInfo){
             usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
         }

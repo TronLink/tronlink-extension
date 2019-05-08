@@ -30,7 +30,7 @@ const StorageService = {
             BTC: 0,
             ETH: 0
         },
-        usdtPriceList:{
+        usdtPriceList: {
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -55,8 +55,8 @@ const StorageService = {
             duration:0
         },
         openAccountsMenu:false,
-        advertising:{},
-        developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
+        advertising: {},
+        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
     },
     language: '',
     ready: false,
