@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Toast,{ T } from 'react-toast-mobile';
 import { FormattedMessage } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 class DappListController extends React.Component {
@@ -12,10 +11,8 @@ class DappListController extends React.Component {
     }
 
     async componentDidMount() {
-        T.loading();
-        const dappList = await PopupAPI.getDappList();
+        const dappList = await PopupAPI.getDappList(true);
         PopupAPI.setDappList(dappList);
-        T.loaded();
     }
 
     tab(tab) {
@@ -38,7 +35,6 @@ class DappListController extends React.Component {
                     <span className='title'>DAPP</span>
                 </div>
                 <div className='greyModal'>
-                    <Toast />
                     <div className='nav'>
                         <div className={'item' + (tab === 'recommend' ? ' focus' : '')} onClick={() => { this.tab('recommend'); }}>
                             <FormattedMessage id='DAPP.NAV.RECOMMEND' />

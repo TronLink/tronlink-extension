@@ -133,7 +133,6 @@ export const app = {
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
-
         logger.info('Set application state');
     },
 
