@@ -49,11 +49,14 @@ class ReceiveController extends React.Component {
                     <div class="address">
                         {address}
                     </div>
-                    <CopyToClipboard text={address} onCopy={ () => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
-                        <a className="copyAddressBtn">
-                            <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
-                        </a>
-                    </CopyToClipboard>
+                    <div>
+                        <input value={address} type='hidden'/>
+                        <CopyToClipboard text={address} onCopy={ () => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
+                            <a className="copyAddressBtn">
+                                <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
+                            </a>
+                        </CopyToClipboard>
+                    </div>
                 </div>
             </div>
         );
