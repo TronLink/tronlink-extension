@@ -42,7 +42,6 @@ class App extends React.Component {
 
     render() {
         const { appState,accounts,prices,nodes,language,lock,version } = this.props;
-        console.log(appState);
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
