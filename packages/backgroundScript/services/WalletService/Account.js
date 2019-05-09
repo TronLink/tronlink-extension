@@ -222,7 +222,7 @@ class Account {
         try {
             const node = NodeService.getNodes().selected;
             if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-                const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address=' + address);
+                const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address=' + address).catch(e => ( { data: {} } ));
                 const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
                 if (!account2.address) {
                     logger.info(`Account ${address} does not exist on the network`);

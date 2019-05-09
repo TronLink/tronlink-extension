@@ -31,8 +31,8 @@ class ConfirmationController extends React.Component {
         this.onWhitelist = this.onWhitelist.bind(this);
     }
 
-    async componentDidMount() {
-
+    componentDidMount() {
+            console.log(this.props.confirmation);
     }
 
     loadWhitelistOptions({ formatMessage }) {
@@ -70,8 +70,8 @@ class ConfirmationController extends React.Component {
         const dappList = await PopupAPI.getDappList(true);
         const { used } = dappList;
         if(!used.length || used.every(({ href }) => !href.match(new RegExp(hostname)))) {
-            const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-            const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+            const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest',{timeout: 5000}).catch(e=>({ data: { data : { list: []  } } }));
+            const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0', {timeout: 5000}).catch(e=>({ data: { data : { list: []  } } }));
             const tronDapps = dapps.concat(dapps2).filter(({ protocols: [ type ], url }) => type === 'tron' && url.match(new RegExp(hostname)));
             if(tronDapps.length) {
                 const { logo: icon, url: href, title: name } = tronDapps[ 0 ];
