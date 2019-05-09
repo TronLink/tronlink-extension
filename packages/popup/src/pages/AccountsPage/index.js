@@ -39,9 +39,8 @@ class AccountsPage extends React.Component {
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
-        const { developmentMode } = this.props.setting;
-        //tronscanUrl = developmentMode ? 'http://18.188.214.126:8686/#' : 'https://tronscan.org/#';
-        tronscanUrl = developmentMode ? 'https://tronscan.org/#' : 'https://tronscan.org/#';
+        //const { developmentMode } = this.props.setting;
+        tronscanUrl = 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
         if(news.length > 0) {
@@ -51,8 +50,8 @@ class AccountsPage extends React.Component {
             this.runTime(ieos);
         }
         await PopupAPI.setAirdropInfo(accounts.selected.address);
-        //await PopupAPI.setAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
-        //app.getAirdropInfo('TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1');
+        const dappList = await PopupAPI.getDappList(false);
+        PopupAPI.setDappList(dappList);
     }
 
     runTime(ieos) {

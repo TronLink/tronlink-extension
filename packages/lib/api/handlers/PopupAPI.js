@@ -242,8 +242,8 @@ export default {
         this.duplex.send('setAirdropInfo', address, false);
     },
 
-    getDappList() {
-        return this.duplex.send('getDappList');
+    getDappList(isFromStorage) {
+        return this.duplex.send('getDappList',isFromStorage);
     },
 
     setDappList(dappList) {

@@ -15,7 +15,7 @@ import { version } from './package.json';
 
 // Make error reporting user-configurable
 Sentry.init({
-    dsn: 'https://4757a0fdd2e743d48c184f75a179dffe@sentry.io/1273081',
+    dsn: 'https://5d5f88b4905844f9a1be3d380f5569a8@sentry.io/1455160',
     release: `TronLink@${ version }`
 });
 

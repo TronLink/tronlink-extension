@@ -67,22 +67,22 @@ class ConfirmationController extends React.Component {
 
     async addUsedDapp() {
         const { hostname } = this.props.confirmation;
-        const dappList = await PopupAPI.getDappList();
+        const dappList = await PopupAPI.getDappList(true);
         const { used } = dappList;
         if(!used.length || used.every(({ href }) => !href.match(new RegExp(hostname)))) {
-            const { data: { data : {list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-            const { data: { data : {list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+            const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+            const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0');
             const tronDapps = dapps.concat(dapps2).filter(({ protocols: [ type ], url }) => type === 'tron' && url.match(new RegExp(hostname)));
             if(tronDapps.length) {
                 const { logo: icon, url: href, title: name } = tronDapps[ 0 ];
                 const dapp = { icon, href, name };
                 used.unshift(dapp);
             }
-        }else{
+        } else {
             const index = used.findIndex(({ href }) => href.match(new RegExp(hostname)));
-            const dapp = used[ index ];
-            used.splice(index);
-            used.unshift(dapp);
+            const item = used.find(({ href }) => href.match(new RegExp(hostname)));
+            used.splice(index, 1);
+            used.unshift(item);
         }
         dappList.used = used;
         PopupAPI.setDappList(dappList);

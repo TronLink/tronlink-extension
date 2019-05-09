@@ -400,21 +400,21 @@ const StorageService = {
         this.save('tokenCache');
     },
 
-    async getDappList(){
+    async getDappList(isFromStorage) {
         if(!this.hasOwnProperty('dappList')) {
-            this.dappList = { recommend:[], used:[] };
+            this.dappList = { recommend: [], used: [] };
         }
-
-        const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
-            return { data: { data: this.dappList.recommend } };
-        });
-
-        this.dappList.recommend = recommend;
-        this.save('dappList');
+        if(!isFromStorage) {
+            const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
+                return { data: { data: this.dappList.recommend } };
+            });
+            this.dappList.recommend = recommend;
+            this.save('dappList');
+        }
         return this.dappList;
-
     },
-    async saveDappList(dappList){
+
+    saveDappList(dappList) {
         this.dappList = dappList;
         this.save('dappList');
     },

@@ -47,7 +47,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
-    dsn: 'https://546d9fe346d149f6b60962741858759b@sentry.io/1329911',
+    dsn: 'https://a52a6098294d4c1c8397e22c8b9a1c0f@sentry.io/1455110',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
 });
 
@@ -132,7 +132,6 @@ export const app = {
         this.store.dispatch(setVersion(version));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
-
 
         logger.info('Set application state');
     },

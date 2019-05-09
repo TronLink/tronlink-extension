@@ -34,8 +34,8 @@ class Wallet extends EventEmitter {
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
 
-        this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
-        // this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
+        // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
+        this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
 
         setInterval(() => {
             this._updatePrice();
@@ -43,7 +43,6 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
-        console.log('!!!!!!@@@@@@########',StorageService.ready);
         if(await StorageService.dataExists() || StorageService.needsMigrating)
             this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
     }
@@ -134,30 +133,35 @@ class Wallet extends EventEmitter {
             return;
 
         this.isPolling = true;
-        const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
-            return { data: { data: [] } };
-        });
-        const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
-            return { data: { data: { rows: [] } } };
-        });
-        const prices = StorageService.prices;
-        basicPrice = basicTokenPriceList;
-        smartPrice = smartTokenPriceList;
-        usdtPrice = prices.usdtPriceList[prices.selected];
+
         const accounts = Object.values(this.accounts);
-        for(const account of accounts) {
-            if(account.address === this.selectedAccount) {
-                Promise.all([account.update(basicPrice, smartPrice, usdtPrice)]).then(() => {
-                    if(account.address === this.selectedAccount) {
-                        this.emit('setAccount', this.selectedAccount);
-                    }
-                }).catch( e => { console.log(e); });
-            } else {
-                await account.update(basicPrice, smartPrice, usdtPrice);
-                //continue;
+        if(accounts.length > 0) {
+            const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
+                return { data: { data: [] } };
+            });
+            const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
+                return { data: { data: { rows: [] } } };
+            });
+            const prices = StorageService.prices;
+            basicPrice = basicTokenPriceList;
+            smartPrice = smartTokenPriceList;
+            usdtPrice = prices.usdtPriceList[prices.selected];
+            for (const account of accounts) {
+                if (account.address === this.selectedAccount) {
+                    Promise.all([account.update(basicPrice, smartPrice, usdtPrice)]).then(() => {
+                        if (account.address === this.selectedAccount) {
+                            this.emit('setAccount', this.selectedAccount);
+                        }
+                    }).catch(e => {
+                        console.log(e);
+                    });
+                } else {
+                    await account.update(basicPrice, smartPrice, usdtPrice);
+                    //continue;
+                }
             }
+            this.emit('setAccounts', this.getAccounts());
         }
-        this.emit('setAccounts', this.getAccounts());
         this.isPolling = false;
         this.timer = setTimeout(() => {
             this._pollAccounts(); // ??TODO repeatedly request
@@ -407,6 +411,8 @@ class Wallet extends EventEmitter {
 
     async lockWallet() {
         StorageService.lock();
+        //this.accounts = {};
+        //this.selectedAccount = false;
         this._setState(APP_STATE.PASSWORD_SET);
     }
 
@@ -1028,8 +1034,8 @@ class Wallet extends EventEmitter {
         }
     }
 
-    async getDappList() {
-        return await StorageService.getDappList();
+    async getDappList(isFromStorage = false) {
+        return await StorageService.getDappList(isFromStorage);
     }
 
     async setDappList(dappList) {
