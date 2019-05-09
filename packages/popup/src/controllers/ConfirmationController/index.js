@@ -67,7 +67,7 @@ class ConfirmationController extends React.Component {
 
     async addUsedDapp() {
         const { hostname } = this.props.confirmation;
-        const dappList = await PopupAPI.getDappList();
+        const dappList = await PopupAPI.getDappList(true);
         const { used } = dappList;
         if(!used.length || used.every(({ href }) => !href.match(new RegExp(hostname)))) {
             const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest');
