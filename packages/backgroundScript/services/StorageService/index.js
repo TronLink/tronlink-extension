@@ -48,11 +48,11 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-    selectedToken:{},
+    selectedToken: {},
     setting: {
-        lock:{
-            lockTime:0,
-            duration:0
+        lock: {
+            lockTime: 0,
+            duration: 0
         },
         openAccountsMenu:false,
         advertising: {},
@@ -65,6 +65,7 @@ const StorageService = {
         recommend: [],
         used: []
     },
+    allDapps:[],
 
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
@@ -89,7 +90,7 @@ const StorageService = {
         return !!(await this.getStorage('accounts'));
     },
 
-    lock(){
+    lock() {
         this.ready = false;
     },
 
@@ -417,6 +418,11 @@ const StorageService = {
     saveDappList(dappList) {
         this.dappList = dappList;
         this.save('dappList');
+    },
+
+    saveAllDapps(dapps) {
+        this.allDapps = dapps;
+        this.save('allDapps');
     },
 
     purge() {

@@ -33,7 +33,6 @@ class Wallet extends EventEmitter {
         this.isPolling = false;
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
-
         // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
         this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
 
@@ -407,6 +406,10 @@ class Wallet extends EventEmitter {
         } else {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
         }
+        const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 }).catch(e=>({ data: { data : { list: []  } } }));
+        const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 }).catch(e=>({ data: { data : { list: []  } } }));
+        const tronDapps =  dapps.concat(dapps2).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+        StorageService.saveAllDapps(tronDapps);
     }
 
     async lockWallet() {
@@ -1056,5 +1059,11 @@ class Wallet extends EventEmitter {
             userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
         });
     }
+
+    getAllDapps() {
+        return StorageService.allDapps;
+    }
+
+
 }
 export default Wallet;

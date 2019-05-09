@@ -256,5 +256,9 @@ export default {
 
     setGaEvent(eventCategory, eventAction, eventLabel, referrer = '') {
         this.duplex.send('setGaEvent', { eventCategory, eventAction, eventLabel, referrer }, false);
+    },
+
+    getAllDapps() {
+        return this.duplex.send('getAllDapps');
     }
 };

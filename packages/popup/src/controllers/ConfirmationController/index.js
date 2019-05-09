@@ -6,7 +6,6 @@ import Dropdown from 'react-dropdown';
 
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import {
     FormattedMessage,
     FormattedHTMLMessage,
@@ -31,9 +30,7 @@ class ConfirmationController extends React.Component {
         this.onWhitelist = this.onWhitelist.bind(this);
     }
 
-    componentDidMount() {
-            console.log(this.props.confirmation);
-    }
+    async componentDidMount() {}
 
     loadWhitelistOptions({ formatMessage }) {
         const options = [{
@@ -69,15 +66,10 @@ class ConfirmationController extends React.Component {
         const { hostname } = this.props.confirmation;
         const dappList = await PopupAPI.getDappList(true);
         const { used } = dappList;
+        const tronDapps = await PopupAPI.getAllDapps();
         if(!used.length || used.every(({ href }) => !href.match(new RegExp(hostname)))) {
-            const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest',{timeout: 5000}).catch(e=>({ data: { data : { list: []  } } }));
-            const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0', {timeout: 5000}).catch(e=>({ data: { data : { list: []  } } }));
-            const tronDapps = dapps.concat(dapps2).filter(({ protocols: [ type ], url }) => type === 'tron' && url.match(new RegExp(hostname)));
-            if(tronDapps.length) {
-                const { logo: icon, url: href, title: name } = tronDapps[ 0 ];
-                const dapp = { icon, href, name };
-                used.unshift(dapp);
-            }
+            const dapp = tronDapps.filter(({ href }) => href.match(new RegExp(hostname)));
+            if(tronDapps.length)used.unshift(dapp[ 0 ]);
         } else {
             const index = used.findIndex(({ href }) => href.match(new RegExp(hostname)));
             const item = used.find(({ href }) => href.match(new RegExp(hostname)));
