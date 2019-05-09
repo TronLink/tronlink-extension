@@ -260,7 +260,7 @@ class Account {
                 }
             }
             let frozenBandwidth = 0;
-            if(account.frozen.balances.length > 0) {
+            if(account.frozen && account.frozen.balances.length > 0) {
                 frozenBandwidth = account.frozen.balances[0].amount;
             }
             let sentDelegateResource = 0;
@@ -270,7 +270,7 @@ class Account {
                 }
             }
             let frozenEnergy = 0;
-            if(account.accountResource.frozen_balance_for_energy.frozen_balance > 0) {
+            if(account.accountResource && account.accountResource.frozen_balance_for_energy && account.accountResource.frozen_balance_for_energy.frozen_balance > 0) {
                 frozenEnergy = account.accountResource.frozen_balance_for_energy.frozen_balance;
             }
             this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
