@@ -410,8 +410,10 @@ const StorageService = {
                 return { data: { data: this.dappList.recommend } };
             });
             this.dappList.recommend = recommend;
-            this.save('dappList');
         }
+        const used = this.dappList.used.filter(v => v != null);
+        this.dappList.used = used;
+        this.save('dappList');
         return this.dappList;
     },
 

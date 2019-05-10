@@ -67,14 +67,15 @@ class ConfirmationController extends React.Component {
         const dappList = await PopupAPI.getDappList(true);
         const { used } = dappList;
         const tronDapps = await PopupAPI.getAllDapps();
-        if(!used.length || used.every(({ href }) => !href.match(new RegExp(hostname)))) {
-            const dapp = tronDapps.filter(({ href }) => href.match(new RegExp(hostname)));
-            if(tronDapps.length)used.unshift(dapp[ 0 ]);
-        } else {
-            const index = used.findIndex(({ href }) => href.match(new RegExp(hostname)));
-            const item = used.find(({ href }) => href.match(new RegExp(hostname)));
+        const regExp = new RegExp(hostname);
+        if(used.length && used.some(({ href }) => href.match(regExp))) {
+            const index = used.findIndex(({ href }) => href.match(regExp));
+            const item = used.find(({ href }) => href.match(regExp));
             used.splice(index, 1);
             used.unshift(item);
+        } else {
+            const dapp = tronDapps.filter(({ href }) => href.match(regExp));
+            if(dapp.length)used.unshift( null );
         }
         dappList.used = used;
         PopupAPI.setDappList(dappList);
@@ -294,9 +295,8 @@ class ConfirmationController extends React.Component {
                     />
                     {type === CONFIRMATION_TYPE.STRING ?
                         this.renderMessage() :
-                        (type === CONFIRMATION_TYPE.TRANSACTION?
-                            this.renderTransaction():
-                                null
+                        (type === CONFIRMATION_TYPE.TRANSACTION ?
+                            this.renderTransaction() : null
                         )
                     }
                     <div className='buttonRow'>
