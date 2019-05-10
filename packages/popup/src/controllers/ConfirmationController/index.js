@@ -75,7 +75,7 @@ class ConfirmationController extends React.Component {
             used.unshift(item);
         } else {
             const dapp = tronDapps.filter(({ href }) => href.match(regExp));
-            if(dapp.length)used.unshift( null );
+            if(dapp.length)used.unshift( dapp[ 0 ] );
         }
         dappList.used = used;
         PopupAPI.setDappList(dappList);
