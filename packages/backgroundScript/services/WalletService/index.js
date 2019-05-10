@@ -144,7 +144,7 @@ class Wallet extends EventEmitter {
             const prices = StorageService.prices;
             basicPrice = basicTokenPriceList;
             smartPrice = smartTokenPriceList;
-            usdtPrice = prices.usdtPriceList[prices.selected];
+            usdtPrice = prices.usdtPriceList ? prices.usdtPriceList[ prices.selected ] : 0;
             for (const account of accounts) {
                 if (account.address === this.selectedAccount) {
                     Promise.all([account.update(basicPrice, smartPrice, usdtPrice)]).then(() => {
