@@ -3,7 +3,7 @@
   "main": "index.js",
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
