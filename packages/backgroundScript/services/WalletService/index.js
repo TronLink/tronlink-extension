@@ -1061,7 +1061,7 @@ class Wallet extends EventEmitter {
     }
 
     getAllDapps() {
-        return StorageService.allDapps;
+        return StorageService.hasOwnProperty('allDapps') ? StorageService.allDapps : [];
     }
 
 

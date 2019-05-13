@@ -65,7 +65,7 @@ const StorageService = {
         recommend: [],
         used: []
     },
-    allDapps:[],
+    allDapps: [],
 
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
