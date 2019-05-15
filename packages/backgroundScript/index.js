@@ -160,6 +160,7 @@ const backgroundScript = {
         duplex.on('getAccountInfo', this.walletService.getAccountInfo);
 
         duplex.on('setGaEvent', this.walletService.setGaEvent);
+        duplex.on('getAllDapps', this.walletService.getAllDapps);
     },
 
     bindTabDuplex() {
