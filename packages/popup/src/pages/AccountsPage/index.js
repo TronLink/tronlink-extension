@@ -13,7 +13,6 @@ import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE } from '@tronlink/lib/constant
 import { FormattedMessage, injectIntl } from 'react-intl';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
-
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 let tronscanUrl = '';
@@ -70,7 +69,7 @@ class AccountsPage extends React.Component {
         const hours = Math.floor( time / ( 60 * 60 ) ) - 24 * day;
         const minutes = Math.floor( ( time % ( 60 * 60 ) ) / 60);
         const seconds = Math.floor(time % 60);
-        return [hours > 9 ? hours : '0' + hours, minutes > 9 ? minutes: '0'+minutes, seconds > 9 ? seconds: '0' + seconds, day];
+        return [hours > 9 ? hours : '0' + hours, minutes > 9 ? minutes : '0' + minutes, seconds > 9 ? seconds : '0' + seconds, day];
     }
 
     onClick(address) {
@@ -128,6 +127,10 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
                         <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * 6, opacity: 1 } : {}}>
+                            <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
+                                <span className='icon asset'></span>
+                                <FormattedMessage id='MENU.ASSET_MANAGE' />
+                            </div>
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
                                 <span className='icon frozen'></span>
                                 <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
@@ -293,7 +296,7 @@ class AccountsPage extends React.Component {
                                 PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                             }}
                             >
-                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
+                                <img src={token.imgUrl || token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} alt=""/>
                                 <div className="name">
                                     <span>{token.abbr || token.symbol || token.name}</span>
                                     {
@@ -410,11 +413,11 @@ class AccountsPage extends React.Component {
         const trx_price = prices.priceList[prices.selected];
         let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
         if(airdropInfo){
-            usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
+            usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
         }
-        const trx = {tokenId: "_", name: "TRX", balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol');
         tokens = [usdt, trx, ...tokens];
         tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;

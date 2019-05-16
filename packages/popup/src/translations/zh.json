@@ -225,6 +225,7 @@
     "COMMON.BALANCE":"余额",
     "COMMON.CURRENT_VERSION":"当前版本v{version}",
 
+    "MENU.ASSET_MANAGE": "资产管理",
     "MENU.ADD_TRC20_TOKEN":"添加TRC20token",
     "MENU.ACCOUNT_DETAIL":"账户明细",
     "MENU.WHITE_LIST":"白名单管理",
@@ -381,6 +382,23 @@
     "USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8": "共计100天",
 
     "DAPP.NAV.RECOMMEND": "推荐",
-    "DAPP.NAV.USED": "使用过"
+    "DAPP.NAV.USED": "使用过",
+
+    "ASSET.ASSET_MANAGE": "资产管理",
+    "ASSET.ADD_TOKEN": "添加token",
+    "ASSET.ADD_TOKEN.PLACEHOLDER": "代币名称，或完整合约地址",
+    "ASSET.MY_ASSET": "我的资产",
+    "ASSET.CONFIRM.HIDE_TOKEN": "隐藏代币",
+    "ASSET.CONFIRM.CANCEL": "取消",
+    "ASSET.CONFIRM.HIDE": "隐藏",
+    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示，之后你还可以通过资产管理中的“添加代币”来添加此代币。",
+
+    "TRANSACTION_DETAIL": "交易详情",
+    "TRANSACTION_DETAIL.ID": "交易ID",
+    "TRANSACTION_DETAIL.BLOCK_HEIGHT": "区块高度",
+    "TRANSACTION_DETAIL.FEE": "费用",
+    "TRANSACTION_DETAIL.GO_TRONSCAN": "去tronscan查看更详细数据",
+    "TRANSACTION_DETAIL.COPYED": "截图已复制到粘贴板"
+
 
 }

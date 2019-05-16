@@ -260,5 +260,15 @@ export default {
 
     getAllDapps() {
         return this.duplex.send('getAllDapps');
+    },
+
+    updateTokens(tokens) {
+        this.duplex.send('updateTokens', tokens, false);
+    },
+
+    getAllTokens() {
+        return this.duplex.send('getAllTokens');
     }
+
+
 };
