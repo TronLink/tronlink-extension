@@ -12,7 +12,8 @@ class PrivateKeyImport extends React.Component {
     state = {
         privateKey: '',
         isValid: false,
-        error: ''
+        error: '',
+        loading: false
     };
 
     constructor() {
@@ -46,16 +47,19 @@ class PrivateKeyImport extends React.Component {
         });
     }
 
-    onSubmit() {
+    async onSubmit() {
         const { privateKey } = this.state;
         const { name } = this.props;
-
-        PopupAPI.importAccount(
+        this.setState({ loading: true });
+        const res = await PopupAPI.importAccount(
             privateKey,
             name
         );
 
-        PopupAPI.resetState();
+        if(res) {
+            PopupAPI.resetState();
+            this.setState({ loading: false });
+        }
     }
 
     render() {
@@ -64,7 +68,8 @@ class PrivateKeyImport extends React.Component {
         const {
             privateKey,
             isValid,
-            error
+            error,
+            loading
         } = this.state;
 
         return (
@@ -86,13 +91,14 @@ class PrivateKeyImport extends React.Component {
                             onChange={ this.onChange }
                             tabIndex={ 1 }
                         />
-                        {!isValid?<div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
+                        {!isValid ? <div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
                     </div>
 
                     <div className='buttonRow'>
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }
+                            isLoading={ loading }
                             onClick={ () => isValid && this.onSubmit() }
                             tabIndex={ 2 }
                         />

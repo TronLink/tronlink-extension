@@ -58,7 +58,7 @@ export default {
     // Account control
 
     importAccount(privateKey, name) {
-        this.duplex.send('importAccount', { privateKey, name }, false);
+        return this.duplex.send('importAccount', { privateKey, name });
     },
 
     addAccount(mnemonic, name) {

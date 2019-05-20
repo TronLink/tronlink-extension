@@ -595,7 +595,7 @@ class Wallet extends EventEmitter {
     }
 
     // This and the above func should be merged into one
-    importAccount({ privateKey, name }) {
+    async importAccount({ privateKey, name }) {
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
@@ -608,13 +608,32 @@ class Wallet extends EventEmitter {
         } = account;
 
         account.name = name;
+        if(Object.keys(this.accounts).length === 0) {
+            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
+            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+            await Promise.all([dapps, dapps2]).then(res => {
+                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+                StorageService.saveAllDapps(tronDapps);
+            });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+            await Promise.all([trc10tokens, trc20tokens]).then(res => {
+                let t = [];
+                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
+                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+                });
+                StorageService.saveAllTokens(t);
+            });
 
+        }
         this.accounts[ address ] = account;
         StorageService.saveAccount(account);
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
         this.refresh();
+        return true;
     }
 
     selectAccount(address) {
