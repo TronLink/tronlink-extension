@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
-import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
+import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS } from '@tronlink/lib/constants';
 import TronWeb from "tronweb";
 import swal from 'sweetalert2';
 import Utils  from '@tronlink/lib/utils';
@@ -12,35 +12,35 @@ class SendController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpen:{
-                account:false,
-                token:false
+            isOpen: {
+                account: false,
+                token: false
             },
-            selectedToken:{
-                id:'_',
-                name:'TRX',
-                amount:0,
-                decimals:6
+            selectedToken: {
+                id: '_',
+                name: 'TRX',
+                amount: 0,
+                decimals: 6
             },
-            recipient:{
-                error:'',
-                value:'',
-                valid:false,
-                isActivated:true
+            recipient: {
+                error: '',
+                value: '',
+                valid: false,
+                isActivated: true
             },
-            amount:{
-                error:'',
-                value:0,
-                valid:false,
-                values:''
+            amount: {
+                error: '',
+                value: 0,
+                valid: false,
+                values: ''
             },
-            loading:false
-        }
+            loading: false
+        };
     }
 
     componentDidMount() {
         let {selectedToken,selected} = this.props.accounts;
-        selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 , 6) : selectedToken.amount;
+        selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 ,  6) : selectedToken.amount;
         this.setState({selectedToken});
     }
 
@@ -51,34 +51,34 @@ class SendController extends React.Component {
             selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
             if(selectedToken.id.match(/^T/)) {
-                selectedToken.amount = selected.tokens.smart[selectedToken.id].balance / Math.pow(10, selected.tokens.smart[selectedToken.id].decimals);
-            }else{
-                selectedToken.amount = selected.tokens.basic[selectedToken.id].balance / Math.pow(10, selected.tokens.basic[selectedToken.id].decimals);
+                selectedToken.amount = selected.tokens.smart[ selectedToken.id ].balance / Math.pow(10, selected.tokens.smart[ selectedToken.id ].decimals);
+            } else {
+                selectedToken.amount = selected.tokens.basic[ selectedToken.id ].balance / Math.pow(10, selected.tokens.basic[ selectedToken.id ].decimals);
             }
         }
-        this.setState({selectedToken});
+        this.setState({ selectedToken });
     }
 
     changeToken(selectedToken,e) {
         e.stopPropagation();
-        const {isOpen} = this.state;
+        const { isOpen } = this.state;
         isOpen.token = !isOpen.token;
-        this.setState({isOpen,selectedToken},() => this.validateAmount());
+        this.setState({ isOpen, selectedToken },() => this.validateAmount());
         PopupAPI.setSelectedToken(selectedToken);
     }
 
-    changeAccount(address,e) {
+    changeAccount(address, e) {
         e.stopPropagation();
-        const {isOpen} = this.state;
+        const { isOpen } = this.state;
         isOpen.account = !isOpen.account;
-        const { selected,accounts } = this.props.accounts;
+        const { selected, accounts } = this.props.accounts;
         const selectedToken = {
             id: '_',
             name: 'TRX',
             decimals: 6,
-            amount: new BigNumber(accounts[address].balance).shiftedBy(-6).toString()
+            amount: new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString()
         };
-        this.setState({isOpen,selectedToken},()=>{this.validateAmount()});
+        this.setState({ isOpen, selectedToken },() => { this.validateAmount() });
         if(selected.address === address)
             return;
         PopupAPI.selectAccount(address);
@@ -138,7 +138,7 @@ class SendController extends React.Component {
             id
         } = this.state.selectedToken;
         const { selected } = this.props.accounts;
-        let {value} = this.state.amount;
+        let { value } = this.state.amount;
         if(value === '') {
             return this.setState({
                 amount: {
@@ -170,19 +170,21 @@ class SendController extends React.Component {
                 amount: {
                     valid: false,
                     value,
-                    error:'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
-                    values:{decimals:(decimals===0?'':'0.'+Array.from({length:decimals-1},v=>0).join(''))+'1'}
+                    error: 'EXCEPTION.SEND.AMOUNT_DECIMALS_ERROR',
+                    values: { decimals: ( decimals === 0 ? '' : '0.' + Array.from({ length: decimals - 1 }, v => 0).join('')) + '1' }
                 }
             });
         } else {
-            if(!this.state.recipient.isActivated && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1))) {
-                return this.setState({
-                    amount: {
-                        valid: false,
-                        value,
-                        error:'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
-                    }
-                });
+            if(!this.state.recipient.isActivated) {
+                if((id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1))) || (id !== '_' && new BigNumber(selected.balance).shiftedBy(-6).gt(0.1) )) {
+                    return this.setState({
+                        amount: {
+                            valid: false,
+                            value,
+                            error: 'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+                        }
+                    });
+                }
             }
             if(id.match(/^T/)) {
                 const valid = this.state.recipient.isActivated ? true : false;

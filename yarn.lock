@@ -1822,10 +1822,10 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-antd-mobile@^2.2.9:
-  version "2.2.9"
-  resolved "https://registry.yarnpkg.com/antd-mobile/-/antd-mobile-2.2.9.tgz#7a2a3e8365b9323a38dcc65a6d4fb7a72492b6c9"
-  integrity sha512-sDIYfLoCKQfIWGW1pm4pFnnDGLXKu5FKnC20WTswTk3KO+2DzBTjfV+EObPzcS/ZNSDyeBAw5nv0WZdvxL1SfQ==
+antd-mobile@^2.2.13:
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/antd-mobile/-/antd-mobile-2.2.13.tgz#ae9a2b33ed8af52ed92127b50691af401ac4c8ce"
+  integrity sha512-izBPlj5yvjPwzqvpjYYmKp9HOSoeIbqY4Z7gzFpxJXnDvaDoeY3ULr4AHQ1gdeJo6BpqjlcCHHw1IwX8DWN3JQ==
   dependencies:
     array-tree-filter "~2.1.0"
     babel-runtime "6.x"

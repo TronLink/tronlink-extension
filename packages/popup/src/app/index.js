@@ -107,7 +107,7 @@ class App extends React.Component {
                 dom = <AssetManageController selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTION_DETAIL:
-                dom = <TransactionDetailController selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
                 break;
             default:
                 dom =

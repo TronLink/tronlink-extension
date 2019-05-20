@@ -40,7 +40,7 @@ class AssetManageController extends React.Component {
                             <FormattedMessage id='ASSET.CONFIRM.HIDE_TOKEN'/>
                         </div>
                         <div className='icon'>
-                            <img src={imgUrl} />
+                            <img src={imgUrl ? imgUrl : token10DefaultImg} />
                         </div>
                         <div className='name'>
                             {name}({abbr || symbol})
@@ -81,6 +81,7 @@ class AssetManageController extends React.Component {
             return { tokenId: id, ...token };
         });
         this.setState({ filterTokens: fs, deleteToken: { show: false, tokenId: '' } });
+        PopupAPI.updateTokens(selected.tokens);
     }
 
     render() {
@@ -151,7 +152,7 @@ class AssetManageController extends React.Component {
                     <div className='leftSpace scroll'>
                         <div className='cellWrap'>
                             {
-                                filterTokens.map(({ tokenId, symbol = false, abbr =false , imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0 }) => {
+                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0 }) => {
                                     return (
                                         <div className='cell'>
                                             <img src={imgUrl ? imgUrl : token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} />
@@ -171,7 +172,7 @@ class AssetManageController extends React.Component {
                                                     });
                                                     this.setState({ filterTokens: filters });
                                                     if(!isList) {
-                                                        const token = { tokenId, name, symbol: abbr || symbol, imgUrl, balance, isLocked: false, decimals };
+                                                        const token = { tokenId, name, symbol: abbr || symbol, imgUrl, balance, isLocked: false, decimals, price: 0 };
                                                         selected.tokens[ field ][ tokenId ] = token;
                                                     } else {
                                                         const balance = selected.tokens[ field ][ tokenId ].balance;

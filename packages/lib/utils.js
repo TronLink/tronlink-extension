@@ -220,6 +220,21 @@ const Utils = {
         return `${timeY}/${timeM}/${timeD} ${timeh}:${timem}`;
     },
 
+    getSelect(targetNode){
+        if (window.getSelection) {
+            //chrome等主流浏览器
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNode(targetNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else if (document.body.createTextRange) {
+            //ie
+            const range = document.body.createTextRange();
+            range.moveToElementText(targetNode);
+            range.select();
+        }
+    }
 };
 
 export default Utils;

@@ -406,13 +406,13 @@ class Wallet extends EventEmitter {
         if (this.confirmations.length === 0) {
             const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
             const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-            await Promise.all([dapps, dapps2]).then(res => {
+            Promise.all([dapps, dapps2]).then(res => {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
             const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
             const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
-            await Promise.all([trc10tokens, trc20tokens]).then(res => {
+            Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
                     if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
@@ -1043,7 +1043,7 @@ class Wallet extends EventEmitter {
         //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
         const apiUrl = 'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
-        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
+        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
         if(res && res.data.code === 0) {
             this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
@@ -1084,6 +1084,20 @@ class Wallet extends EventEmitter {
 
     getAllTokens() {
         return StorageService.hasOwnProperty('allTokens') ? StorageService.allTokens : [];
+    }
+
+    async setTransactionDetail(hash) {
+        const res = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
+        if(res) {
+            let { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
+            if( contractType === 31 && tokenTransferInfo ) {
+                ownerAddress = tokenTransferInfo.from_address;
+                toAddress = tokenTransferInfo.to_address;
+            }
+            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
+            this.emit('setAccount', this.selectedAccount);
+        }
+        return res;
     }
 
 }

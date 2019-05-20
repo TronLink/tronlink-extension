@@ -268,7 +268,9 @@ export default {
 
     getAllTokens() {
         return this.duplex.send('getAllTokens');
+    },
+
+    setTransactionDetail(hash) {
+       return this.duplex.send('setTransactionDetail', hash);
     }
-
-
 };

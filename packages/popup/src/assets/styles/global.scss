@@ -866,8 +866,10 @@ html, body {
             }
             .transaction{
                 flex:1;
-                width: 100%;
+                width: calc(100% + 40px);
                 overflow: auto;
+                margin-left:-20px;
+                margin-right:-20px;
                 .noData{
                     height: 50px;
                     text-align: center;
@@ -878,14 +880,18 @@ html, body {
                     flex-direction: column;
                     align-items: center;
                     margin-bottom: 36px;
-                    padding-right: 4px;
                     .item{
-                        margin-top:18px;
+                        transition:.4s all ease-in-out;
+                        cursor: pointer;
+                        padding:9px 20px;
                         width: 100%;
-                        height: 40px;
+                        height: 58px;
                         display: flex;
                         flex-direction: row;
                         justify-content: space-between;
+                        &:hover{
+                            background-color: #F4F5F8;
+                        }
                         .left{
                             .address{
                                 height: 20px;
@@ -1141,7 +1147,92 @@ html, body {
 
                 }
             }
+            &.detail{
+                padding-bottom:0;
+                .part1{
+                    border-bottom:1px solid #EFEFEF;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding-bottom:12px;
+                    .icon{
+                        margin-top: 20px;
+                        width: 50px;
+                        height: 50px;
+                        background-image: url('../images/new/icon-success.svg');
+                        background-size:100%;
+                    }
+                    .state{
+                        margin-top: 14px;
+                        font-size: 20px;
+                        color: #515060;
+                        height: 28px;
+                        line-height: 28px;
+                    }
+                    .amount{
+                        margin-top: 3px;
+                        height: 18px;
+                        line-height: 18px;
+                        font-size: 13px;
+                        color: #888998;
+                    }
+                }
+                .part2{
+                    flex:1;
+                    padding-top:5px;
+                    border-bottom:1px solid #EFEFEF;
+                    display: flex;
+                    flex-direction: column;
+                    padding-bottom:12px;
+                    .cell{
+                        margin-top: 12px;
+                        display: flex;
+                        flex-direction: column;
+                        .title {
+                            font-size: 14px;
+                            color: #888998;
+                            height: 20px;
+                            line-height: 20px;
+                        }
+                        .content {
+                            margin-top: 6px;
+                            font-size: 14px;
+                            color: #505160;
+                            min-height: 20px;
+                            line-height: 20px;
+                            word-break: break-all;
+                            transition:all 0.4s ease-in-out;
+                            padding:2px;
+                            border:1px solid transparent;
+                            &:hover{
+                                background-color: #F4F5F8;
+                                border:1px solid #EFEFEF;
+                                border-radius:2px;
+                            }
+                            a{
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+                .part3{
+                    cursor: pointer;
+                    height: 40px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    font-size: 14px;
+                    color: #576B94;
+                    &:after{
+                        width: 8px;
+                        height: 13px;
+                        background-image: url('../images/new/icon-arrow-right.svg');
+                        content:'';
+                    }
 
+                }
+            }
         }
         .buttonGroup{
             height: 46px;
@@ -1587,6 +1678,14 @@ html, body {
             font-size: 14px;
             color: #333;
             cursor: pointer;
+        }
+        .screenCapture{
+            position: absolute;
+            right:17px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            background-image: url('../images/new/icon-share.svg');
         }
         .title{
             //font-size: 15px;

@@ -185,6 +185,18 @@ class Account {
         this.netUsed = netUsed;
         this.lastUpdated = lastUpdated;
         this.asset = asset;
+        this.hash = '';
+
+        if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)) {
+            this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
+                symbol: 'USDT',
+                name: 'Tether USD',
+                decimal: 6,
+                tokenId: CONTRACT_ADDRESS.USDT,
+                balance: 0,
+                price: 0
+            };
+        }
     }
 
     matches(accountType, importData) {
@@ -219,16 +231,6 @@ class Account {
     async update(basicTokenPriceList, smartTokenPriceList, usdtPrice) {
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
-        if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)) {
-            this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
-                symbol: 'USDT',
-                name: 'Tether USD',
-                decimal: 6,
-                tokenId: CONTRACT_ADDRESS.USDT,
-                balance: 0,
-                price: 0
-            };
-        }
         try {
             const node = NodeService.getNodes().selected;
             if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
@@ -525,7 +527,8 @@ class Account {
             lastUpdated: this.lastUpdated,
             selectedBankRecordId: this.selectedBankRecordId,
             dealCurrencyPage: this.dealCurrencyPage,
-            airdropInfo: this.airdropInfo
+            airdropInfo: this.airdropInfo,
+            transactionDetail: this.transactionDetail
         };
     }
 

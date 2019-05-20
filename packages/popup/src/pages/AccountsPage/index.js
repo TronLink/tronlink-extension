@@ -139,10 +139,10 @@ class AccountsPage extends React.Component {
                                 <span className='icon vote'></span>
                                 <FormattedMessage id='MENU.VOTE' />
                             </div>
-                            <div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>
-                                <span className='icon addToken'></span>
-                                <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />
-                            </div>
+                            {/*<div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>*/}
+                            {/*    <span className='icon addToken'></span>*/}
+                            {/*    <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />*/}
+                            {/*</div>*/}
                             <div onClick={ this.onExport } className='item'>
                                 <span className='icon backup'></span>
                                 <FormattedMessage id='ACCOUNTS.EXPORT' />
@@ -161,7 +161,7 @@ class AccountsPage extends React.Component {
                 <div className='row2'>
                     <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
                     <input value={accounts.selected.address} type='hidden'/>
-                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { console.log(e); Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
+                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                         <span className='copy'></span>
                     </CopyToClipboard>
                 </div>
