@@ -230,9 +230,6 @@ class AssetManageController extends React.Component {
                             }
                         </div>
                     </div>
-                    {/*<button onClick={ () => this.addToken(this.state.address.value) } className={('customButton primary addToken') + ( this.state.address.valid ? ' is-valid' : ' is-invalid') }>*/}
-                    {/*    <FormattedMessage id='BUTTON.ADD_TOKEN' />*/}
-                    {/*</button>*/}
                 </div>
             </div>
         );
