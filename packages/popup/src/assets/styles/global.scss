@@ -769,6 +769,7 @@ html, body {
                         font-size:14px;
                         color:#888998;
                         align-items:center;
+                        user-select: text;
                         .copy{
                             width: 11px;
                             height: 11px;
@@ -1195,6 +1196,7 @@ html, body {
                             line-height: 20px;
                         }
                         .content {
+                            user-select: text;
                             margin-top: 6px;
                             font-size: 14px;
                             color: #505160;
@@ -1298,6 +1300,7 @@ html, body {
                 font-size: 14px;
                 color: #505160;
                 margin-top: 28px;
+                user-select: text;
             }
             .copyAddressBtn{
                 cursor: pointer;

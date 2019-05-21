@@ -74,7 +74,7 @@ class AssetManageController extends React.Component {
         const { deleteToken, filterTokens } = this.state;
         const { tokenId } = deleteToken;
         const field = tokenId.match(/^T/) ? 'smart' : 'basic';
-        delete selected.tokens[ field ][ tokenId ];
+        selected.tokens[ field ][ tokenId ].isLocked = true;
         const fs = filterTokens.map(({ tokenId: id, ...token }) => {
             if(id === tokenId)
                 token.isList = false;
@@ -89,7 +89,7 @@ class AssetManageController extends React.Component {
         const { selected, onCancel } = this.props;
         const { address, allTokens, filterTokens, deleteToken } = this.state;
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId, token]) => typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT && typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol');
         return (
             <div className='insetContainer asset scroll'>
                 { this.renderDeleteToken(selected.tokens, deleteToken) }
@@ -128,8 +128,7 @@ class AssetManageController extends React.Component {
                                             fTokens[ 0 ].symbol = fTokens[ 0 ].abbr;
                                             fTokens[ 0 ].price = selected.tokens.smart.hasOwnProperty(value) ? selected.tokens.smart[ value ].price : 0;
                                         }
-                                        fTokens[ 0 ].isList = selected.tokens.smart.hasOwnProperty(value) ? true : false;
-
+                                        fTokens[ 0 ].isList = selected.tokens.smart.hasOwnProperty(value) && (!selected.tokens.smart[ value ].hasOwnProperty('isLocked') || !selected.tokens.smart[ value ].isLocked ) ? true : false;
                                     }
                                 } else {
                                     const regexp = new RegExp(value, 'i');
@@ -138,7 +137,7 @@ class AssetManageController extends React.Component {
                                         const field = tokenId.match(/^T/) ? 'smart' : 'basic';
                                         const name = token.name.match(regexp) ? token.name.split(token.name.match(regexp)[ 0 ]).join('<i>' + token.name.match(regexp)[ 0 ] + '</i>') : token.name;
                                         const abbr = token.abbr.match(regexp) ? token.abbr.split(token.abbr.match(regexp)[ 0 ]).join('<i>' + token.abbr.match(regexp)[ 0 ] + '</i>') : token.abbr;
-                                        token.isList = selected.tokens[ field ].hasOwnProperty(tokenId) ? true : false;
+                                        token.isList = selected.tokens[ field ].hasOwnProperty(tokenId) && (!selected.tokens[ field ][ tokenId ].hasOwnProperty('isLocked') || !selected.tokens[ field ][ tokenId ].isLocked ) ? true : false;
                                         token.html = `${name}(${abbr})`;
                                         token.balance = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].balance : 0;
                                         token.price = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].price : 0;
@@ -172,15 +171,16 @@ class AssetManageController extends React.Component {
                                                     });
                                                     this.setState({ filterTokens: filters });
                                                     if(!isList) {
-                                                        const token = { tokenId, name, symbol: abbr || symbol, imgUrl, balance, isLocked: false, decimals, price: 0 };
+                                                        const token = { name, symbol: abbr || symbol, imgUrl, balance, isLocked: false, decimals, price: 0 };
                                                         selected.tokens[ field ][ tokenId ] = token;
                                                     } else {
-                                                        const balance = selected.tokens[ field ][ tokenId ].balance;
-                                                        if(balance > 0 ) {
-                                                            selected.tokens[ field ][ tokenId ].isLocked = true;
-                                                        } else {
-                                                            delete selected.tokens[ field ][ tokenId ];
-                                                        }
+                                                        selected.tokens[ field ][ tokenId ].isLocked = true;
+                                                        // const balance = selected.tokens[ field ][ tokenId ].balance;
+                                                        // if(balance > 0 ) {
+                                                        //     selected.tokens[ field ][ tokenId ].isLocked = true;
+                                                        // } else {
+                                                        //     //delete selected.tokens[ field ][ tokenId ];
+                                                        // }
                                                     }
                                                     PopupAPI.updateTokens(selected.tokens);
                                                 }}/>
@@ -209,8 +209,17 @@ class AssetManageController extends React.Component {
                                         </div>
                                         <Switch color='#636ACC' checked={!isLocked} onClick={(e) => {
                                             const field = tokenId.match(/^T/) ? 'smart' : 'basic';
-                                            if(balance > 0) {
+                                            if( balance > 0 ) {
                                                 selected.tokens[ field ][ tokenId ].isLocked = !isLocked;
+                                                if(filterTokens.length){
+                                                    const fs = filterTokens.map(({ tokenId: id, ...token }) => {
+                                                        if(id === tokenId) {
+                                                            token.isList = isLocked;
+                                                        }
+                                                        return { tokenId: id, ...token };
+                                                    });
+                                                    this.setState({ filterTokens: fs });
+                                                }
                                             } else {
                                                 this.setState({ deleteToken: { show: true, tokenId } });
                                             }

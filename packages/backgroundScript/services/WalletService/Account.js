@@ -264,6 +264,7 @@ class Account {
                         this.tokens.smart[ tokenId ].balance = 0;
                         this.tokens.smart[ tokenId ].price = 0;
                     }
+                    this.tokens.smart[ tokenId ].isLocked = token.hasOwnProperty('isLocked') ? token.isLocked : false;
                 }
                 this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
                 let sentDelegateBandwidth = 0;
@@ -354,7 +355,8 @@ class Account {
                         name,
                         abbr,
                         decimals,
-                        imgUrl
+                        imgUrl,
+                        isLocked: token.hasOwnProperty('isLocked') ? token.isLocked : false
                     };
                     this.tokens.smart[ contract_address ] = {
                         ...token,
@@ -455,6 +457,7 @@ class Account {
             ]);
             logger.info(`Account ${address} successfully updated`);
             this.save();
+            console.log(this.address, '@@@@@@@@@@@@@@@@@@');
         } catch(error) {
             console.log(error);
         }

@@ -160,9 +160,13 @@ class AccountsPage extends React.Component {
                 </div>
                 <div className='row2'>
                     <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
-                    <input value={accounts.selected.address} type='hidden'/>
                     <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
-                        <span className='copy'></span>
+                        <span className='copy' onClick={() => {
+                            const target = this.refs.address;
+                            Utils.getSelect(target);
+                            document.execCommand('copy');
+                            Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2)
+                        }}></span>
                     </CopyToClipboard>
                 </div>
                 <div className='row3'>
@@ -529,7 +533,6 @@ class AccountsPage extends React.Component {
                                             <div className="bottom">
                                                 <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
                                                 <div onClick={(e)=>{e.stopPropagation()}}>
-                                                    <input value={address} type='hidden'/>
                                                     <CopyToClipboard text={address}
                                                                      onCopy={(e) => {
                                                                         Toast.info(formatMessage({id:'TOAST.COPY'}));
