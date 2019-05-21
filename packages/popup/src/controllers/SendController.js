@@ -5,6 +5,7 @@ import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
 import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS } from '@tronlink/lib/constants';
 import TronWeb from "tronweb";
+import { Toast } from 'antd-mobile';
 import swal from 'sweetalert2';
 import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
@@ -298,24 +299,20 @@ class SendController extends React.Component {
             );
         }
 
-        // if(address) {
-        //     func = PopupAPI.sendSmartToken(
-        //         recipient,
-        //         new BigNumber(amount).shiftedBy(decimals).toString(),
-        //         address
-        //     );
-        // }
-        //
+
         func.then(() => {
-            swal(formatMessage({id:'SEND.SUCCESS'}),'','success');
-            this.setState({
-                loading: false
-            });
+            Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
+                this.onCancel();
+                this.setState({
+                    loading: false
+                });
+            }, true);
         }).catch(error => {
-            swal(JSON.stringify(error),'','error');
-            this.setState({
-                loading: false
-            });
+            Toast.fail(JSON.stringify(error), 3, () => {
+                this.setState({
+                    loading: false
+                });
+            }, true);
         });
     }
 
@@ -330,7 +327,9 @@ class SendController extends React.Component {
                 decimals: selectedToken.decimals,
                 amount: selectedToken.amount,
                 price: selectedToken.price,
-                imgUrl: selectedToken.imgUrl ? selectedToken.imgUrl : token10DefaultImg
+                imgUrl: selectedToken.imgUrl ? selectedToken.imgUrl : token10DefaultImg,
+                balance: selectedToken.balance,
+                frozenBalance: selectedToken.frozenBalance
             };
             PopupAPI.setSelectedToken(selectedCurrency);
             PopupAPI.changeState(APP_STATE.TRANSACTIONS);

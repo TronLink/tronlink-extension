@@ -17,7 +17,9 @@ const StorageService = {
         'tokenCache',
         'setting',
         'language',
-        'dappList'
+        'dappList',
+        'allDapps',
+        'allTokens'
     ],
 
     storage: extensionizer.storage.local,
@@ -429,7 +431,7 @@ const StorageService = {
 
     saveAllTokens(tokens) {
         this.allTokens = tokens;
-        this.save('allDapps');
+        this.save('allTokens');
     },
 
     purge() {

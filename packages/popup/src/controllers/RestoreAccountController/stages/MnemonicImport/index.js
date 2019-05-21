@@ -106,7 +106,8 @@ class MnemonicImport extends React.Component {
         });
     }
 
-    import() {
+    async import() {
+        let i = 0;
         this.setState({
             isLoading: true
         });
@@ -119,16 +120,15 @@ class MnemonicImport extends React.Component {
         const { name } = this.props;
         const isSingle = selected.length === 1;
 
-        selected.forEach((internalIndex, index) => {
+        for(const internalIndex of selected) {
+            i++;
             const { privateKey } = addresses[ internalIndex ];
-            const walletName = isSingle ? name : `${ name } #${ index + 1 }`;
-
-            return PopupAPI.importAccount(
+            const walletName = isSingle ? name : `${ name } #${ i }`;
+            await PopupAPI.importAccount(
                 privateKey,
                 walletName
             );
-        });
-
+        }
         PopupAPI.resetState();
     }
 

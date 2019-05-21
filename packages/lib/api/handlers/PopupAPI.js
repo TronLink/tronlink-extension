@@ -62,7 +62,7 @@ export default {
     },
 
     addAccount(mnemonic, name) {
-        this.duplex.send('addAccount', { mnemonic, name }, false);
+        return this.duplex.send('addAccount', { mnemonic, name });
     },
 
     selectAccount(address) {

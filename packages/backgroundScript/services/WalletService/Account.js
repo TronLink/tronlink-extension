@@ -28,7 +28,7 @@ class Account {
         this.balance = 0;
         this.frozenBalance = 0;
         this.netUsed = 0;
-        this.netLimit = 5000;
+        this.netLimit = 0;
         this.totalEnergyWeight = 0; //totalEnergyWeight
         this.TotalEnergyLimit = 0; //TotalEnergyLimit
         this.lastUpdated = 0;
@@ -229,6 +229,7 @@ class Account {
     }
 
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
+        if(!StorageService.allTokens.length)return;
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
         try {
@@ -322,11 +323,11 @@ class Account {
                     };
                 }
                 const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
-                for (let { contract_address } of smartTokens) {
+                for (let { contract_address, decimals: precision } of smartTokens) {
                     let token = this.tokens.smart[ contract_address ] || false;
                     if(token && !token.hasOwnProperty('abbr'))return;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);
-                    const price = filter.length ? filter[ 0 ].price / Math.pow(10, decimals) : 0;
+                    const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
                     const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => false);
                     let balance;
                     if (contract) {
