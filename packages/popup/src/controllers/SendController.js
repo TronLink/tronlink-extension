@@ -328,8 +328,8 @@ class SendController extends React.Component {
                 amount: selectedToken.amount,
                 price: selectedToken.price,
                 imgUrl: selectedToken.imgUrl ? selectedToken.imgUrl : token10DefaultImg,
-                balance: selectedToken.balance,
-                frozenBalance: selectedToken.frozenBalance
+                balance: selectedToken.balance || 0,
+                frozenBalance: selectedToken.frozenBalance || 0
             };
             PopupAPI.setSelectedToken(selectedCurrency);
             PopupAPI.changeState(APP_STATE.TRANSACTIONS);
