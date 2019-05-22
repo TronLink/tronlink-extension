@@ -2,15 +2,15 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import ReactTooltip from 'react-tooltip';
+import { Popover, icon } from 'antd-mobile';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import html2canvas from 'html2canvas';
-import Utils from '@tronlink/lib/utils'
+const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />
 class TransactionDetailController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: '',
-            ids: [ 'ownerAddress', 'toAddress', 'hash', 'block' ]
+            ids: [ 'ownerAddress', 'toAddress', 'hash', 'block' ],
+            help: false
         };
         this.copy = this.copy.bind(this);
     }
@@ -26,7 +26,7 @@ class TransactionDetailController extends React.Component {
         }
     }
     render() {
-        const { img } = this.state;
+        const { help } = this.state;
         const { selectedToken, selected, onCancel } = this.props;
         const { formatMessage } = this.props.intl;
         const { transactionDetail: t, address, } = selected;
@@ -105,6 +105,22 @@ class TransactionDetailController extends React.Component {
                                 <div className='cell'>
                                     <div className='title'>
                                         <FormattedMessage id='TRANSACTION_DETAIL.FEE' />
+                                            <Popover
+                                                 overlayClassName='fortest'
+                                                 overlayStyle={{ color: 'currentColor' }}
+                                                 visible={ help }
+                                                 overlay={<div style={{padding:10}}> dsdasdsadasd </div>}
+                                                 placement='right'
+                                                 align={{
+                                                     overflow: { adjustY: 0, adjustX: 0 },
+                                                     offset: [10, 0],
+                                                 }}
+                                            >
+                                                <div className='help' onMouseEnter={() => this.setState({ help: true })}
+                                                     onMouseLeave={() => this.setState({ help: false })}>
+                                                    {myImg('uQIYTFeRrjPELImDRrPt')}
+                                                </div>
+                                            </Popover>
                                     </div>
                                     <div className='content'>
                                         {new BigNumber(t.cost.energy_fee + t.cost.net_fee).shiftedBy(-6).toString()} TRX

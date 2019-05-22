@@ -205,7 +205,6 @@ class AccountsPage extends React.Component {
                         <div className='title'>
                             {
                                 nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
-                                // nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf306812' ?
                                     <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>

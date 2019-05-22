@@ -177,7 +177,7 @@ class SendController extends React.Component {
             });
         } else {
             if(!this.state.recipient.isActivated) {
-                if((id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1))) || (id !== '_' && new BigNumber(selected.balance).shiftedBy(-6).gt(0.1) )) {
+                if(id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1))) {
                     return this.setState({
                         amount: {
                             valid: false,

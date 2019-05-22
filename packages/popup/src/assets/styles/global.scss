@@ -1194,6 +1194,12 @@ html, body {
                             color: #888998;
                             height: 20px;
                             line-height: 20px;
+                            display: flex;
+                            flex-direction: row;
+                            .help {
+                                margin-left: 4px;
+                                cursor: pointer;
+                            }
                         }
                         .content {
                             user-select: text;
