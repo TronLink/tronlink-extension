@@ -171,7 +171,9 @@ class AssetManageController extends React.Component {
                                                     });
                                                     this.setState({ filterTokens: filters });
                                                     if(!isList) {
-                                                        const token = { name, symbol: abbr || symbol, imgUrl, balance, isLocked: false, decimals, price: 0 };
+                                                        const token = { name, imgUrl, balance, isLocked: false, decimals, price: 0 };
+                                                        const key = TronWeb.isAddress(address.value) ? 'symbol' : 'abbr';
+                                                        token[ key ] = abbr || symbol;
                                                         selected.tokens[ field ][ tokenId ] = token;
                                                     } else {
                                                         selected.tokens[ field ][ tokenId ].isLocked = true;
