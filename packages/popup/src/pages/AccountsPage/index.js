@@ -129,7 +129,7 @@ class AccountsPage extends React.Component {
                         <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * 6, opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
                                 <span className='icon asset'></span>
-                                <FormattedMessage id='MENU.ASSET_MANAGE' />
+                                <FormattedMessage id='ASSET.ASSET_MANAGE' />
                             </div>
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
                                 <span className='icon frozen'></span>

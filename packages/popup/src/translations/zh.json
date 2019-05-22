@@ -225,7 +225,6 @@
     "COMMON.BALANCE":"余额",
     "COMMON.CURRENT_VERSION":"当前版本v{version}",
 
-    "MENU.ASSET_MANAGE": "资产管理",
     "MENU.ADD_TRC20_TOKEN":"添加TRC20token",
     "MENU.ACCOUNT_DETAIL":"账户明细",
     "MENU.WHITE_LIST":"白名单管理",
