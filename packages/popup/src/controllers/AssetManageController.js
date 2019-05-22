@@ -172,17 +172,11 @@ class AssetManageController extends React.Component {
                                                     this.setState({ filterTokens: filters });
                                                     if(!isList) {
                                                         const token = { name, imgUrl, balance, isLocked: false, decimals, price: 0 };
-                                                        const key = TronWeb.isAddress(address.value) ? 'symbol' : 'abbr';
+                                                        const key = TronWeb.isAddress(address.value) && !selected.tokens.smart.hasOwnProperty(address.value) ? 'symbol' : 'abbr';
                                                         token[ key ] = abbr || symbol;
                                                         selected.tokens[ field ][ tokenId ] = token;
                                                     } else {
                                                         selected.tokens[ field ][ tokenId ].isLocked = true;
-                                                        // const balance = selected.tokens[ field ][ tokenId ].balance;
-                                                        // if(balance > 0 ) {
-                                                        //     selected.tokens[ field ][ tokenId ].isLocked = true;
-                                                        // } else {
-                                                        //     //delete selected.tokens[ field ][ tokenId ];
-                                                        // }
                                                     }
                                                     PopupAPI.updateTokens(selected.tokens);
                                                 }}/>

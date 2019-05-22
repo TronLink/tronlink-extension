@@ -326,7 +326,6 @@ class Account {
                 const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
                 for (let { contract_address, decimals: precision } of smartTokens) {
                     let token = this.tokens.smart[ contract_address ] || false;
-                    if(token && !token.hasOwnProperty('abbr'))return;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);
                     const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
                     const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => false);
