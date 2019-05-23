@@ -109,7 +109,7 @@ class TransactionDetailController extends React.Component {
                                                  overlayClassName='fortest'
                                                  overlayStyle={{ color: 'currentColor' }}
                                                  visible={ help }
-                                                 overlay={<div style={{padding:10}}> dsdasdsadasd </div>}
+                                                 overlay={<div style={{padding:10}}> <FormattedMessage id='TRANSACTION_DETAIL.EXPLAIN.CONSUME' /> </div>}
                                                  placement='right'
                                                  align={{
                                                      overflow: { adjustY: 0, adjustX: 0 },

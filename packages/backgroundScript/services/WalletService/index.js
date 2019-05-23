@@ -412,7 +412,7 @@ class Wallet extends EventEmitter {
             });
             const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
             const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
-            await Promise.all([trc10tokens, trc20tokens]).then(res => {
+            Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
                     if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;

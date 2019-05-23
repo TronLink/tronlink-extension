@@ -400,5 +400,6 @@
     "TRANSACTION_DETAIL.GO_TRONSCAN": "Go to Tronscan for detailed data",
     "TRANSACTION_DETAIL.COPYED": "The screenshot is copied to the clipboard",
     "TRANSACTION_DETAIL.ENABLE_COPY": "Copyable",
-    "TRANSACTION_DETAIL.HAVE_COPIED": "Copied"
+    "TRANSACTION_DETAIL.HAVE_COPIED": "Copied",
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy"
 }

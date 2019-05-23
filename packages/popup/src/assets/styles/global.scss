@@ -1199,6 +1199,13 @@ html, body {
                             .help {
                                 margin-left: 4px;
                                 cursor: pointer;
+                                display: flex;
+                                justify-content: center;
+                                flex-direction: column;
+                                img{
+                                    width: 14px;
+                                    height: 14px;
+                                }
                             }
                         }
                         .content {
@@ -1900,5 +1907,16 @@ html, body {
     .am-tabs-default-bar-tab-active{
         font-family: PingFang-SC-Bold;
         font-size: 16px;
+    }
+}
+.am-popover-content {
+    .am-popover-arrow{
+        background-color:rgba(0, 0, 0, .8);
+    }
+    .am-popover-inner-wrapper {
+        line-height:18px;
+        font-size: 13px;
+        color: #fff;
+        background-color: rgba(0, 0, 0, .8);
     }
 }

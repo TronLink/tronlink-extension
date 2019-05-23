@@ -402,5 +402,6 @@
   "TRANSACTION_DETAIL.GO_TRONSCAN": "tronscanにアクセスして、詳細情報を確認します",
   "TRANSACTION_DETAIL.COPYED": "切り取った画像をクリップボードにコピーします",
   "TRANSACTION_DETAIL.ENABLE_COPY": "コピー可能です",
-  "TRANSACTION_DETAIL.HAVE_COPIED": "コピー完了しました"
+  "TRANSACTION_DETAIL.HAVE_COPIED": "コピー完了しました",
+  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。"
 }
