@@ -950,79 +950,31 @@ class Wallet extends EventEmitter {
             } else {
                 requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
                 params.token_id = tokenId;
+
             }
             if(direction === 'all') {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        address
-                    }
-                }).catch((e) => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = {...params, address};
             } else if(direction === 'to') {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        from: address
-                    }
-                }).catch(err => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = { ...params, from: address };
             } else {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        to: address
-                    }
-                }).catch(err => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = { ...params, to: address };
             }
+            const { data: { data: records, total } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+            if(tokenId !== '_') {
+                newRecord = records;
+            }else {
+                if(records.length > 0) {
+                    records.forEach((val, index) => {
+                        if((val.contractData.call_value || val.contractData.amount) && val.contractType !== 2) {
+                            newRecord.push(val);
+                        }
+                    });
+                }else {
+                    newRecord = [];
+                }
+            }
+            return { records: newRecord, total };
         } else {
-            params.limit = 50;
             params.address = address;
             params.contract = tokenId;
             const { data: { data: transactions, total } } = await axios.get('https://apilist.tronscan.org/api/contract/events', {
