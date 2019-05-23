@@ -184,7 +184,7 @@
             .icon{
                 width: 30px;
                 height: 30px;
-                background-position: center;
+                background-position:center;
                 background-repeat: no-repeat;
                 &.account{
                     background-image: url('../../assets/images/new/icon-user.svg');
@@ -228,6 +228,8 @@
                 border-radius:0 0 4px 4px;
             }
             span:nth-child(2){
+                height: 14px;
+                line-height:14px;
                 flex: 1;
                 overflow: hidden;
                 white-space: nowrap;
