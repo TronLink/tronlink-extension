@@ -10,7 +10,6 @@
         "storage",
         "unlimitedStorage",
         "clipboardWrite",
-        "clipboardRead",
         "activeTab"
     ],
     "browser_action": {
