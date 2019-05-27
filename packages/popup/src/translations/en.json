@@ -379,5 +379,27 @@
     "USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8": "共计100天",
 
     "DAPP.NAV.RECOMMEND": "Recommend",
-    "DAPP.NAV.USED": "Recents"
+    "DAPP.NAV.USED": "Recents",
+
+    "ASSET.ASSET_MANAGE": "Asset Management",
+    "ASSET.ADD_TOKEN": "Add Tokens",
+    "ASSET.ADD_TOKEN.PLACEHOLDER": "Token name or full contract address",
+    "ASSET.MY_ASSET": "My Asset",
+    "ASSET.CONFIRM.HIDE_TOKEN": "Hide Tokens",
+    "ASSET.CONFIRM.CANCEL": "Cancel",
+    "ASSET.CONFIRM.HIDE": "Hide",
+    "ASSET.CONFIRM.CONTENT": "The token balance is 0. When hidden, the token will not be displayed in the list. You can go to \"Asset Management\" - \"Add Token\" to add the token back.",
+
+    "TRANSACTION_DETAIL": "Transaction Detail",
+    "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "Successful Transfer",
+    "TRANSACTION_DETAIL.SEND_ADDRESS": "Sending Address",
+    "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "Receiving Address",
+    "TRANSACTION_DETAIL.ID": "Transaction ID",
+    "TRANSACTION_DETAIL.BLOCK_HEIGHT": "Block Height",
+    "TRANSACTION_DETAIL.FEE": "Fee",
+    "TRANSACTION_DETAIL.GO_TRONSCAN": "Go to Tronscan for detailed data",
+    "TRANSACTION_DETAIL.COPYED": "The screenshot is copied to the clipboard",
+    "TRANSACTION_DETAIL.ENABLE_COPY": "Copyable",
+    "TRANSACTION_DETAIL.HAVE_COPIED": "Copied",
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy"
 }

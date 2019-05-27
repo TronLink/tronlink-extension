@@ -381,5 +381,27 @@
   "USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8": "共计100天",
 
   "DAPP.NAV.RECOMMEND": "おすすめ",
-  "DAPP.NAV.USED": "使用済み"
+  "DAPP.NAV.USED": "使用済み",
+
+  "ASSET.ASSET_MANAGE": "資産管理",
+  "ASSET.ADD_TOKEN": "tokenを追加します",
+  "ASSET.ADD_TOKEN.PLACEHOLDER": "token名、または完全な契約アドレスとなります",
+  "ASSET.MY_ASSET": "私の資産",
+  "ASSET.CONFIRM.HIDE_TOKEN": "tokenを隠します",
+  "ASSET.CONFIRM.CANCEL": "取り消します",
+  "ASSET.CONFIRM.HIDE": "隠します",
+  "ASSET.CONFIRM.CONTENT": "当該tokenの残高が0で、隠した後ではリストに表示されませんが、資産管理の「tokenの追加」で追加できます。",
+
+  "TRANSACTION_DETAIL": "取引詳細",
+  "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "振込が成功しました",
+  "TRANSACTION_DETAIL.SEND_ADDRESS": "送付先",
+  "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "受取先",
+  "TRANSACTION_DETAIL.ID": "取引ID",
+  "TRANSACTION_DETAIL.BLOCK_HEIGHT": "ブロック・ハイト",
+  "TRANSACTION_DETAIL.FEE": "費用",
+  "TRANSACTION_DETAIL.GO_TRONSCAN": "tronscanにアクセスして、詳細情報を確認します",
+  "TRANSACTION_DETAIL.COPYED": "切り取った画像をクリップボードにコピーします",
+  "TRANSACTION_DETAIL.ENABLE_COPY": "コピー可能です",
+  "TRANSACTION_DETAIL.HAVE_COPIED": "コピー完了しました",
+  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。"
 }

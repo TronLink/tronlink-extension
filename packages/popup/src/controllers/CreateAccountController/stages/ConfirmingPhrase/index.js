@@ -10,7 +10,8 @@ class ConfirmingPhrase extends React.Component {
         correctOrder: [],
         selected: [],
         words: [],
-        isValid: false
+        isValid: false,
+        loading: false
     };
 
     onClick(wordIndex, word) {
@@ -74,17 +75,20 @@ class ConfirmingPhrase extends React.Component {
         );
     }
 
-    onSubmit(selected, correctOrder) {
+    async onSubmit(selected, correctOrder) {
         const { formatMessage } = this.props.intl;
         const { onSubmit } = this.props;
         const selected2 = selected.map(v=>v.wordIndex);
         for(let v of correctOrder) {
-            if(v !== selected2[v]) {
-                T.notify(formatMessage({id:'CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG'}));
+            if(v !== selected2[ v ]) {
+                T.notify(formatMessage({ id: ' CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG' }));
                 return;
             }
         }
-        onSubmit();
+        this.setState({ loading: true });
+        await onSubmit();
+        this.setState({ loading: false });
+
     }
 
     render() {
@@ -92,7 +96,7 @@ class ConfirmingPhrase extends React.Component {
             onCancel
         } = this.props;
 
-        const { isValid,selected,correctOrder } = this.state;
+        const { isValid, selected, correctOrder,loading } = this.state;
 
         return (
             <div className='insetContainer confirmingPhrase'>
@@ -113,6 +117,7 @@ class ConfirmingPhrase extends React.Component {
                     { this.renderOptions() }
                     <div className='buttonRow'>
                         <Button
+                            isLoading={ loading }
                             id='BUTTON.CONFIRM'
                             isValid={ isValid }
                             onClick={ () => isValid && this.onSubmit(selected,correctOrder) }

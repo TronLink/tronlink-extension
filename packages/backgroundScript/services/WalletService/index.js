@@ -10,7 +10,8 @@ import TronWeb from 'tronweb';
 
 import {
     APP_STATE,
-    ACCOUNT_TYPE
+    ACCOUNT_TYPE,
+    CONTRACT_ADDRESS
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService');
@@ -113,7 +114,7 @@ class Wallet extends EventEmitter {
             );
 
             accountObj.loadCache();
-            accountObj.update([],[],0);
+            accountObj.update([], [], 0);
 
             this.accounts[ address ] = accountObj;
         });
@@ -287,14 +288,15 @@ class Wallet extends EventEmitter {
             APP_STATE.SETTING,
             APP_STATE.ADD_TRC20_TOKEN,
             APP_STATE.READY,
-            APP_STATE.TESTHMTL,
             APP_STATE.TRONBANK,
             APP_STATE.TRONBANK_RECORD,
             APP_STATE.TRONBANK_DETAIL,
             APP_STATE.TRONBANK_HELP,
             APP_STATE.USDT_INCOME_RECORD,
             APP_STATE.USDT_ACTIVITY_DETAIL,
-            APP_STATE.DAPP_LIST
+            APP_STATE.DAPP_LIST,
+            APP_STATE.ASSET_MANAGE,
+            APP_STATE.TRANSACTION_DETAIL
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -402,14 +404,26 @@ class Wallet extends EventEmitter {
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
         if (this.confirmations.length === 0) {
+            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
+            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+            Promise.all([dapps, dapps2]).then(res => {
+                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+                StorageService.saveAllDapps(tronDapps);
+            });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+            Promise.all([trc10tokens, trc20tokens]).then(res => {
+                let t = [];
+                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
+                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+                });
+                StorageService.saveAllTokens(t);
+            });
             this._setState(APP_STATE.READY);
         } else {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
         }
-        const { data: { data : { list: dapps  } } } = await axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 }).catch(e=>({ data: { data : { list: []  } } }));
-        const { data: { data : { list: dapps2 } } } = await axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 }).catch(e=>({ data: { data : { list: []  } } }));
-        const tronDapps =  dapps.concat(dapps2).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-        StorageService.saveAllDapps(tronDapps);
     }
 
     async lockWallet() {
@@ -559,8 +573,25 @@ class Wallet extends EventEmitter {
         this.resetState();
     }
 
-    addAccount({ mnemonic, name }) {
+    async addAccount({ mnemonic, name }) {
         logger.info(`Adding account '${ name }' from popup`);
+
+        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
+        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+        await Promise.all([dapps, dapps2]).then(res => {
+            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+            StorageService.saveAllDapps(tronDapps);
+        });
+        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
+        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+        await Promise.all([trc10tokens, trc20tokens]).then(res => {
+            let t = [];
+            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
+                if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+            });
+            StorageService.saveAllTokens(t);
+        });
 
         const account = new Account(
             ACCOUNT_TYPE.MNEMONIC,
@@ -578,10 +609,12 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
+        this.refresh();
+        return true;
     }
 
     // This and the above func should be merged into one
-    importAccount({ privateKey, name }) {
+    async importAccount({ privateKey, name }) {
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
@@ -594,13 +627,32 @@ class Wallet extends EventEmitter {
         } = account;
 
         account.name = name;
+        if(Object.keys(this.accounts).length === 0) {
+            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
+            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+            await Promise.all([dapps, dapps2]).then(res => {
+                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+                StorageService.saveAllDapps(tronDapps);
+            });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+            await Promise.all([trc10tokens, trc20tokens]).then(res => {
+                let t = [];
+                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
+                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+                });
+                StorageService.saveAllTokens(t);
+            });
 
+        }
         this.accounts[ address ] = account;
         StorageService.saveAccount(account);
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
         this.refresh();
+        return true;
     }
 
     selectAccount(address) {
@@ -624,7 +676,6 @@ class Wallet extends EventEmitter {
             solidityNode: node.solidityNode,
             eventServer: node.eventServer
         });
-        //await this.refresh();
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
     }
@@ -899,79 +950,31 @@ class Wallet extends EventEmitter {
             } else {
                 requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
                 params.token_id = tokenId;
+
             }
             if(direction === 'all') {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        address
-                    }
-                }).catch((e) => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = {...params, address};
             } else if(direction === 'to') {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        from: address
-                    }
-                }).catch(err => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = { ...params, from: address };
             } else {
-                const { data: { data: records, total } } = await axios.get(requestUrl, {
-                    params: {
-                        ...params,
-                        to: address
-                    }
-                }).catch(err => {
-                    return { data: { data: [], total: 0 } };
-                });
-                if(tokenId !== '_') {
-                    newRecord = records;
-                }else {
-                    if(records.length > 0) {
-                        records.forEach((val, index) => {
-                            if(val.contractData.call_value || val.contractData.amount) {
-                                newRecord.push(val);
-                            }
-                        });
-                    }else {
-                        newRecord = [];
-                    }
-                }
-                return { records: newRecord, total };
+                params = { ...params, to: address };
             }
+            const { data: { data: records, total } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+            if(tokenId !== '_') {
+                newRecord = records;
+            }else {
+                if(records.length > 0) {
+                    records.forEach((val, index) => {
+                        if((val.contractData.call_value || val.contractData.amount) && val.contractType !== 2) {
+                            newRecord.push(val);
+                        }
+                    });
+                }else {
+                    newRecord = [];
+                }
+            }
+            return { records: newRecord, total };
         } else {
-            params.limit = 50;
             params.address = address;
             params.contract = tokenId;
             const { data: { data: transactions, total } } = await axios.get('https://apilist.tronscan.org/api/contract/events', {
@@ -1030,7 +1033,7 @@ class Wallet extends EventEmitter {
         //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
         const apiUrl = 'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
-        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{params:{address:hexAddress}}).catch(e=>false);
+        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
         if(res && res.data.code === 0) {
             this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
@@ -1064,6 +1067,28 @@ class Wallet extends EventEmitter {
         return StorageService.hasOwnProperty('allDapps') ? StorageService.allDapps : [];
     }
 
+    updateTokens(tokens) {
+        this.accounts[ this.selectedAccount ].tokens = tokens;
+        this.emit('setAccount', this.selectedAccount);
+    }
+
+    getAllTokens() {
+        return StorageService.hasOwnProperty('allTokens') ? StorageService.allTokens : [];
+    }
+
+    async setTransactionDetail(hash) {
+        const res = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
+        if(res) {
+            let { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
+            if( contractType === 31 && tokenTransferInfo ) {
+                ownerAddress = tokenTransferInfo.from_address;
+                toAddress = tokenTransferInfo.to_address;
+            }
+            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
+            this.emit('setAccount', this.selectedAccount);
+        }
+        return res;
+    }
 
 }
 export default Wallet;

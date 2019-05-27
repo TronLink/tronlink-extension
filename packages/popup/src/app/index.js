@@ -24,6 +24,8 @@ import BankHelplController from '@tronlink/popup/src/controllers/TronBankHelp';
 import IncomeRecordController from '@tronlink/popup/src/controllers/IncomeRecordController';
 import ActivityDetailController from '@tronlink/popup/src/controllers/ActivityDetailController';
 import DappListController from '@tronlink/popup/src/controllers/DappListController';
+import AssetManageController from '@tronlink/popup/src/controllers/AssetManageController';
+import TransactionDetailController from '@tronlink/popup/src/controllers/TransactionDetailController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -75,22 +77,22 @@ class App extends React.Component {
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SETTING:
-                dom = <SettingController lock={lock} version={version} language={language} prices={prices} nodes={nodes} onCancel={ ()=>PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <SettingController lock={lock} version={version} language={language} prices={prices} nodes={nodes} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRONBANK:
-                dom = <BankController accounts={accounts} language={language} ></BankController>;
+                dom = <BankController accounts={accounts} language={language} />;
                 break;
             case APP_STATE.TRONBANK_RECORD:
-                dom = <BankRecordController accounts={accounts}></BankRecordController>;
+                dom = <BankRecordController accounts={accounts} />;
                 break;
             case APP_STATE.TRONBANK_DETAIL:
-                dom = <BankDetailController accounts={accounts}></BankDetailController>;
+                dom = <BankDetailController accounts={accounts} />;
                 break;
             case APP_STATE.TRONBANK_HELP:
-                dom = <BankHelplController></BankHelplController>;
+                dom = <BankHelplController />;
                 break;
             case APP_STATE.USDT_INCOME_RECORD:
                 dom = <IncomeRecordController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
@@ -100,6 +102,12 @@ class App extends React.Component {
                 break;
             case APP_STATE.DAPP_LIST:
                 dom = <DappListController onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                break;
+            case APP_STATE.ASSET_MANAGE:
+                dom = <AssetManageController selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                break;
+            case APP_STATE.TRANSACTION_DETAIL:
+                dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
                 break;
             default:
                 dom =

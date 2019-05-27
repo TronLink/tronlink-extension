@@ -50,7 +50,6 @@ class ReceiveController extends React.Component {
                         {address}
                     </div>
                     <div>
-                        <input value={address} type='hidden'/>
                         <CopyToClipboard text={address} onCopy={ () => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                             <a className="copyAddressBtn">
                                 <FormattedMessage id="ACCOUNT.RECEIVE.BUTTON" />
@@ -61,7 +60,7 @@ class ReceiveController extends React.Component {
             </div>
         );
     }
-    
+
 };
 
 export default injectIntl(ReceiveController);

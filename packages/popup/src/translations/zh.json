@@ -381,6 +381,27 @@
     "USDT.MAIN_TITLE2.SUBTITLE1.CONTENT8": "共计100天",
 
     "DAPP.NAV.RECOMMEND": "推荐",
-    "DAPP.NAV.USED": "使用过"
+    "DAPP.NAV.USED": "使用过",
 
+    "ASSET.ASSET_MANAGE": "资产管理",
+    "ASSET.ADD_TOKEN": "添加token",
+    "ASSET.ADD_TOKEN.PLACEHOLDER": "代币名称，或完整合约地址",
+    "ASSET.MY_ASSET": "我的资产",
+    "ASSET.CONFIRM.HIDE_TOKEN": "隐藏代币",
+    "ASSET.CONFIRM.CANCEL": "取消",
+    "ASSET.CONFIRM.HIDE": "隐藏",
+    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示，之后你还可以通过资产管理中的“添加代币”来添加此代币。",
+
+    "TRANSACTION_DETAIL": "交易详情",
+    "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "转账成功",
+    "TRANSACTION_DETAIL.SEND_ADDRESS": "发送地址",
+    "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "接收地址",
+    "TRANSACTION_DETAIL.ID": "交易ID",
+    "TRANSACTION_DETAIL.BLOCK_HEIGHT": "区块高度",
+    "TRANSACTION_DETAIL.FEE": "费用",
+    "TRANSACTION_DETAIL.GO_TRONSCAN": "去tronscan查看更详细数据",
+    "TRANSACTION_DETAIL.COPIED": "截图已复制到粘贴板",
+    "TRANSACTION_DETAIL.ENABLE_COPY": "可复制",
+    "TRANSACTION_DETAIL.HAVE_COPIED": "已复制",
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗"
 }

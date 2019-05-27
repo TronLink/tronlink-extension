@@ -58,11 +58,11 @@ export default {
     // Account control
 
     importAccount(privateKey, name) {
-        this.duplex.send('importAccount', { privateKey, name }, false);
+        return this.duplex.send('importAccount', { privateKey, name });
     },
 
     addAccount(mnemonic, name) {
-        this.duplex.send('addAccount', { mnemonic, name }, false);
+        return this.duplex.send('addAccount', { mnemonic, name });
     },
 
     selectAccount(address) {
@@ -260,5 +260,17 @@ export default {
 
     getAllDapps() {
         return this.duplex.send('getAllDapps');
+    },
+
+    updateTokens(tokens) {
+        this.duplex.send('updateTokens', tokens, false);
+    },
+
+    getAllTokens() {
+        return this.duplex.send('getAllTokens');
+    },
+
+    setTransactionDetail(hash) {
+       return this.duplex.send('setTransactionDetail', hash);
     }
 };

@@ -13,7 +13,6 @@ import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE } from '@tronlink/lib/constant
 import { FormattedMessage, injectIntl } from 'react-intl';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
-
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 let tronscanUrl = '';
@@ -70,7 +69,7 @@ class AccountsPage extends React.Component {
         const hours = Math.floor( time / ( 60 * 60 ) ) - 24 * day;
         const minutes = Math.floor( ( time % ( 60 * 60 ) ) / 60);
         const seconds = Math.floor(time % 60);
-        return [hours > 9 ? hours : '0' + hours, minutes > 9 ? minutes: '0'+minutes, seconds > 9 ? seconds: '0' + seconds, day];
+        return [hours > 9 ? hours : '0' + hours, minutes > 9 ? minutes : '0' + minutes, seconds > 9 ? seconds : '0' + seconds, day];
     }
 
     onClick(address) {
@@ -128,6 +127,10 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
                         <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * 6, opacity: 1 } : {}}>
+                            <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
+                                <span className='icon asset'></span>
+                                <FormattedMessage id='ASSET.ASSET_MANAGE' />
+                            </div>
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
                                 <span className='icon frozen'></span>
                                 <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
@@ -136,10 +139,10 @@ class AccountsPage extends React.Component {
                                 <span className='icon vote'></span>
                                 <FormattedMessage id='MENU.VOTE' />
                             </div>
-                            <div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>
-                                <span className='icon addToken'></span>
-                                <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />
-                            </div>
+                            {/*<div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>*/}
+                            {/*    <span className='icon addToken'></span>*/}
+                            {/*    <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />*/}
+                            {/*</div>*/}
                             <div onClick={ this.onExport } className='item'>
                                 <span className='icon backup'></span>
                                 <FormattedMessage id='ACCOUNTS.EXPORT' />
@@ -157,9 +160,13 @@ class AccountsPage extends React.Component {
                 </div>
                 <div className='row2'>
                     <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
-                    <input value={accounts.selected.address} type='hidden'/>
-                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { console.log(e); Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
-                        <span className='copy'></span>
+                    <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
+                        <span className='copy' onClick={() => {
+                            const target = this.refs.address;
+                            Utils.getSelect(target);
+                            document.execCommand('copy');
+                            Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2)
+                        }}></span>
                     </CopyToClipboard>
                 </div>
                 <div className='row3'>
@@ -198,7 +205,6 @@ class AccountsPage extends React.Component {
                         <div className='title'>
                             {
                                 nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
-                                // nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf306812' ?
                                     <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
@@ -293,7 +299,7 @@ class AccountsPage extends React.Component {
                                 PopupAPI.changeState(APP_STATE.TRANSACTIONS);
                             }}
                             >
-                                <img src={token.imgUrl || token10DefaultImg} onError={(e)=>{e.target.src=token10DefaultImg}} alt=""/>
+                                <img src={token.imgUrl || token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} alt=""/>
                                 <div className="name">
                                     <span>{token.abbr || token.symbol || token.name}</span>
                                     {
@@ -410,11 +416,11 @@ class AccountsPage extends React.Component {
         const trx_price = prices.priceList[prices.selected];
         let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
         if(airdropInfo){
-            usdt = {...usdt,isShow:airdropInfo.isShow,income:new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString()};
+            usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
         }
-        const trx = {tokenId: "_", name: "TRX", balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance:0)),abbr:"TRX",decimals:6,imgUrl:trxImg,price:trx_price};
+        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId,token])=>typeof token === 'object').map(v=>{v[1].tokenId = v[0];return v[1]}).filter(v=> v.balance > 0 || (v.balance == 0 && v.symbol) ),'abbr','symbol');
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol');
         tokens = [usdt, trx, ...tokens];
         tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;
@@ -526,7 +532,6 @@ class AccountsPage extends React.Component {
                                             <div className="bottom">
                                                 <span>{address.substr(0,10)+'...'+address.substr(-10)}</span>
                                                 <div onClick={(e)=>{e.stopPropagation()}}>
-                                                    <input value={address} type='hidden'/>
                                                     <CopyToClipboard text={address}
                                                                      onCopy={(e) => {
                                                                         Toast.info(formatMessage({id:'TOAST.COPY'}));

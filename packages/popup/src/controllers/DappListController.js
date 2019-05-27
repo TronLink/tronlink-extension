@@ -25,7 +25,7 @@ class DappListController extends React.Component {
     }
 
     render() {
-        const { onCancel, dappList, address } = this.props;
+        const { onCancel, dappList } = this.props;
         const { tab } = this.state;
         const dapps = dappList[ tab ];
         return (
@@ -43,28 +43,47 @@ class DappListController extends React.Component {
                             <FormattedMessage id='DAPP.NAV.USED' />
                         </div>
                     </div>
-                    <div className='dappList scroll'>
+                    <div style={{ display: (tab === 'recommend' ? 'block' : 'none') }} className='dappList scroll'>
                         {
-                            dapps.length > 0
+                            dappList.recommend.length > 0
                                 ?
-                                dapps.map(( { name, desc, icon, is_plug_hot, href, id } ) => (
+                                dappList.recommend.map(( { name, desc, icon, is_plug_hot, href, id } ) => (
                                     <div className='item' onClick={ async () => {
-                                        if(id && tab === 'recommend') await PopupAPI.setGaEvent('Dapp List', name, 'Recommend', href);
+                                        await PopupAPI.setGaEvent('Dapp List', name, 'Recommend', href);
                                         window.open(href);
-                                    }} title={ desc }>
+                                    }} title={ desc } >
                                         <img src={icon} />
                                         <div className='content'>
-                                            <div className={ 'title' + (is_plug_hot === "1" ? ' isHot' : '') }>{name}{
-                                                tab === 'used' ?
-                                                    <div className='delete' onClick={(e)=>{
-                                                        e.stopPropagation();
-                                                        const n = name;
-                                                        const a = dappList.used.filter(({ name }) => name !== n);
-                                                        dappList.used = a;
-                                                        PopupAPI.setDappList(dappList);
-                                                    }}></div> : null
-                                            }</div>
+                                            <div className={ 'title' + (is_plug_hot === "1" ? ' isHot' : '') }>{name}</div>
                                             {desc && desc !== '' ? <div className='desc'>{desc}</div> : null}
+                                        </div>
+                                    </div>
+                                ))
+                                :
+                                <div className='noData'>
+                                    <FormattedMessage id='TRANSACTIONS.NO_DATA'  />
+                                </div>
+                        }
+                    </div>
+                    <div style={{ display: (tab === 'used' ? 'block' : 'none') }} className='dappList scroll'>
+                        {
+                            dappList.used.length > 0
+                                ?
+                                dapps.map(( { name, icon, href } ) => (
+                                    <div className='item' onClick={ async () => {
+                                        window.open(href);
+                                    }}>
+                                        <img src={icon} />
+                                        <div className='content'>
+                                            <div className='title'>{name}
+                                                <div className='delete' onClick={(e)=>{
+                                                    e.stopPropagation();
+                                                    const n = name;
+                                                    const a = dappList.used.filter(({ name }) => name !== n);
+                                                    dappList.used = a;
+                                                    PopupAPI.setDappList(dappList);
+                                                }}></div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))
