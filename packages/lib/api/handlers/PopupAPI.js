@@ -1,8 +1,14 @@
+import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
+
 export default {
     init(duplex) {
         this.duplex = duplex;
     },
 
+    //Data refresh
+    refresh() {
+        return this.duplex.send('refresh');
+    },
     // Data requesting
 
     requestState() {
@@ -52,11 +58,11 @@ export default {
     // Account control
 
     importAccount(privateKey, name) {
-        this.duplex.send('importAccount', { privateKey, name }, false);
+        return this.duplex.send('importAccount', { privateKey, name });
     },
 
     addAccount(mnemonic, name) {
-        this.duplex.send('addAccount', { mnemonic, name }, false);
+        return this.duplex.send('addAccount', { mnemonic, name });
     },
 
     selectAccount(address) {
@@ -124,9 +130,147 @@ export default {
         return this.duplex.send('unlockWallet', password);
     },
 
+    lockWallet() {
+        return this.duplex.send('lockWallet');
+    },
     // Misc
 
     selectCurrency(currency) {
         this.duplex.send('selectCurrency', currency, false);
+    },
+
+    setSelectedToken(token) {
+        this.duplex.send('setSelectedToken', token, false);
+    },
+
+    getSelectedToken() {
+        return this.duplex.send('getSelectedToken');
+    },
+
+    //get type of language package
+
+    getLanguage() {
+        return this.duplex.send('getLanguage');
+    },
+
+    setLanguage(language) {
+        this.duplex.send('setLanguage', language, false);
+    },
+
+    getSetting() {
+        return this.duplex.send('getSetting');
+    },
+
+    setSetting(setting) {
+        this.duplex.send('setSetting', setting, false);
+    },
+
+
+    //tronbank contract
+    rentEnergy(_freezeAmount, _payAmount, _days, _energyAddress) {
+        return this.duplex.send('rentEnergy', {
+            _freezeAmount,
+            _payAmount,
+            _days,
+            _energyAddress
+        });
+    },
+
+    bankOrderNotice(energyAddress, trxHash, requestUrl) {
+        return this.duplex.send('bankOrderNotice', {
+            energyAddress,
+            trxHash,
+            requestUrl
+        });
+    },
+
+    //tronbank  index
+    getBankDefaultData(requestUrl) {
+        return this.duplex.send('getBankDefaultData', { requestUrl });
+    },
+
+    isValidOverTotal(receiverAddress, freezeAmount, requestUrl) {
+        return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
+    },
+
+    getTransactionsByTokenId({tokenId,start,direction}) {
+        return this.duplex.send('getTransactionsByTokenId', {tokenId,start,direction});
+    },
+
+    getNews() {
+        return this.duplex.send('getNews');
+    },
+
+    getIeos() {
+        return this.duplex.send('getIeos');
+    },
+
+    addCount(id) {
+        return this.duplex.send('addCount',id);
+    },
+
+    calculateRentCost(receiverAddress, freezeAmount, days, requestUrl) {
+        return this.duplex.send('calculateRentCost', { receiverAddress, freezeAmount, days, requestUrl });
+    },
+
+    isValidOrderAddress(address, requestUrl) {
+        return this.duplex.send('isValidOrderAddress', { address, requestUrl });
+    },
+
+    isValidOnlineAddress(address) {
+        return this.duplex.send('isValidOnlineAddress', { address });
+    },
+
+    //record list
+    getBankRecordList(address, limit, start, type, requestUrl) {
+        return this.duplex.send('getBankRecordList', { address, limit, start, type, requestUrl });
+    },
+
+    getBankRecordDetail(id, requestUrl) {
+        return this.duplex.send('getBankRecordDetail', { id, requestUrl });
+    },
+
+    setSelectedBankRecordId(id) {
+        this.duplex.send('setSelectedBankRecordId', id, false);
+    },
+
+    changeDealCurrencyPage(status) {
+        this.duplex.send('changeDealCurrencyPage', status, false);
+    },
+
+    setAirdropInfo(address) {
+        this.duplex.send('setAirdropInfo', address, false);
+    },
+
+    getDappList(isFromStorage) {
+        return this.duplex.send('getDappList',isFromStorage);
+    },
+
+    setDappList(dappList) {
+        this.duplex.send('setDappList', dappList, false);
+    },
+
+    getAccountInfo(address) {
+        return this.duplex.send('getAccountInfo', address);
+    },
+
+    setGaEvent(eventCategory, eventAction, eventLabel, referrer = '') {
+        this.duplex.send('setGaEvent', { eventCategory, eventAction, eventLabel, referrer }, false);
+    },
+
+    getAllDapps() {
+        return this.duplex.send('getAllDapps');
+    },
+
+    updateTokens(tokens) {
+        this.duplex.send('updateTokens', tokens, false);
+    },
+
+    getAllTokens() {
+        return this.duplex.send('getAllTokens');
+    },
+
+    setTransactionDetail(hash) {
+       return this.duplex.send('setTransactionDetail', hash);
     }
 };

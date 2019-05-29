@@ -22,3 +22,7 @@ lerna-debug.log
 /key.pem
 /chrome-extension.zip
 /.idea
+.zip
+.vscode
+.vscode/
+.history/*

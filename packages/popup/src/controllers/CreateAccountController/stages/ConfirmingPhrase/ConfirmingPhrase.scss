@@ -1,34 +1,56 @@
-.confirmingPhrase .options {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: 17px -3px;
-    align-items: baseline;
-    justify-content: center;
-
-    .word {
-        margin: 3px;
-        background: #2196f3;
-        padding: 7px 9px;
-        font-size: 13px;
-        color: #FFFFFF;
-        border-radius: 4px;
-        transition: all 150ms ease;
-
-        &.correct {
-            opacity: 0.15;
+.confirmingPhrase {
+    .wordList {
+        margin: 14px 0;
+        background: #F7F8FA;
+        border-radius: 2px;
+        padding: 15px;
+        text-align: center;
+        font-size: 17px;
+        line-height: 25px;
+        user-select: none;
+        justify-content: flex-start;
+        height: 170px;
+        .word {
+            float: left;
+            width: 30%;
+            height: 29px;
+            background-color: #fff;
+            padding: 2px 0;
+            margin: 0 5% 8px 0;
+            &:nth-child(3n) {
+                margin-right: 0;
+            }
+            &:nth-child(10), &:nth-child(11), &:nth-child(12) {
+                margin-bottom: 0;
+            }
         }
-
-        &:not(.correct) {
+    }
+    .options {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: flex-start;
+        margin-bottom: 14px;
+        .word {
+            margin:4px 10px  4px 0;
+            padding: 4px 6px;
+            font-size: 14px;
+            color: #888998;
+            border-radius: 2px;
+            transition: all 150ms ease;
+            border: 1px solid #888998;
             cursor: pointer;
-        }
+            &:not(.correct) {}
+            &:not(.correct):hover,&.correct{
+                background: #C2C2D5;
+                color: #fff;
+                border-color:#C2C2D5;
+            }
 
-        &:not(.correct):hover {
-            background: #4aafff;
-        }
-
-        &:not(.correct):active {
-            background: #358dd3;
+            &:not(.correct):active {
+                background: #C2C2D5;
+            }
         }
     }
 }

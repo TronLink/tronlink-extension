@@ -1,0 +1,73 @@
+/*
+ * @Author: lxm 
+ * @Date: 2019-03-22 11:57:31 
+ * @Last Modified by: lxm
+ * @Last Modified time: 2019-04-09 16:25:13
+ */
+ .navbar{
+    width: 100%;
+    height: 58px;
+    font-family: PingFang-SC-Bold;
+    font-size: 18px;
+    color: #515060;
+    .am-navbar-title{
+      font-family: PingFang-SC-Bold;
+      font-size: 18px;
+      color: #515060;
+   }
+    .commonBack{
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 40px;
+        height: 56px;
+        background-image: url('../../assets/images/new/icon-back.svg');
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+}
+.orderAccount{
+	border-bottom: 1px solid #EFEFEF;
+	padding: 12px 0;
+	.accountName{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color:#888998; 
+		letter-spacing: 0 
+	}
+	.accountNum{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color: #505160;
+		letter-spacing: 0;
+		text-align: right;
+		margin-top: 12px;
+	}
+}
+ .orderList{
+	border-bottom: 1px solid #EFEFEF;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 12px 0;
+	.orderIntroduce{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color:#888998; 
+		letter-spacing: 0 
+	}
+	.orderStatus{
+		font-family: PingFangSC-Regular;
+		font-size: 14px;
+		color: #505160;
+		letter-spacing: 0;
+		display: flex;
+		flex-direction: row;
+		.name{
+			min-width: 110px;
+			display: inline-block;
+			text-align: right;
+		}
+	}
+ }

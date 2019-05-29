@@ -1,24 +1,23 @@
 import React from 'react';
-import Header from './Header';
 
 import { connect } from 'react-redux';
-import { setPage } from 'reducers/appReducer';
+import { setPage } from '@tronlink/popup/src/reducers/appReducer';
 
-import AccountsPage from 'pages/AccountsPage';
-import TransactionsPage from 'pages/TransactionsPage';
-import TokensPage from 'pages/TokensPage';
-import SendPage from 'pages/SendPage';
-import SettingsPage from 'pages/SettingsPage';
+import AccountsPage from '@tronlink/popup/src/pages/AccountsPage';
+// import TransactionsPage from '@tronlink/popup/src/pages/TransactionsPage';
+//import TokensPage from '@tronlink/popup/src/pages/TokensPage';
+// import SendPage from '@tronlink/popup/src/pages/SendPage';
+// import SettingsPage from '@tronlink/popup/src/pages/SettingsPage';
 
 import './PageController.scss';
 
 class PageController extends React.Component {
     pages = {
         ACCOUNTS: AccountsPage,
-        TRANSACTIONS: TransactionsPage,
-        TOKENS: TokensPage,
-        SEND: SendPage,
-        SETTINGS: SettingsPage
+        //TRANSACTIONS: TransactionsPage,
+        //TOKENS: TokensPage,
+        //SEND: SendPage,
+        //SETTINGS: SettingsPage
     };
 
     state = {
@@ -69,19 +68,13 @@ class PageController extends React.Component {
 
     render() {
         const { currentPage } = this.props;
-        const { subTitle } = this.state;
+        //const { subTitle } = this.state;
 
-        const title = Object.keys(this.pages)[ currentPage ];
+        // const title = Object.keys(this.pages)[ currentPage ];
         const pages = this.pages;
 
         return (
             <div className='pageContainer'>
-                <Header
-                    title={ title }
-                    subTitle={ subTitle }
-                    currentPage={ currentPage }
-                    changePage={ this.changePage }
-                />
                 <div className='pageView'>
                     { Object.values(pages).map((Page, index) => {
                         const pageOffset = (index - currentPage) * 420;
@@ -95,9 +88,9 @@ class PageController extends React.Component {
                                 }}
                             >
                                 <Page
-                                    changePage={ this.changePage }
-                                    setSubTitle={ this.setSubTitle }
-                                    onPageChange={ callback => this.onPageChange(index, callback) }
+                                    //changePage={ this.changePage }
+                                    //setSubTitle={ this.setSubTitle }
+                                    //onPageChange={ callback => this.onPageChange(index, callback) }
                                 />
                             </div>
                         );

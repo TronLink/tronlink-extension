@@ -1,18 +1,33 @@
 .confirmationController {
-    .modalDesc > span:first-of-type > strong {
-        color: #2196f3;
-        font-weight: 500;
+    padding:0 30px !important;
+    background-color: #505160;
+    justify-content: center !important;
+    .greyModal{
+        &.confirmModal{
+            background-color: #fff;
+            border-radius:2px;
+            padding: 20px;
+            .modalDesc{
+                color: #505160;
+                margin-bottom: 4px;
+                strong{
+                    color: #636ACC;
+                    font-weight:normal;
+                }
+            }
+        }
     }
 
     .meta {
-        margin-bottom: 20px;
         font-size: 13px;
-
         .metaLine {
             display: flex;
             flex-direction: row;
-            margin-bottom: 5px;
-
+            height: 40px;
+            border-bottom:1px solid #EFEFEF;
+            span{
+                line-height:40px;
+            }
             span:first-of-type {
                 flex: 1;
                 font-weight: 500;
@@ -25,9 +40,6 @@
                 padding-left: 20px;
             }
 
-            &:last-of-type {
-                margin-bottom: 0;
-            }
         }
     }
 
@@ -43,21 +55,19 @@
     }
 
     .whitelist {
+        margin-top: 14px;
         margin-bottom: 20px;
-        background: #FFFFFF;
-        padding: 15px;
+        background: #F7F8FA;
+        border-radius: 2px;
+        padding: 10px;
         font-size: 13px;
-        border-radius: 4px;
-
+        color: #888998;
         .whitelistTitle {
-            font-weight: 500;
             margin-bottom: 5px;
         }
-
         .whitelistBody {
             margin-bottom: 10px;
         }
-
         .dropdown {
             .Dropdown-control {
                 box-shadow: none !important;
@@ -67,11 +77,11 @@
             }
 
             .Dropdown-menu {
+                max-height: 150px;
                 box-shadow: none !important;
                 border-bottom-left-radius: 4px;
                 border-bottom-right-radius: 4px;
                 border: 1px solid #dadada;
-
                 .Dropdown-option.is-selected, .Dropdown-option:hover {
                     background-color: #707897;
                     color: #FFFFFF;
@@ -79,4 +89,19 @@
             }
         }
     }
+
+    .customButton{
+        &.danger{
+            border: 1px solid #636ACC;
+            border-radius: 2px;
+            span{
+                color: #636ACC !important;
+            }
+            background-color: #fff;
+            &:hover{
+                background-color: #fff !important;
+            }
+        }
+    }
+
 }

@@ -1,0 +1,500 @@
+/*
+ * @Author: lxm 
+ * @Date: 2019-03-19 15:17:47 
+ * @Last Modified by: lxm
+ * @Last Modified time: 2019-04-18 17:42:13
+ * TronBankPage
+ */
+
+ .TronBankContainer{
+    background: #F7F8FA;
+    height:100%;
+    width: 360px;
+    // navbar
+    .navbar{
+        width: 100%;
+        height: 58px;
+        font-family: PingFang-SC-Bold;
+        font-size: 18px;
+        color: #515060;
+        .am-navbar-title{
+            font-family: PingFang-SC-Bold;
+            font-size: 18px;
+            color: #515060;
+        }
+        .commonBack{
+            cursor: pointer;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 56px;
+            background-image: url('../../assets/images/new/icon-back.svg');
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        .rightMore{
+            cursor: pointer;
+            position: absolute;
+            right:18px;
+            top: 0;
+            width: 18px;
+            height: 56px;
+        }
+        .rightMore:active{
+            transform: scale(0.9)
+        }
+    }
+    // menumodal
+    .navBarMoreMenu{
+            position: absolute;
+            top: 40px;
+            right: 18px;
+            z-index: 100;
+        .dropList{
+            transform: translateX(100%);
+            cursor: pointer;
+            opacity: 0;            
+            background: rgba(80,81,96,0.90);
+            border-radius: 4px;
+            transition: all ease-in-out .2s;
+            .item{
+                display: flex;
+                flex-direction: row;
+                padding: 0 8px;
+                align-items: center;
+                height: 30px;
+                font-family: PingFangSC-Regular;
+                font-size: 12px;
+                color: #F7F8FA;
+                letter-spacing: 0.2px;
+                cursor: pointer;
+                &:hover{
+                    background-color: #888998;
+                }
+            }
+            .rightMoreIcon{
+                width: 12px;
+                height: 12px;
+                margin-right: 6px;
+            }
+        }
+        .menuVisible{
+            opacity: 1;
+            transform: translateX(0);
+            transition: all .2s ease-in-out
+        }
+    }
+    .backContentWrapper{
+        height: 540px;
+        padding-bottom: 20px;
+        overflow: auto;
+        &::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
+        }
+        &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 4px;
+            background: #C2C8D5;
+        }
+        &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            background: transparent;
+        }
+    }
+    .bankContent{
+        display: flex;
+        flex-direction: column;
+        margin:0 18px;
+    }
+    .accountContent,.rentContent{
+        background: #FFFFFF;
+        border-radius: 2px;
+    }
+    .accountContent{
+        padding:0px 12px;
+        margin:10px 0 8px;
+        min-height:180px;
+    }
+    .rentContent{
+        margin:0 0 10px; 
+        min-height: 230px;
+        .rentNumEntrance{
+            cursor: pointer;
+            width: 14px;
+            height: 20px;
+            margin-left: 6px;
+        }
+        .rentNumEntrance:active{
+            transform: scale(0.9)
+        }
+        section:nth-child(1){
+            padding:10px 12px;
+        }
+        section:nth-child(2){
+            padding:0 12px 15px; 
+        }
+    }
+
+    // account
+    .accountInfo{
+        border-bottom: 1px dashed #EFEFEF; 
+    }
+
+    // common
+    .infoSec{
+        padding:10px 0px;
+        label{
+            line-height: 20px;
+            font-family: PingFang-SC-Bold;
+            font-size: 14px;
+            color: #505160;
+            letter-spacing: 0;
+            display: flex;
+        }
+        .receiveAccount{
+            width: 100%;
+            margin:10px 0 6px;
+            height:36px;
+            background: #F7F8FA;
+            border-radius: 2px;
+            input{
+                font-family: PingFangSC-Regular;
+                font-size: 12px;
+                letter-spacing: 0;
+                width:100%;
+                height:100%;
+                color: #505160;
+                background: #F7F8FA;
+                border:none;
+                text-indent: 10px;
+            }
+            input::-webkit-input-placeholder{
+                font-family: PingFangSC-Regular;
+                font-size: 12px;
+                color: #C2C8D5;
+            }
+        }
+        input.commonInput{
+            font-family: PingFangSC-Regular;
+            font-size: 14px;
+            color: #505160;
+            letter-spacing: 0;
+            background: #F7F8FA;
+        }
+        input.commonInput::-webkit-input-placeholder{
+            font-family: PingFangSC-Regular;
+            font-size: 14px;
+            color: #C2C8D5;
+            letter-spacing: 0;
+        }
+        .rentNumWrapper{
+            width: 100%;
+            margin:10px 0 6px;
+            height:36px;
+            background: #F7F8FA;
+            border-radius: 2px;
+            display: flex;
+            flex-direction: row;
+            line-height: 36px;
+            .rentNumInput{
+                border:none;
+                height:100%;
+                text-indent: 10px;
+                width: 262px;
+            }
+        }
+        .selectedAccount{
+            line-height: 17px;
+            margin:10px 0 6px;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #505160;
+            letter-spacing: 0; 
+        }
+        .balance{
+            line-height: 17px;
+            font-family: PingFangSC-Regular;
+            font-size: 12px;
+            color: #888998;
+            letter-spacing: 0;
+        }
+    }
+
+    // rent 
+    .rentIntroduce{
+        margin:0 auto 18px auto;
+        border-radius: 2px;
+        font-family: PingFang-SC-Medium;
+        font-size: 14px;
+        color: #888998;
+        letter-spacing: 0;
+        text-align: center;
+        .info{
+            padding: 0 12px;
+        }
+        .curNum{
+            color: #888998;
+            font-size: 12px;
+            margin-top:9px;
+        }
+        .pointColor{
+            color: #DE8200;
+        }
+    }
+    .calculation{
+        margin:0 auto 18px auto;
+        border-radius: 2px;
+        font-size: 14px;
+        color: #576B94;
+        font-family: PingFang-SC-Bold;
+        letter-spacing: 0;
+        text-align: center;
+        .curNum{
+            color: #888998;
+            font-size: 12px;
+            margin-top:9px;
+        }
+        .numInfo{
+            margin-right:5px;
+        }
+        .pointColor{
+            color: #DE8200;
+        }
+    }
+
+    // danRange
+    .dayRange{
+        display: flex;
+        height:36px;
+        width: 100%;
+        margin:10px 0 5px;  
+        border-radius: 2px;
+        overflow: hidden;
+        .am-button>.am-button-icon{
+            margin:0;
+        }
+        .operatingBtn{
+            cursor: pointer;
+            height:100%;
+            border-radius: 0;
+            .am-button-small{
+                padding: 0 10px;
+            }
+            &:before{
+                border:none;
+            }
+            .operationReduceIcon{
+                display: block;
+                width: 16px;
+                height:2px;
+                font-size: 12px;
+            }
+            .operationAddIcon{
+                display: block;
+                width: 16px;
+                height:16px;
+                font-size: 12px;
+            }
+        }
+        .rentDay{
+            flex-grow: 1;
+            height: 100%;
+            text-align: center;
+            border:none;
+        }
+    }
+
+    // submit btn
+    .bankSubmit{
+        margin-top:8px;
+        height:40px;
+        line-height: 40px;
+        border-radius: 2px;
+        font-family: PingFang-SC-Bold;
+        font-size: 14px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    // error
+    .errorMsg{
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #DB705C;
+        letter-spacing: 0;
+        margin-bottom:3px;
+        line-height: 17px;
+    }
+    .rentError{
+        margin-bottom:8px;
+    }
+    // predict
+    .predictMsg{
+        font-family: PingFangSC-Regular;
+        font-size: 12px;
+        color: #576B94;
+        line-height: 17px;
+        margin-bottom: 8px;
+        letter-spacing: 0;
+    }
+}
+.normalBorder{
+    border: 1px solid #EFEFEF;
+}
+.errorBorder{
+    border: 1px solid #DB705C;
+}
+.norderRightBorder{
+    border-right:1px solid #EFEFEF;
+}
+.errorRightBorder{
+    border-right: 1px solid #DB705C;
+}
+.norderLeftBorder{
+    border-left:1px solid #EFEFEF;
+}
+.errorLeftBorder{
+    border-left: 1px solid #DB705C;
+}
+
+.normalValid{
+    background: #636ACC;
+    color: #FFFFFF;
+}
+.inValid{
+    background: #C2C8D5;
+    color: rgba(255,255,255,0.50);
+}
+
+
+// modal
+.am-modal-mask{
+    background: #505160;
+}
+.modalContent{
+    width: 300px;
+    min-height: 222px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    .am-modal-header{
+        padding: 24px 20px 20px;
+    }
+    .am-modal-title{
+        padding: 0;
+        font-family: PingFang-SC-Bold;
+        font-size: 18px;
+        color: #505160;
+        letter-spacing: 0;
+        text-align: center;
+    }
+    .am-modal-content{
+        border-radius: 2px;
+        padding: 0;
+        .am-modal-body{
+            padding:0 20px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    }
+    .rentIntroduceCont{
+        .modalRentContent{
+            height:auto;
+            text-align: justify;
+            overflow: hidden;
+            font-family: PingFang-SC-Medium;
+            font-size: 14px;
+            color: #505160;
+            line-height: 20px;
+            letter-spacing: 0;
+            span{
+                word-wrap: break-word;
+                word-break: break-all;
+                -webkit-hyphens: auto;
+                -ms-hyphens: auto;
+                hyphens: auto;
+            }
+        }
+        .confirmRentContent{
+            height: 210px;
+        }
+        .modalCloseBtn{
+            width: 120px;
+            height: 36px;
+            line-height: 35px;
+            margin: 24px auto 0;
+            font-family: PingFang-SC-Bold;
+            font-size: 16px;
+            color: #636ACC;
+            text-align: center;
+            border: 1px solid #636ACC;
+            border-radius: 2px;
+            &:hover{
+                cursor: pointer;
+                color: #fff;
+                background: #636ACC;
+            }
+        }
+    }
+}
+
+// confirm 
+.confirmContentModal{
+    .orderList{
+        border-bottom: 1px solid #EFEFEF;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 0;
+    }
+    .orderIntroduce{
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color:#888998; 
+        letter-spacing: 0 
+    }
+    .orderStatus{
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #505160;
+        letter-spacing: 0;
+        display: flex;
+        flex-direction: row;
+    }
+    .modalPayBtn{
+        width: 120px;
+        height: 36px;
+        background: #636ACC;
+        line-height: 36px;
+        margin: 24px auto 0;
+        font-family: PingFang-SC-Bold;
+        font-size: 16px;
+        border-radius: 2px;
+        color: #FFFFFF;
+        text-align: center;
+    }
+    .operateBtn{
+        margin:0;
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+// toast 
+.am-toast-notice-content .am-toast-text{
+    background-color: rgba(0,0,0,0.50);
+    font-family: PingFangSC-Semibold;
+    font-size: 14px;
+    letter-spacing: 0;
+    padding: 10px 24px;
+}
+
+// button 
+.am-button.am-button-disabled{
+    color: #fff;
+    opacity: 1;
+}
+
+
+
+
+

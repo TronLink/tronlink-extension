@@ -1,15 +1,14 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 import Utils from '@tronlink/lib/utils';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Toast, { T } from 'react-toast-mobile';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { BUTTON_TYPE } from '@tronlink/lib/constants';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import './MnemonicImport.scss';
-
+NodeService.init();
 const IMPORT_STAGE = {
     ENTERING_MNEMONIC: 0,
     SELECTING_ACCOUNTS: 1
@@ -22,7 +21,8 @@ class MnemonicImport extends React.Component {
         subStage: IMPORT_STAGE.ENTERING_MNEMONIC,
         mnemonic: '',
         isValid: false,
-        isLoading: false
+        isLoading: false,
+        error:''
     };
 
     constructor() {
@@ -35,22 +35,28 @@ class MnemonicImport extends React.Component {
     }
 
     onChange({ target: { value } }) {
+        const isValid = Utils.validateMnemonic(value);
+        const error = !isValid ? 'EXCEPTION.FORMAT_ERROR' : '';
         this.setState({
             mnemonic: value,
-            isValid: Utils.validateMnemonic(value)
+            isValid,
+            error
         });
     }
 
-    changeStage(newStage) {
-        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS)
-            this.generateAccounts();
-
+    async changeStage(newStage) {
+        if(newStage === IMPORT_STAGE.SELECTING_ACCOUNTS) {
+            const res = await this.generateAccounts();
+            if(!res) {
+                return false;
+            }
+        }
         this.setState({
             subStage: newStage
         });
     }
 
-    generateAccounts() {
+    async generateAccounts() {
         // Move this to Utils (generateXAccounts)
 
         this.setState({
@@ -58,22 +64,34 @@ class MnemonicImport extends React.Component {
         });
 
         const { mnemonic } = this.state;
+        const { formatMessage } = this.props.intl;
         const addresses = [];
-
         for(let i = 0; i < 5; i++) {
-            const account = Utils.getAccountAtIndex(
+            let account = Utils.getAccountAtIndex(
                 mnemonic,
                 i
             );
-
-            if(!(account.address in this.props.accounts))
+            if(!(account.address in this.props.accounts)) {
+                let { balance } = await NodeService.tronWeb.trx.getAccount(account.address);
+                balance = balance ? balance:0;
+                account.balance = balance;
                 addresses.push(account);
-        }
+            }
 
-        this.setState({
-            addresses,
-            isLoading: false
-        });
+        }
+        if(addresses.length === 0) {
+            this.setState({
+                isLoading: false
+            });
+            T.notify(formatMessage({id:'CHOOSING_TYPE.MNEMONIC.NO_OPTIONS'}))
+            return false;
+        }else {
+            this.setState({
+                addresses,
+                isLoading: false
+            });
+            return true;
+        }
     }
 
     toggleAddress(index) {
@@ -88,7 +106,8 @@ class MnemonicImport extends React.Component {
         });
     }
 
-    import() {
+    async import() {
+        let i = 0;
         this.setState({
             isLoading: true
         });
@@ -101,16 +120,15 @@ class MnemonicImport extends React.Component {
         const { name } = this.props;
         const isSingle = selected.length === 1;
 
-        selected.forEach((internalIndex, index) => {
+        for(const internalIndex of selected) {
+            i++;
             const { privateKey } = addresses[ internalIndex ];
-            const walletName = isSingle ? name : `${ name } #${ index + 1 }`;
-
-            return PopupAPI.importAccount(
+            const walletName = isSingle ? name : `${ name } #${ i }`;
+            await PopupAPI.importAccount(
                 privateKey,
                 walletName
             );
-        });
-
+        }
         PopupAPI.resetState();
     }
 
@@ -126,16 +144,17 @@ class MnemonicImport extends React.Component {
         return (
             <div className='insetContainer mnemonicImport'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }></div>
+                    <FormattedMessage id="CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE" />
                 </div>
                 <div className='greyModal'>
-                    <div className='modalDesc hasBottomMargin'>
+                    <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.SELECTION' />
                     </div>
                     <div className='addressList'>
-                        { addresses.map(({ address }, index) => {
+                        { addresses.map(({ address,balance }, index) => {
                             const isSelected = selected.includes(index);
-                            const icon = isSelected ? 'dot-circle' : 'circle';
+                            // const icon = isSelected ? 'dot-circle' : 'circle';
                             const className = `addressOption ${ isSelected ? 'isSelected' : '' } ${ isLoading ? 'isLoading' : '' }`;
 
                             return (
@@ -145,25 +164,16 @@ class MnemonicImport extends React.Component {
                                     tabIndex={ index + 1 }
                                     onClick={ () => !isLoading && this.toggleAddress(index) }
                                 >
-                                    <FontAwesomeIcon
-                                        icon={ icon }
-                                        className={ `checkbox ${ isSelected ? 'isSelected' : '' }` }
-                                    />
-                                    <span className='address mono'>
-                                        { address }
+                                    <div className={ `checkbox ${ isSelected ? 'isSelected' : '' }` }>&nbsp;</div>
+                                    <span className="address">
+                                        <span>{ `${address.substr(0,10)}...${address.substr(-10)}` }</span>
+                                        <span><FormattedMessage id="COMMON.BALANCE" /> <FormattedMessage id="ACCOUNT.BALANCE" values={{amount:balance/1000000}} /></span>
                                     </span>
                                 </div>
                             );
                         }) }
                     </div>
                     <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ () => this.changeStage(IMPORT_STAGE.ENTERING_MNEMONIC) }
-                            tabIndex={ addresses.length + 2 }
-                            isLoading={ isLoading }
-                        />
                         <Button
                             id='BUTTON.IMPORT'
                             isValid={ isValid }
@@ -179,39 +189,39 @@ class MnemonicImport extends React.Component {
 
     renderInput() {
         const { onCancel } = this.props;
-
+        // const { formatMessage } = this.props.intl;
         const {
             mnemonic,
             isValid,
-            isLoading
+            isLoading,
+            // showWarning
+            error
         } = this.state;
 
         return (
             <div className='insetContainer mnemonicImport'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className="back" onClick={ onCancel }></div>
+                    <FormattedMessage id="CREATION.RESTORE.MNEMONIC.TITLE" />
                 </div>
-                <div className='greyModal'>
-                    <div className='modalDesc hasBottomMargin'>
+                <div className={'greyModal'+(!isValid && error?' error':'')}>
+                    <Toast />
+                    <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>
-                    <textarea
-                        placeholder='Mnemonic Import'
-                        className='phraseInput mono'
-                        rows={ 5 }
-                        value={ mnemonic }
-                        onChange={ this.onChange }
-                        tabIndex={ 1 }
-                        disabled={ isLoading }
-                    />
-                    <div className='buttonRow'>
-                        <Button
-                            id='BUTTON.GO_BACK'
-                            type={ BUTTON_TYPE.DANGER }
-                            onClick={ onCancel }
-                            tabIndex={ 3 }
-                            isLoading={ isLoading }
+                    <div className="inputUnit">
+                        <textarea
+                            placeholder='Mnemonic Import'
+                            className='phraseInput'
+                            rows={ 5 }
+                            value={ mnemonic }
+                            onChange={ this.onChange }
+                            tabIndex={ 1 }
+                            disabled={ isLoading }
                         />
+                        {!isValid?<div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
+                    </div>
+                    <div className='buttonRow'>
                         <Button
                             id='BUTTON.CONTINUE'
                             isValid={ isValid }
@@ -235,6 +245,8 @@ class MnemonicImport extends React.Component {
     }
 }
 
-export default connect(state => ({
-    accounts: state.accounts.accounts
-}))(MnemonicImport);
+export default injectIntl(
+    connect(state => ({
+        accounts: state.accounts.accounts
+    }))(MnemonicImport)
+);

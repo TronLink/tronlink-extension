@@ -120,15 +120,26 @@ const NodeService = {
 
     async getSmartToken(address) {
         try {
+            let balance;
             const contract = await this.tronWeb.contract().at(address);
-
             if(!contract.name && !contract.symbol && !contract.decimals)
                 return false;
+            const d = await contract.decimals().call();
+            const name = await contract.name().call();
+            const symbol = await contract.symbol().call();
+            const decimals = typeof d === 'object' && d._decimals ? d : new BigNumber(d).toNumber();
+            const number = await contract.balanceOf(address).call();
+            if (number.balance) {
+                balance = new BigNumber(number.balance).toString();
+            } else {
+                balance = new BigNumber(number).toString();
+            }
 
             return {
-                name: await contract.name().call(),
-                symbol: await contract.symbol().call(),
-                decimals: new BigNumber(await contract.decimals().call()).toNumber()
+                name: typeof name === 'object' ? name._name: name,
+                symbol: typeof symbol === 'object' ? symbol._symbol: symbol,
+                decimals: typeof decimals === 'object' ? decimals._decimals: decimals,
+                balance
             };
         } catch(ex) {
             logger.error(`Failed to fetch token ${ address }:`, ex);

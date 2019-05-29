@@ -7,6 +7,55 @@ const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
     hashAlgorithm: 'sha256',
 
+    stringToByte(str) {
+        var bytes = new Array();
+        var len, c;
+        len = str.length;
+        for(var i = 0; i < len; i++) {
+            c = str.charCodeAt(i);
+            if(c >= 0x010000 && c <= 0x10FFFF) {
+                bytes.push(((c >> 18) & 0x07) | 0xF0);
+                bytes.push(((c >> 12) & 0x3F) | 0x80);
+                bytes.push(((c >> 6) & 0x3F) | 0x80);
+                bytes.push((c & 0x3F) | 0x80);
+            } else if(c >= 0x000800 && c <= 0x00FFFF) {
+                bytes.push(((c >> 12) & 0x0F) | 0xE0);
+                bytes.push(((c >> 6) & 0x3F) | 0x80);
+                bytes.push((c & 0x3F) | 0x80);
+            } else if(c >= 0x000080 && c <= 0x0007FF) {
+                bytes.push(((c >> 6) & 0x1F) | 0xC0);
+                bytes.push((c & 0x3F) | 0x80);
+            } else {
+                bytes.push(c & 0xFF);
+            }
+        }
+        return bytes;
+    },
+
+    byteToString(arr) {
+        if(typeof arr === 'string') {
+            return arr;
+        }
+        var str = '',
+            _arr = arr;
+        for(var i = 0; i < _arr.length; i++) {
+            var one = _arr[i].toString(2),
+                v = one.match(/^1+?(?=0)/);
+            if(v && one.length == 8) {
+                var bytesLength = v[0].length;
+                var store = _arr[i].toString(2).slice(7 - bytesLength);
+                for(var st = 1; st < bytesLength; st++) {
+                    store += _arr[st + i].toString(2).slice(2);
+                }
+                str += String.fromCharCode(parseInt(store, 2));
+                i += bytesLength - 1;
+            } else {
+                str += String.fromCharCode(_arr[i]);
+            }
+        }
+        return str;
+    },
+
     hash(string) {
         return crypto
             .createHash(this.hashAlgorithm)
@@ -105,6 +154,86 @@ const Utils = {
 
     isFunction(obj) {
         return typeof obj === 'function';
+    },
+
+    dataLetterSort (data, field, field2) {
+        let needArray = [];
+        let list = {};
+        let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'];
+        for (let i = 0; i < data.length; i++) {
+            const d = data[i][field] || data[i][field2] || data[i]['name'];
+            let letter =  d.split('').filter(v=> v.match(/[a-zA-Z0-9]/)).join('').substr(0, 1).toUpperCase();
+            if(!list[letter]) {
+                list[letter] = [];
+            }
+            list[letter].push(data[i]);
+        }
+        LetterArray.forEach( v => {
+            if(list[v]) {
+                needArray = needArray.concat(list[v])
+            }
+        });
+        return needArray;
+    },
+
+    validatInteger(str) { // integer
+        const reg = /^\+?[1-9][0-9]*$/;
+        return reg.test(str);
+    },
+
+    requestUrl() { // request url
+        const curHost = location.hostname;
+        let curApiHost;
+        // const defaultUrl = 'http://52.14.133.221:8990'; //test
+        const defaultUrl = 'https://manger.tronlending.org'; //online
+        switch (curHost) {
+            case 'nnceancbokoldkjjbpopcffaoekebnnb':
+                curApiHost = defaultUrl;
+                break;
+            case 'ibnejdfjmmkpcnlpebklmnkoeoihofec':
+                curApiHost = defaultUrl;
+                break;
+            default:
+                curApiHost = defaultUrl;
+                break;
+        }
+        return curApiHost;
+    },
+
+    timetransTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}.${timeM}.${timeD} ${timeh}:${timem}`;
+    },
+
+    timeFormatTime(date) {
+        const newDate = new Date(date * 1000);
+        const timeY = newDate.getFullYear();
+        const timeM = (newDate.getMonth() + 1 < 10 ? `0${newDate.getMonth() + 1}` : newDate.getMonth() + 1);
+        const timeD = (newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate());
+        const timeh = (newDate.getHours() < 10 ? `0${newDate.getHours()}` : newDate.getHours());
+        const timem = (newDate.getMinutes() < 10 ? `0${newDate.getMinutes()}` : newDate.getMinutes());
+        return `${timeY}/${timeM}/${timeD} ${timeh}:${timem}`;
+    },
+
+    getSelect(targetNode){
+        if (window.getSelection) {
+            //chrome等主流浏览器
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNode(targetNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else if (document.body.createTextRange) {
+            //ie
+            const range = document.body.createTextRange();
+            range.moveToElementText(targetNode);
+            range.select();
+        }
     }
 };
 

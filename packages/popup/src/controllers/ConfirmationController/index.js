@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from 'components/Button';
+import Toast,{ T } from 'react-toast-mobile';
+import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
 
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
-
 import {
     FormattedMessage,
     FormattedHTMLMessage,
@@ -23,13 +23,14 @@ import './ConfirmationController.scss';
 class ConfirmationController extends React.Component {
     constructor({ intl }) {
         super();
-
         this.loadWhitelistOptions(intl);
 
         this.onReject = this.onReject.bind(this);
         this.onAccept = this.onAccept.bind(this);
         this.onWhitelist = this.onWhitelist.bind(this);
     }
+
+    async componentDidMount() {}
 
     loadWhitelistOptions({ formatMessage }) {
         const options = [{
@@ -61,15 +62,39 @@ class ConfirmationController extends React.Component {
         };
     }
 
+    async addUsedDapp() {
+        const { hostname } = this.props.confirmation;
+        const dappList = await PopupAPI.getDappList(true);
+        const { used } = dappList;
+        const tronDapps = await PopupAPI.getAllDapps();
+        const regExp = new RegExp(hostname);
+        if(used.length && used.some(({ href }) => href.match(regExp))) {
+            const index = used.findIndex(({ href }) => href.match(regExp));
+            const item = used.find(({ href }) => href.match(regExp));
+            used.splice(index, 1);
+            used.unshift(item);
+        } else {
+            const dapp = tronDapps.filter(({ href }) => href.match(regExp));
+            if(dapp.length)used.unshift( dapp[ 0 ] );
+        }
+        dappList.used = used;
+        PopupAPI.setDappList(dappList);
+    }
+
     onReject() {
         PopupAPI.rejectConfirmation();
     }
 
-    onAccept() {
+    async onAccept() {
         const {
             selected
         } = this.state.whitelisting;
-
+        const { confirmation } = this.props;
+        if( confirmation.contractType === 'TriggerSmartContract' ) {
+            T.loading();
+            await this.addUsedDapp();
+            T.loaded();
+        }
         PopupAPI.acceptConfirmation(selected.value);
     }
 
@@ -147,7 +172,7 @@ class ConfirmationController extends React.Component {
             meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.asset_name) });
 
         if(input.token_id)
-            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: TronWeb.toUtf8(input.token_id) });
+            meta.push({ key: 'CONFIRMATIONS.TOKEN', value: input.token_id });
 
         if(input.to_address) {
             const address = TronWeb.address.fromHex(input.to_address);
@@ -198,7 +223,7 @@ class ConfirmationController extends React.Component {
 
         return (
             <React.Fragment>
-                <div className='modalDesc hasBottomMargin'>
+                <div className='modalDesc'>
                     <FormattedHTMLMessage
                         id='CONFIRMATIONS.BODY'
                         values={{
@@ -258,19 +283,21 @@ class ConfirmationController extends React.Component {
         const {
             type
         } = this.props.confirmation;
-
         return (
             <div className='insetContainer confirmationController'>
-                <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
-                    <div className='pageHeader'>
-                        { text }
-                    </div>
-                ) }
-                />
-                <div className='greyModal'>
-                    { type === CONFIRMATION_TYPE.STRING ?
+                <div className='greyModal confirmModal'>
+                    <Toast />
+                    <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
+                        <div className='pageHeader hasBottomMargin'>
+                            { text }
+                        </div>
+                    ) }
+                    />
+                    {type === CONFIRMATION_TYPE.STRING ?
                         this.renderMessage() :
-                        this.renderTransaction()
+                        (type === CONFIRMATION_TYPE.TRANSACTION ?
+                            this.renderTransaction() : null
+                        )
                     }
                     <div className='buttonRow'>
                         <Button

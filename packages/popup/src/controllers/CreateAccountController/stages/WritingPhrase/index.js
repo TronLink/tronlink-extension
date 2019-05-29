@@ -1,8 +1,8 @@
 import React from 'react';
-import Button from 'components/Button';
+import Button from '@tronlink/popup/src/components/Button';
 
 import { FormattedMessage } from 'react-intl';
-import { BUTTON_TYPE } from '@tronlink/lib/constants';
+// import { BUTTON_TYPE } from '@tronlink/lib/constants';
 
 import './WritingPhrase.scss';
 
@@ -16,13 +16,14 @@ const WritingPhrase = props => {
     return (
         <div className='insetContainer writingPhrase'>
             <div className='pageHeader'>
-                TronLink
+                <div className="back" onClick={ onCancel }></div>
+                <FormattedMessage id='CREATION.CREATE.TITLE' />
             </div>
             <div className='greyModal'>
                 <div className='modalDesc'>
                     <FormattedMessage id='WRITING_PHRASE' />
                 </div>
-                <div className='wordList mono'>
+                <div className='wordList'>
                     { mnemonic.split(' ').map((word, index) => (
                         <div className='word' key={ index }>
                             { word.trim() }
@@ -30,12 +31,12 @@ const WritingPhrase = props => {
                     )) }
                 </div>
                 <div className='buttonRow'>
-                    <Button
-                        id='BUTTON.GO_BACK'
-                        type={ BUTTON_TYPE.DANGER }
-                        onClick={ onCancel }
-                        tabIndex={ 2 }
-                    />
+                    {/*<Button*/}
+                        {/*id='BUTTON.GO_BACK'*/}
+                        {/*type={ BUTTON_TYPE.DANGER }*/}
+                        {/*onClick={ onCancel }*/}
+                        {/*tabIndex={ 2 }*/}
+                    {/*/>*/}
                     <Button
                         id='BUTTON.CONTINUE'
                         onClick={ () => onSubmit() }

@@ -44,5 +44,33 @@ export default {
 
     setCurrency(currency) {
         this.duplex.send('popup', 'setCurrency', currency, false);
+    },
+
+    setSelectedToken(token) {
+        this.duplex.send('popup', 'setSelectedToken', token, false);
+    },
+
+    setLanguage(language) {
+        this.duplex.send('popup', 'setLanguage', language, false);
+    },
+
+    setSetting(setting) {
+        this.duplex.send('popup', 'setSetting', setting, false);
+    },
+    setSelectedBankRecordId(id) {
+        this.duplex.send('popup', 'setSelectedBankRecordId', id, false);
+    },
+
+    changeDealCurrencyPage(status) {
+        this.duplex.send('popup', 'changeDealCurrencyPage', status, false);
+    },
+
+    setAirdropInfo(airdropInfo) {
+        this.duplex.send('popup', 'setAirdropInfo', airdropInfo, false);
+    },
+
+    setDappList(dappList) {
+        this.duplex.send('popup', 'setDappList',dappList ,false);
     }
+
 };

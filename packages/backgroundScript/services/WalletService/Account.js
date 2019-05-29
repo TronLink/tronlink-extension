@@ -3,17 +3,16 @@ import TronWeb from 'tronweb';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-import TransactionMapper from './TransactionMapper';
 
 import { BigNumber } from 'bignumber.js';
 
 import {
     ACCOUNT_TYPE,
-    SUPPORTED_CONTRACTS
+    CONTRACT_ADDRESS
 } from '@tronlink/lib/constants';
-import axios from "axios";
+import axios from 'axios';
+BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
 const logger = new Logger('WalletService/Account');
-
 class Account {
     constructor(accountType, importData, accountIndex = 0) {
         this.type = accountType;
@@ -22,25 +21,39 @@ class Account {
         this.address = false;
         this.name = false;
         this.updatingTransactions = false;
-
+        this.selectedBankRecordId = 0;
+        this.dealCurrencyPage = 0;
         this.energy = 0;
+        this.energyUsed = 0;
         this.balance = 0;
-        this.bandwidth = 0;
+        this.frozenBalance = 0;
+        this.netUsed = 0;
+        this.netLimit = 0;
+        this.totalEnergyWeight = 0; //totalEnergyWeight
+        this.TotalEnergyLimit = 0; //TotalEnergyLimit
         this.lastUpdated = 0;
-
+        this.asset = 0;
         this.ignoredTransactions = [];
         this.transactions = {};
+        this.airdropInfo = {};
         this.tokens = {
             basic: {},
             smart: {}
         };
-
+        this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
+            symbol: 'USDT',
+            name: 'Tether USD',
+            decimal: 6,
+            tokenId: CONTRACT_ADDRESS.USDT,
+            balance: 0,
+            price: 0
+        };
         if(accountType == ACCOUNT_TYPE.MNEMONIC)
             this._importMnemonic(importData);
         else this._importPrivateKey(importData);
 
         this.loadCache();
-        this._cacheTransactions();
+        //this._cacheTransactions();
     }
 
     static generateAccount() {
@@ -129,15 +142,21 @@ class Account {
             type,
             name,
             balance,
+            frozenBalance,
+            totalEnergyWeight,
+            TotalEnergyLimit,
             transactions,
             tokens,
-            bandwidth,
+            netLimit,
+            netUsed,
             energy,
-            lastUpdated
+            energyUsed,
+            lastUpdated,
+            asset
         } = StorageService.getAccount(this.address);
 
         // Old TRC10 structure are no longer compatible
-        tokens.basic = {};
+        //tokens.basic = {};
 
         // Remove old token transfers so they can be fetched again
         Object.keys(this.transactions).forEach(txID => {
@@ -155,74 +174,28 @@ class Account {
         this.type = type;
         this.name = name;
         this.balance = balance;
+        this.frozenBalance = frozenBalance;
+        this.totalEnergyWeight = totalEnergyWeight;
+        this.TotalEnergyLimit = TotalEnergyLimit;
         this.transactions = transactions;
         this.tokens = tokens;
-        this.bandwidth = bandwidth;
         this.energy = energy;
+        this.energyUsed = energyUsed;
+        this.netLimit = netLimit;
+        this.netUsed = netUsed;
         this.lastUpdated = lastUpdated;
-    }
+        this.asset = asset;
+        this.hash = '';
 
-    async getTransactions() {
-        const transactions = [];
-        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            let hasMoreTransactions = true;
-            let start = 0;
-            const params = {sort:'-timestamp',count:true,limit:50,address:this.address,start};
-            const data = await axios.get('https://apilist.tronscan.org/api/transaction', {params});
-            const newTransactions = data.data.data.map(transaction => {
-                let tran = {};
-                tran.timestamp = transaction.timestamp;
-                tran.signature = transaction.confirmed;
-                tran.direction = transaction.toAddress === this.address ? 'to':'from';
-                tran.start = start;
-                tran.raw_data = {};
-                tran.raw_data.contract = [];
-                tran.raw_data.contract[0] = {};
-                tran.txID = transaction.hash;
-                tran.raw_data.contract[0].parameter = {
-                      value:{
-                          amount:transaction.contractData.amount || transaction.contractData.call_value,
-                          owner_address:transaction.contractData.owner_address
-                      }
-                };
-                if(transaction.contractType === 1){
-                    tran.raw_data.contract[0].type = 'TransferContract';
-                    tran.raw_data.contract[0].parameter.value.to_address = transaction.contractData.to_address;
-
-                }else if(transaction.contractType === 2){
-                    tran.raw_data.contract[0].type = 'TransferAssetContract';
-                    tran.raw_data.contract[0].parameter.value.tokenID = transaction.contractData.asset_name;
-                    tran.raw_data.contract[0].parameter.value.to_address = transaction.contractData.to_address;
-                }else if(transaction.contractType === 31){
-                    tran.raw_data.contract[0].type = 'TriggerSmartContract';
-                    tran.raw_data.contract[0].parameter.value.contract_address = transaction.contractData.contract_address;
-                }else if(transaction.contractType === 11){
-                    tran.raw_data.contract[0].type = 'FreezeBalanceContract';
-                    tran.raw_data.contract[0].parameter.value.frozen_balance = transaction.contractData.frozen_balance;
-                    tran.raw_data.contract[0].parameter.value.frozen_duration = transaction.contractData.frozen_duration;
-                }
-                return tran;
-            });
-            transactions.push(...newTransactions);
-            return transactions;
-        }else{
-            let hasMoreTransactions = true;
-            let offset = 0;
-            while(hasMoreTransactions) {
-                const newTransactions = (await NodeService.tronWeb.trx
-                    .getTransactionsRelated(this.address, 'all', 90, offset))
-                    .map(transaction => {
-                        transaction.offset = offset;
-                        return transaction;
-                    });
-
-                if(!newTransactions.length)
-                    hasMoreTransactions = false;
-                else offset += 90;
-
-                transactions.push(...newTransactions);
-            }
-            return transactions;
+        if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)) {
+            this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
+                symbol: 'USDT',
+                name: 'Tether USD',
+                decimal: 6,
+                tokenId: CONTRACT_ADDRESS.USDT,
+                balance: 0,
+                price: 0
+            };
         }
     }
 
@@ -230,10 +203,10 @@ class Account {
         if(this.type !== accountType)
             return false;
 
-        if(accountType == ACCOUNT_TYPE.MNEMONIC && this.mnemonic == importData)
+        if(accountType == ACCOUNT_TYPE.MNEMONIC && this.mnemonic === importData)
             return true;
 
-        if(accountType == ACCOUNT_TYPE.PRIVATE_KEY && this.privateKey == importData)
+        if(accountType == ACCOUNT_TYPE.PRIVATE_KEY && this.privateKey === importData)
             return true;
 
         return false;
@@ -242,11 +215,12 @@ class Account {
     reset() {
         this.balance = 0;
         this.energy = 0;
-        this.bandwidth = 0;
-
+        this.energyUsed = 0;
+        this.netUsed = 0;
         this.transactions = {};
         this.ignoredTransactions = [];
-
+        this.netLimit = 0;
+        this.asset = 0;
         Object.keys(this.tokens.smart).forEach(address => (
             this.tokens.smart[ address ].balance = 0
         ));
@@ -254,222 +228,254 @@ class Account {
         this.tokens.basic = {};
     }
 
-    async update() {
-        const {
-            address,
-            tokens
-        } = this;
-
+    async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
+        if(!StorageService.allTokens.length)return;
+        const { address } = this;
         logger.info(`Requested update for ${ address }`);
-
-        const accountExists = await NodeService.tronWeb.trx.getUnconfirmedAccount(address)
-            .then(async account => {
-                if(!account.address) {
-                    logger.info(`Account ${ address } does not exist on the network`);
-
+        try {
+            const node = NodeService.getNodes().selected;
+            if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+                const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address=' + address).catch(e => ( { data: {} } ));
+                const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+                if (!account2.address) {
+                    logger.info(`Account ${address} does not exist on the network`);
                     this.reset();
-                    return false;
+                    return true;
                 }
+                const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
+                for (const [tokenId, token] of addSmartTokens) {
+                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                    if (contract) {
+                        let balance;
+                        const number = await contract.balanceOf(address).call();
+                        if (number.balance) {
+                            balance = new BigNumber(number.balance).toString();
+                        } else {
+                            balance = new BigNumber(number).toString();
+                        }
+                        if (typeof token.name === 'object' || (!token.decimals)) {
+                            const token2 = await NodeService.getSmartToken(tokenId);
+                            this.tokens.smart[ tokenId ] = token2;
+                        }
+                        //this.tokens.smart[ tokenId ].imgUrl = false;
+                        this.tokens.smart[ tokenId ].balance = balance;
+                        this.tokens.smart[ tokenId ].price = 0;
+                    } else {
+                        this.tokens.smart[ tokenId ].balance = 0;
+                        this.tokens.smart[ tokenId ].price = 0;
+                    }
+                    this.tokens.smart[ tokenId ].isLocked = token.hasOwnProperty('isLocked') ? token.isLocked : false;
+                }
+                this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
+                let sentDelegateBandwidth = 0;
+                const delegated = account.delegated;
+                if (delegated && delegated.sentDelegatedBandwidth) {
+                    for (let i = 0; i < delegated.sentDelegatedBandwidth.length; i++) {
+                        sentDelegateBandwidth = sentDelegateBandwidth + delegated.sentDelegatedBandwidth[i][ 'frozen_balance_for_bandwidth' ];
+                    }
+                }
+                let frozenBandwidth = 0;
+                if (account.frozen && account.frozen.balances.length > 0) {
+                    frozenBandwidth = account.frozen.balances[ 0 ].amount;
+                }
+                let sentDelegateResource = 0;
+                if (delegated && delegated.sentDelegatedResource) {
+                    for (let i = 0; i < delegated.sentDelegatedResource.length; i++) {
+                        sentDelegateResource = sentDelegateResource + delegated.sentDelegatedResource[i]['frozen_balance_for_energy'];
+                    }
+                }
+                let frozenEnergy = 0;
+                if (account.accountResource && account.accountResource.frozen_balance_for_energy && account.accountResource.frozen_balance_for_energy.frozen_balance > 0) {
+                    frozenEnergy = account.accountResource.frozen_balance_for_energy.frozen_balance;
+                }
+                this.frozenBalance = sentDelegateBandwidth + frozenBandwidth + sentDelegateResource + frozenEnergy;
+                this.balance = account2.balance || 0;
+                const filteredTokens = (account2.assetV2 || []).filter(({ value }) => {
+                    return value >= 0
+                });
+                for (const { key, value } of filteredTokens) {
+                    let token = this.tokens.basic[ key ] || false;
+                    const filter = basicTokenPriceList.length ? basicTokenPriceList.filter(({ first_token_id }) => first_token_id === key) : [];
+                    const trc20Filter = smartTokenPriceList.length ? smartTokenPriceList.filter(({ fTokenAddr }) => key === fTokenAddr) : [];
+                    let { precision = 0, price } = filter.length ? filter[ 0 ] : (trc20Filter.length ? {
+                        price: trc20Filter[ 0 ].price,
+                        precision: trc20Filter[ 0 ].sPrecision
+                    } : { price: 0, precision: 0 });
+                    price = price / Math.pow(10, precision);
 
-                this.tokens.basic = {};
+                    const {
+                        name = 'TRX',
+                        abbr = 'TRX',
+                        decimals = 6,
+                        imgUrl = false
+                    } = StorageService.allTokens.filter(({ tokenId }) => tokenId === key)[ 0 ];
+                    token = {
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl,
+                        isLocked: token.hasOwnProperty('isLocked') ? token.isLocked : false
+                    };
+                    this.tokens.basic[ key ] = {
+                        ...token,
+                        balance: value,
+                        price
+                    };
+                }
+                const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
+                for (let { contract_address, decimals: precision } of smartTokens) {
+                    let token = this.tokens.smart[ contract_address ] || false;
+                    const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);
+                    const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
+                    const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => false);
+                    let balance;
+                    if (contract) {
+                        const number = await contract.balanceOf(address).call();
+                        if (number.balance) {
+                            balance = new BigNumber(number.balance).toString();
+                        } else {
+                            balance = new BigNumber(number).toString();
+                        }
+                    } else {
+                        balance = 0;
+                    }
 
+                    const {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl = false
+                    } = StorageService.allTokens.filter(({ tokenId }) => tokenId === contract_address)[ 0 ];
+
+                    token = {
+                        price: 0,
+                        balance: 0,
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl,
+                        isLocked: token.hasOwnProperty('isLocked') ? token.isLocked : false
+                    };
+                    this.tokens.smart[ contract_address ] = {
+                        ...token,
+                        price,
+                        balance
+                    };
+                }
+            } else {
+                const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+                if (!account.address) {
+                    logger.info(`Account ${address} does not exist on the network`);
+                    this.reset();
+                    return true;
+                }
                 const filteredTokens = (account.assetV2 || []).filter(({ value }) => {
                     return value > 0;
                 });
+                if (filteredTokens.length > 0) {
+                    for (const { key, value } of filteredTokens) {
+                        let token = this.tokens.basic[ key ] || false;
+                        const filter = basicTokenPriceList.length ? basicTokenPriceList.filter(({ first_token_id }) => first_token_id === key):[];
+                        const trc20Filter = smartTokenPriceList.length ? smartTokenPriceList.filter(({ fTokenAddr }) => key === fTokenAddr) : [];
+                        let { precision = 0, price } = filter.length ? filter[ 0 ] : (trc20Filter.length ? {
+                            price: trc20Filter[ 0 ].price,
+                            precision: trc20Filter[ 0 ].sPrecision
+                        } : { price: 0, precision: 0 });
+                        price = price / Math.pow(10, precision);
+                        if ((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
+                            await StorageService.cacheToken(key);
 
-                for(const { key, value } of filteredTokens) {
-                    let token = this.tokens.basic[ key ] || false;
+                        if (StorageService.tokenCache.hasOwnProperty(key)) {
+                            const {
+                                name,
+                                abbr,
+                                decimals,
+                                imgUrl
+                            } = StorageService.tokenCache[ key ];
 
-                    if(!token && !StorageService.tokenCache.hasOwnProperty(key))
-                        await StorageService.cacheToken(key);
-
-                    if(!token && StorageService.tokenCache.hasOwnProperty(key)) {
-                        const {
-                            name,
-                            abbr,
-                            decimals
-                        } = StorageService.tokenCache[ key ];
-
-                        token = {
-                            balance: 0,
-                            name,
-                            abbr,
-                            decimals
+                            token = {
+                                balance: 0,
+                                name,
+                                abbr,
+                                decimals,
+                                imgUrl
+                            };
+                        }
+                        this.tokens.basic[ key ] = {
+                            ...token,
+                            balance: value,
+                            price
                         };
                     }
-
-                    this.tokens.basic[ key ] = {
-                        ...token,
-                        balance: value
-                    };
+                } else {
+                    this.tokens.basic = {};
                 }
-
+                //this.tokens.smart = {};
+                const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr') );
+                for (const [tokenId, token] of addSmartTokens) {
+                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                    if (contract) {
+                        let balance;
+                        const number = await contract.balanceOf(address).call();
+                        if (number.balance) {
+                            balance = new BigNumber(number.balance).toString();
+                        } else {
+                            balance = new BigNumber(number).toString();
+                        }
+                        if (typeof token.name === 'object') {
+                            const token2 = await NodeService.getSmartToken(tokenId);
+                            this.tokens.smart[ tokenId ] = token2;
+                        } else {
+                            this.tokens.smart[ tokenId ] = token;
+                        }
+                        this.tokens.smart[ tokenId ].imgUrl = false;
+                        this.tokens.smart[ tokenId ].balance = balance;
+                        this.tokens.smart[ tokenId ].price = 0;
+                    } else {
+                        this.tokens.smart[ tokenId ].balance = 0;
+                        this.tokens.smart[ tokenId ].price = 0;
+                    }
+                }
+                this.frozenBalance = (account.account_resource && account.account_resource.frozen_balance_for_energy ? account.account_resource.frozen_balance_for_energy.frozen_balance : 0) + (account.frozen ? account.frozen[0].frozen_balance : 0);
                 this.balance = account.balance || 0;
-                this.lastUpdated = Date.now();
-
-                return true;
-            }).catch(ex => {
-                logger.error(`Failed to update account ${ address }:`, ex);
-                return false;
+            }
+            let totalOwnTrxCount = new BigNumber(this.balance + this.frozenBalance).shiftedBy(-6);
+            Object.entries({ ...this.tokens.basic, ...this.tokens.smart }).map(([tokenId, token]) => {
+                if (token.price !== 0 && !token.isLocked) {
+                    const prices = StorageService.prices;
+                    const price = tokenId === CONTRACT_ADDRESS.USDT ? token.price / prices.priceList[prices.selected] : token.price;
+                    totalOwnTrxCount = totalOwnTrxCount.plus(new BigNumber(token.balance).shiftedBy(-token.decimals).multipliedBy(price));
+                }
             });
-
-        if(!accountExists)
-            return this.save();
-
-        await Promise.all([
-            this.updateBalance(),
-            this.updateTokens(tokens.smart)
-        ]);
-
-        logger.info(`Account ${ address } successfully updated`);
-
-        this.save();
-
-        /*const {
-            cached,
-            uncached
-        } = Object.values(this.transactions).reduce((obj, transaction) => {
-            if(!transaction.cached)
-                obj.uncached[transaction.txID] = transaction;
-            else obj.cached.push(transaction);
-
-            return obj;
-        }, {
-            cached: [],
-            uncached: {}
-        });
-
-        this.transactions = uncached;
-
-        cached.sort((a, b) => b.timestamp - a.timestamp)
-            .slice(0, 100)
-            .forEach(transaction => {
-                this.transactions[transaction.txID] = transaction;
-            });*/
+            this.asset = totalOwnTrxCount.toNumber();
+            this.lastUpdated = Date.now();
+            await Promise.all([
+                this.updateBalance(),
+                //this.updateTokens(tokens.smart)
+            ]);
+            logger.info(`Account ${address} successfully updated`);
+            this.save();
+            console.log(this.address, '@@@@@@@@@@@@@@@@@@');
+        } catch(error) {
+            console.log(error);
+        }
+        return true;
     }
 
     async updateBalance() {
         const { address } = this;
-
-        await NodeService.tronWeb.trx.getBandwidth(address)
-            .then((bandwidth = 0) => (
-                this.bandwidth = bandwidth
-            ));
-
-        await NodeService.tronWeb.trx.getAccountResources(address)
-            .then(({ EnergyLimit = 0 }) => (
-                this.energy = EnergyLimit
-            ));
-    }
-
-    async updateTransactions() {
-        if(this.updatingTransactions)
-            return;
-
-        this.updatingTransactions = true;
-
-        const transactions = await this.getTransactions().catch(() => {
-            logger.error('Failed to update transactions for', this.address);
-            this.updatingTransactions = false;
-
-            return [];
-        });
-        const filteredTransactions = transactions
-            .filter(({ txID }) => (
-                !Object.keys(this.transactions).includes(txID) &&
-                !this.ignoredTransactions.includes(txID)
-            ));
-
-        const mappedTransactions =
-            (await TransactionMapper.mapAll(filteredTransactions))
-                .filter(({ type }) => SUPPORTED_CONTRACTS.includes(type));
-
-        const newTransactions = [];
-        const manuallyCached = [];
-
-        for(const transaction of mappedTransactions) {
-            if(transaction.timestamp) {
-                transaction.cached = true;
-                newTransactions.push(transaction);
-                continue;
-            }
-
-            const txData = await NodeService.tronWeb.trx
-                .getTransactionInfo(transaction.txID);
-
-            if(!txData.id) {
-                logger.warn(`Transaction ${ transaction.txID } has not been cached, skipping`);
-                continue;
-            }
-
-            // if(!txData.id) {
-            //     logger.warn(`Transaction ${ transaction.txID } has not been cached`);
-            //
-            //     StorageService.addPendingTransaction(address, transaction.txID);
-            //     transaction.cached = false;
-            //
-            //     this.transactions[transaction.txID] = transaction;
-            //     continue;
-            // }
-
-            // logger.info(`Transaction ${ transaction.txID } has been cached`, transaction);
-
-            transaction.cached = true;
-            transaction.timestamp = txData.blockTimeStamp;
-            transaction.receipt = txData.receipt || false;
-            transaction.result = txData.contractResult || false;
-
-            newTransactions.push(transaction);
-            manuallyCached.push(transaction.txID);
-        }
-
-        const sortedTransactions = [
-            ...Object.values(this.transactions),
-            ...newTransactions
-        ].sort((a, b) => b.timestamp - a.timestamp);
-
-        this.transactions = sortedTransactions
-            .slice(0, 100)
-            .reduce((transactions, transaction) => {
-                transactions[ transaction.txID ] = transaction;
-                return transactions;
-            }, {});
-
-        manuallyCached.forEach(txID => {
-            if(txID in this.transactions)
-                return;
-
-            // Transaction is now too old for TronLink (100+)
-            this.ignoredTransactions.push(txID);
-        });
-
-        this.updatingTransactions = false;
-        this.save();
-    }
-
-    async updateTokens(tokens) {
-        const { address } = this;
-
-        for(const tokenAddress in tokens) {
-            try {
-                const contract = await NodeService.tronWeb.contract().at(tokenAddress);
-                const balance = await contract.balanceOf(address).call();
-                const bn = new BigNumber(balance.balance || balance);
-
-                if(bn.isNaN())
-                    tokens[ tokenAddress ].balance = '0';
-                else tokens[ tokenAddress ].balance = bn.toString();
-            } catch(ex) {
-                if(ex.toString().includes('not been deployed')) {
-                    tokens[ tokenAddress ].balance = 0;
-                    continue;
-                }
-
-                logger.error(`Failed to fetch token balance of ${ tokenAddress }:`, ex);
-            }
-        }
-
-        this.tokens.smart = tokens;
+        // await NodeService.tronWeb.trx.getBandwidth(address)
+        //     .then((bandwidth = 0) => (
+        //         this.bandwidth = bandwidth
+        //     ));
+        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = await NodeService.tronWeb.trx.getAccountResources(address);
+        this.energy = EnergyLimit;
+        this.energyUsed = EnergyUsed;
+        this.netLimit = freeNetLimit + NetLimit;
+        this.netUsed = NetUsed + freeNetUsed;
+        this.totalEnergyWeight = TotalEnergyWeight;
+        this.TotalEnergyLimit = TotalEnergyLimit;
     }
 
     async addSmartToken({ address, name, decimals, symbol }) {
@@ -505,10 +511,19 @@ class Account {
             name: this.name,
             address: this.address,
             balance: this.balance,
-            bandwidth: this.bandwidth,
+            frozenBalance: this.frozenBalance,
+            totalEnergyWeight: this.totalEnergyWeight,
+            TotalEnergyLimit: this.TotalEnergyLimit,
             energy: this.energy,
+            energyUsed: this.energyUsed,
+            netLimit: this.netLimit,
+            netUsed: this.netUsed,
             transactions: this.transactions,
-            lastUpdated: this.lastUpdated
+            lastUpdated: this.lastUpdated,
+            selectedBankRecordId: this.selectedBankRecordId,
+            dealCurrencyPage: this.dealCurrencyPage,
+            airdropInfo: this.airdropInfo,
+            transactionDetail: this.transactionDetail
         };
     }
 
@@ -572,10 +587,9 @@ class Account {
             const contract = await NodeService.tronWeb.contract().at(token);
 
             await contract.transfer(recipient, amount).send(
-                {},
+                { feeLimit: 10 * Math.pow(10, 6) },
                 this.privateKey
             );
-
             return true;
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);

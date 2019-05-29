@@ -1,8 +1,8 @@
 import React from 'react';
-import AccountDetails from 'components/AccountDetails';
+import AccountDetails from '@tronlink/popup/src/components/AccountDetails';
 import CustomScroll from 'react-custom-scroll';
-import Input from 'components/Input';
-import Button from 'components/Button';
+import Input from '@tronlink/popup/src/components/Input';
+import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
 

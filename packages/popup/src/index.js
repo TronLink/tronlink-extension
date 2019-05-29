@@ -5,26 +5,36 @@ import App from 'app';
 import Logger from '@tronlink/lib/logger';
 import MessageDuplex from '@tronlink/lib/MessageDuplex';
 import reducer from 'reducers';
-
+import { addLocaleData } from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import zh from 'react-intl/locale-data/zh';
+import ja from 'react-intl/locale-data/ja';
 import * as Sentry from '@sentry/browser';
-
-import { addLocaleData, IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { version } from '@tronlink/popup/package';
 
 import {
     setAppState,
     setCurrency,
     setNodes,
-    setPriceList
+    setPriceList,
+    setLanguage,
+    setSetting,
+    setVersion,
+    setDappList
 } from 'reducers/appReducer';
 
 import {
     setAccount,
-    setAccounts
+    setAccounts,
+    setToken,
+    setSelectedBankRecordId,
+    changeDealCurrencyPage,
+    setAirdropInfo
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -35,12 +45,9 @@ import {
     faCircle,
     faDotCircle
 } from '@fortawesome/free-solid-svg-icons';
-
-import enLocale from 'react-intl/locale-data/en';
-import enMessages from 'translations/en.json';
-
+addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
-    dsn: 'https://546d9fe346d149f6b60962741858759b@sentry.io/1329911',
+    dsn: 'https://a52a6098294d4c1c8397e22c8b9a1c0f@sentry.io/1455110',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
 });
 
@@ -48,33 +55,12 @@ const logger = new Logger('Popup');
 
 export const app = {
     duplex: new MessageDuplex.Popup(),
-
     async run() {
-        this.loadLocale();
         this.loadIcons();
         this.createStore();
-
         await this.getAppState();
-
         this.bindDuplexRequests();
         this.render();
-    },
-
-    loadLocale() {
-        logger.info('Loading locale and translation data');
-
-        addLocaleData([
-            ...enLocale
-        ]);
-
-        this.messages = {
-            en: enMessages
-        };
-
-        this.languageKey = navigator.language.split(/[-_]/)[ 0 ];
-        this.language = this.messages.hasOwnProperty(this.languageKey) ? this.languageKey : 'en';
-
-        logger.info('Loaded locales and translations');
     },
 
     loadIcons() {
@@ -103,30 +89,47 @@ export const app = {
 
     async getAppState() {
         PopupAPI.init(this.duplex);
-
-        const [
+        const setting = await PopupAPI.getSetting();
+        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration) {
+            PopupAPI.lockWallet();
+        }
+        let [
             appState,
             nodes,
             accounts,
             selectedAccount,
             prices,
-            confirmations
+            confirmations,
+            selectedToken,
+            language
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
             PopupAPI.getAccounts(),
             PopupAPI.getSelectedAccount(),
             PopupAPI.getPrices(),
-            PopupAPI.getConfirmations()
+            PopupAPI.getConfirmations(),
+            PopupAPI.getSelectedToken(),
+            PopupAPI.getLanguage(),
         ]);
-
+        const lang = navigator.language || navigator.browserLanguage;
+        if ( lang.indexOf('zh') > -1 ) {
+            language = language || 'zh';
+        } else if ( lang.indexOf('ja') > -1 ) {
+            language = language || 'ja';
+        } else {
+            language = language || 'en';
+        }
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
-        this.store.dispatch(setPriceList(prices.priceList));
+        this.store.dispatch(setPriceList([prices.priceList,prices.usdtPriceList]));
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
-
+        this.store.dispatch(setToken(selectedToken));
+        this.store.dispatch(setLanguage(language));
+        this.store.dispatch(setSetting(setting));
+        this.store.dispatch(setVersion(version));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -165,20 +168,42 @@ export const app = {
         this.duplex.on('setCurrency', currency => this.store.dispatch(
             setCurrency(currency)
         ));
+
+        this.duplex.on('setSelectedToken', token => this.store.dispatch(
+            setToken(token)
+        ));
+
+        this.duplex.on('setLanguage', language => this.store.dispatch(
+            setLanguage(language)
+        ));
+
+        this.duplex.on('setSetting', setting => this.store.dispatch(
+            setSetting(setting)
+        ));
+
+        this.duplex.on('setSelectedBankRecordId', id => this.store.dispatch(
+            setSelectedBankRecordId(id)
+        ));
+
+        this.duplex.on('changeDealCurrencyPage', status => this.store.dispatch(
+            changeDealCurrencyPage(status)
+        ));
+
+        this.duplex.on('setAirdropInfo', airdropInfo => this.store.dispatch(
+            setAirdropInfo(airdropInfo)
+        ));
+
+        this.duplex.on('setDappList', dappList => this.store.dispatch(
+            setDappList(dappList)
+        ));
+
     },
 
     render() {
         logger.info('Rendering application');
-
         ReactDOM.render(
             <Provider store={ this.store }>
-                <IntlProvider
-                    key={ this.language }
-                    locale={ this.language }
-                    messages={ this.messages[ this.language ] }
-                >
-                    <App />
-                </IntlProvider>
+                <App />
             </Provider>,
             document.getElementById('root')
         );

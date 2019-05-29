@@ -4,7 +4,7 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.0.14",
+  "version": "2.5.2",
   "dependencies": {
     "bip32": "^1.0.2",
     "bip39": "^2.5.0",
@@ -12,7 +12,7 @@
     "dateformat": "^3.0.3",
     "eventemitter3": "^3.1.0",
     "extensionizer": "^1.0.1",
-    "tronweb": "^2.1.30",
+    "tronweb": "^2.5.0",
     "uuid": "^3.3.2"
   },
   "scripts": {

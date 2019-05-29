@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { FormattedMessage } from 'react-intl';
+import Button from '../Button';
 
 import './WalletOption.scss';
 
@@ -12,12 +13,13 @@ const WalletOption = props => {
     } = props;
 
     const titleKey = `${ name }.TITLE`;
-    const descKey = `${ name }.DESC`;
+    const descKey = `${ name }.TIP`;
 
     return (
-        <div className={ `walletOption ${ className }` } onClick={ onClick }>
-            <FormattedMessage id={ titleKey } />
-            <FormattedMessage id={ descKey } />
+        <div className={ `walletOption ${ className }`} >
+            <div className="iconWrap"></div>
+            <Button id={titleKey} onClick={ onClick } />
+            <div className="tip"><FormattedMessage id={descKey}/></div>
         </div>
     );
 };

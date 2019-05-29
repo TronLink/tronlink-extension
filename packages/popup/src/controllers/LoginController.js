@@ -1,10 +1,10 @@
 import React from 'react';
-import Input from 'components/Input';
-import Button from 'components/Button';
+import Input from '@tronlink/popup/src/components/Input';
+import Button from '@tronlink/popup/src/components/Button';
 
 import { FormattedMessage } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
-import { app } from 'index';
+import { app } from '@tronlink/popup/src/index';
 
 class LoginController extends React.Component {
     state = {
@@ -34,7 +34,7 @@ class LoginController extends React.Component {
 
     onButtonClick() {
         const { password } = this.state;
-
+        console.log(password);
         this.setState({
             loading: true
         });
@@ -58,9 +58,15 @@ class LoginController extends React.Component {
         } = this.state;
 
         return (
-            <div className='insetContainer'>
+            <div className='insetContainer logoWrap'>
                 <div className='pageHeader'>
-                    TronLink
+                    <div className='pageHeaderLogoWrap'>
+                        <div className='logo1'></div>
+                        <div className='logo2'></div>
+                    </div>
+                    <div className='pageHeaderText'>
+                        <FormattedMessage id='LOGIN.PASSWORD.BACK' />
+                    </div>
                 </div>
                 { error ? (
                     <div className='errorModal hasBottomMargin'>
@@ -68,9 +74,8 @@ class LoginController extends React.Component {
                         <FormattedMessage className='modalBody' id={ error } />
                     </div>
                 ) : '' }
-                <div className='greyModal'>
+                <div className='greyModal loginModel'>
                     <Input
-                        icon='lock'
                         type='password'
                         className='hasBottomMargin'
                         placeholder='INPUT.PASSWORD'
@@ -80,7 +85,7 @@ class LoginController extends React.Component {
                         onEnter={ this.onButtonClick }
                         tabIndex={ 1 }
                     />
-
+            
                     <Button
                         id='BUTTON.CONTINUE'
                         isValid={ password.isValid }

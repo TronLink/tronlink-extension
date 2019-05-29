@@ -2,7 +2,7 @@ import extensionizer from 'extensionizer';
 import Logger from '@tronlink/lib/logger';
 import Utils from '@tronlink/lib/utils';
 import NodeService from '../NodeService';
-
+import axios from 'axios';
 const logger = new Logger('StorageService');
 
 const StorageService = {
@@ -14,13 +14,25 @@ const StorageService = {
         'selectedAccount',
         'prices',
         'pendingTransactions',
-        'tokenCache'
+        'tokenCache',
+        'setting',
+        'language',
+        'dappList',
+        'allDapps',
+        'allTokens'
     ],
 
     storage: extensionizer.storage.local,
 
     prices: {
         priceList: {
+            USD: 0,
+            GBP: 0,
+            EUR: 0,
+            BTC: 0,
+            ETH: 0
+        },
+        usdtPriceList: {
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -38,10 +50,25 @@ const StorageService = {
     transactions: {},
     tokenCache: {},
     selectedAccount: false,
-
+    selectedToken: {},
+    setting: {
+        lock: {
+            lockTime: 0,
+            duration: 0
+        },
+        openAccountsMenu:false,
+        advertising: {},
+        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
+    },
+    language: '',
     ready: false,
     password: false,
-
+    dappList: {
+        recommend: [],
+        used: []
+    },
+    allDapps: [],
+    allTokens : [],
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
     },
@@ -63,6 +90,10 @@ const StorageService = {
 
     async dataExists() {
         return !!(await this.getStorage('accounts'));
+    },
+
+    lock() {
+        this.ready = false;
     },
 
     async unlock(password) {
@@ -179,6 +210,31 @@ const StorageService = {
         this.save('transactions', 'accounts');
     },
 
+    setSelectedToken(token) {
+        logger.info('Saving selectedToken', token);
+        this.selectedToken = token;
+        this.save('selectedToken');
+    },
+
+    setLanguage(language){
+        logger.info('Saving language', language);
+        this.language = language;
+        this.save('language');
+    },
+
+    setSetting(setting){
+        logger.info('Saving setting', setting);
+        this.setting = setting;
+        this.save('setting');
+    },
+
+    getSetting(){
+        if(!this.setting.hasOwnProperty('advertising')){
+            this.setting.advertising = {};
+        }
+        return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
+    },
+
     migrate() {
         try {
             const storage = localStorage.getItem('TronLink_WALLET');
@@ -263,8 +319,9 @@ const StorageService = {
         return transaction.txID;
     },
 
-    setPrices(priceList) {
+    setPrices(priceList,usdtPriceList) {
         this.prices.priceList = priceList;
+        this.prices.usdtPriceList = usdtPriceList;
         this.save('prices');
     },
 
@@ -292,21 +349,89 @@ const StorageService = {
     },
 
     async cacheToken(tokenID) {
-        const {
-            name,
-            abbr,
-            precision: decimals = 0
-        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
 
-        this.tokenCache[ tokenID ] = {
-            name,
-            abbr,
-            decimals
-        };
+        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
+            if(typeof tokenID === 'string' ) {
+                if(tokenID === '_'){
+                   this.tokenCache[ tokenID ] = {
+                        name:'TRX',
+                        abbr:'TRX',
+                        decimals:6
+                    };
+                }else{
+                    const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
+                    const {
+                        name,
+                        abbr,
+                        precision: decimals = 0,
+                        imgUrl = false
+                    } = data.data[0];
+                    this.tokenCache[ tokenID ] = {
+                        name,
+                        abbr,
+                        decimals,
+                        imgUrl
+                    };
+                }
+            } else {
+                const { contract_address, decimals, name, abbr } = tokenID;
+                const { data: { trc20_tokens: [{ icon_url = false }] } } = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
+                this.tokenCache[ contract_address ] = {
+                    name,
+                    abbr,
+                    decimals,
+                    imgUrl:icon_url
+                };
+            }
+
+        } else {
+            const {
+                name,
+                abbr,
+                precision: decimals = 0
+            } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+            this.tokenCache[ tokenID ] = {
+                name,
+                abbr,
+                decimals
+            };
+        }
+
 
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
 
         this.save('tokenCache');
+    },
+
+    async getDappList(isFromStorage) {
+        if(!this.hasOwnProperty('dappList')) {
+            this.dappList = { recommend: [], used: [] };
+        }
+        if(!isFromStorage) {
+            const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
+                return { data: { data: this.dappList.recommend } };
+            });
+            this.dappList.recommend = recommend;
+        }
+        const used = this.dappList.used.filter(v => v != null);
+        this.dappList.used = used;
+        this.save('dappList');
+        return this.dappList;
+    },
+
+    saveDappList(dappList) {
+        this.dappList = dappList;
+        this.save('dappList');
+    },
+
+    saveAllDapps(dapps) {
+        this.allDapps = dapps;
+        this.save('allDapps');
+    },
+
+    saveAllTokens(tokens) {
+        this.allTokens = tokens;
+        this.save('allTokens');
     },
 
     purge() {

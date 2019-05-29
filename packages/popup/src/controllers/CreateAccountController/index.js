@@ -9,7 +9,7 @@ import { CREATION_STAGE } from '@tronlink/lib/constants';
 import WritingPhrase from './stages/WritingPhrase';
 import ConfirmingPhrase from './stages/ConfirmingPhrase';
 
-import * as checkmark from 'assets/animations/checkmark.json';
+import * as checkmark from '@tronlink/popup/src/assets/animations/checkmark.json';
 
 class CreateAccountController extends React.Component {
     animationOptions = {
@@ -41,10 +41,10 @@ class CreateAccountController extends React.Component {
         });
     }
 
-    changeStage(newStage) {
+    async changeStage(newStage) {
         // This call intentionally doesn't update appState
         if(newStage === CREATION_STAGE.SUCCESS) {
-            PopupAPI.addAccount(
+            await PopupAPI.addAccount(
                 this.mnemonic,
                 this.state.walletName
             );
@@ -56,6 +56,7 @@ class CreateAccountController extends React.Component {
         this.setState({
             stage: newStage
         });
+        return true;
     }
 
     render() {

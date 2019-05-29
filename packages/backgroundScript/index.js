@@ -15,7 +15,7 @@ import { version } from './package.json';
 
 // Make error reporting user-configurable
 Sentry.init({
-    dsn: 'https://4757a0fdd2e743d48c184f75a179dffe@sentry.io/1273081',
+    dsn: 'https://5d5f88b4905844f9a1be3d380f5569a8@sentry.io/1455160',
     release: `TronLink@${ version }`
 });
 
@@ -55,11 +55,13 @@ const backgroundScript = {
 
             m.parentNode.insertBefore(a, m);
         })(window, document, 'script', (this.developmentMode ?
-            'https://www.google-analytics.com/analytics_debug.js' :
+            //'https://www.google-analytics.com/analytics_debug.js' :
+            'https://www.google-analytics.com/analytics.js' :
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
         ga('create', 'UA-126129673-2', 'auto');
+        ga('send', 'pageview');
         ga('set', 'checkProtocolTask', null);
         ga('set', 'appName', 'TronLink');
         ga('set', 'appVersion', version);
@@ -75,10 +77,17 @@ const backgroundScript = {
             this.walletService.stopPolling()
         ));
 
+        //refresh the wallet data
+        duplex.on('refresh', this.walletService.refresh);
+
         // Getter methods
         duplex.on('requestState', ({ resolve }) => resolve(
             this.walletService.state
         ));
+
+        //get the transaction records of token that need to selected
+        duplex.on('setSelectedToken', this.walletService.setSelectedToken);
+        duplex.on('getSelectedToken', this.walletService.getSelectedToken);
 
         // WalletService: Confirmation responses
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
@@ -110,6 +119,7 @@ const backgroundScript = {
         // WalletService: Authentication
         duplex.on('setPassword', this.walletService.setPassword);
         duplex.on('unlockWallet', this.walletService.unlockWallet);
+        duplex.on('lockWallet', this.walletService.lockWallet);
 
         // NodeService: Node management
         duplex.on('selectNode', this.walletService.selectNode);
@@ -117,6 +127,43 @@ const backgroundScript = {
         // duplex.on('deleteNode', this.nodeService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
         duplex.on('getSmartToken', this.nodeService.getSmartToken);
+
+        // language
+        duplex.on('getLanguage', this.walletService.getLanguage);
+        duplex.on('setLanguage', this.walletService.setLanguage);
+        //setting
+        duplex.on('getSetting', this.walletService.getSetting);
+        duplex.on('setSetting', this.walletService.setSetting);
+
+        duplex.on('getTransactionsByTokenId', this.walletService.getTransactionsByTokenId);
+
+        // tronBank energy
+        duplex.on('rentEnergy', this.walletService.rentEnergy);
+        duplex.on('isValidOverTotal', this.walletService.isValidOverTotal);
+        duplex.on('getBankDefaultData', this.walletService.getBankDefaultData);
+        duplex.on('calculateRentCost', this.walletService.calculateRentCost);
+        duplex.on('isValidOrderAddress', this.walletService.isValidOrderAddress);
+        duplex.on('isValidOnlineAddress', this.walletService.isValidOnlineAddress);
+        duplex.on('getBankRecordList', this.walletService.getBankRecordList);
+        duplex.on('getBankRecordDetail', this.walletService.getBankRecordDetail);
+        duplex.on('setSelectedBankRecordId', this.walletService.setSelectedBankRecordId);
+        duplex.on('changeDealCurrencyPage', this.walletService.changeDealCurrencyPage);
+        duplex.on('bankOrderNotice', this.walletService.bankOrderNotice);
+
+        duplex.on('getNews', this.walletService.getNews);
+        duplex.on('getIeos', this.walletService.getIeos);
+        duplex.on('addCount', this.walletService.addCount);
+
+        duplex.on('setAirdropInfo', this.walletService.setAirdropInfo);
+        duplex.on('getDappList', this.walletService.getDappList);
+        duplex.on('setDappList', this.walletService.setDappList);
+        duplex.on('getAccountInfo', this.walletService.getAccountInfo);
+
+        duplex.on('setGaEvent', this.walletService.setGaEvent);
+        duplex.on('getAllDapps', this.walletService.getAllDapps);
+        duplex.on('updateTokens', this.walletService.updateTokens);
+        duplex.on('getAllTokens', this.walletService.getAllTokens);
+        duplex.on('setTransactionDetail', this.walletService.setTransactionDetail);
     },
 
     bindTabDuplex() {
@@ -290,6 +337,34 @@ const backgroundScript = {
 
         this.walletService.on('setCurrency', currency => (
             BackgroundAPI.setCurrency(currency)
+        ));
+
+        this.walletService.on('setSelectedToken', token => (
+            BackgroundAPI.setSelectedToken(token)
+        ));
+
+        this.walletService.on('setLanguage', language => (
+            BackgroundAPI.setLanguage(language)
+        ));
+
+        this.walletService.on('setSetting', setting => (
+            BackgroundAPI.setSetting(setting)
+        ));
+
+        this.walletService.on('setSelectedBankRecordId', id => (
+            BackgroundAPI.setSelectedBankRecordId(id)
+        ));
+
+        this.walletService.on('changeDealCurrencyPage', status => (
+            BackgroundAPI.changeDealCurrencyPage(status)
+        ));
+
+        this.walletService.on('setAirdropInfo', airdropInfo => (
+            BackgroundAPI.setAirdropInfo(airdropInfo)
+        ));
+
+        this.walletService.on('setDappList', dappList => (
+            BackgroundAPI.setDappList(dappList)
         ));
     }
 };

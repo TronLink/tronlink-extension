@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>ic_border_color_24px</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M8,3.90909091 L6.09090909,2 L1,7.09090909 L1,9 L2.90909091,9 L8,3.90909091 Z M9.85381091,2.02040816 C10.0487297,1.82548938 10.0487297,1.51062057 9.85381091,1.31570179 L8.68429821,0.146189088 C8.48937943,-0.048729696 8.17451062,-0.048729696 7.97959184,0.146189088 L7,1.12578092 L8.87421908,3 L9.85381091,2.02040816 Z" id="path-1"></path>
+        <polygon id="path-3" points="0 11 12 11 12 12 0 12"></polygon>
+    </defs>
+    <g id="方案1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.2首页-账户-方案二" transform="translate(-232.000000, -102.000000)">
+            <g id="更多" transform="translate(224.000000, 93.000000)">
+                <g id="Group-7" transform="translate(8.000000, 6.000000)">
+                    <g id="ic_border_color_24px" transform="translate(0.000000, 3.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Shape" fill="#FFFFFF" fill-rule="nonzero" xlink:href="#path-1"></use>
+                        <mask id="mask-4" fill="white">
+                            <use xlink:href="#path-3"></use>
+                        </mask>
+                        <use id="Shape" fill="#FFFFFF" fill-rule="nonzero" xlink:href="#path-3"></use>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>交易所</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="TRONLink" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.1首页-账户-方案二" transform="translate(-226.000000, -18.000000)">
+            <g id="导航" transform="translate(18.000000, 19.000000)">
+                <g id="交易所" transform="translate(209.000000, 0.000000)">
+                    <g id="Group-9" stroke="#636ACC">
+                        <polyline id="Path-8" points="5 8.99254193 7.1883741 7.17794509 9.3454706 8.87262242 12 7"></polyline>
+                        <polyline id="Path-11" stroke-width="2" points="0.156971807 8.07861724 8.51611328 0.955810547 16.6591797 8.07861724"></polyline>
+                        <polyline id="Path-12" stroke-width="2" points="2.34028957 9.8125 2.34028957 16.6801215 14.3247495 16.6801215 14.3247495 9.8125"></polyline>
+                    </g>
+                    <g id="Group-11" transform="translate(5.000000, 11.000000)" fill="#636ACC" fill-rule="nonzero">
+                        <rect id="Combined-Shape" x="6" y="0" width="1" height="4"></rect>
+                        <rect id="Combined-Shape" x="0" y="0" width="1" height="4"></rect>
+                        <rect id="Combined-Shape" x="3" y="0" width="1" height="4"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
