@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import ReactTooltip from 'react-tooltip';
-import { Popover, icon } from 'antd-mobile';
+import { Popover } from 'antd-mobile';
 import CopyToClipboard from 'react-copy-to-clipboard';
 const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />
 class TransactionDetailController extends React.Component {
