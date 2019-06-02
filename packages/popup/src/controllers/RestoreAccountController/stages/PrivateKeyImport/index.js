@@ -3,7 +3,7 @@ import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import './PrivateKeyImport.scss';
@@ -57,14 +57,14 @@ class PrivateKeyImport extends React.Component {
         );
 
         if(res) {
-            PopupAPI.resetState();
             this.setState({ loading: false });
+            PopupAPI.resetState();
         }
     }
 
     render() {
         const { onCancel } = this.props;
-
+        const { formatMessage } = this.props.intl;
         const {
             privateKey,
             isValid,
@@ -84,7 +84,7 @@ class PrivateKeyImport extends React.Component {
                     </div>
                     <div className="inputUnit">
                         <textarea
-                            placeholder='Private Key Import'
+                            placeholder={formatMessage({id:'CHOOSING_TYPE.PRIVATE_KEY.TITLE'})}
                             className='privateKeyInput'
                             rows={ 5 }
                             value={ privateKey }
@@ -109,6 +109,6 @@ class PrivateKeyImport extends React.Component {
     }
 }
 
-export default connect(state => ({
+export default injectIntl(connect(state => ({
     accounts: state.accounts.accounts
-}))(PrivateKeyImport);
+}))(PrivateKeyImport));

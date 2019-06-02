@@ -164,6 +164,8 @@ const backgroundScript = {
         duplex.on('updateTokens', this.walletService.updateTokens);
         duplex.on('getAllTokens', this.walletService.getAllTokens);
         duplex.on('setTransactionDetail', this.walletService.setTransactionDetail);
+        duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
+        duplex.on('getAuthorizeDapps', this.walletService.getAuthorizeDapps);
     },
 
     bindTabDuplex() {
@@ -366,6 +368,11 @@ const backgroundScript = {
         this.walletService.on('setDappList', dappList => (
             BackgroundAPI.setDappList(dappList)
         ));
+
+        this.walletService.on('setAuthorizeDapps', dappList => (
+            BackgroundAPI.setAuthorizeDapps(dappList)
+        ));
+
     }
 };
 

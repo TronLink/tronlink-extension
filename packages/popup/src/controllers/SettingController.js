@@ -5,8 +5,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from "@tronlink/popup/src/components/Button";
 import { VALIDATION_STATE } from "@tronlink/lib/constants";
 import { app } from "@tronlink/popup/src";
-
-class SettingController extends  React.Component {
+import { APP_STATE } from '@tronlink/lib/constants';
+class SettingController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,49 +34,57 @@ class SettingController extends  React.Component {
                 { name: '中文', key: 'zh', selected: false },
                 { name: '日本語', key: 'ja', selected: false },
             ],
-            autoLock:[{
-                time:60 * 1000,
-                name:'SETTING.TITLE.AUTO_LOCK.1_MIN'
-            },{
-                time:5 * 60 * 1000,
-                name:'SETTING.TITLE.AUTO_LOCK.5_MIN'
-            },{
-                time:10 * 60 * 1000,
-                name:'SETTING.TITLE.AUTO_LOCK.10_MIN'
-            },{
-                time:30 * 60 * 1000,
-                name:'SETTING.TITLE.AUTO_LOCK.30_MIN'
-            },{
-                time:0,
-                name:'SETTING.TITLE.AUTO_LOCK.NEVER'
+            autoLock: [{
+                time: 60 * 1000,
+                name: 'SETTING.TITLE.AUTO_LOCK.1_MIN'
+            }, {
+                time: 5 * 60 * 1000,
+                name: 'SETTING.TITLE.AUTO_LOCK.5_MIN'
+            }, {
+                time: 10 * 60 * 1000,
+                name: 'SETTING.TITLE.AUTO_LOCK.10_MIN'
+            }, {
+                time: 30 * 60 * 1000,
+                name: 'SETTING.TITLE.AUTO_LOCK.30_MIN'
+            }, {
+                time: 0,
+                name: 'SETTING.TITLE.AUTO_LOCK.NEVER'
             }]
         };
     }
 
-    setting(index){
-        const { nodes } = this.props;
+    setting(index) {
+        //const { nodes } = this.props;
         const options = this.refs.cell.getElementsByClassName('option');
-        if(index !==0 ){
-            for(let i=0;i<options.length;i++){
-                if(index === i){
-                    if(options[i].className.match(/active/)){
-                        options[i].classList.remove('active');
-                    }else{
-                        options[i].classList.add('active');
+        //if (options[ index ].hasAttribute('data-height'))
+        //if(index !==0 ) {
+            for(let i = 0;i < options.length;i++) {
+                if(i === index) {
+                    options[ index ].classList.toggle('active');
+                    if(options[ index ].hasAttribute('data-height')) {
+                        const height = options[ index ].getAttribute('data-height');
+                        if(options[ index ].classList.contains('active')) {
+                            options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = height + 'px';
+                        } else {
+                            options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
+                        }
                     }
-                } else {
-                    options[i].classList.remove('active');
-                    options[0].getElementsByClassName('settingWrap')[0].style.height = '0px';
+                }else {
+                    options[ i ].classList.remove('active');
+                    if(options[ i ].hasAttribute('data-height')) {
+                        options[ i ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
+                    }
                 }
             }
-        } else {
-            const idx = parseInt(options[0].getElementsByClassName('settingWrap')[0].style.height);
-            if(idx === 0){
-                options[0].getElementsByClassName('settingWrap')[0].style.height = (16 + 122 * Object.keys(nodes.nodes).length)+'px';
-            } else {
-                options[0].getElementsByClassName('settingWrap')[0].style.height = '0px';
-            }
-        }
+
+        //} else {
+            // const idx = parseInt(options[0].getElementsByClassName('settingWrap')[0].style.height);
+            // if(idx === 0){
+            //     options[0].getElementsByClassName('settingWrap')[0].style.height = (16 + 122 * Object.keys(nodes.nodes).length)+'px';
+            // } else {
+            //     options[0].getElementsByClassName('settingWrap')[0].style.height = '0px';
+            // }
+        //}
     }
 
     onCustomNameChange(name) {
@@ -124,7 +132,6 @@ class SettingController extends  React.Component {
 
 
     onCustomNodeChange(nodeType, value) {
-
         if(!value.length) {
             return this.setState({
                 customNode: {
@@ -144,7 +151,9 @@ class SettingController extends  React.Component {
         try {
             new URL(value);
             nodeState = VALIDATION_STATE.VALID;
-        } catch {}
+        } catch(err) {
+
+        }
 
         customNode[ nodeType ].state = nodeState;
 
@@ -208,7 +217,7 @@ class SettingController extends  React.Component {
     }
 
 
-    render(){
+    render() {
         const { prices,nodes,onCancel,language,lock,version} = this.props;
         const { formatMessage } = this.props.intl;
         const currentNode = nodes.nodes[nodes.selected];
@@ -228,7 +237,14 @@ class SettingController extends  React.Component {
                 </div>
                 <div className='greyModal' ref="cell">
                     <div className="optionsWrap">
-                        <div className="option" onClick={ ()=>{this.setting(0)} }>
+                        <div className="option" onClick={ ()=>PopupAPI.changeState(APP_STATE.DAPP_WHITELIST) }>
+                            <div className="txt">
+                                <div className="span">
+                                    <FormattedMessage id="SETTING.TITLE.DAPP_WHITELIST" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="option" onClick={ ()=>{this.setting(1)} } data-height={(16 + 122 * Object.keys(nodes.nodes).length)}>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.NODE" />
@@ -237,9 +253,9 @@ class SettingController extends  React.Component {
                                 <div className="settingWrap">
                                     <div className="nodeWrap">
                                         {
-                                            Object.entries(nodes.nodes).map(([nodeId,node])=>{
+                                            Object.entries(nodes.nodes).map(([nodeId, node]) => {
                                                 return (
-                                                    <div className={"nodeItem"+(nodeId === nodes.selected?" selected":"")} onClick={(e)=>{
+                                                    <div className={'nodeItem'+(nodeId === nodes.selected ? ' selected' : '')} onClick={(e) => {
                                                         e.stopPropagation();
                                                         PopupAPI.selectNode(nodeId);
                                                         app.getNodes();
@@ -265,7 +281,7 @@ class SettingController extends  React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(1)} }   >
+                        <div className="option" onClick={ ()=>{this.setting(2)} }   >
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.ADD_NODE" />
@@ -323,7 +339,7 @@ class SettingController extends  React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(2)} }>
+                        <div className="option" onClick={ ()=>{this.setting(3)} }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.CURRENCY" />
@@ -336,7 +352,7 @@ class SettingController extends  React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(3)} }>
+                        <div className="option" onClick={ ()=>{this.setting(4)} }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.LANGUAGE" />
@@ -353,7 +369,7 @@ class SettingController extends  React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={() =>{this.setting(4)}   }>
+                        <div className="option" onClick={() =>{this.setting(5)}   }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.AUTO_LOCK" />

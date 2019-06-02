@@ -272,5 +272,13 @@ export default {
 
     setTransactionDetail(hash) {
        return this.duplex.send('setTransactionDetail', hash);
+    },
+
+    setAuthorizeDapps(authorizeDapps) {
+        this.duplex.send('setAuthorizeDapps', authorizeDapps, false);
+    },
+
+    getAuthorizeDapps(){
+        return this.duplex.send('getAuthorizeDapps');
     }
-};
+}

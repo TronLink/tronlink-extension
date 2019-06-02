@@ -19,13 +19,15 @@ const StorageService = {
         'language',
         'dappList',
         'allDapps',
-        'allTokens'
+        'allTokens',
+        'authorizeDapps'
     ],
 
     storage: extensionizer.storage.local,
 
     prices: {
         priceList: {
+            CNY: 0,
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -33,6 +35,7 @@ const StorageService = {
             ETH: 0
         },
         usdtPriceList: {
+            CNY: 0,
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -69,6 +72,7 @@ const StorageService = {
     },
     allDapps: [],
     allTokens : [],
+    authorizeDapps: {},
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
     },
@@ -432,6 +436,11 @@ const StorageService = {
     saveAllTokens(tokens) {
         this.allTokens = tokens;
         this.save('allTokens');
+    },
+
+    setAuthorizeDapps(authorizeDapps) {
+        this.authorizeDapps = authorizeDapps;
+        this.save('authorizeDapps');
     },
 
     purge() {

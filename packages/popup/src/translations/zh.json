@@ -62,14 +62,17 @@
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "通过私钥导入",
     "CREATION.RESTORE.MNEMONIC.TITLE": "通过助记词导入",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "选择账户",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "上传文件（只支持txt格式的文件导入）",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
 
-    "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "所有可选的账户已经被导入",
-    "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "私钥",
-    "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件导入",
 
     "CREATION_CRITERIA.HAS_LENGTH": "至少包含<strong>4个</strong>字符",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "仅包含数字，字母及空格",
@@ -140,6 +143,7 @@
     "CONFIRMATIONS.QUANTITY": "数量",
     "CONFIRMATIONS.WHITELIST.TITLE": "激活自动签名",
     "CONFIRMATIONS.WHITELIST.BODY": "允许TronLink代表您自动签署交易",
+    "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "将该应用加入白名单，此弹窗将不再弹出，自动授权。",
 
     "CONFIRMATIONS.OPTIONS.NO": "不自动签名",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "十五分钟之内自动签名",
@@ -188,6 +192,7 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"设置",
+    "SETTING.TITLE.DAPP_WHITELIST":"DAPP白名单",
     "SETTING.TITLE.NODE":"切换节点",
     "SETTING.TITLE.ADD_NODE":"添加节点",
     "SETTING.TITLE.CURRENCY":"设置货币",
@@ -330,10 +335,6 @@
     "BANK.RENTINFO.SUCCESS":"支付成功，能量约1分钟后到账",
     "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下五笔订单",
 
-
-
-
-
     "IEOS.BUY_ING":"抢购中",
     "IEOS.LEFT_TIME":"距开抢{day}",
     "IEOS.LAUNCH_BASE":"LaunchBase",
@@ -403,5 +404,10 @@
     "TRANSACTION_DETAIL.COPIED": "截图已复制到粘贴板",
     "TRANSACTION_DETAIL.ENABLE_COPY": "可复制",
     "TRANSACTION_DETAIL.HAVE_COPIED": "已复制",
-    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗"
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗",
+
+    "DAPP_WHITELIST.URL":"网址",
+    "DAPP_WHITELIST.CONTRACT_ADDRESS":"合约地址",
+    "DAPP_WHITELIST.ADD_TIME":"添加时间"
+
 }

@@ -62,6 +62,11 @@
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
     "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Select account",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "上传文件（只支持txt格式的文件导入）",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"Choosing type",
@@ -70,6 +75,7 @@
     "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "Private key",
     "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件导入",
 
     "CREATION_CRITERIA.HAS_LENGTH": "Contains at least <strong>four</strong> characters",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "Contains only <strong>alphanumeric</strong> characters, along with optional spaces",

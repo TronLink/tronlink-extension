@@ -2,6 +2,13 @@ import crypto from 'crypto';
 import bip39 from 'bip39';
 import bip32 from 'bip32';
 import TronWeb from 'tronweb';
+import pbkdf2 from 'pbkdf2';
+import aesjs from "aes-js";
+
+
+const encryptKey = (password, salt) => {
+    return pbkdf2.pbkdf2Sync(password, salt, 1, 256 / 8, 'sha512');
+};
 
 const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
@@ -234,7 +241,31 @@ const Utils = {
             range.moveToElementText(targetNode);
             range.select();
         }
+    },
+
+    readFileContentsFromEvent(ev) {
+      return new Promise(resolve => {
+        const files = ev.target.files;
+        const reader = new FileReader();
+        reader.onload = (file) => {
+          const contents = file.target.result;
+          resolve(contents);
+        };
+
+        reader.readAsText(files[0]);
+      });
+    },
+
+
+    decryptString(password, salt, hexString) {
+      const key = encryptKey(password, salt);
+      const encryptedBytes = aesjs.utils.hex.toBytes(hexString);
+      const aesCtr = new aesjs.ModeOfOperation.ctr(key);
+      const decryptedBytes = aesCtr.decrypt(encryptedBytes);
+      return aesjs.utils.utf8.fromBytes(decryptedBytes);
     }
+
+
 };
 
 export default Utils;

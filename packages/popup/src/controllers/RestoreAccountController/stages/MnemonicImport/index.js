@@ -85,7 +85,7 @@ class MnemonicImport extends React.Component {
             });
             T.notify(formatMessage({id:'CHOOSING_TYPE.MNEMONIC.NO_OPTIONS'}))
             return false;
-        }else {
+        } else {
             this.setState({
                 addresses,
                 isLoading: false
@@ -189,7 +189,7 @@ class MnemonicImport extends React.Component {
 
     renderInput() {
         const { onCancel } = this.props;
-        // const { formatMessage } = this.props.intl;
+        const { formatMessage } = this.props.intl;
         const {
             mnemonic,
             isValid,
@@ -209,9 +209,9 @@ class MnemonicImport extends React.Component {
                     <div className='modalDesc'>
                         <FormattedMessage id='MNEMONIC_IMPORT.DESC' />
                     </div>
-                    <div className="inputUnit">
+                    <div className='inputUnit'>
                         <textarea
-                            placeholder='Mnemonic Import'
+                            placeholder={formatMessage({ id: 'CHOOSING_TYPE.MNEMONIC.TITLE' })}
                             className='phraseInput'
                             rows={ 5 }
                             value={ mnemonic }
@@ -219,7 +219,7 @@ class MnemonicImport extends React.Component {
                             tabIndex={ 1 }
                             disabled={ isLoading }
                         />
-                        {!isValid?<div className="tipError">{error?<FormattedMessage id={error} />:null}</div>:null}
+                        {!isValid ? <div className='tipError'>{error ? <FormattedMessage id={error} /> : null}</div> : null}
                     </div>
                     <div className='buttonRow'>
                         <Button

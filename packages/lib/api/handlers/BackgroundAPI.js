@@ -71,6 +71,10 @@ export default {
 
     setDappList(dappList) {
         this.duplex.send('popup', 'setDappList',dappList ,false);
+    },
+
+    setAuthorizeDapps(dappList) {
+        this.duplex.send('popup', 'setAuthorizeDapps',dappList ,false);
     }
 
 };

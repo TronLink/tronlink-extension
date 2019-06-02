@@ -7,6 +7,7 @@ import { RESTORATION_STAGE } from '@tronlink/lib/constants';
 import ChoosingType from './stages/ChoosingType';
 import MnemonicImport from './stages/MnemonicImport';
 import PrivateKeyImport from './stages/PrivateKeyImport';
+import KeystoreImport from './stages/KeystoreImport';
 
 import './RestoreAccountController.scss';
 
@@ -31,6 +32,7 @@ class RestoreAccountController extends React.Component {
     }
 
     changeStage(newStage) {
+        console.log(newStage);
         this.setState({
             stage: newStage
         });
@@ -70,6 +72,13 @@ class RestoreAccountController extends React.Component {
                         onCancel={ () => this.changeStage(RESTORATION_STAGE.CHOOSING_TYPE) }
                     />
                 );
+            case RESTORATION_STAGE.IMPORT_KEY_STORE:
+                return (
+                    <KeystoreImport
+                        name={ walletName }
+                        onCancel={ () => this.changeStage(RESTORATION_STAGE.CHOOSING_TYPE) }
+                    />
+                );    
             default:
                 return null;
         }
