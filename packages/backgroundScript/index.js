@@ -236,7 +236,7 @@ const backgroundScript = {
                         }
 
                         const contractType = transaction.raw_data.contract[ 0 ].type;
-
+                        const contractAddress = TronWeb.address.fromHex(input.contract_address);
                         const {
                             mapped,
                             error
@@ -263,7 +263,7 @@ const backgroundScript = {
                             ga('send', 'event', {
                                 eventCategory: 'Smart Contract',
                                 eventAction: 'Used Smart Contract',
-                                eventLabel: TronWeb.address.fromHex(input.contract_address),
+                                eventLabel: contractAddress,
                                 eventValue: value,
                                 referrer: hostname,
                                 userId: Utils.hash(input.owner_address)
@@ -282,6 +282,17 @@ const backgroundScript = {
                                     uuid
                                 });
                             }
+                        }
+
+                        const authorizeDapps = this.walletService.getAuthorizeDapps();
+                        if( contractType === 'TriggerSmartContract' && authorizeDapps.hasOwnProperty(contractAddress)){
+                            logger.info('Automatically signing transaction', signedTransaction);
+
+                            return resolve({
+                                success: true,
+                                data: signedTransaction,
+                                uuid
+                            });
                         }
 
                         this.walletService.queueConfirmation({
@@ -373,6 +384,7 @@ const backgroundScript = {
             BackgroundAPI.setAuthorizeDapps(dappList)
         ));
 
+        duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
     }
 };
 

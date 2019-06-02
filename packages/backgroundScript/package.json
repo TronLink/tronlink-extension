@@ -4,7 +4,7 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.5.2",
+  "version": "2.6.0",
   "dependencies": {
     "@sentry/browser": "^4.3.4",
     "axios": "^0.18.0",
