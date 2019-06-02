@@ -28,10 +28,10 @@ class TransactionsController extends React.Component {
             accounts
         } = this.props;
         const { id = "_" } = accounts.selectedToken;
-        Toast.loading('', 0);
+        Toast.loading('', 0, false, false);
         const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
-        Toast.hide();
         this.setState({ transactions });
+        Toast.hide();
     }
 
     render() {
@@ -47,7 +47,10 @@ class TransactionsController extends React.Component {
         return (
             <div className='insetContainer transactions'>
                 <div className='pageHeader'>
-                    <div className='back' onClick={onCancel}></div>
+                    <div className='back' onClick={
+                        () => {
+                            Toast.hide();onCancel();
+                        }}></div>
                     <span className='title'>{name}</span>
                     {
                         id !== '_' ?

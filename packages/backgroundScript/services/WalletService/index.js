@@ -960,7 +960,7 @@ class Wallet extends EventEmitter {
             } else {
                 params = { ...params, to: address };
             }
-            const { data: { data: records, total } } = await axios.get(requestUrl, { params,timeout: 3000  }).catch(err => ({ data: { data: [], total: 0 }}));
+            const { data: { data: records, total } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
             if(tokenId !== '_') {
                 newRecord = records;
             }else {
@@ -979,7 +979,7 @@ class Wallet extends EventEmitter {
             params.address = address;
             params.contract = tokenId;
             const { data: { data: transactions, total } } = await axios.get('https://apilist.tronscan.org/api/contract/events', {
-                params, timeout: 3000
+                params
             }).catch(err => {
                 return { data: { data: [], total: 0 } };
             });
