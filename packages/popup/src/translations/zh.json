@@ -72,7 +72,7 @@
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "所有可选的账户已经被导入",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "私钥",
-    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件",
 
     "CREATION_CRITERIA.HAS_LENGTH": "至少包含<strong>4个</strong>字符",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "仅包含数字，字母及空格",
