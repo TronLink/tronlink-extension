@@ -15,7 +15,7 @@ class DappWhitelistController extends React.Component {
         return (
             <div className='insetContainer whitelist'>
                 <div className='pageHeader'>
-                    <div className='back' onClick={ () => onCancel() }></div>
+                    <div className='back' onClick={ () => onCancel() }>&nbsp;</div>
                     <FormattedMessage id='SETTING.TITLE.DAPP_WHITELIST' />
                 </div>
                 <div className='greyModal scroll'>
@@ -54,6 +54,9 @@ class DappWhitelistController extends React.Component {
                                     </div>
                                 </div>)
                         })
+                    }
+                    {
+                        Object.values(authorizeDapps).length === 0 ? <div className='noData'><FormattedMessage id='TRANSACTIONS.NO_DATA' /></div> : null
                     }
                     </div>
                 </div>

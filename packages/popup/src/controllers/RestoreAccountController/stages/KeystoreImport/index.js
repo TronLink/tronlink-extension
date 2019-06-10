@@ -12,10 +12,7 @@ import { pkToAddress } from "@tronscan/client/src/utils/crypto";
 
 import './KeystoreImport.scss';
 NodeService.init();
-const IMPORT_STAGE = {
-    ENTERING_MNEMONIC: 0,
-    SELECTING_ACCOUNTS: 1
-};
+
 
 class KeystoreImport extends React.Component {
     constructor() {
@@ -38,26 +35,31 @@ class KeystoreImport extends React.Component {
         const { name, accounts } = this.props;
         const { formatMessage } = this.props.intl;
         const {password, selectedFile:{ contents }} = this.state;
-        console.log(password,contents);
-        const {key, address, salt} = JSON.parse(bytesToString(hexStr2byteArray(contents)));
-        console.log(key, address, salt);
-        const privateKey = Utils.decryptString(password, salt, key);
-        if( pkToAddress(privateKey) === address ){
-            if(address in accounts){
-                Toast.fail(formatMessage({id:'EXCEPTION.ACCOUNT_EXIST'}),3,()=>{
+        try {
+            const {key, address, salt} = JSON.parse(bytesToString(hexStr2byteArray(contents)));
+            const privateKey = Utils.decryptString(password, salt, key);
+            if (Utils.validatePrivateKey(privateKey) && pkToAddress(privateKey) === address) {
+                if (address in accounts) {
+                    Toast.fail(formatMessage({id: 'EXCEPTION.ACCOUNT_EXIST'}), 3, () => {
+                        this.setState({isLoading: false});
+                    });
+                } else {
+                    const res = await PopupAPI.importAccount(privateKey, name);
+                    if (res) {
+                        this.setState({isLoading: false});
+                        PopupAPI.resetState();
+                    }
+                }
+            } else {
+                Toast.fail(formatMessage({id: 'CREATION.RESTORE.KEY_STORE.EXCEPTION'}), 3, () => {
                     this.setState({isLoading: false});
                 });
-            } else {
-                const res = await PopupAPI.importAccount(privateKey,name);
-                if(res){
-                    this.setState({isLoading: false});
-                    PopupAPI.resetState();    
-                }    
             }
-        } else {
-            Toast.fail(formatMessage({id:'CREATION.RESTORE.KEY_STORE.EXCEPTION'}),3,()=>{
+        } catch(e){
+            console.log(e);
+            Toast.fail(formatMessage({id: 'CREATION.RESTORE.KEY_STORE.EXCEPTION'}), 3, () => {
                 this.setState({isLoading: false});
-            });    
+            });
         }
     }
     
@@ -76,7 +78,7 @@ class KeystoreImport extends React.Component {
                         <FormattedMessage id='CREATION.RESTORE.KEY_STORE.UPLOAD_DESC' />
                     </div>
                     <div className='uploadWrap'>
-                        <input type='file' ref='file' accept='text/plain' onChange={async(e) => {
+                        <input type='file' ref='file' accept='.txt' onChange={async(e) => {
                                 if (e.target.value.endsWith(".txt")){
                                     const files = e.target.files;
                                     const contents = await Utils.readFileContentsFromEvent(e);
@@ -86,7 +88,7 @@ class KeystoreImport extends React.Component {
                                     this.setState({selectedFile});
                                 }
                             }} />
-                        <div className='icon'></div> 
+                        <div className='icon'>&nbsp;</div>
                         <div className='text'>
                             <FormattedMessage id='CREATION.RESTORE.KEY_STORE.SELECT_FILE' />
                         </div> 

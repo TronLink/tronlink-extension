@@ -4,6 +4,7 @@ import bip32 from 'bip32';
 import TronWeb from 'tronweb';
 import pbkdf2 from 'pbkdf2';
 import aesjs from "aes-js";
+import { isAddressValid,pkToAddress } from "@tronscan/client/src/utils/crypto";
 
 
 const encryptKey = (password, salt) => {
@@ -263,6 +264,15 @@ const Utils = {
       const aesCtr = new aesjs.ModeOfOperation.ctr(key);
       const decryptedBytes = aesCtr.decrypt(encryptedBytes);
       return aesjs.utils.utf8.fromBytes(decryptedBytes);
+    },
+
+    validatePrivateKey(privateKey){
+        try {
+            let address = pkToAddress(privateKey);
+            return isAddressValid(address);
+        } catch (e) {
+            return false;
+        }
     }
 
 
