@@ -14,7 +14,8 @@
       color: #fff;
     }
     .greyModal{
-      padding-top: 0;
+      margin-top: 15px;
+      padding: 0 25px;
       background-color: transparent;
       display: flex;
       flex-direction:column;
@@ -38,7 +39,7 @@
           }
         }
         &:first-child{
-          margin-top: 15px;
+          margin-top: 0px;
         }
         .url,.row{
           padding-left: 10px;
