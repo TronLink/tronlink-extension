@@ -412,7 +412,7 @@
     "TRANSACTION_DETAIL.HAVE_COPIED": "Copied",
     "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy",
 
-    "DAPP_WHITELIST.URL":"URL",
+    "DAPP_WHITELIST.URL":"Website",
     "DAPP_WHITELIST.CONTRACT_ADDRESS":"Contract",
     "DAPP_WHITELIST.ADD_TIME":"Add time"
 }
