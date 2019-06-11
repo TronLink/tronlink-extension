@@ -419,7 +419,6 @@ const StorageService = {
         }
         const used = this.dappList.used.filter(v => v != null);
         this.dappList.used = used;
-        this.save('dappList');
         return this.dappList;
     },
 

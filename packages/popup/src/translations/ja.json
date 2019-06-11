@@ -48,34 +48,27 @@
   "INPUT.PASSWORD": "パスワード",
   "INPUT.REPEAT_PASSWORD": "もう一度パスワードを入力してください",
   "INPUT.ACCOUNT_NAME": "アカウント名",
-  "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
-  "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
   "CREATION.CREATE.TITLE": "作成する",
   "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "回復フレーズを確認してください",
   "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "ニーモニックの順番が正しくありません",
-  "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
   "CREATION.CREATE.TIP":"新規ユーザーにお勧め",
   "CREATION.RESTORE.TITLE": "輸入",
-  "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
   "CREATION.RESTORE.TIP":"TRONアカウントを持つユーザーにお勧め",
   "CREATION.RESTORE.PRIVATE_KEY.TITLE": "秘密鍵でインポートする",
   "CREATION.RESTORE.MNEMONIC.TITLE": "回復フレーズでインポートします",
   "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "アカウントを選択",
-  "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
-  "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "上传文件（只支持txt格式的文件导入）",
-  "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
-  "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
-  "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
+  "CREATION.RESTORE.KEY_STORE.TITLE": "キーストアファイルをインポート",
+  "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "tronscanエクスポートした.txtファイルのみ",
+  "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "ファイルを選択",
+  "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "パスワードを入力",
+  "CREATION.RESTORE.KEY_STORE.EXCEPTION": "インポートに失敗しました。ファイルとパスワードが一致するかどうかを確認してください",
 
-  "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
   "CHOOSING_TYPE.TITLE":"種類を選択してください",
   "CHOOSING_TYPE.MNEMONIC.TITLE": "ニーモニック",
   "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "すべての選ベるアカウントがインポートされました",
-  "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
   "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "秘密鍵",
-  "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
-  "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件导入",
+  "CHOOSING_TYPE.KEY_STORE.TITLE": "キーストアファイル",
 
   "CREATION_CRITERIA.HAS_LENGTH": "<strong>4文字</strong>以上とします",
   "CREATION_CRITERIA.IS_ALPHANUMERIC": "数字、文字、スペースのみを含む",
@@ -102,15 +95,12 @@
   "ACCOUNT.RECEIVE":"受け取る",
   "ACCOUNT.RECEIVE.DESC":"このアドレスはtrxとtokenをサポートしています",
   "ACCOUNT.RECEIVE.BUTTON":"复制地址",
-
   "ACCOUNT.SEND":"発送する",
   "ACCOUNT.ALL":"すべて",
   "ACCOUNT.SEND.PAY_ACCOUNT":"支払い口座",
   "ACCOUNT.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "ACCOUNT.SEND.CHOOSE_TOKEN":"トークンを選ぶ",
   "ACCOUNT.SEND.TRANSFER_AMOUNT":"発送する数量",
-
-
 
   "TOKENS.SMART": "Smart TRC20 Tokens",
   "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -147,6 +137,7 @@
   "CONFIRMATIONS.QUANTITY": "数量",
   "CONFIRMATIONS.WHITELIST.TITLE": "自動サインを有効にする",
   "CONFIRMATIONS.WHITELIST.BODY": "TronLinkがあなたに代わって自動的に取引に署名することを許可する",
+  "CONFIRMATIONS.AUTO_AUTHORIZE.DESC":"アプリをホワイトリストに追加すると、ポップアップを廃止、自動承認となります。",
 
   "CONFIRMATIONS.OPTIONS.NO": "自動サインを無効にする",
   "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "自動サインを15分以内に有効にする",
@@ -195,6 +186,7 @@
   "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
   "SETTING.TITLE":"設定する",
+  "SETTING.TITLE.DAPP_WHITELIST":"DAPPホワイトリスト",
   "SETTING.TITLE.NODE":"切り替え節",
   "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
@@ -221,11 +213,9 @@
 
   "ACCOUNTS.CONFIRM_DELETE": "アカウントを削除する",
   "ACCOUNTS.CONFIRM_DELETE.BODY": "アカウントを削除しますか",
-
   "ACCOUNTS.EXPORT": "アカウントをエクスポートする",
   "ACCOUNTS.EXPORT.MNEMONIC": "ニーモニック",
   "ACCOUNTS.EXPORT.PRIVATE_KEY": "秘密鍵",
-
 
   "LOGIN.PASSWORD.BACK":"お帰りなさい",
 
@@ -308,7 +298,6 @@
   "BANK.RENTRECORD.NODATE":"これ以上データなし",
   "BANK.RENTRECORD.NORECORD":"データなし",
 
-
   "BANK.RENTDETAIL.TITLE":"注文書の詳細状況",
   "BANK.RENTDETAIL.STATUS":"注文書のスタンス",
   "BANK.RENTDETAIL.ORDERNUM":"注文書№",
@@ -337,8 +326,6 @@
 
   "BANK.RENTINFO.SUCCESS":"お支払いは成功しました。エネルギーは約1分後に入金されます。",
   "BANK.RENTINFO.FAILED":"賃借が失敗しました。1分間に5つ通りで注文できません",
-
-
 
   "IEOS.BUY_ING":"その場で",
   "IEOS.LEFT_TIME":"{day}間オープン",
@@ -409,5 +396,9 @@
   "TRANSACTION_DETAIL.COPYED": "切り取った画像をクリップボードにコピーします",
   "TRANSACTION_DETAIL.ENABLE_COPY": "コピー可能です",
   "TRANSACTION_DETAIL.HAVE_COPIED": "コピー完了しました",
-  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。"
+  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。",
+
+  "DAPP_WHITELIST.URL":"URL",
+  "DAPP_WHITELIST.CONTRACT_ADDRESS":"コントラクトアドレス",
+  "DAPP_WHITELIST.ADD_TIME":"時間を追加"
 }

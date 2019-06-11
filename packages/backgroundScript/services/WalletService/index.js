@@ -429,8 +429,8 @@ class Wallet extends EventEmitter {
 
     async lockWallet() {
         StorageService.lock();
-        //this.accounts = {};
-        //this.selectedAccount = false;
+        this.accounts = {};
+        this.selectedAccount = false;
         this._setState(APP_STATE.PASSWORD_SET);
     }
 
