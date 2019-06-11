@@ -62,11 +62,11 @@
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
     "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Select account",
-    "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
-    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "上传文件（只支持txt格式的文件导入）",
-    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
-    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
-    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "Keystore files",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "Temporarily only supports TXT files exported by tronscan",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "Choose file",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "Input password",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "Import failed. Please check if the file matches the password",
 
     "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"Choosing type",
@@ -75,7 +75,7 @@
     "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "Private key",
     "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
-    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "Import Keystore files",
 
     "CREATION_CRITERIA.HAS_LENGTH": "Contains at least <strong>four</strong> characters",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "Contains only <strong>alphanumeric</strong> characters, along with optional spaces",
@@ -146,6 +146,7 @@
     "CONFIRMATIONS.QUANTITY": "Quantity",
     "CONFIRMATIONS.WHITELIST.TITLE": "Enable automatic signing",
     "CONFIRMATIONS.WHITELIST.BODY": "This allows TronLink to automatically sign similar transactions on your behalf",
+    "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "Add the app to the white list so it will be authenticated automatically. The pop-up window will also stop showing.",
 
     "CONFIRMATIONS.OPTIONS.NO": "Don't automatically sign",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "For fifteen minutes",
@@ -153,6 +154,7 @@
     "CONFIRMATIONS.OPTIONS.ONE_HOUR": "For one hour",
     "CONFIRMATIONS.OPTIONS.ONE_DAY": "For one day",
     "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "Until the next login",
+
 
     "CONTRACTS.SignMessage": "sign a message",
     "CONTRACTS.AccountCreateContract": "create an account",
@@ -194,6 +196,7 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"Setting",
+    "SETTING.TITLE.DAPP_WHITELIST":"DAPP white list",
     "SETTING.TITLE.NODE":"Switch node",
     "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
@@ -407,5 +410,9 @@
     "TRANSACTION_DETAIL.COPYED": "The screenshot is copied to the clipboard",
     "TRANSACTION_DETAIL.ENABLE_COPY": "Copyable",
     "TRANSACTION_DETAIL.HAVE_COPIED": "Copied",
-    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy"
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy",
+
+    "DAPP_WHITELIST.URL":"URL",
+    "DAPP_WHITELIST.CONTRACT_ADDRESS":"Contract",
+    "DAPP_WHITELIST.ADD_TIME":"Add time"
 }

@@ -50,7 +50,7 @@ class DappWhitelistController extends React.Component {
                                     </div>
                                     <div className='row'>
                                         <FormattedMessage id='DAPP_WHITELIST.ADD_TIME' />
-                                        <span>{moment(addTime).format('YYYY.MM.DD')}</span>
+                                        <span>{moment(addTime).format('YYYY-MM-DD HH:mm')}</span>
                                     </div>
                                 </div>)
                         })
