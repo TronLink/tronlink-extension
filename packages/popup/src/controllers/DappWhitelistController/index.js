@@ -26,7 +26,7 @@ class DappWhitelistController extends React.Component {
                                 <div className='dapp'>
                                     <div className='url'>
                                         <FormattedMessage id='DAPP_WHITELIST.URL' />
-                                        <span>{url}</span>
+                                        <a target="_blank" href={'http://'+url}>{url}</a>
                                         <div className='delete' onClick={()=>{
                                             const dapps = Object.values(authorizeDapps).filter(({contract:address}) => contract !== address ).reduce((v,c)=>{v[c.contract] = c;return v;},{});
                                             PopupAPI.setAuthorizeDapps(dapps);

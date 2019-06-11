@@ -46,9 +46,13 @@
           flex-direction: row;
           align-items: center;
           & > span{
-            &:nth-child(2){
-              margin-left: 10px;
+            &:nth-child(1){
+              margin-right: 10px;
             }
+          }
+          & > a{
+            color: #0006ec;
+            text-decoration:underline;
           }
         }
         .url{
