@@ -52,8 +52,11 @@
             }
           }
           & > a{
-            color: #0006ec;
-            text-decoration:underline;
+            color: #515060;
+            &:hover {
+              color: #0006ec;
+              text-decoration: underline;
+            }
           }
         }
         .url{
