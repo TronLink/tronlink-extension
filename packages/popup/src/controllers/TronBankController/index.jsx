@@ -2,7 +2,7 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-23 15:32:40
+ * @Last Modified time: 2019-06-12 20:32:23
  * TronBankPage
  */
 import React from 'react';
@@ -455,6 +455,7 @@ class BankController extends React.Component {
 
     rentDealSendFun(e) {
         //send msg  entrustOrder(freezeAmount,payAmount,_days,Addr)  payAmount = freezeAmount*_days* ratio
+        Toast.loading('', 0);
         const { formatMessage } = this.props.intl;
         const { rentNum, rentDay, recipient, ratio, submitBtnIsClick } = this.state;
         const { selected } = this.props.accounts;
@@ -468,6 +469,9 @@ class BankController extends React.Component {
             this.setState({
                 submitBtnIsClick: false
             });
+            // setTimeout(() => {
+            //     this.setState({  });
+            // }, 4000);
             const hashResult = PopupAPI.rentEnergy(
                 freezeAmount,
                 payAmount,
@@ -481,7 +485,6 @@ class BankController extends React.Component {
                     console.log(err);
                     Toast.info(JSON.stringify(err), 4);
                 });
-                Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
                 this.setState({
                     rentConfirmVisible: false,
                     recipient: {
@@ -501,15 +504,14 @@ class BankController extends React.Component {
                         valid: true,
                         error: false,
                         formatError: false
-                    }
+                    },
+                    submitBtnIsClick: true
                 });
+                Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
             }).catch(error => {
                 console.log(error);
                 Toast.info(JSON.stringify(error), 4);
             });
-            setTimeout(() => {
-                this.setState({ submitBtnIsClick: true });
-            }, 4000);
         }
     }
 
@@ -523,7 +525,7 @@ class BankController extends React.Component {
         const { formatMessage } = this.props.intl;
         const { selected } = this.props.accounts;
         const { language } = this.props;
-        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, discount } = this.state;
+        const { recipient, rentNum, rentDay, rentNumMin, rentNumMax, rentDayMin, rentDayMax, rentUnit, defaultUnit, accountMaxBalance, validOrderOverLimit, isOnlineAddress, curentInputBalance, discount, submitBtnIsClick } = this.state;
         let recipientVal;
         if(recipient.value === '') recipientVal = selected.address; else recipientVal = recipient.value;
         const orderList = [
@@ -776,7 +778,7 @@ class BankController extends React.Component {
                         </section>
                         <section className='operateBtn'>
                             <Button className='modalCloseBtn confirmClose' onClick={() => { this.onModalClose('rentConfirmVisible')(); }} ><FormattedMessage id='BANK.RENTINFO.CANCELBTN'/></Button>
-                            <Button className='modalPayBtn' onClick={ (e) => { this.rentDealSendFun(e); }}><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>
+                            {submitBtnIsClick ? <Button className='modalPayBtn' onClick={ (e) => { this.rentDealSendFun(e); }}><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button> : <Button className='modalPayBtn modalPayDisabled'><FormattedMessage id='BANK.RENTINFO.PAYBTN'/></Button>}
                         </section>
                     </div>
                 </Modal>

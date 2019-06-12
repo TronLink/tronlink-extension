@@ -7,7 +7,7 @@ export const getBankDefaultDataApi = () => {
 };
 
 export const getBankIsRentApi = () => {
-    const requestUrl = `${Utils.requestUrl()}/api/bank/is_rent`;
+    const requestUrl = `${Utils.requestUrl()}/api/bank/is_rent2`;
     return requestUrl;
 };
 
