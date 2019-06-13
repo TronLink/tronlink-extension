@@ -330,6 +330,8 @@
 
     "BANK.RENTINFO.SUCCESS":"支付成功，能量约1分钟后到账",
     "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下五笔订单",
+    "BANK.RENTINFO.TIMEOUT":"支付超时，请检查网络后重试",
+
 
     "IEOS.BUY_ING":"抢购中",
     "IEOS.LEFT_TIME":"距开抢{day}",

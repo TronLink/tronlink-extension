@@ -330,6 +330,7 @@
     "BANK.RENTINFO.INSUFFICIENT":"Balance insufficient",
     "BANK.RENTINFO.SUCCESS":"Your payment was successful, energy will arrive in your account in 1 min",
     "BANK.RENTINFO.FAILED":"Renting failed, you cannot place five orders within 1 minute.",
+    "BANK.RENTINFO.TIMEOUT":"Payment overtime, please check the network",
 
 
 
