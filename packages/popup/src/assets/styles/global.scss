@@ -1360,21 +1360,43 @@ html, body {
                 }
                 .input{
                     width: 100%;
-                    padding:0 10px;
                     height: 36px;
-                    background: #F7F8FA;
-                    border-radius: 2px;
-
                     display: flex;
+                    flex-direction: row;
                     align-items: center;
+                    justify-content: space-between;
                     cursor: pointer;
+                    &>.max{
+                        cursor: pointer;
+                        background: #F7F8FA;
+                        border: 1px solid #636ACC;
+                        border-radius: 2px;
+                        width: 50px;
+                        height: 100%;
+                        margin-left: 10px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        &:hover{
+                            background: #636ACC;
+                            border-radius: 2px;
+                            color: #fff;
+                            font-size: 14px;
+                        }
+                    }
                     &>input{
-                        background-color: transparent;
-                        width: 100%;
+                        padding:0 10px;
+                        background: #F7F8FA;
+                        border-radius: 2px;
+                        flex:1;
                         height: 100%;
                         border:none;
                     }
                     &.dropDown{
+                        padding:0 10px;
+                        background: #F7F8FA;
+                        border-radius: 2px;
                         position: relative;
                         &.isOpen{
                             &:after{
@@ -1462,7 +1484,7 @@ html, body {
             }
             .input-group{
                 &.error {
-                    .input{
+                    input{
                         border:1px solid #EA8465;
                     }
                     .tipError{
