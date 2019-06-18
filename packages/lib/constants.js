@@ -94,7 +94,6 @@ export const CONFIRMATION_TYPE = {
 
 export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
-    //USDT:"TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA"
 };
 
 export const USDT_ACTIVITY_STAGE = {

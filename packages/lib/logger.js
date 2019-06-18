@@ -1,8 +1,9 @@
 import dateFormat from 'dateformat';
-
+import debugout from './debugout.js'
 export default class Logger {
     constructor(source) {
         this._source = source;
+        window.bugout = new debugout();
         return new Proxy(this, {
             get(target, name) {
                 return target._handleInput.bind(target, name);
@@ -12,6 +13,7 @@ export default class Logger {
 
     _handleInput(logType, ...data) {
         const formatted = this._formatMessage(logType, data);
+        logType === 'error' && window.bugout.log(data);
         console.log(...formatted);
     }
 

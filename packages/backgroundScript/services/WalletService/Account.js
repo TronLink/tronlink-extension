@@ -53,7 +53,6 @@ class Account {
         else this._importPrivateKey(importData);
 
         this.loadCache();
-        //this._cacheTransactions();
     }
 
     static generateAccount() {
@@ -65,40 +64,6 @@ class Account {
         );
     }
 
-    async _cacheTransactions() {
-        const { address } = this;
-        const txID = StorageService.getNextPendingTransaction(address);
-
-        if(!txID)
-            return setTimeout(() => this._cacheTransactions(), 3000);
-
-        logger.info(`Caching transaction ${ txID }`);
-
-        StorageService.removePendingTransaction(address, txID);
-
-        const txData = await NodeService.tronWeb.trx.getTransactionInfo(txID);
-
-        if(!txData.id) {
-            logger.info(`Transaction ${ txID } is still missing`);
-            StorageService.addPendingTransaction(address, txID);
-
-            return setTimeout(() => this._cacheTransactions(), 3000);
-        }
-
-        logger.info(`Transaction ${ txID } has been cached`);
-
-        const transaction = this.transactions[ txID ];
-
-        transaction.cached = true;
-        transaction.timestamp = txData.blockTimeStamp;
-        transaction.receipt = txData.receipt || false;
-        transaction.result = txData.contractResult || false;
-
-        this.transactions[ txID ] = transaction;
-        this.save();
-
-        this._cacheTransactions();
-    }
 
     _importMnemonic(mnemonic) {
         if(!Utils.validateMnemonic(mnemonic))
@@ -460,19 +425,14 @@ class Account {
             ]);
             logger.info(`Account ${address} successfully updated`);
             this.save();
-            console.log(this.address, '@@@@@@@@@@@@@@@@@@');
         } catch(error) {
-            console.log(error);
+            logger.error(`update account ${this.address} fail`, error);
         }
         return true;
     }
 
     async updateBalance() {
         const { address } = this;
-        // await NodeService.tronWeb.trx.getBandwidth(address)
-        //     .then((bandwidth = 0) => (
-        //         this.bandwidth = bandwidth
-        //     ));
         const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = await NodeService.tronWeb.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
@@ -496,7 +456,9 @@ class Account {
             if(bn.isNaN())
                 balance = '0';
             else balance = bn.toString();
-        } catch {}
+        } catch (e) {
+            logger.error(`add smart token ${address} ${name} fail`,e);
+        }
 
         this.tokens.smart[ address ] = {
             balance,

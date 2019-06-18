@@ -352,54 +352,26 @@ const StorageService = {
         logger.info('Storage saved');
     },
 
+    /**
+     *
+     * @param tokenID
+     * @returns {Promise.<void>}
+     * get token  name,abbr,precision and cache the token (only called this function in shast environment)
+     */
+
     async cacheToken(tokenID) {
 
-        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            if(typeof tokenID === 'string' ) {
-                if(tokenID === '_'){
-                   this.tokenCache[ tokenID ] = {
-                        name:'TRX',
-                        abbr:'TRX',
-                        decimals:6
-                    };
-                }else{
-                    const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
-                    const {
-                        name,
-                        abbr,
-                        precision: decimals = 0,
-                        imgUrl = false
-                    } = data.data[0];
-                    this.tokenCache[ tokenID ] = {
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl
-                    };
-                }
-            } else {
-                const { contract_address, decimals, name, abbr } = tokenID;
-                const { data: { trc20_tokens: [{ icon_url = false }] } } = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
-                this.tokenCache[ contract_address ] = {
-                    name,
-                    abbr,
-                    decimals,
-                    imgUrl:icon_url
-                };
-            }
 
-        } else {
-            const {
-                name,
-                abbr,
-                precision: decimals = 0
-            } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
-            this.tokenCache[ tokenID ] = {
-                name,
-                abbr,
-                decimals
-            };
-        }
+        const {
+            name,
+            abbr,
+            precision: decimals = 0
+        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+        this.tokenCache[ tokenID ] = {
+            name,
+            abbr,
+            decimals
+        };
 
 
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);

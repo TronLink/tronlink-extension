@@ -5086,6 +5086,11 @@ debuglog@^1.0.1:
   resolved "https://registry.yarnpkg.com/debuglog/-/debuglog-1.0.1.tgz#aa24ffb9ac3df9a2351837cfb2d279360cd78492"
   integrity sha1-qiT/uaw9+aI1GDfPstJ5NgzXhJI=
 
+debugout.js@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/debugout.js/-/debugout.js-0.5.0.tgz#e1f6f1bd161532ca1e9c472fba188b66f679fa68"
+  integrity sha1-4fbxvRYVMsoenEcvuhiLZvZ5+mg=
+
 decamelize-keys@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/decamelize-keys/-/decamelize-keys-1.1.0.tgz#d171a87933252807eb3cb61dc1c1445d078df2d9"

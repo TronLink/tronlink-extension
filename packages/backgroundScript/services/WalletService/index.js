@@ -153,11 +153,10 @@ class Wallet extends EventEmitter {
                             this.emit('setAccount', this.selectedAccount);
                         }
                     }).catch(e => {
-                        console.log(e);
+                        logger.error(`update account ${account.address} fail`, e);
                     });
                 } else {
                     await account.update(basicPrice, smartPrice, usdtPrice);
-                    //continue;
                 }
             }
             this.emit('setAccounts', this.getAccounts());
@@ -177,7 +176,9 @@ class Wallet extends EventEmitter {
         Promise.all([prices, usdtPrices]).then(res => {
             StorageService.setPrices(res[0].data, res[1].data);
             this.emit('setPriceList', [res[0].data, res[1].data]);
-        }).catch(e => logger.warn('Failed to update prices'));
+        }).catch(e => {
+            logger.error('Failed to update prices',e);
+        });
 
     }
 
@@ -574,25 +575,43 @@ class Wallet extends EventEmitter {
         this.resetState();
     }
 
+    /**
+     *
+     * @param mnemonic
+     * @param name
+     * @returns {Promise.<boolean>} create an account with mnemonic after confirming by generated mnemonic
+     */
+
     async addAccount({ mnemonic, name }) {
         logger.info(`Adding account '${ name }' from popup`);
-
-        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-        await Promise.all([dapps, dapps2]).then(res => {
-            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-            StorageService.saveAllDapps(tronDapps);
-        });
-        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 10000 });
-        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
-        await Promise.all([trc10tokens, trc20tokens]).then(res => {
-            let t = [];
-            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+        if(Object.keys(this.accounts).length === 0) {
+            const dapps = axios.get('https://dappradar.com/api/xchain/dapps/theRest', {timeout: 5000});
+            const dapps2 = axios.get('https://dappradar.com/api/xchain/dapps/list/0', {timeout: 5000});
+            Promise.all([dapps, dapps2]).then(res => {
+                const tronDapps = res[0].data.data.list.concat(res[1].data.data.list).filter(({protocols: [type]}) => type === 'tron').map(({logo: icon, url: href, title: name}) => ({
+                    icon,
+                    href,
+                    name
+                }));
+                StorageService.saveAllDapps(tronDapps);
             });
-            StorageService.saveAllTokens(t);
-        });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000', {timeout: 10000});
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20', {timeout: 10000});
+            await Promise.all([trc10tokens, trc20tokens]).then(res => {
+                let t = [];
+                res[0].data.data.concat(res[1].data.tokens).forEach(({abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false}) => {
+                    if (contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                    t.push({
+                        tokenId: tokenID ? tokenID.toString() : contractAddress,
+                        abbr,
+                        name,
+                        imgUrl,
+                        decimals: precision || decimal || 0
+                    });
+                });
+                StorageService.saveAllTokens(t);
+            });
+        }
 
         const account = new Account(
             ACCOUNT_TYPE.MNEMONIC,
@@ -610,11 +629,17 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
-        this.refresh();
         return true;
     }
 
     // This and the above func should be merged into one
+    /**
+     *
+     * @param privateKey
+     * @param name
+     * @returns {Promise.<boolean>}
+     */
+
     async importAccount({ privateKey, name }) {
         logger.info(`Importing account '${ name }' from popup`);
 
@@ -631,7 +656,7 @@ class Wallet extends EventEmitter {
         if(Object.keys(this.accounts).length === 0) {
             const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
             const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-            await Promise.all([dapps, dapps2]).then(res => {
+            Promise.all([dapps, dapps2]).then(res => {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
@@ -652,7 +677,6 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
-        this.refresh();
         return true;
     }
 

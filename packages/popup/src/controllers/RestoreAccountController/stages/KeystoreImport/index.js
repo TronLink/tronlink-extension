@@ -56,7 +56,6 @@ class KeystoreImport extends React.Component {
                 });
             }
         } catch(e){
-            console.log(e);
             Toast.fail(formatMessage({id: 'CREATION.RESTORE.KEY_STORE.EXCEPTION'}), 3, () => {
                 this.setState({isLoading: false});
             });

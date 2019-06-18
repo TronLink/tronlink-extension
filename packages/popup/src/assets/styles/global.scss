@@ -1947,3 +1947,14 @@ html, body {
         background-color: rgba(0, 0, 0, .8);
     }
 }
+.am-toast-notice-content{
+    .am-toast-text{
+        width: 66px;
+        height: 66px;
+        background-size:100%;
+        background-image:url('../images/loading.gif');
+        .am-icon{
+            display: none;
+        }
+    }
+}

@@ -16,6 +16,13 @@ const NodeService = {
             eventServer: 'https://api.trongrid.io',
             default: true // false
         },
+        // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
+        //     name: 'Mainnet(beta)',
+        //     fullNode: 'http://47.90.243.77:8090',
+        //     solidityNode: 'http://47.90.243.77:8091',
+        //     eventServer: 'https://api.trongrid.io',
+        //     default: true
+        // },
         '6739be94-ee43-46af-9a62-690cf0947269': {
             name: 'Shasta Testnet',
             fullNode: 'https://api.shasta.trongrid.io',
@@ -30,7 +37,6 @@ const NodeService = {
 
     _read() {
         logger.info('Reading nodes from storage');
-
         const {
             nodeList = {},
             selectedNode = false
@@ -40,7 +46,6 @@ const NodeService = {
             ...this._nodes,
             ...nodeList
         };
-
         if(selectedNode)
             this._selectedNode = selectedNode;
     },
