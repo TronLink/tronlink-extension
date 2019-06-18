@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="16px" viewBox="0 0 18 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.1 (57501) - http://www.bohemiancoding.com/sketch -->
+    <title>账户</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="TRONLink" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.1首页-账户-方案二" transform="translate(-20.000000, -72.000000)" fill="#FFFFFF">
+            <g id="账户" transform="translate(0.000000, 58.000000)">
+                <g id="Oval-2">
+                    <g id="账户" transform="translate(20.000000, 14.000000)">
+                        <path d="M11.7058824,8.47058824 C11.7058824,9.05536032 12.1799338,9.52941176 12.7647059,9.52941176 C13.349478,9.52941176 13.8235294,9.05536032 13.8235294,8.47058824 C13.8235294,7.88581615 13.349478,7.41176471 12.7647059,7.41176471 C12.1799338,7.41176471 11.7058824,7.88581615 11.7058824,8.47058824 Z" id="Shape" fill-rule="nonzero"></path>
+                        <path d="M0,2.11764706 L18,2.11764706 L18,15.8823529 L0,15.8823529 L0,2.11764706 Z M1.05882353,3.17647059 L1.05882353,14.8235294 L16.9411765,14.8235294 L16.9411765,3.17647059 L1.05882353,3.17647059 Z" id="Combined-Shape"></path>
+                        <path d="M0,0 L16,0 L16,3.17647059 L0,3.17647059 L0,0 Z M1.05882353,1.05882353 L1.05882353,2 L15,2 L15,1.05882353 L1.05882353,1.05882353 Z" id="Combined-Shape"></path>
+                        <path d="M8.47058824,5.29411765 L18,5.29411765 L18,11.6470588 L8.47058824,11.6470588 L8.47058824,5.29411765 Z M9.52941176,6.35294118 L9.52941176,10.5882353 L16.9411765,10.5882353 L16.9411765,6.35294118 L9.52941176,6.35294118 Z" id="Combined-Shape-Copy-2"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

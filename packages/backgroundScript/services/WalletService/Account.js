@@ -205,7 +205,7 @@ class Account {
             const node = NodeService.getNodes().selected;
             if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || node === '0f22e40f-a004-4c5a-99ef-004c8e6769bf') {
                 const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address=' + address).catch(e => ( { data: {} } ));
-                const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+                const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address).catch(err => {throw `getUnconfirmedAccount ${address} failed`});
                 if (!account2.address) {
                     logger.info(`Account ${address} does not exist on the network`);
                     this.reset();
@@ -213,17 +213,17 @@ class Account {
                 }
                 const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
                 for (const [tokenId, token] of addSmartTokens) {
-                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => {throw 'get contract instance '+tokenId+' fail'});
                     if (contract) {
                         let balance;
-                        const number = await contract.balanceOf(address).call();
+                        const number = await contract.balanceOf(address).call().catch(err => {throw `get token ${tokenId} balance fail`});
                         if (number.balance) {
                             balance = new BigNumber(number.balance).toString();
                         } else {
                             balance = new BigNumber(number).toString();
                         }
                         if (typeof token.name === 'object' || (!token.decimals)) {
-                            const token2 = await NodeService.getSmartToken(tokenId);
+                            const token2 = await NodeService.getSmartToken(tokenId).catch(err => {throw `get token ${tokenId} info fail`});
                             this.tokens.smart[ tokenId ] = token2;
                         }
                         //this.tokens.smart[ tokenId ].imgUrl = false;
@@ -297,10 +297,10 @@ class Account {
                     let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);
                     const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
-                    const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => false);
+                    const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => {throw `get contract instance ${contract_address} fail`});
                     let balance;
                     if (contract) {
-                        const number = await contract.balanceOf(address).call();
+                        const number = await contract.balanceOf(address).call().catch(e => {throw `get token ${contract_address} balance fail`});
                         if (number.balance) {
                             balance = new BigNumber(number.balance).toString();
                         } else {

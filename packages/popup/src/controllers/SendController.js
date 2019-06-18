@@ -406,8 +406,16 @@ class SendController extends React.Component {
                     <div className={'input-group hasBottomMargin' + (amount.error ? ' error' : '')}>
                         <label><FormattedMessage id='ACCOUNT.SEND.TRANSFER_AMOUNT' /></label>
                         <div className='input'>
-                            <input type='text' value={amount.value} onChange={ (e) => this.onAmountChange(e) }/>
-                            <button className='max' onClick={()=> {
+                            <input type='text' value={amount.value} onChange={ (e) => {
+                                if(e.target.value != selectedToken.amount){
+                                    this.refs['max'].classList.remove('selected');
+                                }else{
+                                    this.refs['max'].classList.add('selected');
+                                }
+                                this.onAmountChange(e);
+                            }}/>
+                            <button className='max' ref='max' onClick={(e)=> {
+                                e.target.classList.add('selected');
                                 this.setState({
                                         amount: {
                                             value: selectedToken.amount,

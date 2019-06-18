@@ -137,9 +137,11 @@ class Wallet extends EventEmitter {
         const accounts = Object.values(this.accounts);
         if(accounts.length > 0) {
             const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
+                logger.error('get trc10 token price fail');
                 return { data: { data: [] } };
             });
             const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
+                logger.error('get trc20 token price fail');
                 return { data: { data: { rows: [] } } };
             });
             const prices = StorageService.prices;
@@ -153,7 +155,7 @@ class Wallet extends EventEmitter {
                             this.emit('setAccount', this.selectedAccount);
                         }
                     }).catch(e => {
-                        logger.error(`update account ${account.address} fail`, e);
+                        //logger.error(`update account ${account.address} fail`, e);
                     });
                 } else {
                     await account.update(basicPrice, smartPrice, usdtPrice);

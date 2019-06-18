@@ -130,6 +130,7 @@ export default class debugout {
         if (this.realTimeLoggingOn) console.log(obj);
         // record log
         var type = this.determineType(obj);
+        console.log('type',type);
         if (type != null && this.recordLogs) {
             var addition = this.formatType(type, obj);
             // timestamp, formatted for brevity
@@ -221,7 +222,7 @@ export default class debugout {
                 this.currentResult += '[';
                 this.depth++;
                 this.parentSizes.push(obj.length);
-                for (var i = 0; i < obj.length; i++) {
+                for (let i = 0; i < obj.length; i++) {
                     var subtype = this.determineType(obj[i]);
                     if (subtype == 'Object' || subtype == 'Array') this.currentResult += '\n' + this.indentsForDepth(this.depth);
                     var subresult = this.formatType(subtype, obj[i]);
