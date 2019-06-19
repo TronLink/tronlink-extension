@@ -4,7 +4,7 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.7.0",
   "dependencies": {
     "@tronscan/client": "^0.2.48",
     "aes-js": "^3.1.2",
