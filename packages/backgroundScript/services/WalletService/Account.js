@@ -213,10 +213,10 @@ class Account {
                 }
                 const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
                 for (const [tokenId, token] of addSmartTokens) {
-                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => {throw 'get contract instance '+tokenId+' fail'});
+                    const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
                     if (contract) {
                         let balance;
-                        const number = await contract.balanceOf(address).call().catch(err => {throw `get token ${tokenId} balance fail`});
+                        const number = await contract.balanceOf(address).call();
                         if (number.balance) {
                             balance = new BigNumber(number.balance).toString();
                         } else {
@@ -300,7 +300,7 @@ class Account {
                     const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => {throw `get contract instance ${contract_address} fail`});
                     let balance;
                     if (contract) {
-                        const number = await contract.balanceOf(address).call().catch(e => {throw `get token ${contract_address} balance fail`});
+                        const number = await contract.balanceOf(address).call();
                         if (number.balance) {
                             balance = new BigNumber(number.balance).toString();
                         } else {
