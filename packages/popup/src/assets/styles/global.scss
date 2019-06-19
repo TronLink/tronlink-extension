@@ -1954,13 +1954,17 @@ html, body {
 }
 .am-toast-notice-content{
     .am-toast-text{
-        width: 60px;
-        height: 60px;
-        background-size:90%;
-        background-position: center;
-        background-image:url('../images/loading.gif');
-        .am-icon{
-            display: none;
+        .am-icon-loading{
+            background-size:160%;
+            background-position: center;
+            background-image:url('../images/loading.gif');
+            animation:none;
+            use{
+                display: none;
+            }
+        }
+        .am-toast-text-info{
+            margin: 0 !important;
         }
     }
 }
