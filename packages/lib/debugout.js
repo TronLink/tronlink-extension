@@ -127,10 +127,9 @@ export default class debugout {
     // records a log
     log(obj) {
         // log in real time
-        if (this.realTimeLoggingOn) console.log(obj);
+        // if (this.realTimeLoggingOn) console.log(obj);
         // record log
         var type = this.determineType(obj);
-        console.log('type',type);
         if (type != null && this.recordLogs) {
             var addition = this.formatType(type, obj);
             // timestamp, formatted for brevity

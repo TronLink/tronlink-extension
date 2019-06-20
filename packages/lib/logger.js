@@ -13,7 +13,8 @@ export default class Logger {
 
     _handleInput(logType, ...data) {
         const formatted = this._formatMessage(logType, data);
-        logType === 'error' && window.bugout.log(data);
+        logType === 'error' && data.length=== 1 && window.bugout.log(data);
+        logType === 'error' && data.length=== 2 && window.bugout.log([data[0],data[1].stack]);
         console.log(...formatted);
     }
 
