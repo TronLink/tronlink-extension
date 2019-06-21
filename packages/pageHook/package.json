@@ -4,12 +4,12 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.6.1",
   "scripts": {
     "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/pageHook.js",
     "lint": "npx eslint . --fix"
   },
   "dependencies": {
-    "tronweb": "^2.6.2"
+    "tronweb": "^2.6.4"
   }
 }
