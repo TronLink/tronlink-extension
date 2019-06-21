@@ -17,6 +17,7 @@ export const setLanguage = createAction('setLanguage');
 export const setSetting = createAction('setSetting');
 export const setVersion = createAction('setVersion');
 export const setDappList = createAction('setDappList');
+export const setAuthorizeDapps = createAction('setAuthorizeDapps');
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
@@ -38,7 +39,8 @@ export const appReducer = createReducer({
     dappList: {
         recommend:[],
         used:[]
-    }
+    },
+    authorizeDapps: {}
 
 }, {
     [ setAppState ]: (state, { payload }) => {
@@ -68,5 +70,9 @@ export const appReducer = createReducer({
     },
     [ setDappList ]: (state, { payload }) => {
         state.dappList = payload;
+    },
+
+    [ setAuthorizeDapps ]: (state, { payload }) => {
+        state.authorizeDapps = payload;
     }
 });

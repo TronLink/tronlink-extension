@@ -25,4 +25,5 @@ lerna-debug.log
 .zip
 .vscode
 .vscode/
+.tags
 .history/*

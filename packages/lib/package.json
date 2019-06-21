@@ -4,16 +4,19 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.5.2",
+  "version": "2.6.1",
   "dependencies": {
+    "aes-js": "^3.1.2",
     "bip32": "^1.0.2",
     "bip39": "^2.5.0",
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "eventemitter3": "^3.1.0",
     "extensionizer": "^1.0.1",
-    "tronweb": "^2.5.0",
-    "uuid": "^3.3.2"
+    "pbkdf2": "^3.0.17",
+    "tronweb": "^2.6.4",
+    "uuid": "^3.3.2",
+    "@tronscan/client": "^0.2.48"
   },
   "scripts": {
     "lint": "npx eslint . --fix"

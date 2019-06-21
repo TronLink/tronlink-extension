@@ -3,7 +3,6 @@ import dateFormat from 'dateformat';
 export default class Logger {
     constructor(source) {
         this._source = source;
-
         return new Proxy(this, {
             get(target, name) {
                 return target._handleInput.bind(target, name);

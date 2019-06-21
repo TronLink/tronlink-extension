@@ -48,28 +48,27 @@
     "INPUT.PASSWORD": "密码",
     "INPUT.REPEAT_PASSWORD": "重复密码",
     "INPUT.ACCOUNT_NAME": "账户名",
-    "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
-    "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
     "CREATION.CREATE.TITLE": "创建账号",
     "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "确认助记词",
     "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "助记词顺序错误",
-    "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
     "CREATION.CREATE.TIP":"推荐给新用户使用",
     "CREATION.RESTORE.TITLE": "导入账号",
-    "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
     "CREATION.RESTORE.TIP":"推荐给已有tron账户使用",
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "通过私钥导入",
     "CREATION.RESTORE.MNEMONIC.TITLE": "通过助记词导入",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "选择账户",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "暂只支持tronscan导出的.txt文件",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
 
-    "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "所有可选的账户已经被导入",
-    "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "私钥",
-    "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件",
 
     "CREATION_CRITERIA.HAS_LENGTH": "至少包含<strong>4个</strong>字符",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "仅包含数字，字母及空格",
@@ -140,6 +139,7 @@
     "CONFIRMATIONS.QUANTITY": "数量",
     "CONFIRMATIONS.WHITELIST.TITLE": "激活自动签名",
     "CONFIRMATIONS.WHITELIST.BODY": "允许TronLink代表您自动签署交易",
+    "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "将该应用加入白名单，此弹窗将不再弹出，自动授权。",
 
     "CONFIRMATIONS.OPTIONS.NO": "不自动签名",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "十五分钟之内自动签名",
@@ -188,6 +188,7 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"设置",
+    "SETTING.TITLE.DAPP_WHITELIST":"DAPP白名单",
     "SETTING.TITLE.NODE":"切换节点",
     "SETTING.TITLE.ADD_NODE":"添加节点",
     "SETTING.TITLE.CURRENCY":"设置货币",
@@ -329,9 +330,7 @@
 
     "BANK.RENTINFO.SUCCESS":"支付成功，能量约1分钟后到账",
     "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下五笔订单",
-
-
-
+    "BANK.RENTINFO.TIMEOUT":"支付超时，请检查网络后重试",
 
 
     "IEOS.BUY_ING":"抢购中",
@@ -403,5 +402,10 @@
     "TRANSACTION_DETAIL.COPIED": "截图已复制到粘贴板",
     "TRANSACTION_DETAIL.ENABLE_COPY": "可复制",
     "TRANSACTION_DETAIL.HAVE_COPIED": "已复制",
-    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗"
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗",
+
+    "DAPP_WHITELIST.URL":"网址",
+    "DAPP_WHITELIST.CONTRACT_ADDRESS":"合约地址",
+    "DAPP_WHITELIST.ADD_TIME":"添加时间"
+
 }

@@ -2,7 +2,8 @@
  * @Author: lxm
  * @Date: 2019-03-19 15:18:05
  * @Last Modified by: lxm
- * @Last Modified time: 2019-06-12 20:32:23
+
+ * @Last Modified time: 2019-06-13 12:05:36
  * TronBankPage
  */
 import React from 'react';
@@ -449,7 +450,8 @@ class BankController extends React.Component {
             return;
         }
         this.setState({
-            rentConfirmVisible: true
+            rentConfirmVisible: true,
+            submitBtnIsClick: true
         });
     }
 
@@ -510,7 +512,7 @@ class BankController extends React.Component {
                 Toast.info(formatMessage({ id: 'BANK.RENTINFO.SUCCESS' }), 4);
             }).catch(error => {
                 console.log(error);
-                Toast.info(JSON.stringify(error), 4);
+                Toast.info(formatMessage({ id: 'BANK.RENTINFO.TIMEOUT' }), 4);
             });
         }
     }

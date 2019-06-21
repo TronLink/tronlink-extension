@@ -172,8 +172,8 @@ class Wallet extends EventEmitter {
         if(!StorageService.ready)
             return;
 
-        const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH');
-        const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,GBP,EUR,BTC,ETH');
+        const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
+        const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
         Promise.all([prices, usdtPrices]).then(res => {
             StorageService.setPrices(res[0].data, res[1].data);
             this.emit('setPriceList', [res[0].data, res[1].data]);
@@ -296,7 +296,8 @@ class Wallet extends EventEmitter {
             APP_STATE.USDT_ACTIVITY_DETAIL,
             APP_STATE.DAPP_LIST,
             APP_STATE.ASSET_MANAGE,
-            APP_STATE.TRANSACTION_DETAIL
+            APP_STATE.TRANSACTION_DETAIL,
+            APP_STATE.DAPP_WHITELIST
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -410,8 +411,8 @@ class Wallet extends EventEmitter {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 10000 });
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
@@ -428,8 +429,8 @@ class Wallet extends EventEmitter {
 
     async lockWallet() {
         StorageService.lock();
-        //this.accounts = {};
-        //this.selectedAccount = false;
+        this.accounts = {};
+        this.selectedAccount = false;
         this._setState(APP_STATE.PASSWORD_SET);
     }
 
@@ -582,8 +583,8 @@ class Wallet extends EventEmitter {
             const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
             StorageService.saveAllDapps(tronDapps);
         });
-        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 10000 });
+        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
         await Promise.all([trc10tokens, trc20tokens]).then(res => {
             let t = [];
             res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
@@ -634,8 +635,8 @@ class Wallet extends EventEmitter {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 10000 });
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
             await Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
@@ -1090,5 +1091,13 @@ class Wallet extends EventEmitter {
         return res;
     }
 
+    getAuthorizeDapps(){
+        return StorageService.hasOwnProperty('authorizeDapps') ? StorageService.authorizeDapps : {};
+    }
+
+    setAuthorizeDapps(authorizeDapps) {
+        StorageService.setAuthorizeDapps(authorizeDapps);
+        this.emit('setAuthorizeDapps',authorizeDapps);
+    }
 }
 export default Wallet;

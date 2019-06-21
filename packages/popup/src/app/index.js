@@ -26,6 +26,7 @@ import ActivityDetailController from '@tronlink/popup/src/controllers/ActivityDe
 import DappListController from '@tronlink/popup/src/controllers/DappListController';
 import AssetManageController from '@tronlink/popup/src/controllers/AssetManageController';
 import TransactionDetailController from '@tronlink/popup/src/controllers/TransactionDetailController';
+import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhitelistController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -43,7 +44,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { appState,accounts,prices,nodes,language,lock,version } = this.props;
+        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps } = this.props;
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -65,7 +66,7 @@ class App extends React.Component {
                 dom = <PageController />;
                 break;
             case APP_STATE.REQUESTING_CONFIRMATION:
-                dom = <ConfirmationController />;
+                dom = <ConfirmationController authorizeDapps={authorizeDapps} />;
                 break;
             case APP_STATE.RECEIVE:
                 dom = <ReceiveController accounts={accounts} address={accounts.selected.address} />;
@@ -109,6 +110,9 @@ class App extends React.Component {
             case APP_STATE.TRANSACTION_DETAIL:
                 dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
                 break;
+            case APP_STATE.DAPP_WHITELIST:
+                dom = <DappWhitelistController authorizeDapps={authorizeDapps} onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
+                break;
             default:
                 dom =
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState(APP_STATE.USDT_INCOME_RECORD) }>
@@ -131,5 +135,6 @@ export default connect(state => ({
     nodes: state.app.nodes,
     prices: state.app.prices,
     lock: state.app.setting.lock,
-    version: state.app.version
+    version: state.app.version,
+    authorizeDapps: state.app.authorizeDapps
 }))(App);

@@ -57,7 +57,8 @@ class ConfirmationController extends React.Component {
         this.state = {
             whitelisting: {
                 selected: options[ 0 ],
-                options
+                options,
+                isAutoAuthorize:false
             }
         };
     }
@@ -87,13 +88,23 @@ class ConfirmationController extends React.Component {
 
     async onAccept() {
         const {
-            selected
+            selected,
+            isAutoAuthorize
         } = this.state.whitelisting;
-        const { confirmation } = this.props;
+        const { confirmation,authorizeDapps } = this.props;
         if( confirmation.contractType === 'TriggerSmartContract' ) {
             T.loading();
             await this.addUsedDapp();
             T.loaded();
+            const contractAddress = TronWeb.address.fromHex(confirmation.input.contract_address);
+            if(isAutoAuthorize && !authorizeDapps.hasOwnProperty(contractAddress)) {
+                const o = {};
+                o.url = confirmation.hostname;
+                o.contract = contractAddress;
+                o.addTime = new Date().getTime();
+                authorizeDapps[contractAddress] = o;
+                PopupAPI.setAuthorizeDapps(authorizeDapps);
+            }
         }
         PopupAPI.acceptConfirmation(selected.value);
     }
@@ -138,7 +149,8 @@ class ConfirmationController extends React.Component {
     renderTransaction() {
         const {
             options,
-            selected
+            selected,
+            isAutoAuthorize
         } = this.state.whitelisting;
 
         const {
@@ -154,6 +166,7 @@ class ConfirmationController extends React.Component {
 
         const meta = [];
         const showWhitelist = contractType === 'TriggerSmartContract';
+        const showAuthorizeAudio = contractType === 'TriggerSmartContract';
 
         let showParameters = false;
 
@@ -248,7 +261,7 @@ class ConfirmationController extends React.Component {
                     <div className='parameters mono'>
                         { JSON.stringify(input, null, 2 ) }
                     </div>
-                ) : '' }
+                ) : null }
                 { showWhitelist ? (
                     <div className='whitelist'>
                         <FormattedMessage
@@ -268,13 +281,29 @@ class ConfirmationController extends React.Component {
                             ) }
                         />
                         <Dropdown
+                            disabled={isAutoAuthorize}
                             className='dropdown'
                             options={ options }
                             value={ selected }
                             onChange={ this.onWhitelist }
                         />
                     </div>
-                ) : '' }
+                ) : null }
+                {
+                    showAuthorizeAudio ?
+                        <div className='authorize' onClick={ () => {
+                            const { whitelisting } = this.state;
+                            whitelisting.isAutoAuthorize = !whitelisting.isAutoAuthorize;
+                            this.setState({whitelisting});
+                        }}>
+                            <div className={'radio'+(isAutoAuthorize?' checked':'')}>&nbsp;</div>
+                            <div className='txt'>
+                                <FormattedMessage id='CONFIRMATIONS.AUTO_AUTHORIZE.DESC' />
+                            </div>
+                        </div>
+                    :
+                        null
+                }
             </React.Fragment>
         );
     }

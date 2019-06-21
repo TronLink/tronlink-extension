@@ -81,7 +81,7 @@ class ConfirmingPhrase extends React.Component {
         const selected2 = selected.map(v=>v.wordIndex);
         for(let v of correctOrder) {
             if(v !== selected2[ v ]) {
-                T.notify(formatMessage({ id: ' CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG' }));
+                T.notify(formatMessage({ id: 'CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG' }));
                 return;
             }
         }

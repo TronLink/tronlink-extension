@@ -24,7 +24,8 @@ export const APP_STATE = {
     USDT_ACTIVITY_DETAIL: 17,
     DAPP_LIST: 18, // [X]show dapp list
     ASSET_MANAGE: 19, // [X]asset manage
-    TRANSACTION_DETAIL: 20 // [X] transaction detail
+    TRANSACTION_DETAIL: 20, // [X] transaction detail
+    DAPP_WHITELIST: 21 // [X] transaction detail
 
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
@@ -58,6 +59,7 @@ export const RESTORATION_STAGE = {
     IMPORT_TRONWATCH_LEGACY: 3,
     IMPORT_TRONSCAN: 4,
     IMPORT_MNEMONIC: 5,
+    IMPORT_KEY_STORE: 7,
     SUCCESS: 6
 };
 

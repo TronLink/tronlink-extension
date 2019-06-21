@@ -56,7 +56,7 @@
 
     .whitelist {
         margin-top: 14px;
-        margin-bottom: 20px;
+
         background: #F7F8FA;
         border-radius: 2px;
         padding: 10px;
@@ -74,6 +74,10 @@
                 border: 1px solid #dadada;
                 background: #ffffff;
                 border-radius: 4px;
+                &.Dropdown-disabled{
+                    background: rgba(194,200,213,0.80);
+                    border-radius: 2px;
+                }
             }
 
             .Dropdown-menu {
@@ -87,6 +91,32 @@
                     color: #FFFFFF;
                 }
             }
+        }
+    }
+
+    .authorize{
+        cursor: pointer;
+        margin-top:10px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        .radio{
+            width: 14px;
+            height: 14px;
+            border: 1px solid #C2C8D5;
+            border-radius: 100%;
+            &.checked{
+                border:none;
+                background-image: url('../../assets/images/new/icon-selected.svg');
+                background-size:100%;
+            }
+        }
+        .txt{
+            margin-left: 6px;
+            flex:1;
+            font-size: 12px;
+            color: #888998;
+            line-height: 14px;
         }
     }
 
