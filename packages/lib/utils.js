@@ -192,8 +192,8 @@ const Utils = {
     requestUrl() { // request url
         const curHost = location.hostname;
         let curApiHost;
-        const defaultUrl = 'http://52.14.133.221:8990'; //test
-        // const defaultUrl = 'https://manger.tronlending.org'; //online
+        // const defaultUrl = 'http://52.14.133.221:8990'; //test
+        const defaultUrl = 'https://manger.tronlending.org'; //online
         switch (curHost) {
             case 'nnceancbokoldkjjbpopcffaoekebnnb':
                 curApiHost = defaultUrl;
