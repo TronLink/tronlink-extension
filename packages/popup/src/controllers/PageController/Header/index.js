@@ -1,39 +1,14 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Toast } from 'antd-mobile';
-import { PAGES, APP_STATE } from '@tronlink/lib/constants';
-import { app } from '@tronlink/popup/src/index';
+import ReactTooltip from 'react-tooltip';
+import { APP_STATE } from '@tronlink/lib/constants';
 import { PopupAPI } from '@tronlink/lib/api';
 const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
-const PageLink = props => {
-    const {
-        active = false,
-        page,
-        changePage
-    } = props;
-
-    const pageKey = `PAGES.${ page }`;
-    const pageIndex = PAGES[ page ];
-
-    return (
-        <FormattedMessage
-            id={ pageKey }
-            children={ text => (
-                <div
-                    className={ `pageLink ${ active ? 'active' : '' }` }
-                    onClick={ () => !active && changePage(pageIndex) }
-                >
-                    { text }
-                </div>
-            ) }
-        />
-    );
-};
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
-        this.onNodeChange = this.onNodeChange.bind(this);
         this.state={
             nodeIndex:0,
             //showNodeList:false,
@@ -41,21 +16,12 @@ class Header extends React.Component {
         }
     }
 
-    componentDidMount() {
-        const {nodes} = this.props;
-        const ns = Object.entries(nodes.nodes);
-        const nodeIndex = ns.map(([nodeId,obj],i)=>{obj.index = i;return [nodeId,obj]}).filter(([nodeId,obj]) => nodeId === nodes.selected)[0][1].index;
-        this.setState({nodeIndex});
-    }
+    componentDidMount() {}
 
-    onNodeChange(nodeId,index) {
-        PopupAPI.selectNode(nodeId);
-        app.getNodes();
-        this.setState({nodeIndex:index,showNodeList:!this.state.showNodeList});
-    }
 
     render() {
         const { refresh } = this.state;
+        const { formatMessage } = this.props.intl;
         const {
             developmentMode
         } = this.props;
@@ -69,17 +35,22 @@ class Header extends React.Component {
                     <div>
                         <div className="linkWrap">
                             {/*<a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>*/}
-                            <a href="https://t.me/TronLink" target="_blank" className="link link-telegram"></a>
-                            <a href="https://www.tronlink.org" target="_blank" className="link link-home"></a>
-                            <a href={trxMarketUrl} target="_blank" className="link link-exchange"></a>
-                            <a href="javascript:void(0)" onClick={()=>{
+                            <a href="https://t.me/TronLink" target="_blank" data-tip='telegram' data-for='telegram' className="link link-telegram">&nbsp;</a>
+                            <ReactTooltip id='telegram' effect='solid' />
+                            <a href="https://www.tronlink.org" target="_blank" data-tip={formatMessage({id:'INDEX_ICON_TITLE.OFFICIAL_WEBSITE'})} data-for="website" className="link link-home">&nbsp;</a>
+                            <ReactTooltip id='website' effect='solid' />
+                            <a href={trxMarketUrl} target="_blank" data-tip={formatMessage({id:'INDEX_ICON_TITLE.EXCHANGE'})} data-for="exchange" className="link link-exchange">&nbsp;</a>
+                            <ReactTooltip id='exchange' effect='solid' />
+                            <a href="javascript:void(0)" data-tip='Dapp' data-for='dapp' onClick={()=>{
                                 PopupAPI.setGaEvent('Dapp List','Recommend','Recommend')
                                 PopupAPI.changeState(APP_STATE.DAPP_LIST)
-                            }}  className="link link-dapp"></a>
+                            }}  className="link link-dapp">&nbsp;</a>
+                            <ReactTooltip id='dapp' effect='solid' />
                         </div>
                         <div>
-                            <div className="fun" onClick={ () => { PopupAPI.lockWallet(); } }></div>
-                            <div className="fun" onClick={() => {
+                            <div className="fun" data-tip={formatMessage({id:'INDEX_ICON_TITLE.LOCK'})} data-for='lock' onClick={ () => { PopupAPI.lockWallet(); } }>&nbsp;</div>
+                            <ReactTooltip id='lock' effect='solid' />
+                            <div className="fun" data-tip={formatMessage({id:'INDEX_ICON_TITLE.REFRESH'})} data-for='refresh' onClick={() => {
                                 if(!refresh) {
                                     this.setState({ refresh: true }, async() => {
                                         Toast.loading();
@@ -92,8 +63,10 @@ class Header extends React.Component {
                                 }
 
                             }}
-                            ></div>
-                            <div className="fun" onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }></div>
+                            >&nbsp;</div>
+                            <ReactTooltip id='refresh' effect='solid' />
+                            <div className="fun" data-tip={formatMessage({id:'INDEX_ICON_TITLE.SETTING'})} data-for='set' onClick={ ()=>{ PopupAPI.changeState(APP_STATE.SETTING) } }>&nbsp;</div>
+                            <ReactTooltip id='set' effect='solid' />
                         </div>
                     </div>
                 </div>
@@ -102,4 +75,4 @@ class Header extends React.Component {
     }
 }
 
-export default Header;
+export default injectIntl(Header);

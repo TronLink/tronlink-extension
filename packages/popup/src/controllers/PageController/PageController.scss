@@ -73,7 +73,7 @@
                         cursor: pointer;
                         background-repeat: no-repeat;
                         background-position: center;
-                        &:nth-child(1) {
+                        &[data-for="lock"] {
                             background-image: url('../../assets/images/new/icon-lock2.svg');
                             margin-right: 10px;
                             margin-left: 10px;
@@ -81,14 +81,14 @@
                                 background-image: url('../../assets/images/new/icon-lock2-hover.svg');
                             }
                         }
-                        &:nth-child(2) {
+                        &[data-for="refresh"] {
                             background-image: url('../../assets/images/new/icon-refresh.svg');
                             margin-right: 10px;
                             &:hover{
                                 background-image: url('../../assets/images/new/icon-refresh-hover.svg');
                             }
                         }
-                        &:nth-child(3) {
+                        &[data-for="set"] {
                             background-image: url('../../assets/images/new/icon-setting.svg');
                             &:hover{
                                 background-image: url('../../assets/images/new/icon-setting-hover.svg');

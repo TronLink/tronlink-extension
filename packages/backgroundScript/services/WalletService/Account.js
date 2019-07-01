@@ -53,7 +53,6 @@ class Account {
         else this._importPrivateKey(importData);
 
         this.loadCache();
-        //this._cacheTransactions();
     }
 
     static generateAccount() {
@@ -65,40 +64,6 @@ class Account {
         );
     }
 
-    async _cacheTransactions() {
-        const { address } = this;
-        const txID = StorageService.getNextPendingTransaction(address);
-
-        if(!txID)
-            return setTimeout(() => this._cacheTransactions(), 3000);
-
-        logger.info(`Caching transaction ${ txID }`);
-
-        StorageService.removePendingTransaction(address, txID);
-
-        const txData = await NodeService.tronWeb.trx.getTransactionInfo(txID);
-
-        if(!txData.id) {
-            logger.info(`Transaction ${ txID } is still missing`);
-            StorageService.addPendingTransaction(address, txID);
-
-            return setTimeout(() => this._cacheTransactions(), 3000);
-        }
-
-        logger.info(`Transaction ${ txID } has been cached`);
-
-        const transaction = this.transactions[ txID ];
-
-        transaction.cached = true;
-        transaction.timestamp = txData.blockTimeStamp;
-        transaction.receipt = txData.receipt || false;
-        transaction.result = txData.contractResult || false;
-
-        this.transactions[ txID ] = transaction;
-        this.save();
-
-        this._cacheTransactions();
-    }
 
     _importMnemonic(mnemonic) {
         if(!Utils.validateMnemonic(mnemonic))
@@ -231,7 +196,7 @@ class Account {
      * basicTokenPriceList  trc10token price list(source from trxmarket)
      * smartTokenPriceList  trc20token price list(source from trxmarket)
      * usdtPrice            price of usdt
-    */
+     **/
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
         if(!StorageService.allTokens.length)return;
         const { address } = this;
@@ -258,7 +223,7 @@ class Account {
                             balance = new BigNumber(number).toString();
                         }
                         if (typeof token.name === 'object' || (!token.decimals)) {
-                            const token2 = await NodeService.getSmartToken(tokenId);
+                            const token2 = await NodeService.getSmartToken(tokenId).catch(err => {throw new Error(`get token ${tokenId} info fail`)});
                             this.tokens.smart[ tokenId ] = token2;
                         }
                         //this.tokens.smart[ tokenId ].imgUrl = false;
@@ -332,7 +297,7 @@ class Account {
                     let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);
                     const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
-                    const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => false);
+                    const contract = await NodeService.tronWeb.contract().at(contract_address).catch(e => {throw new Error(`get contract instance ${contract_address} fail`)});
                     let balance;
                     if (contract) {
                         const number = await contract.balanceOf(address).call();
@@ -461,17 +426,13 @@ class Account {
             logger.info(`Account ${address} successfully updated`);
             this.save();
         } catch(error) {
-            console.log(error);
+            logger.error(`update account ${this.address} fail`, error);
         }
         return true;
     }
 
     async updateBalance() {
         const { address } = this;
-        // await NodeService.tronWeb.trx.getBandwidth(address)
-        //     .then((bandwidth = 0) => (
-        //         this.bandwidth = bandwidth
-        //     ));
         const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = await NodeService.tronWeb.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
@@ -495,7 +456,9 @@ class Account {
             if(bn.isNaN())
                 balance = '0';
             else balance = bn.toString();
-        } catch {}
+        } catch (e) {
+            logger.error(`add smart token ${address} ${name} fail`,e);
+        }
 
         this.tokens.smart[ address ] = {
             balance,

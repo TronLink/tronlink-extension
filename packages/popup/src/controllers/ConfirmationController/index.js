@@ -1,5 +1,4 @@
 import React from 'react';
-import Toast,{ T } from 'react-toast-mobile';
 import Button from '@tronlink/popup/src/components/Button';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
@@ -93,9 +92,7 @@ class ConfirmationController extends React.Component {
         } = this.state.whitelisting;
         const { confirmation,authorizeDapps } = this.props;
         if( confirmation.contractType === 'TriggerSmartContract' ) {
-            T.loading();
             await this.addUsedDapp();
-            T.loaded();
             const contractAddress = TronWeb.address.fromHex(confirmation.input.contract_address);
             if(isAutoAuthorize && !authorizeDapps.hasOwnProperty(contractAddress)) {
                 const o = {};
@@ -315,7 +312,6 @@ class ConfirmationController extends React.Component {
         return (
             <div className='insetContainer confirmationController'>
                 <div className='greyModal confirmModal'>
-                    <Toast />
                     <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
                         <div className='pageHeader hasBottomMargin'>
                             { text }

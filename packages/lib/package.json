@@ -4,8 +4,9 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.6.1",
+  "version": "2.7.0",
   "dependencies": {
+    "@tronscan/client": "^0.2.48",
     "aes-js": "^3.1.2",
     "bip32": "^1.0.2",
     "bip39": "^2.5.0",
@@ -15,8 +16,8 @@
     "extensionizer": "^1.0.1",
     "pbkdf2": "^3.0.17",
     "tronweb": "^2.6.4",
-    "uuid": "^3.3.2",
-    "@tronscan/client": "^0.2.48"
+    "uuid": "^3.3.2"
+
   },
   "scripts": {
     "lint": "npx eslint . --fix"

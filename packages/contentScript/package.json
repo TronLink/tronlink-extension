@@ -4,7 +4,11 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
+<<<<<<< HEAD
   "version": "2.6.1",
+=======
+  "version": "2.7.0",
+>>>>>>> feature/v2.7.0
   "scripts": {
     "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/contentScript.js",
     "lint": "npx eslint . --fix"

@@ -200,15 +200,6 @@
   "SETTING.TITLE.AUTO_LOCK.30_MIN":"30分",
   "SETTING.TITLE.AUTO_LOCK.NEVER":"一度もない",
 
-  "SEND.RECIPIENT": "Recipient's address",
-  "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
-  "SEND.TOKENS.TRX": "TRX",
-  "SEND.TOKENS.TRC10": "Basic TRC10",
-  "SEND.TOKENS.TRC20": "Smart TRC20",
-  "SEND.AMOUNT.PLACEHOLDER": "1000",
-  "SEND.BUTTON.TRX": "Send TRX",
-  "SEND.BUTTON.TRC10": "Send Basic Token",
-  "SEND.BUTTON.TRC20": "Send Smart Token",
   "SEND.SUCCESS": "取引がブロードキャストされました",
 
   "ACCOUNTS.CONFIRM_DELETE": "アカウントを削除する",
@@ -402,5 +393,11 @@
 
   "DAPP_WHITELIST.URL":"URL",
   "DAPP_WHITELIST.CONTRACT_ADDRESS":"コントラクトアドレス",
-  "DAPP_WHITELIST.ADD_TIME":"時間を追加"
+  "DAPP_WHITELIST.ADD_TIME":"時間を追加",
+
+  "INDEX_ICON_TITLE.OFFICIAL_WEBSITE":"ホームページ",
+  "INDEX_ICON_TITLE.EXCHANGE":"trxmarket",
+  "INDEX_ICON_TITLE.LOCK":"アンカー",
+  "INDEX_ICON_TITLE.REFRESH":"更新",
+  "INDEX_ICON_TITLE.SETTING":"設定"
 }

@@ -27,7 +27,7 @@ const pageHook = {
 
             logger.info('TronLink initiated');
         }).catch(err => {
-            logger.info('Failed to initialise TronWeb', err);
+            logger.error('Failed to initialise TronWeb', err);
         });
     },
 
@@ -127,7 +127,7 @@ const pageHook = {
         }).then(transaction => (
             callback(null, transaction)
         )).catch(err => {
-            logger.warn('Failed to sign transaction:', err);
+            logger.error('Failed to sign transaction:', err);
             callback(err);
         });
     }
