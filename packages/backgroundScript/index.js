@@ -380,11 +380,10 @@ const backgroundScript = {
             BackgroundAPI.setDappList(dappList)
         ));
 
-        this.walletService.on('setAuthorizeDapps', dappList => (
-            BackgroundAPI.setAuthorizeDapps(dappList)
+        this.walletService.on('setAuthorizeDapps', authorizeDapps => (
+            BackgroundAPI.setAuthorizeDapps(authorizeDapps)
         ));
 
-        duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
     }
 };
 
