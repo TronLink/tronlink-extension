@@ -460,7 +460,6 @@ class Account {
             ]);
             logger.info(`Account ${address} successfully updated`);
             this.save();
-            console.log(this.address, '@@@@@@@@@@@@@@@@@@');
         } catch(error) {
             console.log(error);
         }

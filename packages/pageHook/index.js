@@ -74,14 +74,19 @@ const pageHook = {
 
     setAddress(address) {
         // logger.info('TronLink: New address configured');
-
-        this.proxiedMethods.setAddress(address);
+        if(!tronWeb.isAddress(address)){
+            tronWeb.defaultAddress = {
+                hex: false,
+                base58: false
+            };
+        }else{
+            this.proxiedMethods.setAddress(address);
+        }
         tronWeb.ready = true;
     },
 
     setNode(node) {
         // logger.info('TronLink: New node configured');
-
         tronWeb.fullNode.configure(node.fullNode);
         tronWeb.solidityNode.configure(node.solidityNode);
         tronWeb.eventServer.configure(node.eventServer);

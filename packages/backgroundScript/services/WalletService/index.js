@@ -431,6 +431,7 @@ class Wallet extends EventEmitter {
         StorageService.lock();
         this.accounts = {};
         this.selectedAccount = false;
+        this.emit('setAccount', this.selectedAccount);
         this._setState(APP_STATE.PASSWORD_SET);
     }
 
