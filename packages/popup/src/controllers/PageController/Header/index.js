@@ -34,13 +34,18 @@ class Header extends React.Component {
                     </div>
                     <div>
                         <div className="linkWrap">
-                            {/*<a href="https://twitter.com/TronLinkWallet" target="_blank" className="link link-twiter"></a>*/}
-                            <a href="https://t.me/TronLink" target="_blank" data-tip='telegram' data-for='telegram' className="link link-telegram">&nbsp;</a>
-                            <ReactTooltip id='telegram' effect='solid' />
+                            {/*<a href="https://t.me/TronLink" target="_blank" data-tip='telegram' data-for='telegram' className="link link-telegram">&nbsp;</a>*/}
+                            {/*<ReactTooltip id='telegram' effect='solid' />*/}
                             <a href="https://www.tronlink.org" target="_blank" data-tip={formatMessage({id:'INDEX_ICON_TITLE.OFFICIAL_WEBSITE'})} data-for="website" className="link link-home">&nbsp;</a>
                             <ReactTooltip id='website' effect='solid' />
                             <a href={trxMarketUrl} target="_blank" data-tip={formatMessage({id:'INDEX_ICON_TITLE.EXCHANGE'})} data-for="exchange" className="link link-exchange">&nbsp;</a>
                             <ReactTooltip id='exchange' effect='solid' />
+                        </div>
+                        <div className="linkWrap">
+                            <a href="javascript:void(0)" data-tip={formatMessage({id:'CREATION.LEDGER.CONNECT_TITLE'})} data-for='ledger' onClick={()=>{
+                                PopupAPI.changeState(APP_STATE.LEDGER)
+                            }}  className="link link-ledger">&nbsp;</a>
+                            <ReactTooltip id='ledger' effect='solid' />
                             <a href="javascript:void(0)" data-tip='Dapp' data-for='dapp' onClick={()=>{
                                 PopupAPI.setGaEvent('Dapp List','Recommend','Recommend')
                                 PopupAPI.changeState(APP_STATE.DAPP_LIST)

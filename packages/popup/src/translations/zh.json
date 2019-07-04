@@ -63,6 +63,17 @@
     "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
     "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
     "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
+    "CREATION.LEDGER.TITLE": "硬件钱包",
+    "CREATION.LEDGER.TIP": "Ledger用户使用",
+    "CREATION.LEDGER.CONNECT_TITLE": "连接硬件钱包",
+    "CREATION.LEDGER.PROCESS_1":"将Ledger与电脑连接，<br />并在Ledger中打开Tron APP",
+    "CREATION.LEDGER.PROCESS_2":"选择想要查看的账户<br>一次只能选择一个",
+    "CREATION.LEDGER.PROCESS_3":"连接完成，请开始使用",
+    "CREATION.LEDGER.LOADING":"在Ledger上打开TRON APP",
+    "CREATION.LEDGER.CHOOSE_ADDRESS":"请选择要查看的地址，一次只能选择一个",
+    "CREATION.LEDGER.CONNECT":"连接",
+    "CREATION.LEDGER.KNOW_MORE":"了解更多",
+
 
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
@@ -404,4 +415,5 @@
     "INDEX_ICON_TITLE.LOCK":"锁定",
     "INDEX_ICON_TITLE.REFRESH":"刷新",
     "INDEX_ICON_TITLE.SETTING":"设置"
+
 }

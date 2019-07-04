@@ -273,8 +273,13 @@ const Utils = {
         } catch (e) {
             return false;
         }
-    }
+    },
 
+    delay(timeout){
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    }
 
 };
 

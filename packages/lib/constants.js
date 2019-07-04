@@ -25,7 +25,8 @@ export const APP_STATE = {
     DAPP_LIST: 18, // [X]show dapp list
     ASSET_MANAGE: 19, // [X]asset manage
     TRANSACTION_DETAIL: 20, // [X] transaction detail
-    DAPP_WHITELIST: 21 // [X] transaction detail
+    DAPP_WHITELIST: 21, // [X] transaction detail
+    LEDGER: 22 // [X] connect ledger wallet
 
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 

@@ -1,4 +1,4 @@
-import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
+ import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
 
 export default {
     init(duplex) {

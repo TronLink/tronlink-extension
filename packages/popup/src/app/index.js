@@ -27,6 +27,7 @@ import DappListController from '@tronlink/popup/src/controllers/DappListControll
 import AssetManageController from '@tronlink/popup/src/controllers/AssetManageController';
 import TransactionDetailController from '@tronlink/popup/src/controllers/TransactionDetailController';
 import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhitelistController';
+import LedgerController from '@tronlink/popup/src/controllers/LedgerController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -112,6 +113,9 @@ class App extends React.Component {
                 break;
             case APP_STATE.DAPP_WHITELIST:
                 dom = <DappWhitelistController authorizeDapps={authorizeDapps} onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
+                break;
+            case APP_STATE.LEDGER:
+                dom = <LedgerController />;
                 break;
             default:
                 dom =

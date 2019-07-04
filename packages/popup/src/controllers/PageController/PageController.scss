@@ -23,6 +23,7 @@
                     width: 82px;
                 }
                 .linkWrap{
+                    padding-left: 10px;
                     height: 16px;
                     border-right:1px solid #efefef;
                     .link {
@@ -53,6 +54,13 @@
                             background-image: url('../../assets/images/new/icon-exchange.svg');
                             &:hover{
                                 background-image: url('../../assets/images/new/icon-exchange-hover.svg');
+                            }
+                        }
+                        &.link-ledger{
+                            background-size:100%;
+                            background-image: url('../../assets/images/new/ledger/icon-ledger2.svg');
+                            &:hover{
+                                background-image: url('../../assets/images/new/ledger/icon-ledger2-hover.svg');
                             }
                         }
                         &.link-dapp{

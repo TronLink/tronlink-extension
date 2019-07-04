@@ -238,8 +238,8 @@ html, body {
                 justify-content: space-between;
                 .walletOption{
                     margin:0;
-                    flex:1;
-                    padding:24px 24px 10px;
+                    height: 158px;
+                    padding:10px 24px 10px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -249,23 +249,32 @@ html, body {
                         margin-top: 10px;
                         text-align: center;
                         width: 300px;
+                        color: #888998;
                     }
                     .iconWrap{
-                        margin-bottom: 35px;
+                        margin-bottom: 18px;
+                        background-position: center;
+                        background-repeat:no-repeat;
                     }
                     &:first-child{
                         .iconWrap{
                             width: 90px;
-                            height: 72px;
-                            background-image: url('../images/new/icon-create-account.png');
+                            height: 40px;
+                            background-image: url('../images/new/ledger/icon-create.svg');
+                        }
+                    }
+                    &:nth-child(2){
+                        .iconWrap{
+                            width: 90px;
+                            height: 40px;
+                            background-image: url('../images/new/ledger/icon-import.svg');
                         }
                     }
                     &:last-child{
-                        margin-top: 16px;
                         .iconWrap{
                             width: 90px;
-                            height: 70px;
-                            background-image: url('../images/new/icon-import-account.png');
+                            height: 40px;
+                            background-image: url('../images/new/ledger/icon-ledger.svg');
                         }
                     }
                 }

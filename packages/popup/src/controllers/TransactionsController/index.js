@@ -49,7 +49,8 @@ class TransactionsController extends React.Component {
                 <div className='pageHeader'>
                     <div className='back' onClick={
                         () => {
-                            Toast.hide();onCancel();
+                            Toast.hide();
+                            onCancel();
                         }}></div>
                     <span className='title'>{name}</span>
                     {
