@@ -411,7 +411,7 @@ class Wallet extends EventEmitter {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=id,name,precision,abbr,imgUrl');
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
             const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
@@ -588,7 +588,7 @@ class Wallet extends EventEmitter {
                 }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=id,name,precision,abbr,imgUrl');
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
             const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
@@ -647,7 +647,7 @@ class Wallet extends EventEmitter {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=id,name,precision,abbr,imgUrl');
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
             const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
