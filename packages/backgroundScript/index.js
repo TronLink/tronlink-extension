@@ -15,7 +15,7 @@ import { version } from './package.json';
 
 // Make error reporting user-configurable
 Sentry.init({
-    dsn: 'https://5d5f88b4905844f9a1be3d380f5569a8@sentry.io/1455160',
+    dsn: 'http://d29e163582a948cd8addab042f4c65c7@18.220.1.137:9000/6',
     release: `TronLink@${ version }`
 });
 
@@ -166,6 +166,10 @@ const backgroundScript = {
         duplex.on('setTransactionDetail', this.walletService.setTransactionDetail);
         duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
         duplex.on('getAuthorizeDapps', this.walletService.getAuthorizeDapps);
+
+        duplex.on('setLedgerImportAddress', this.walletService.setLedgerImportAddress);
+        duplex.on('getLedgerImportAddress', this.walletService.getLedgerImportAddress);
+
     },
 
     bindTabDuplex() {
@@ -382,6 +386,10 @@ const backgroundScript = {
 
         this.walletService.on('setAuthorizeDapps', authorizeDapps => (
             BackgroundAPI.setAuthorizeDapps(authorizeDapps)
+        ));
+
+        this.walletService.on('setLedgerImportAddress', address => (
+            BackgroundAPI.setLedgerImportAddress(address)
         ));
 
     }

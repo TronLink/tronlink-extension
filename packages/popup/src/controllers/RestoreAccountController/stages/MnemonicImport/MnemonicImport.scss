@@ -24,6 +24,11 @@
             flex-direction: row;
             align-items: center;
             margin-bottom: 6px;
+            &.disabled{
+                cursor: not-allowed !important;
+                opacity:0.8;
+                pointer-events:none;
+            }
             .checkbox {
                 height: 16px;
                 width: 16px;

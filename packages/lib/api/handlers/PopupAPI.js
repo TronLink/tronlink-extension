@@ -280,5 +280,13 @@ export default {
 
     getAuthorizeDapps(){
         return this.duplex.send('getAuthorizeDapps');
+    },
+
+    setLedgerImportAddress(address){
+        this.duplex.send('setLedgerImportAddress', address, false);
+    },
+
+    getLedgerImportAddress(){
+        return this.duplex.send('getLedgerImportAddress');
     }
 }

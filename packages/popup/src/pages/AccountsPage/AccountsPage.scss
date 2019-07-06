@@ -161,6 +161,21 @@
                     &.selected{
                         .top{
                             .name{
+                                .nameWrap{
+                                    display: flex;
+                                    flex-direction: row;
+                                    .ledger{
+                                        margin-left: 5px;
+                                        width: 18px;
+                                        height: 18px;
+                                        border-radius:100%;
+                                        background-color: rgba(0,0,0,.3);
+                                        background-size:auto 50%;
+                                        background-image: url("../../assets/images/new/ledger/icon-ledger3.svg");
+                                        background-position:center;
+                                        background-repeat:no-repeat;
+                                    }
+                                }
                                 &:after{
                                     content: '';
                                     width: 18px;
@@ -407,6 +422,17 @@
                 &>span{
                     text-overflow: ellipsis;
                     overflow: hidden;
+                }
+                .ledger{
+                    margin-left: 5px;
+                    width: 18px;
+                    height: 18px;
+                    border-radius:100%;
+                    background-color: rgba(0,0,0,.3);
+                    background-size:auto 50%;
+                    background-image: url('../../assets/images/new/ledger/icon-ledger3.svg');
+                    background-position:center;
+                    background-repeat:no-repeat;
                 }
             }
         }

@@ -15,39 +15,34 @@ class LedgerController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading:false,
+            loading: false,
             connected: false,
             confirmed: false,
             address: ""
         };
-        this.ledger = new LedgerDevice();
     }
 
-    componentWillUnmount() {
-        this._isMounted = false;
+    componentDidMount(){
+        window.addEventListener('message',(e)=>{
+            if(e.data.target==='LEDGER-IFRAME'){
+                console.log(e.data);
+                const { address } = e.data;
+                PopupAPI.setLedgerImportAddress([address]);
+                PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
+                this.setState({loading:false});
+            }
+        },false);
+    }
+
+    handleClose(){
+        this.setState({loading:false});
+
     }
 
     async onSubmit() {
-        this._isMounted = true;
         this.setState({loading: true});
-
-        while (this._isMounted) {
-            console.log('!!!!!');
-            let {connected, address} = await this.ledger.checkForConnection(true);
-            console.log(connected,address);
-            if (connected) {
-                this.setState({
-                    connected,
-                    address,
-                });
-                this._isMounted = false;
-                break;
-            }
-            await Util.delay(300);
-        }
-
-        this.setState({loading: false});
-
+        console.log(document.querySelector('#tronLedgerBridge'));
+        document.querySelector('#tronLedgerBridge').contentWindow.postMessage({target:"LEDGER-IFRAME",data:'connect ledger'},'*');
     }
 
     render() {
@@ -56,9 +51,9 @@ class LedgerController extends React.Component {
 
         return (
             <div className='insetContainer ledger'>
-                <Loading show={loading} onClose={()=>this.setState({loading:false})} />
+                <Loading show={loading} onClose={this.handleClose.bind(this)} />
                 <div className='pageHeader'>
-                    <div className='back' onClick={()=>PopupAPI.changeState(APP_STATE.READY)}>&nbsp;</div>
+                    <div className='back' onClick={()=>PopupAPI.resetState()}>&nbsp;</div>
                     <FormattedMessage id='CREATION.LEDGER.CONNECT_TITLE' />
                 </div>
                 <div className='greyModal scroll'>

@@ -1,12 +1,16 @@
 import AppTrx from "./Tron";
 import Transport from "@ledgerhq/hw-transport-u2f";
 
+const baseUrl = 'https://zacharyle.github.io/tron-ledger-bridge';
 export default class LedgerBridge {
     constructor(win) {
         this.win = win;
         this.transport = null;
         this.path = "44'/195'/0'/0/0";
+        this.bridgeUrl = baseUrl;
     }
+
+
 
     async checkForConnection(confirm = false) {
         return new Promise(async (resolve, reject) => {

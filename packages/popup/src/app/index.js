@@ -28,6 +28,7 @@ import AssetManageController from '@tronlink/popup/src/controllers/AssetManageCo
 import TransactionDetailController from '@tronlink/popup/src/controllers/TransactionDetailController';
 import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhitelistController';
 import LedgerController from '@tronlink/popup/src/controllers/LedgerController';
+import LedgerAccountImportController from '@tronlink/popup/src/controllers/LedgerController/LedgerAccountImportController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -116,6 +117,9 @@ class App extends React.Component {
                 break;
             case APP_STATE.LEDGER:
                 dom = <LedgerController />;
+                break;
+            case APP_STATE.LEDGER_IMPORT_ACCOUNT:
+                dom = <LedgerAccountImportController />;
                 break;
             default:
                 dom =

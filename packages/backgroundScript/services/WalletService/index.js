@@ -36,7 +36,7 @@ class Wallet extends EventEmitter {
         this._checkStorage(); //change store by judge
         // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
         this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
-
+        this.ledgerImportAddress = [];
         setInterval(() => {
             this._updatePrice();
         }, 30 * 60 * 1000);
@@ -109,7 +109,7 @@ class Wallet extends EventEmitter {
         Object.entries(accounts).forEach(([ address, account ]) => {
             const accountObj = new Account(
                 account.type,
-                account.mnemonic || account.privateKey,
+                account.mnemonic || account.privateKey || account.address,
                 account.accountIndex
             );
 
@@ -301,7 +301,8 @@ class Wallet extends EventEmitter {
             APP_STATE.ASSET_MANAGE,
             APP_STATE.TRANSACTION_DETAIL,
             APP_STATE.DAPP_WHITELIST,
-            APP_STATE.LEDGER
+            APP_STATE.LEDGER,
+            APP_STATE.LEDGER_IMPORT_ACCOUNT
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -409,14 +410,14 @@ class Wallet extends EventEmitter {
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
         if (this.confirmations.length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
             Promise.all([dapps, dapps2]).then(res => {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 10000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
@@ -589,8 +590,8 @@ class Wallet extends EventEmitter {
     async addAccount({ mnemonic, name }) {
         logger.info(`Adding account '${ name }' from popup`);
         if(Object.keys(this.accounts).length === 0) {
-            const dapps = axios.get('https://dappradar.com/api/xchain/dapps/theRest', {timeout: 5000});
-            const dapps2 = axios.get('https://dappradar.com/api/xchain/dapps/list/0', {timeout: 5000});
+            const dapps = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+            const dapps2 = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
             Promise.all([dapps, dapps2]).then(res => {
                 const tronDapps = res[0].data.data.list.concat(res[1].data.data.list).filter(({protocols: [type]}) => type === 'tron').map(({logo: icon, url: href, title: name}) => ({
                     icon,
@@ -599,8 +600,8 @@ class Wallet extends EventEmitter {
                 }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000', {timeout: 30000});
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20', {timeout: 10000});
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[0].data.data.concat(res[1].data.tokens).forEach(({abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false}) => {
@@ -636,6 +637,7 @@ class Wallet extends EventEmitter {
         return true;
     }
 
+
     // This and the above func should be merged into one
     /**
      *
@@ -648,7 +650,7 @@ class Wallet extends EventEmitter {
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
-            ACCOUNT_TYPE.PRIVATE_KEY,
+            TronWeb.isAddress(privateKey)?ACCOUNT_TYPE.LEDGER:ACCOUNT_TYPE.PRIVATE_KEY,
             privateKey
         );
 
@@ -658,14 +660,14 @@ class Wallet extends EventEmitter {
 
         account.name = name;
         if(Object.keys(this.accounts).length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
+            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
             Promise.all([dapps, dapps2]).then(res => {
                 const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
                 StorageService.saveAllDapps(tronDapps);
             });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000',{ timeout: 30000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 10000 });
+            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
+            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
             Promise.all([trc10tokens, trc20tokens]).then(res => {
                 let t = [];
                 res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
@@ -727,7 +729,8 @@ class Wallet extends EventEmitter {
                 netUsed: account.netUsed,
                 netLimit: account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
-                asset: account.asset
+                asset: account.asset,
+                type: account.type
             };
 
             return accounts;
@@ -1127,5 +1130,16 @@ class Wallet extends EventEmitter {
         StorageService.setAuthorizeDapps(authorizeDapps);
         this.emit('setAuthorizeDapps',authorizeDapps);
     }
+
+    setLedgerImportAddress(address){
+        this.ledgerImportAddress = address;
+        this.emit('setLedgerImportAddress',address);
+    }
+
+    getLedgerImportAddress(){
+        return this.hasOwnProperty('ledgerImportAddress')?this.ledgerImportAddress:[];
+    }
+
+
 }
 export default Wallet;

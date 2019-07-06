@@ -48,10 +48,11 @@ class Account {
             balance: 0,
             price: 0
         };
-        if(accountType == ACCOUNT_TYPE.MNEMONIC)
+        if(accountType == ACCOUNT_TYPE.MNEMONIC) {
             this._importMnemonic(importData);
-        else this._importPrivateKey(importData);
-
+        } else{
+            this._importPrivateKey(importData);
+        }
         this.loadCache();
     }
 
@@ -82,12 +83,18 @@ class Account {
 
     _importPrivateKey(privateKey) {
         try {
-            this.privateKey = privateKey;
-            this.address = TronWeb.address.fromPrivateKey(privateKey);
+            if(TronWeb.isAddress(privateKey)){
+                this.privateKey = null;
+                this.address = privateKey;
+            }else{
+                this.privateKey = privateKey;
+                this.address = TronWeb.address.fromPrivateKey(privateKey);
+            }
         } catch (ex) { // eslint-disable-line
             throw new Error('INVALID_PRIVATE_KEY');
         }
     }
+
 
     getAccountAtIndex(index = 0) {
         if(this.type !== ACCOUNT_TYPE.MNEMONIC)
@@ -488,8 +495,7 @@ class Account {
             lastUpdated: this.lastUpdated,
             selectedBankRecordId: this.selectedBankRecordId,
             dealCurrencyPage: this.dealCurrencyPage,
-            airdropInfo: this.airdropInfo,
-            transactionDetail: this.transactionDetail
+            airdropInfo: this.airdropInfo
         };
     }
 

@@ -9,7 +9,7 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
-import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE } from '@tronlink/lib/constants';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
@@ -34,6 +34,10 @@ class AccountsPage extends React.Component {
         };
     }
 
+    loadIframe(){
+
+    }
+
     async componentDidMount() {
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
@@ -51,6 +55,7 @@ class AccountsPage extends React.Component {
         await PopupAPI.setAirdropInfo(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
+        this.loadIframe();
     }
 
     runTime(ieos) {
@@ -124,35 +129,43 @@ class AccountsPage extends React.Component {
                     }}
                     >
                         <span>{accounts.selected.name.length > 30 ? accounts.selected.name.substr(0,30)+'...' : accounts.selected.name}</span>
+                        {
+                            accounts.selected.type === ACCOUNT_TYPE.LEDGER ? <div className="ledger">&nbsp;</div>:null
+                        }
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
-                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * 6, opacity: 1 } : {}}>
+                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER?6:5), opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
-                                <span className='icon asset'></span>
+                                <span className='icon asset'>&nbsp;</span>
                                 <FormattedMessage id='ASSET.ASSET_MANAGE' />
                             </div>
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
-                                <span className='icon frozen'></span>
+                                <span className='icon frozen'>&nbsp;</span>
                                 <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
                             </div>
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
-                                <span className='icon vote'></span>
+                                <span className='icon vote'>&nbsp;</span>
                                 <FormattedMessage id='MENU.VOTE' />
                             </div>
                             {/*<div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>*/}
                             {/*    <span className='icon addToken'></span>*/}
                             {/*    <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />*/}
                             {/*</div>*/}
-                            <div onClick={ this.onExport } className='item'>
-                                <span className='icon backup'></span>
-                                <FormattedMessage id='ACCOUNTS.EXPORT' />
-                            </div>
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
+                                    <div onClick={ this.onExport } className='item'>
+                                        <span className='icon backup'>&nbsp;</span>
+                                        <FormattedMessage id='ACCOUNTS.EXPORT' />
+                                    </div>
+                                    :
+                                    null
+                            }
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className='item'>
-                                <span className='icon link'></span>
+                                <span className='icon link'>&nbsp;</span>
                                 <FormattedMessage id='MENU.ACCOUNT_DETAIL' />
                             </div>
                             <div className='item' onClick={ () => { this.onDelete(); } }>
-                                <span className='icon delete'></span>
+                                <span className='icon delete'>&nbsp;</span>
                                 <FormattedMessage id='MENU.DELETE_WALLET' />
                             </div>
                         </div>
@@ -522,7 +535,10 @@ class AccountsPage extends React.Component {
                                         }}>
                                             <div className="top">
                                                 <div className="name">
-                                                    {account.name.length>30?account.name.substr(0,30)+'...':account.name}
+                                                    <div className="nameWrap">
+                                                        {account.name.length>30?account.name.substr(0,30)+'...':account.name}
+                                                        {account.type === ACCOUNT_TYPE.LEDGER ? <div className="ledger">&nbsp;</div>:null}
+                                                    </div>
                                                 </div>
                                                 <div className="asset">
                                                     <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>

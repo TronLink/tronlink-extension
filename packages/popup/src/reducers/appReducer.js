@@ -18,6 +18,8 @@ export const setSetting = createAction('setSetting');
 export const setVersion = createAction('setVersion');
 export const setDappList = createAction('setDappList');
 export const setAuthorizeDapps = createAction('setAuthorizeDapps');
+export const setLedgerImportAddress = createAction('setLedgerImportAddress');
+
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
@@ -40,7 +42,8 @@ export const appReducer = createReducer({
         recommend:[],
         used:[]
     },
-    authorizeDapps: {}
+    authorizeDapps: {},
+    ledgerImportAddress:[]
 
 }, {
     [ setAppState ]: (state, { payload }) => {
@@ -74,5 +77,9 @@ export const appReducer = createReducer({
 
     [ setAuthorizeDapps ]: (state, { payload }) => {
         state.authorizeDapps = payload;
+    },
+
+    [ setLedgerImportAddress ]: (state, { payload }) => {
+        state.ledgerImportAddress = payload;
     }
 });

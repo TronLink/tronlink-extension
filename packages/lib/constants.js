@@ -26,13 +26,14 @@ export const APP_STATE = {
     ASSET_MANAGE: 19, // [X]asset manage
     TRANSACTION_DETAIL: 20, // [X] transaction detail
     DAPP_WHITELIST: 21, // [X] transaction detail
-    LEDGER: 22 // [X] connect ledger wallet
-
+    LEDGER: 22, // [X] connect ledger wallet
+    LEDGER_IMPORT_ACCOUNT: 23 // [X] connect ledger wallet
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {
     MNEMONIC: 0,
-    PRIVATE_KEY: 1
+    PRIVATE_KEY: 1,
+    LEDGER:2
 };
 
 export const VALIDATION_STATE = {

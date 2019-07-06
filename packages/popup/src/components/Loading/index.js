@@ -9,29 +9,41 @@ import { injectIntl } from 'react-intl';
 
 import './Loading.scss';
 
-const Loading = props => {
-    const { formatMessage } = props.intl;
-    const {
-        show = true,
-        title = formatMessage({id:'CREATION.LEDGER.LOADING'})
-    } = props;
+class Loading extends React.Component {
+    constructor(props){
+        super(props);
+    }
 
+    componentDidMount(){
+        const iframe = document.createElement('iframe');
+        iframe.id = 'tronLedgerBridge';
+        iframe.src = 'https://zacharyle.github.io/tron-ledger-bridge?new='+Math.random();
+        document.head.appendChild(iframe);
+    }
 
-    return (
+    render() {
+        const {formatMessage} = this.props.intl;
+        const {
+            show = true,
+            title = formatMessage({id: 'CREATION.LEDGER.LOADING'})
+        } = this.props;
+
+        return (
             show
-            ?
-            <div className="loading" >
-                <div className="wrap">
-                    <div className="title">
-                        {title}
+                ?
+                <div className="loading">
+                    <div className="wrap">
+                        <div className="title">
+                            {title}
+                        </div>
+                        <img src={LoadingGif} alt=""/>
+                        <Button id="BUTTON.CANCEL" onClick={this.props.onClose}/>
                     </div>
-                    <img src={LoadingGif} alt=""/>
-                    <Button id="BUTTON.CANCEL" onClick={props.onClose} />
                 </div>
-            </div>
-            :
-            null
-    );
+                :
+                null
+        );
+    }
 };
 
 export default injectIntl(Loading);

@@ -26,7 +26,8 @@ import {
     setSetting,
     setVersion,
     setDappList,
-    setAuthorizeDapps
+    setAuthorizeDapps,
+    setLedgerImportAddress
 } from 'reducers/appReducer';
 
 import {
@@ -103,7 +104,8 @@ export const app = {
             confirmations,
             selectedToken,
             language,
-            authorizeDapps
+            authorizeDapps,
+            ledgerImportAddress
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -113,7 +115,8 @@ export const app = {
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
             PopupAPI.getLanguage(),
-            PopupAPI.getAuthorizeDapps()
+            PopupAPI.getAuthorizeDapps(),
+            PopupAPI.getLedgerImportAddress()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
         if ( lang.indexOf('zh') > -1 ) {
@@ -134,6 +137,7 @@ export const app = {
         this.store.dispatch(setSetting(setting));
         this.store.dispatch(setVersion(version));
         this.store.dispatch(setAuthorizeDapps(authorizeDapps));
+        this.store.dispatch(setLedgerImportAddress(ledgerImportAddress));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -203,6 +207,10 @@ export const app = {
 
         this.duplex.on('setAuthorizeDapps', authorizeDapps => this.store.dispatch(
             setAuthorizeDapps(authorizeDapps)
+        ));
+
+        this.duplex.on('setLedgerImportAddress', address => this.store.dispatch(
+            setLedgerImportAddress(address)
         ));
 
     },

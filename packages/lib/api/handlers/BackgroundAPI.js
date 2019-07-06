@@ -75,6 +75,10 @@ export default {
 
     setAuthorizeDapps(dappList) {
         this.duplex.send('popup', 'setAuthorizeDapps',dappList ,false);
+    },
+
+    setLedgerImportAddress(address) {
+        this.duplex.send('popup', 'setLedgerImportAddress',address ,false);
     }
 
 };
