@@ -14,10 +14,10 @@ export default {
 
         if(this.currentAccount === account)
             return;
-
+        const { address, name, type } = account;
         this.duplex.send('tab', 'tunnel', {
             action: 'setAccount',
-            data: account.address
+            data: { address, name, type }
         }, false);
 
         this.currentAccount = account;

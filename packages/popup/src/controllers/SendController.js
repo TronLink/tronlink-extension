@@ -3,7 +3,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
-import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS } from '@tronlink/lib/constants';
+import Loading from '@tronlink/popup/src/components/Loading';
+import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE } from '@tronlink/lib/constants';
 import TronWeb from "tronweb";
 import { Toast } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
@@ -34,14 +35,34 @@ class SendController extends React.Component {
                 valid: false,
                 values: ''
             },
-            loading: false
+            loading: false,
+            loadingLedger: false
         };
     }
 
     componentDidMount() {
+        const { formatMessage } = this.props.intl;
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 ,  6) : selectedToken.amount;
         this.setState({selectedToken});
+        window.addEventListener('message',(e)=>{
+            if(e.data.target==='LEDGER-IFRAME'){
+                if(e.data.success){
+                    Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
+                        this.onCancel();
+                        this.setState({
+                            loading: false
+                        });
+                    }, true);
+                } else {
+                    Toast.fail('transaction failed!', 3, () => {
+                        this.setState({
+                            loading: false
+                        });
+                    }, true);
+                }
+            }
+        },false);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -273,50 +294,65 @@ class SendController extends React.Component {
             loading: true,
             success: false
         });
+        const { selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         const { value: recipient } = this.state.recipient;
         const { value: amount } = this.state.amount;
 
         const {
             id,
-            decimals
+            decimals,
+            name
         } = this.state.selectedToken;
-
-        let func;
-        if(id === "_") {
-            func = PopupAPI.sendTrx(
-                recipient,
-                new BigNumber(amount).shiftedBy(6).toString()
-            );
-        }else if(id.match(/^T/)) {
-            func = PopupAPI.sendSmartToken(
+        if(selected.type !== ACCOUNT_TYPE.LEDGER) {
+            let func;
+            if (id === "_") {
+                func = PopupAPI.sendTrx(
+                    recipient,
+                    new BigNumber(amount).shiftedBy(6).toString()
+                );
+            } else if (id.match(/^T/)) {
+                func = PopupAPI.sendSmartToken(
                     recipient,
                     new BigNumber(amount).shiftedBy(decimals).toString(),
                     id
-            );
-        }else{
-            func = PopupAPI.sendBasicToken(
-                recipient,
-                new BigNumber(amount).shiftedBy(decimals).toString(),
-                id
-            );
+                );
+            } else {
+                func = PopupAPI.sendBasicToken(
+                    recipient,
+                    new BigNumber(amount).shiftedBy(decimals).toString(),
+                    id
+                );
+            }
+            func.then(() => {
+                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
+                    this.onCancel();
+                    this.setState({
+                        loading: false
+                    });
+                }, true);
+            }).catch(error => {
+                Toast.fail(JSON.stringify(error), 3, () => {
+                    this.setState({
+                        loading: false
+                    });
+                }, true);
+            });
+        } else {
+            const iframe = document.querySelector('#tronLedgerBridge').contentWindow;
+            const fromAddress = selected.address;
+            const toAddress = recipient;
+            this.setState({loadingLedger:true});
+            if (id === "_") {
+                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trx',data:{toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(6).toString()}},'*')
+            }else if(id.match(/^T/)){
+                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc20',data:{id,toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
+            }else{
+                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc10',data:{id,toAddress,fromAddress,decimals,TokenName:name,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
+            }
+
+
         }
-
-
-        func.then(() => {
-            Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                this.onCancel();
-                this.setState({
-                    loading: false
-                });
-            }, true);
-        }).catch(error => {
-            Toast.fail(JSON.stringify(error), 3, () => {
-                this.setState({
-                    loading: false
-                });
-            }, true);
-        });
     }
 
     onCancel() {
@@ -342,8 +378,12 @@ class SendController extends React.Component {
         }
     }
 
+    handleClose(){
+        this.setState({loadingLedger:false});
+    }
+
     render() {
-        const { isOpen, selectedToken, loading, amount, recipient } = this.state;
+        const { isOpen, selectedToken, loading, amount, recipient, loadingLedger } = this.state;
         const { selected, accounts } = this.props.accounts;
         const usdt = { tokenId: CONTRACT_ADDRESS.USDT, ...selected.tokens.smart[ CONTRACT_ADDRESS.USDT ] };
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
@@ -352,6 +392,7 @@ class SendController extends React.Component {
         tokens = [usdt, trx, ...tokens];
         return (
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>
+                <Loading show={loadingLedger} onClose={this.handleClose.bind(this)} />
                 <div className='pageHeader'>
                     <div className='back' onClick={(e) => this.onCancel() }>&nbsp;</div>
                     <FormattedMessage id='ACCOUNT.SEND' />

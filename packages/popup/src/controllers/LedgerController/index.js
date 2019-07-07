@@ -25,7 +25,6 @@ class LedgerController extends React.Component {
     componentDidMount(){
         window.addEventListener('message',(e)=>{
             if(e.data.target==='LEDGER-IFRAME'){
-                console.log(e.data);
                 const { address } = e.data;
                 PopupAPI.setLedgerImportAddress([address]);
                 PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
@@ -41,8 +40,7 @@ class LedgerController extends React.Component {
 
     async onSubmit() {
         this.setState({loading: true});
-        console.log(document.querySelector('#tronLedgerBridge'));
-        document.querySelector('#tronLedgerBridge').contentWindow.postMessage({target:"LEDGER-IFRAME",data:'connect ledger'},'*');
+        document.querySelector('#tronLedgerBridge').contentWindow.postMessage({target:"LEDGER-IFRAME",action:'connect ledger',data:''},'*');
     }
 
     render() {

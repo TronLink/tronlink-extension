@@ -34,9 +34,6 @@ class AccountsPage extends React.Component {
         };
     }
 
-    loadIframe(){
-
-    }
 
     async componentDidMount() {
         const { prices, accounts } = this.props;
@@ -55,7 +52,6 @@ class AccountsPage extends React.Component {
         await PopupAPI.setAirdropInfo(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
-        this.loadIframe();
     }
 
     runTime(ieos) {
@@ -509,6 +505,9 @@ class AccountsPage extends React.Component {
                                 </div>
                                 <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
                                     <FormattedMessage id="CREATION.RESTORE.TITLE" />
+                                </div>
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.LEDGER) }>
+                                    <FormattedMessage id="CREATION.LEDGER.TITLE" />
                                 </div>
                             </div>
                             <div className="row2">

@@ -36,6 +36,7 @@ class Account {
         this.ignoredTransactions = [];
         this.transactions = {};
         this.airdropInfo = {};
+        this.transactionDetail = {};
         this.tokens = {
             basic: {},
             smart: {}
@@ -495,7 +496,8 @@ class Account {
             lastUpdated: this.lastUpdated,
             selectedBankRecordId: this.selectedBankRecordId,
             dealCurrencyPage: this.dealCurrencyPage,
-            airdropInfo: this.airdropInfo
+            airdropInfo: this.airdropInfo,
+            transactionDetail:this.transactionDetail
         };
     }
 

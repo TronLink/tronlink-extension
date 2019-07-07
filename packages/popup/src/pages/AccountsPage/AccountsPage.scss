@@ -99,9 +99,15 @@
                             background-image: url('../../assets/images/new/icon-create.svg');
                         }
                     }
-                    &:last-child{
+                    &:nth-child(2){
                         &:before{
                             background-image: url('../../assets/images/new/icon-import.svg');
+                        }
+                    }
+                    &:last-child{
+                        &:before{
+                            background-size:100% auto;
+                            background-image: url('../../assets/images/new/ledger/icon-ledger2.svg');
                         }
                     }
                 }
@@ -161,21 +167,6 @@
                     &.selected{
                         .top{
                             .name{
-                                .nameWrap{
-                                    display: flex;
-                                    flex-direction: row;
-                                    .ledger{
-                                        margin-left: 5px;
-                                        width: 18px;
-                                        height: 18px;
-                                        border-radius:100%;
-                                        background-color: rgba(0,0,0,.3);
-                                        background-size:auto 50%;
-                                        background-image: url("../../assets/images/new/ledger/icon-ledger3.svg");
-                                        background-position:center;
-                                        background-repeat:no-repeat;
-                                    }
-                                }
                                 &:after{
                                     content: '';
                                     width: 18px;
@@ -215,6 +206,21 @@
                             color:#efefef;
                             height: 20px;
                             line-height: 20px;
+                            .nameWrap{
+                                display: flex;
+                                flex-direction: row;
+                                .ledger{
+                                    margin-left: 5px;
+                                    width: 18px;
+                                    height: 18px;
+                                    border-radius:100%;
+                                    background-color: rgba(0,0,0,.3);
+                                    background-size:auto 50%;
+                                    background-image: url("../../assets/images/new/ledger/icon-ledger3.svg");
+                                    background-position:center;
+                                    background-repeat:no-repeat;
+                                }
+                            }
                         }
                         .asset{
                             height: 22px;

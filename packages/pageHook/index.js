@@ -5,6 +5,7 @@ import Utils from '@tronlink/lib/utils';
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 
+
 const logger = new Logger('pageHook');
 
 const pageHook = {
@@ -72,7 +73,8 @@ const pageHook = {
         ));
     },
 
-    setAddress(address) {
+    setAddress({address, name, type}) {
+        console.log(address,name,type);
         // logger.info('TronLink: New address configured');
         if(!tronWeb.isAddress(address)){
             tronWeb.defaultAddress = {
@@ -81,8 +83,10 @@ const pageHook = {
             };
         }else{
             this.proxiedMethods.setAddress(address);
+            tronWeb.defaultAddress.name = name;
+            tronWeb.defaultAddress.type =  type;
+            tronWeb.ready = true;
         }
-        tronWeb.ready = true;
     },
 
     setNode(node) {

@@ -15,6 +15,9 @@ class Loading extends React.Component {
     }
 
     componentDidMount(){
+        if(document.getElementById('tronLedgerBridge')){
+            document.head.removeChild(document.getElementById('tronLedgerBridge'));
+        }
         const iframe = document.createElement('iframe');
         iframe.id = 'tronLedgerBridge';
         iframe.src = 'https://zacharyle.github.io/tron-ledger-bridge?new='+Math.random();
