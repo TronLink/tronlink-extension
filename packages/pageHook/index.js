@@ -74,7 +74,6 @@ const pageHook = {
     },
 
     setAddress({address, name, type}) {
-        console.log(address,name,type);
         // logger.info('TronLink: New address configured');
         if(!tronWeb.isAddress(address)){
             tronWeb.defaultAddress = {
