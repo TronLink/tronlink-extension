@@ -174,7 +174,7 @@ const StorageService = {
         logger.info('Deleting account', address);
 
         delete this.accounts[ address ];
-        delete this.transactions[ address ];
+        //delete this.transactions[ address ];
 
         this.save('accounts');
     },
