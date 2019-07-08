@@ -176,7 +176,7 @@ const StorageService = {
         delete this.accounts[ address ];
         delete this.transactions[ address ];
 
-        this.save('accounts', 'transactions');
+        this.save('accounts');
     },
 
     deleteNode(nodeID) {
