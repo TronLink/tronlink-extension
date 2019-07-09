@@ -173,9 +173,9 @@ const StorageService = {
     deleteAccount(address) {
         logger.info('Deleting account', address);
 
-        delete this.accounts[ address ];
+        //delete this.accounts[ address ];
         //delete this.transactions[ address ];
-
+        this.accounts = Object.entries(this.accounts).filter(([key,accounts])=>key !== address).reduce((accumulator, currentValue)=>{accumulator[currentValue[0]]=currentValue[1];return accumulator;},{});
         this.save('accounts');
     },
 

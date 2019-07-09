@@ -49,7 +49,7 @@ class SendController extends React.Component {
             if(e.data.target==='LEDGER-IFRAME'){
                 if(e.data.success){
                     Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                        this.onCancel();
+                        PopupAPI.changeState(APP_STATE.READY);
                         this.setState({
                             loading: false
                         });
@@ -57,7 +57,8 @@ class SendController extends React.Component {
                 } else {
                     Toast.fail('transaction failed!', 3, () => {
                         this.setState({
-                            loading: false
+                            loading: false,
+                            loadingLedger: false
                         });
                     }, true);
                 }
