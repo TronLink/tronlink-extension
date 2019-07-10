@@ -44,7 +44,7 @@ class Account {
         this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
             symbol: 'USDT',
             name: 'Tether USD',
-            decimal: 6,
+            decimals: 6,
             tokenId: CONTRACT_ADDRESS.USDT,
             balance: 0,
             price: 0
@@ -164,7 +164,7 @@ class Account {
             this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
                 symbol: 'USDT',
                 name: 'Tether USD',
-                decimal: 6,
+                decimals: 6,
                 tokenId: CONTRACT_ADDRESS.USDT,
                 balance: 0,
                 price: 0
@@ -432,7 +432,7 @@ class Account {
                 //this.updateTokens(tokens.smart)
             ]);
             logger.info(`Account ${address} successfully updated`);
-            this.save();
+            Object.keys(StorageService.getAccounts()).includes(this.address) && this.save();
         } catch(error) {
             logger.error(`update account ${this.address} fail`, error);
         }
