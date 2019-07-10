@@ -218,7 +218,10 @@ class AccountsPage extends React.Component {
                         <div className='title'>
                             {
                                 nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === '0f22e40f-a004-4c5a-99ef-004c8e6769bf' ?
-                                    <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
+                                    <span className='bankBox' onClick={ () => {
+                                        //PopupAPI.changeState(APP_STATE.TRONBANK);
+                                        window.open('http://www.tronlending.org');
+                                    }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
                                         <div className='bankPopover'>

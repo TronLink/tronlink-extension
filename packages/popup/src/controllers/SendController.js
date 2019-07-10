@@ -38,41 +38,48 @@ class SendController extends React.Component {
             loading: false,
             loadingLedger: false
         };
+        this.listener = this.listener.bind(this);
+    }
+
+    listener(event){
+        const { formatMessage } = this.props.intl;
+        if(event.data.target==='LEDGER-IFRAME'){
+            console.log(event.data);
+            if(event.data.success){
+                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
+                    PopupAPI.changeState(APP_STATE.READY);
+                    this.setState({
+                        loading: false
+                    });
+                }, true);
+            } else {
+                let id = '';
+                if(event.data.error === 'User has not unlocked wallet'){
+                    id = 'CREATION.LEDGER.CONNECT_TIMEOUT';
+                }else if(event.data.error.match(/denied by the user/)){
+                    id = 'CREATION.LEDGER.REJECT';
+                }else if(event.data.error.match(/U2F TIMEOUT/)){
+                    id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
+                }
+                Toast.fail(formatMessage({id}), 3, () => {
+                    this.setState({
+                        loading: false,
+                        loadingLedger: false
+                    });
+                }, true);
+            }
+        }
     }
 
     componentDidMount() {
-        const { formatMessage } = this.props.intl;
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 ,  6) : selectedToken.amount;
         this.setState({selectedToken});
-        window.addEventListener('message',(e)=>{
-            if(e.data.target==='LEDGER-IFRAME'){
-                console.log(e.data);
-                if(e.data.success){
-                    Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                        PopupAPI.changeState(APP_STATE.READY);
-                        this.setState({
-                            loading: false
-                        });
-                    }, true);
-                } else {
-                    let id = '';
-                    if(e.data.error === 'User has not unlocked wallet'){
-                        id = 'CREATION.LEDGER.CONNECT_TIMEOUT';
-                    }else if(e.data.error.match(/denied by the user/)){
-                        id = 'CREATION.LEDGER.REJECT';
-                    }else if(e.data.error.match(/U2F TIMEOUT/)){
-                        id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
-                    }
-                    Toast.fail(formatMessage({id}), 3, () => {
-                        this.setState({
-                            loading: false,
-                            loadingLedger: false
-                        });
-                    }, true);
-                }
-            }
-        },false);
+        window.addEventListener('message',this.listener,false);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('message',this.listener,false);
     }
 
     componentWillReceiveProps(nextProps) {

@@ -18,19 +18,27 @@ class LedgerController extends React.Component {
             loading: false,
             connected: false,
             confirmed: false,
-            address: ""
+            address: "",
+            listener:null
         };
+        this.listener = this.listener.bind(this);
+    }
+
+    listener(event){
+        if(event.data.target==='LEDGER-IFRAME'){
+            const { address } = event.data;
+            PopupAPI.setLedgerImportAddress([address]);
+            PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
+            this.setState({loading:false});
+        }
     }
 
     componentDidMount(){
-        window.addEventListener('message',(e)=>{
-            if(e.data.target==='LEDGER-IFRAME'){
-                const { address } = e.data;
-                PopupAPI.setLedgerImportAddress([address]);
-                PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
-                this.setState({loading:false});
-            }
-        },false);
+        window.addEventListener('message',this.listener,false);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('message',this.listener,false);
     }
 
     handleClose(){
@@ -70,7 +78,7 @@ class LedgerController extends React.Component {
                     <div className="row">
                         <div className="line" index="2">&nbsp;</div>
                         <div className="desc" dangerouslySetInnerHTML={{__html:formatMessage({id:'CREATION.LEDGER.PROCESS_2'})}}></div>
-                        <img style={{height:60}} src={require('@tronlink/popup/src/assets/images/new/ledger/step2.png')} alt=""/>
+                        <img style={{height:22}} src={require('@tronlink/popup/src/assets/images/new/ledger/step2_2.png')} alt=""/>
                     </div>
                     <div className="row">
                         <div className="line" index="3">&nbsp;</div>
