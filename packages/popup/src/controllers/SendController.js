@@ -47,6 +47,7 @@ class SendController extends React.Component {
         this.setState({selectedToken});
         window.addEventListener('message',(e)=>{
             if(e.data.target==='LEDGER-IFRAME'){
+                console.log(e.data);
                 if(e.data.success){
                     Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
                         PopupAPI.changeState(APP_STATE.READY);
@@ -55,7 +56,15 @@ class SendController extends React.Component {
                         });
                     }, true);
                 } else {
-                    Toast.fail('transaction failed!', 3, () => {
+                    let id = '';
+                    if(e.data.error === 'User has not unlocked wallet'){
+                        id = 'CREATION.LEDGER.CONNECT_TIMEOUT';
+                    }else if(e.data.error.match(/denied by the user/)){
+                        id = 'CREATION.LEDGER.REJECT';
+                    }else if(e.data.error.match(/U2F TIMEOUT/)){
+                        id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
+                    }
+                    Toast.fail(formatMessage({id}), 3, () => {
                         this.setState({
                             loading: false,
                             loadingLedger: false
@@ -380,7 +389,7 @@ class SendController extends React.Component {
     }
 
     handleClose(){
-        this.setState({loadingLedger:false});
+        this.setState({loadingLedger:false,loading:false});
     }
 
     render() {

@@ -978,11 +978,10 @@ class Wallet extends EventEmitter {
         if(!tokenId.match(/^T/)) {
             if(tokenId === '_') {
                 requestUrl = 'https://apilist.tronscan.org/api/simple-transaction';
-                // params.asset_name = 'TRX';
+                //params.asset_name = 'TRX';
             } else {
                 requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
                 params.token_id = tokenId;
-
             }
             if(direction === 'all') {
                 params = {...params, address};

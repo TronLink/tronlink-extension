@@ -130,23 +130,27 @@ class AccountsPage extends React.Component {
                         }
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
-                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER?6:5), opacity: 1 } : {}}>
+                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER?6:3), opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
                                 <span className='icon asset'>&nbsp;</span>
                                 <FormattedMessage id='ASSET.ASSET_MANAGE' />
                             </div>
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
                                 <span className='icon frozen'>&nbsp;</span>
                                 <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
                             </div>
+                                :
+                                null
+                            }
+                            {accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
                             <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
                                 <span className='icon vote'>&nbsp;</span>
                                 <FormattedMessage id='MENU.VOTE' />
                             </div>
-                            {/*<div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>*/}
-                            {/*    <span className='icon addToken'></span>*/}
-                            {/*    <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />*/}
-                            {/*</div>*/}
+                                :null
+                            }
                             {
                                 accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
                                     <div onClick={ this.onExport } className='item'>

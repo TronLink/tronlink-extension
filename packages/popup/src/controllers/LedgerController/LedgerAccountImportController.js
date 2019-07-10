@@ -2,7 +2,7 @@ import React from 'react';
 import AccountName from '@tronlink/popup/src/components/AccountName';
 import Button from '@tronlink/popup/src/components/Button';
 import { APP_STATE } from '@tronlink/lib/constants';
-import Toast, { T } from 'react-toast-mobile';
+import { Toast } from 'antd-mobile';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import NodeService from '@tronlink/backgroundScript/services/NodeService';
@@ -47,7 +47,9 @@ class LedgerAccountImportController extends React.Component {
     }
 
     async handleSubmit(name){
+
         const { address } = this.state;
+
         await PopupAPI.importAccount(
             address,
             name
@@ -75,11 +77,17 @@ class LedgerAccountImportController extends React.Component {
 
 
     async import() {
+        const { formatMessage } = this.props.intl;
+        const { accounts } = this.props;
+        const { address } = this.state;
+        if(Object.keys(accounts).includes(address)){
+            Toast.fail(formatMessage({id:'CREATION.LEDGER.REPEAT_IMPORT'}), 3, () => {}, true);
+            return;
+        }
         this.setState({subStage:'fill name'});
     }
 
     renderAccounts() {
-        const { accounts : addresses } = this.props;
         const { accounts,isValid } = this.state;
         const { isLoading } = this.state;
         return (
@@ -98,7 +106,7 @@ class LedgerAccountImportController extends React.Component {
                             return (
                                 <div
                                     ref={ 'option'+index }
-                                    className={'addressOption'+(Object.keys(addresses).includes(address)?' disabled':'')}
+                                    className='addressOption'
                                     key={ index }
                                     tabIndex={ index + 1 }
                                     onClick={ () => !isLoading && this.toggleAddress(address,index) }

@@ -73,6 +73,10 @@
     "CREATION.LEDGER.CHOOSE_ADDRESS":"请选择要查看的地址，一次只能选择一个",
     "CREATION.LEDGER.CONNECT":"连接",
     "CREATION.LEDGER.KNOW_MORE":"了解更多",
+    "CREATION.LEDGER.CONNECT_TIMEOUT":"连接超时，请接入ledger并打开tronapp",
+    "CREATION.LEDGER.AUTHORIZE_TIMEOUT":"授权超时，请重试",
+    "CREATION.LEDGER.REPEAT_IMPORT":"当前账户已存在",
+    "CREATION.LEDGER.REJECT":"已拒绝",
 
 
     "CHOOSING_TYPE.TITLE":"导入方式",
