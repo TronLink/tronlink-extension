@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@tronlink/popup/src/components/Button';
+import Alert from '@tronlink/popup/src/components/Alert';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
 
@@ -13,7 +14,8 @@ import {
 
 import {
     CONFIRMATION_TYPE,
-    BUTTON_TYPE
+    BUTTON_TYPE,
+    ACCOUNT_TYPE
 } from '@tronlink/lib/constants';
 
 import 'react-dropdown/style.css';
@@ -309,9 +311,13 @@ class ConfirmationController extends React.Component {
         const {
             type
         } = this.props.confirmation;
+        console.log(this.props.type);
         return (
             <div className='insetContainer confirmationController'>
-                <div className='greyModal confirmModal'>
+                {
+                    this.props.type !== ACCOUNT_TYPE.LEDGER
+                        ?
+                    <div className='greyModal confirmModal'>
                     <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
                         <div className='pageHeader hasBottomMargin'>
                             { text }
@@ -338,6 +344,9 @@ class ConfirmationController extends React.Component {
                         />
                     </div>
                 </div>
+                        :
+                    <Alert onClose={()=>PopupAPI.rejectConfirmation()} />
+                }
             </div>
         );
     }
@@ -345,6 +354,7 @@ class ConfirmationController extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        type: state.accounts.selected.type,
         confirmation: state.confirmations[ 0 ]
     }))(ConfirmationController)
 );

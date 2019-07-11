@@ -5,7 +5,6 @@ import Utils from '@tronlink/lib/utils';
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 
-
 const logger = new Logger('pageHook');
 
 const pageHook = {
@@ -19,9 +18,9 @@ const pageHook = {
         this._bindEventChannel();
         this._bindEvents();
 
-        this.request('init').then(({ address, node }) => {
+        this.request('init').then(({ address, node, name, type }) => {
             if(address)
-                this.setAddress(address);
+                this.setAddress({address,name,type});
 
             if(node.fullNode)
                 this.setNode(node);
@@ -73,7 +72,7 @@ const pageHook = {
         ));
     },
 
-    setAddress({address, name, type}) {
+    setAddress({address,name,type}) {
         // logger.info('TronLink: New address configured');
         if(!tronWeb.isAddress(address)){
             tronWeb.defaultAddress = {
@@ -84,8 +83,8 @@ const pageHook = {
             this.proxiedMethods.setAddress(address);
             tronWeb.defaultAddress.name = name;
             tronWeb.defaultAddress.type =  type;
-            tronWeb.ready = true;
         }
+        tronWeb.ready = true;
     },
 
     setNode(node) {
@@ -117,7 +116,6 @@ const pageHook = {
 
         if(!tronWeb.ready)
             return callback('User has not unlocked wallet');
-
         this.request('sign', {
             transaction,
             useTronHeader,

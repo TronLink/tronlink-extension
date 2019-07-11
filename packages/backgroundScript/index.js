@@ -185,18 +185,22 @@ const backgroundScript = {
                             fullNode: false,
                             solidityNode: false,
                             eventServer: false
-                        }
+                        },
+                        name:false,
+                        type:false
                     };
 
                     if(StorageService.ready) {
                         const node = NodeService.getCurrentNode();
-
-                        response.address = this.walletService.selectedAccount;
+                        const { address, name, type } = this.walletService.accounts[this.walletService.selectedAccount];
+                        response.address = address;
                         response.node = {
                             fullNode: node.fullNode,
                             solidityNode: node.solidityNode,
                             eventServer: node.eventServer
                         };
+                        response.name = name;
+                        response.type = type;
                     }
 
                     resolve({

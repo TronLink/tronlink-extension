@@ -60,6 +60,8 @@ class SendController extends React.Component {
                     id = 'CREATION.LEDGER.REJECT';
                 }else if(event.data.error.match(/U2F TIMEOUT/)){
                     id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
+                }else if(event.data.error === "Cannot read property 'message' of undefined"){
+                    id = 'CREATION.LEDGER.NO_TOKEN';
                 }
                 Toast.fail(formatMessage({id}), 3, () => {
                     this.setState({

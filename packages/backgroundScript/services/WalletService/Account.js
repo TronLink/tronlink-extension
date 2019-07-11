@@ -510,6 +510,9 @@ class Account {
     }
 
     async sign(transaction) {
+        if(!this.privateKey){
+            return 'CREATION.LEDGER.ALERT.BODY';
+        }
         const tronWeb = NodeService.tronWeb;
         const signedTransaction = tronWeb.trx.sign(
             transaction,

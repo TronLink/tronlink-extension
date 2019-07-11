@@ -77,7 +77,9 @@
     "CREATION.LEDGER.AUTHORIZE_TIMEOUT":"授权超时，请重试",
     "CREATION.LEDGER.REPEAT_IMPORT":"当前账户已存在",
     "CREATION.LEDGER.REJECT":"已拒绝",
-
+    "CREATION.LEDGER.NO_TOKEN":"目前Ledger不支持该币种的转账",
+    "CREATION.LEDGER.ALERT.TIP":"提示",
+    "CREATION.LEDGER.ALERT.BODY":"目前对于硬件钱包账户只支持基础的转账功能，暂不支持授权DAPP等操作。",
 
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
@@ -419,5 +421,4 @@
     "INDEX_ICON_TITLE.LOCK":"锁定",
     "INDEX_ICON_TITLE.REFRESH":"刷新",
     "INDEX_ICON_TITLE.SETTING":"设置"
-
 }
