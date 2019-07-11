@@ -50,11 +50,11 @@ class LedgerAccountImportController extends React.Component {
 
         const { address } = this.state;
 
-        await PopupAPI.importAccount(
+        const res = await PopupAPI.importAccount(
             address,
             name
         );
-        PopupAPI.changeState(APP_STATE.READY);
+        if(res)PopupAPI.resetState();
     }
 
     toggleAddress(address,index) {

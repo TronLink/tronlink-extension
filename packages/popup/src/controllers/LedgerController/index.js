@@ -6,9 +6,8 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import Button from '@tronlink/popup/src/components/Button';
 import Loading from '@tronlink/popup/src/components/Loading';
 import { PopupAPI } from '@tronlink/lib/api';
-import { APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
-import LedgerDevice from "@tronlink/lib/ledger/LedgerBridge";
-import Util from '@tronlink/lib/utils'
+import { APP_STATE } from "@tronlink/lib/constants";
+import { Toast } from 'antd-mobile';
 
 import './LedgerController.scss';
 class LedgerController extends React.Component {
@@ -25,11 +24,30 @@ class LedgerController extends React.Component {
     }
 
     listener(event){
+        const { formatMessage } = this.props.intl;
         if(event.data.target==='LEDGER-IFRAME'){
-            const { address } = event.data;
-            PopupAPI.setLedgerImportAddress([address]);
-            PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
-            this.setState({loading:false});
+            console.log(event.data);
+            const { connected,address,error } = event.data;
+            if(connected){
+                PopupAPI.setLedgerImportAddress([address]);
+                PopupAPI.changeState(APP_STATE.LEDGER_IMPORT_ACCOUNT);
+                this.setState({loading:false});
+            } else {
+                let id = '';
+                if(error.match(/denied by the user/)){
+                    id = 'CREATION.LEDGER.REJECT';
+                }else if(error.match(/U2F TIMEOUT/)){
+                    id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
+                }else{
+                    id = 'CREATION.LEDGER.CONNECT_TIMEOUT';
+                }
+
+                Toast.fail(formatMessage({id}), 3, () => {
+                    this.setState({
+                        loading: false
+                    });
+                }, true);
+            }
         }
     }
 
