@@ -41,12 +41,8 @@ class LedgerController extends React.Component {
                 }else{
                     id = 'CREATION.LEDGER.CONNECT_TIMEOUT';
                 }
-
-                Toast.fail(formatMessage({id}), 3, () => {
-                    this.setState({
-                        loading: false
-                    });
-                }, true);
+                this.setState({loading: false});
+                Toast.fail(formatMessage({id}), 3, () => {}, true);
             }
         }
     }

@@ -62,13 +62,11 @@ class SendController extends React.Component {
                     id = 'CREATION.LEDGER.AUTHORIZE_TIMEOUT';
                 }else if(event.data.error === "Cannot read property 'message' of undefined"){
                     id = 'CREATION.LEDGER.NO_TOKEN';
+                }else if(event.data.error === "address not match"){
+                    id = 'CREATION.LEDGER.NOT_MATCH';
                 }
-                Toast.fail(formatMessage({id}), 3, () => {
-                    this.setState({
-                        loading: false,
-                        loadingLedger: false
-                    });
-                }, true);
+                this.setState({loading: false, loadingLedger: false});
+                Toast.fail(formatMessage({id}), 3, () => {}, true);
             }
         }
     }
