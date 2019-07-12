@@ -116,7 +116,7 @@ class App extends React.Component {
                 dom = <DappWhitelistController authorizeDapps={authorizeDapps} onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
                 break;
             case APP_STATE.LEDGER:
-                dom = <LedgerController />;
+                dom = <LedgerController language={language} />;
                 break;
             case APP_STATE.LEDGER_IMPORT_ACCOUNT:
                 dom = <LedgerAccountImportController />;

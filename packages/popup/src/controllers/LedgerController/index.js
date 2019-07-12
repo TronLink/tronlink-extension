@@ -67,8 +67,9 @@ class LedgerController extends React.Component {
 
     render() {
         const { loading } = this.state;
+        const { language } = this.props;
         const { formatMessage } = this.props.intl;
-
+        const url = language === 'zh' ? 'https://support.tronlink.org/hc/zh-cn/articles/360030570852-TronLink%E6%8F%92%E4%BB%B6%E6%AD%A3%E5%BC%8F%E5%85%BC%E5%AE%B9Ledger-%E6%94%AF%E6%8C%81%E7%99%BB%E9%99%86%E5%8F%8A%E8%BD%AC%E8%B4%A6-' : 'https://support.tronlink.org/hc/en-us/articles/360030569452-TronLink-Chrome-integrated-with-Ledger-Supporting-account-login-and-transaction-';
         return (
             <div className='insetContainer ledger'>
                 <Loading show={loading} onClose={this.handleClose.bind(this)} />
@@ -99,7 +100,7 @@ class LedgerController extends React.Component {
                         <div className="desc" dangerouslySetInnerHTML={{__html:formatMessage({id:'CREATION.LEDGER.PROCESS_3'})}}></div>
                         <img src={require('@tronlink/popup/src/assets/images/new/ledger/step3.png')} alt=""/>
                     </div>
-                    <a className="more" href="javascript:;" target="_blank" ><FormattedMessage id='CREATION.LEDGER.KNOW_MORE' /></a>
+                    <a className="more" href={url} target="_blank" ><FormattedMessage id='CREATION.LEDGER.KNOW_MORE' /></a>
                 </div>
             </div>
         );

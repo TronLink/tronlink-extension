@@ -86,6 +86,8 @@
                     height: 16px;
                     cursor: pointer;
                     font-size: 14px;
+                    overflow: hidden;
+                    padding:4px;
                     &:before{
                         content: '';
                         width: 12px;
@@ -109,6 +111,12 @@
                             background-size:100% auto;
                             background-image: url('../../assets/images/new/ledger/icon-ledger2.svg');
                         }
+                    }
+                    span{
+                        flex:1;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
             }

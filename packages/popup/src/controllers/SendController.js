@@ -46,12 +46,8 @@ class SendController extends React.Component {
         if(event.data.target==='LEDGER-IFRAME'){
             console.log(event.data);
             if(event.data.success){
-                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                    PopupAPI.changeState(APP_STATE.READY);
-                    this.setState({
-                        loading: false
-                    });
-                }, true);
+                this.setState({loading: false,loadingLedger: false});
+                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => this.onCancel(), true);
             } else {
                 let id = '';
                 if(event.data.error === 'User has not unlocked wallet'){
@@ -65,8 +61,10 @@ class SendController extends React.Component {
                 }else if(event.data.error === "address not match"){
                     id = 'CREATION.LEDGER.NOT_MATCH';
                 }
-                this.setState({loading: false, loadingLedger: false});
-                Toast.fail(formatMessage({id}), 3, () => {}, true);
+                this.setState({loadingLedger: false});
+                Toast.fail(formatMessage({id}), 3, () => {
+                    this.setState({loading: false});
+                }, true);
             }
         }
     }
@@ -343,10 +341,7 @@ class SendController extends React.Component {
             }
             func.then(() => {
                 Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                    this.onCancel();
-                    this.setState({
-                        loading: false
-                    });
+                    this.setState({loading: false},()=>this.onCancel());
                 }, true);
             }).catch(error => {
                 Toast.fail(JSON.stringify(error), 3, () => {
@@ -367,8 +362,6 @@ class SendController extends React.Component {
             }else{
                 iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc10',data:{id,toAddress,fromAddress,decimals,TokenName:name,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
             }
-
-
         }
     }
 
@@ -396,6 +389,8 @@ class SendController extends React.Component {
     }
 
     handleClose(){
+        const iframe = document.querySelector('#tronLedgerBridge').contentWindow;
+        iframe.postMessage({target:"LEDGER-IFRAME",action:'cancel transaction',data:{}},'*');
         this.setState({loadingLedger:false,loading:false});
     }
 
