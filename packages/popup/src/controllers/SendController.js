@@ -61,10 +61,8 @@ class SendController extends React.Component {
                 }else if(event.data.error === "address not match"){
                     id = 'CREATION.LEDGER.NOT_MATCH';
                 }
-                this.setState({loadingLedger: false});
-                Toast.fail(formatMessage({id}), 3, () => {
-                    this.setState({loading: false});
-                }, true);
+                this.setState({loadingLedger: false,loading: false});
+                Toast.fail(id? formatMessage({id}) : event.data.error, 3, () => {}, true);
             }
         }
     }
@@ -168,7 +166,6 @@ class SendController extends React.Component {
 
            ,() => this.validateAmount()
         );
-        console.log(amount,isNaN(amount));
     }
 
     validateAmount() {
@@ -304,7 +301,7 @@ class SendController extends React.Component {
     }
 
     onSend() {
-        BigNumber.config({ EXPONENTIAL_AT: [-20,30] })
+        BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         this.setState({
             loading: true,
             success: false
@@ -340,9 +337,8 @@ class SendController extends React.Component {
                 );
             }
             func.then(() => {
-                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
-                    this.setState({loading: false},()=>this.onCancel());
-                }, true);
+                this.setState({loading: false});
+                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => this.onCancel(), true);
             }).catch(error => {
                 Toast.fail(JSON.stringify(error), 3, () => {
                     this.setState({
