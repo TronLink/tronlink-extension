@@ -31,7 +31,6 @@ class Wallet extends EventEmitter {
         this.confirmations = [];
         this.timer = {};
         // This should be moved into its own component
-        this.isPolling = false;
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
         // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
@@ -126,13 +125,8 @@ class Wallet extends EventEmitter {
         clearTimeout(this.timer);
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
-            return this.isPolling = false;
-        }
-
-        if(this.isPolling)
             return;
-
-        this.isPolling = true;
+        }
 
         const accounts = Object.values(this.accounts);
         if(accounts.length > 0) {
@@ -155,7 +149,7 @@ class Wallet extends EventEmitter {
                             this.emit('setAccount', this.selectedAccount);
                         }
                     }).catch(e => {
-                        //logger.error(`update account ${account.address} fail`, e);
+                        logger.error(`update account ${account.address} fail`, e);
                     });
                 } else {
                     await account.update(basicPrice, smartPrice, usdtPrice);
@@ -163,7 +157,6 @@ class Wallet extends EventEmitter {
             }
             this.emit('setAccounts', this.getAccounts());
         }
-        this.isPolling = false;
         this.timer = setTimeout(() => {
             this._pollAccounts(); // ??TODO repeatedly request
         }, 10000);
@@ -243,11 +236,6 @@ class Wallet extends EventEmitter {
     }
 
     startPolling() {
-        if(this.isPolling && this.shouldPoll)
-            return; // Don't poll if already polling
-
-        if(this.isPolling && !this.shouldPoll)
-            return this.shouldPoll = true;
 
         logger.info('Started polling');
 

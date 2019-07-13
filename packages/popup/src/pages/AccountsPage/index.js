@@ -181,9 +181,6 @@ class AccountsPage extends React.Component {
                     <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
                     <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                         <span className='copy' onClick={() => {
-                            const target = this.refs.address;
-                            Utils.getSelect(target);
-                            document.execCommand('copy');
                             Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2)
                         }}></span>
                     </CopyToClipboard>
