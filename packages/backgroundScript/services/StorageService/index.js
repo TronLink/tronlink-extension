@@ -385,6 +385,7 @@ const StorageService = {
         }
         if(!isFromStorage) {
             const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
+                logger.error('Get dapp recommend list fail',e);
                 return { data: { data: this.dappList.recommend } };
             });
             this.dappList.recommend = recommend;

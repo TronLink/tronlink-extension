@@ -81,6 +81,7 @@
   "CREATION.LEDGER.ALERT.TIP":"ヒント",
   "CREATION.LEDGER.ALERT.BODY":"現在、ハードウェアウォレットアカウントでは基本振替機能のみをサポートしており、DAPPの承認など操作をサポートしません。",
   "CREATION.LEDGER.NOT_MATCH":"アカウントアドレスとLedgerは一致しません",
+  "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"キャンセルしました。ledgerで「拒否」ボタンを押してください。",
 
   "CHOOSING_TYPE.TITLE":"種類を選択してください",
   "CHOOSING_TYPE.MNEMONIC.TITLE": "ニーモニック",

@@ -81,6 +81,7 @@
     "CREATION.LEDGER.ALERT.TIP":"prompt",
     "CREATION.LEDGER.ALERT.BODY":"only basic transfer features are available for hardware wallet accounts at the moment; you cannot authorize DApps yet",
     "CREATION.LEDGER.NOT_MATCH":"account address does not match Ledger",
+    "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"Canceled, please choose to refuse in ledger",
 
     "CHOOSING_TYPE.TITLE":"Choosing type",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "Mnemonic phrase",

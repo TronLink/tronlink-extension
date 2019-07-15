@@ -81,6 +81,7 @@
     "CREATION.LEDGER.ALERT.TIP":"提示",
     "CREATION.LEDGER.ALERT.BODY":"目前对于硬件钱包账户只支持基础的转账功能，暂不支持授权DAPP等操作。",
     "CREATION.LEDGER.NOT_MATCH":"账户地址与Ledger不匹配",
+    "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"已取消，请在ledger上选择拒绝",
 
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",

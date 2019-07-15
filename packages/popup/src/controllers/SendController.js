@@ -62,7 +62,7 @@ class SendController extends React.Component {
                     id = 'CREATION.LEDGER.NOT_MATCH';
                 }
                 this.setState({loadingLedger: false,loading: false});
-                Toast.fail(id? formatMessage({id}) : event.data.error, 3, () => {}, true);
+                Toast.fail(id ? formatMessage({id}) : event.data.error, 3, () => {}, true);
             }
         }
     }
@@ -385,9 +385,12 @@ class SendController extends React.Component {
     }
 
     handleClose(){
+        const { formatMessage } = this.props.intl;
         const iframe = document.querySelector('#tronLedgerBridge').contentWindow;
         iframe.postMessage({target:"LEDGER-IFRAME",action:'cancel transaction',data:{}},'*');
-        this.setState({loadingLedger:false,loading:false});
+        this.setState({loadingLedger:false,loading:false},()=>{
+            Toast.fail(formatMessage({id:'CREATION.LEDGER.TIP_CANCEL_TRANSACTION'}),3,()=>{},true);
+        });
     }
 
     render() {
