@@ -406,6 +406,7 @@
     "TRANSACTION_DETAIL.SEND_ADDRESS": "Sending Address",
     "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "Receiving Address",
     "TRANSACTION_DETAIL.ID": "Transaction ID",
+    "TRANSACTION_DETAIL.TIME": "Transaction time",
     "TRANSACTION_DETAIL.BLOCK_HEIGHT": "Block Height",
     "TRANSACTION_DETAIL.FEE": "Fee",
     "TRANSACTION_DETAIL.GO_TRONSCAN": "Go to Tronscan for detailed data",

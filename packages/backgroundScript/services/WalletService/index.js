@@ -1098,12 +1098,12 @@ class Wallet extends EventEmitter {
     async setTransactionDetail(hash) {
         const res = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
         if(res) {
-            let { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
+            let { confirmed, ownerAddress, toAddress, hash, block,timestamp = 0 ,cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
             if( contractType === 31 && tokenTransferInfo ) {
                 ownerAddress = tokenTransferInfo.from_address;
                 toAddress = tokenTransferInfo.to_address;
             }
-            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
+            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, timestamp, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
             this.emit('setAccount', this.selectedAccount);
         }
         return res;

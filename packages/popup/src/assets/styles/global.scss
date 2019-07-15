@@ -1171,7 +1171,7 @@ html, body {
                     align-items: center;
                     padding-bottom:12px;
                     .icon{
-                        margin-top: 20px;
+                        margin-top: 10px;
                         width: 50px;
                         height: 50px;
                         background-image: url('../images/new/icon-success.svg');
@@ -1194,13 +1194,12 @@ html, body {
                 }
                 .part2{
                     flex:1;
-                    padding-top:5px;
                     border-bottom:1px solid #EFEFEF;
                     display: flex;
                     flex-direction: column;
-                    padding-bottom:12px;
+                    padding:6px 0;
                     .cell{
-                        margin-top: 12px;
+                        margin-top: 6px;
                         display: flex;
                         flex-direction: column;
                         .title {
@@ -1224,7 +1223,7 @@ html, body {
                         }
                         .content {
                             user-select: text;
-                            margin-top: 6px;
+                            margin-top: 4px;
                             font-size: 14px;
                             color: #505160;
                             min-height: 20px;

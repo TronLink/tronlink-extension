@@ -354,9 +354,9 @@ class SendController extends React.Component {
             if (id === "_") {
                 iframe.postMessage({target:"LEDGER-IFRAME",action:'send trx',data:{toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(6).toString()}},'*')
             }else if(id.match(/^T/)){
-                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc20',data:{id,toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
+                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc20',data:{id,toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(decimals).toString(),decimals,TokenName:name}},'*')
             }else{
-                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc10',data:{id,toAddress,fromAddress,decimals,TokenName:name,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
+                iframe.postMessage({target:"LEDGER-IFRAME",action:'send trc10',data:{id,toAddress,fromAddress,amount:new BigNumber(amount).shiftedBy(decimals).toString()}},'*')
             }
         }
     }
