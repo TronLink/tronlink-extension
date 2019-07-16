@@ -78,9 +78,13 @@
         }
       }
       .more{
+        color: #636acc;
         margin-top: 20px;
         font-size: 16px;
         text-align:center;
+        &:hover{
+          color: #636acc;
+        }
       }
     }
   }
