@@ -5,11 +5,14 @@ import TronWeb from 'tronweb';
 import pbkdf2 from 'pbkdf2';
 import aesjs from "aes-js";
 import { isAddressValid,pkToAddress } from "@tronscan/client/src/utils/crypto";
-
+import {utils} from 'ethers';
 
 const encryptKey = (password, salt) => {
     return pbkdf2.pbkdf2Sync(password, salt, 1, 256 / 8, 'sha512');
 };
+
+const AbiCoder = utils.AbiCoder;
+const abiCoder = new AbiCoder();
 
 const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
@@ -263,7 +266,32 @@ const Utils = {
         return new Promise(resolve => {
             setTimeout(resolve, timeout);
         });
-    }
+    },
+
+    decodeParams(message,abiCode,function_selector) {
+        const cutArr = function_selector.match(/(.+)\((.*)\)/);
+        if(cutArr[2]!==''){
+            const byteArray = TronWeb.utils.code.hexStr2byteArray(message);
+            const abi = abiCode.filter(({name})=> name === cutArr[1]);
+            return abi[0].inputs.map(({name,type},i)=>{
+                let value;
+                const array = byteArray.filter((v,index)=>index >=32 * i && index< 32 * (i + 1));
+                if(type === 'address') {
+                    value = TronWeb.address.fromHex('41'+TronWeb.utils.code.byteArray2hexStr(array.filter((v,i) => i>11)));
+                } else if(type === 'trcToken') {
+                    value = TronWeb.toDecimal('0x'+TronWeb.utils.code.byteArray2hexStr(array));
+                } else {
+                    value = TronWeb.toDecimal('0x'+TronWeb.utils.code.byteArray2hexStr(array));
+                }
+                return {name,type,value};
+            });
+        }else{
+            return [];
+        }
+    },
+
+
+
 
 };
 

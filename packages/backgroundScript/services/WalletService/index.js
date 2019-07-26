@@ -27,7 +27,9 @@ class Wallet extends EventEmitter {
         this.isConfirming = false;
         this.popup = false;
         this.accounts = {};
-        this.contractWhitelist = {};
+        this.contractWhitelist = {}; // sign white list for trigger smart contract
+        this.appWhitelist = {};      // sign white list for string limit some website
+        this.phishingList = [];      // dapp phishing list (if it doesn't exit on the list the website will jump a phishing page for risk warning)
         this.confirmations = [];
         this.timer = {};
         // This should be moved into its own component
@@ -398,22 +400,7 @@ class Wallet extends EventEmitter {
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
         if (this.confirmations.length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
-            Promise.all([dapps, dapps2]).then(res => {
-                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-                StorageService.saveAllDapps(tronDapps);
-            });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
-            Promise.all([trc10tokens, trc20tokens]).then(res => {
-                let t = [];
-                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
-                });
-                StorageService.saveAllTokens(t);
-            });
+            this.setCache();
             this._setState(APP_STATE.READY);
         } else {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -424,6 +411,7 @@ class Wallet extends EventEmitter {
         StorageService.lock();
         this.accounts = {};
         this.selectedAccount = false;
+        this.appWhitelist = {};
         this.emit('setAccount', this.selectedAccount);
         this._setState(APP_STATE.PASSWORD_SET);
     }
@@ -435,11 +423,11 @@ class Wallet extends EventEmitter {
             uuid
         });
 
-        if(this.state === APP_STATE.PASSWORD_SET) {
-            this.emit('setConfirmations', this.confirmations);
-            this._openPopup();
-            return;
-        }
+        // if(this.state === APP_STATE.PASSWORD_SET) {
+        //     this.emit('setConfirmations', this.confirmations);
+        //     this._openPopup();
+        //     return;
+        // }
 
         if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -458,32 +446,51 @@ class Wallet extends EventEmitter {
             contractType,
             hostname
         } = confirmation;
+        //if(!address)
+        //    return Promise.reject('INVALID_CONFIRMATION');
 
-        if(!address)
-            return Promise.reject('INVALID_CONFIRMATION');
+        if(contractType !== 'TriggerSmartContract'){
+            //return Promise.reject('INVALID_CONFIRMATION');
+            //this.contractWhitelist[ hostname ] = {};
+            if(!this.appWhitelist[ hostname ])
+                this.appWhitelist[ hostname ] = {};
 
-        if(contractType !== 'TriggerSmartContract')
-            return Promise.reject('INVALID_CONFIRMATION');
+            this.appWhitelist[ hostname ].duration = duration === -1 ? -1 : Date.now() + duration;
+            logger.info(`Added auto sign on host ${ hostname } with duration ${ duration } to whitelist`);
 
-        if(!this.contractWhitelist[ address ])
-            this.contractWhitelist[ address ] = {};
+            ga('send', 'event', {
+                eventCategory: 'Transaction',
+                eventAction: 'Whitelisted Transaction',
+                eventLabel: confirmation.contractType || 'SignMessage',
+                eventValue: duration,
+                referrer: hostname,
+                userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
+            });
 
-        this.contractWhitelist[ address ][ hostname ] = (
-            duration === -1 ?
-                -1 :
-                Date.now() + duration
-        );
+        } else {
+            if(!this.contractWhitelist[ address ])
+                this.contractWhitelist[ address ] = {};
 
-        logger.info(`Added contact ${ address } on host ${ hostname } with duration ${ duration } to whitelist`);
+            this.contractWhitelist[ address ][ hostname ] = (
+                duration === -1 ?
+                    -1 :
+                    Date.now() + duration
+            );
 
-        ga('send', 'event', {
-            eventCategory: 'Smart Contract',
-            eventAction: 'Whitelisted Smart Contract',
-            eventLabel: TronWeb.address.fromHex(confirmation.input.contract_address),
-            eventValue: duration,
-            referrer: confirmation.hostname,
-            userId: Utils.hash(confirmation.input.owner_address)
-        });
+            logger.info(`Added contact ${ address } on host ${ hostname } with duration ${ duration } to whitelist`);
+
+            ga('send', 'event', {
+                eventCategory: 'Smart Contract',
+                eventAction: 'Whitelisted Smart Contract',
+                eventLabel: TronWeb.address.fromHex(confirmation.input.contract_address),
+                eventValue: duration,
+                referrer: confirmation.hostname,
+                userId: Utils.hash(confirmation.input.owner_address)
+            });
+        }
+
+
+
 
         this.acceptConfirmation();
     }
@@ -512,9 +519,7 @@ class Wallet extends EventEmitter {
             eventLabel: confirmation.contractType || 'SignMessage',
             eventValue: confirmation.input.amount || 0,
             referrer: confirmation.hostname,
-            userId: Utils.hash(
-                TronWeb.address.toHex(this.selectedAccount)
-            )
+            userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
         });
 
         callback({
@@ -578,32 +583,7 @@ class Wallet extends EventEmitter {
     async addAccount({ mnemonic, name }) {
         logger.info(`Adding account '${ name }' from popup`);
         if(Object.keys(this.accounts).length === 0) {
-            const dapps = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-            const dapps2 = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
-            Promise.all([dapps, dapps2]).then(res => {
-                const tronDapps = res[0].data.data.list.concat(res[1].data.data.list).filter(({protocols: [type]}) => type === 'tron').map(({logo: icon, url: href, title: name}) => ({
-                    icon,
-                    href,
-                    name
-                }));
-                StorageService.saveAllDapps(tronDapps);
-            });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
-            Promise.all([trc10tokens, trc20tokens]).then(res => {
-                let t = [];
-                res[0].data.data.concat(res[1].data.tokens).forEach(({abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false}) => {
-                    if (contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                    t.push({
-                        tokenId: tokenID ? tokenID.toString() : contractAddress,
-                        abbr,
-                        name,
-                        imgUrl,
-                        decimals: precision || decimal || 0
-                    });
-                });
-                StorageService.saveAllTokens(t);
-            });
+            this.setCache();
         }
 
         const account = new Account(
@@ -638,7 +618,7 @@ class Wallet extends EventEmitter {
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
-            TronWeb.isAddress(privateKey)?ACCOUNT_TYPE.LEDGER:ACCOUNT_TYPE.PRIVATE_KEY,
+            privateKey.match(/^T/) && TronWeb.isAddress(privateKey) ? ACCOUNT_TYPE.LEDGER : ACCOUNT_TYPE.PRIVATE_KEY,
             privateKey
         );
 
@@ -648,23 +628,7 @@ class Wallet extends EventEmitter {
 
         account.name = name;
         if(Object.keys(this.accounts).length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
-            Promise.all([dapps, dapps2]).then(res => {
-                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-                StorageService.saveAllDapps(tronDapps);
-            });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
-            Promise.all([trc10tokens, trc20tokens]).then(res => {
-                let t = [];
-                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
-                });
-                StorageService.saveAllTokens(t);
-            });
-
+            this.setCache();
         }
         this.accounts[ address ] = account;
         StorageService.saveAccount(account);
@@ -672,6 +636,27 @@ class Wallet extends EventEmitter {
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
         return true;
+    }
+
+    async setCache(){
+        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+        Promise.all([dapps, dapps2]).then(res => {
+            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+            StorageService.saveAllDapps(tronDapps);
+        });
+        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
+        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
+        Promise.all([trc10tokens, trc20tokens]).then(res => {
+            let t = [];
+            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
+                if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
+                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+            });
+            StorageService.saveAllTokens(t);
+        });
+        const {data:{data:phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e=>({data:{data:[]}}));
+        this.phishingList = phishingList.map(v=>({url:v,isVisit:false}));
     }
 
     selectAccount(address) {
@@ -1127,6 +1112,10 @@ class Wallet extends EventEmitter {
         return this.hasOwnProperty('ledgerImportAddress')?this.ledgerImportAddress:[];
     }
 
+    async getAbiCode(contract_address){
+        const contract = await NodeService.tronWeb.contract().at(contract_address);
+        return contract.abi;
+    }
 
 }
 export default Wallet;

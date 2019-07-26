@@ -170,6 +170,8 @@ const backgroundScript = {
         duplex.on('setLedgerImportAddress', this.walletService.setLedgerImportAddress);
         duplex.on('getLedgerImportAddress', this.walletService.getLedgerImportAddress);
 
+        duplex.on('getAbiCode', this.walletService.getAbiCode);
+
     },
 
     bindTabDuplex() {
@@ -193,6 +195,7 @@ const backgroundScript = {
                     if(StorageService.ready) {
                         const node = NodeService.getCurrentNode();
                         const { address, name, type } = this.walletService.accounts[this.walletService.selectedAccount];
+                        const { phishingList } = this.walletService;
                         response.address = address;
                         response.node = {
                             fullNode: node.fullNode,
@@ -201,6 +204,7 @@ const backgroundScript = {
                         };
                         response.name = name;
                         response.type = type;
+                        response.phishingList = phishingList;
                     }
 
                     resolve({
@@ -231,10 +235,19 @@ const backgroundScript = {
 
                         const tronWeb = NodeService.tronWeb;
                         const account = this.walletService.getAccount(selectedAccount);
+                        const appWhitelist = this.walletService.appWhitelist.hasOwnProperty(hostname)?this.walletService.appWhitelist[ hostname ]:{};
 
                         if(typeof input === 'string') {
+                            const { duration = 0 } = appWhitelist;
                             const signedTransaction = await account.sign(input);
-
+                            if(appWhitelist && (duration === -1 || duration >= Date.now())){
+                                logger.info('Automatically signing transaction', signedTransaction);
+                                return resolve({
+                                    success: true,
+                                    data: signedTransaction,
+                                    uuid
+                                });
+                            }
                             return this.walletService.queueConfirmation({
                                 type: CONFIRMATION_TYPE.STRING,
                                 hostname,
@@ -265,6 +278,7 @@ const backgroundScript = {
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
+
                         if(contractType === 'TriggerSmartContract') {
                             const value = input.call_value || 0;
 
@@ -277,6 +291,19 @@ const backgroundScript = {
                                 userId: Utils.hash(input.owner_address)
                             });
                         }
+
+                        // if(contractType !== 'TriggerSmartContract' && appWhitelist) {
+                        //     const { duration = 0 } = appWhitelist;
+                        //     if(duration === -1 || duration >= Date.now()) {
+                        //         logger.info('Automatically signing transaction', signedTransaction);
+                        //
+                        //         return resolve({
+                        //             success: true,
+                        //             data: signedTransaction,
+                        //             uuid
+                        //         });
+                        //     }
+                        // }
 
                         if(contractType === 'TriggerSmartContract' && whitelist) {
                             const expiration = whitelist[ hostname ];
@@ -319,6 +346,29 @@ const backgroundScript = {
                             uuid
                         });
                     }
+                    break;
+                } case 'setVisited': {
+                    const { href = ''} = data;
+                    const phishingList =  this.walletService.phishingList;
+                    if(href){
+                        this.walletService.phishingList = phishingList.map(({url,isVisit})=>{
+                           const reg = new RegExp(url);
+                           if(href.match(reg)){
+                               isVisit = true;
+                           }
+                           return {url,isVisit};
+                        });
+                    }else{
+                        this.walletService.phishingList = phishingList.map(({url,isVisit})=>{
+                            isVisit = false;
+                            return {url,isVisit};
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        data: '',
+                        uuid
+                    });
                     break;
                 } default:
                     resolve({

@@ -17,7 +17,8 @@
     "extensionizer": "^1.0.1",
     "pbkdf2": "^3.0.17",
     "tronweb": "^2.6.4",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "ethers": "^4.0.7"
   },
   "scripts": {
     "lint": "npx eslint . --fix"

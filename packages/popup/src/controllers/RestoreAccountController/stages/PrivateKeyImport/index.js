@@ -18,7 +18,6 @@ class PrivateKeyImport extends React.Component {
 
     constructor() {
         super();
-
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
@@ -28,7 +27,7 @@ class PrivateKeyImport extends React.Component {
         const address = TronWeb.address.fromPrivateKey(value);
         let isValid = false;
         let error = '';
-        if(address) {
+        if(address && TronWeb.isAddress(address)) {
             isValid = true;
             error = '';
         }else{

@@ -288,5 +288,10 @@ export default {
 
     getLedgerImportAddress(){
         return this.duplex.send('getLedgerImportAddress');
+    },
+
+    getAbiCode(address){
+        return this.duplex.send('getAbiCode', address);
     }
+
 }

@@ -54,6 +54,7 @@ class LedgerAccountImportController extends React.Component {
             address,
             name
         );
+        PopupAPI.setGaEvent('Ledger','Login',address);
         if(res)PopupAPI.resetState();
     }
 

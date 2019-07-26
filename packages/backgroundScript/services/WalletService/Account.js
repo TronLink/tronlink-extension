@@ -84,7 +84,7 @@ class Account {
 
     _importPrivateKey(privateKey) {
         try {
-            if(TronWeb.isAddress(privateKey)){
+            if(privateKey.match(/^T/) && TronWeb.isAddress(privateKey)){
                 this.privateKey = null;
                 this.address = privateKey;
             }else{

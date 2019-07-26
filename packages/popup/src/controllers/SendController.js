@@ -42,12 +42,16 @@ class SendController extends React.Component {
     }
 
     listener(event){
+        const { selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         if(event.data.target==='LEDGER-IFRAME'){
             console.log(event.data);
             if(event.data.success){
                 this.setState({loading: false,loadingLedger: false});
-                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => this.onCancel(), true);
+                Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => {
+                    this.onCancel();
+                    PopupAPI.setGaEvent('Ledger','Confirmed Transaction',selected.address);
+                }, true);
             } else {
                 let id = '';
                 if(event.data.error === 'User has not unlocked wallet'){
@@ -62,7 +66,9 @@ class SendController extends React.Component {
                     id = 'CREATION.LEDGER.NOT_MATCH';
                 }
                 this.setState({loadingLedger: false,loading: false});
-                Toast.fail(id ? formatMessage({id}) : event.data.error, 3, () => {}, true);
+                Toast.fail(id ? formatMessage({id}) : event.data.error, 3, () => {
+                    PopupAPI.setGaEvent('Ledger','Rejected Transaction',selected.address);
+                }, true);
             }
         }
     }

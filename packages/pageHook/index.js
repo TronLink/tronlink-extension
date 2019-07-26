@@ -18,7 +18,7 @@ const pageHook = {
         this._bindEventChannel();
         this._bindEvents();
 
-        this.request('init').then(({ address, node, name, type }) => {
+        this.request('init').then(({ address, node, name, type, phishingList}) => {
             if(address)
                 this.setAddress({address,name,type});
 
@@ -26,6 +26,14 @@ const pageHook = {
                 this.setNode(node);
 
             logger.info('TronLink initiated');
+            const href = window.location.origin;
+            const c = phishingList.filter(({url})=>{
+                const reg = new RegExp(url);
+                return href.match(reg);
+            });
+            if(c.length && !c[0].isVisit){
+                window.location = 'http://18.222.178.103:82/phishing.html?href='+href;
+            }
         }).catch(err => {
             logger.error('Failed to initialise TronWeb', err);
         });
@@ -40,7 +48,10 @@ const pageHook = {
             new ProxiedProvider(),
             new ProxiedProvider()
         );
-
+        tronWeb.extension = {}; //add a extension object for black list
+        tronWeb.extension.setVisited=(href)=>{
+            this.setVisited(href);
+        };
         this.proxiedMethods = {
             setAddress: tronWeb.setAddress.bind(tronWeb),
             sign: tronWeb.trx.sign.bind(tronWeb)
@@ -53,6 +64,7 @@ const pageHook = {
         tronWeb.trx.sign = (...args) => (
             this.sign(...args)
         );
+
 
         window.tronWeb = tronWeb;
     },
@@ -79,12 +91,14 @@ const pageHook = {
                 hex: false,
                 base58: false
             };
+            tronWeb.ready = false;
         }else{
             this.proxiedMethods.setAddress(address);
             tronWeb.defaultAddress.name = name;
             tronWeb.defaultAddress.type =  type;
+            tronWeb.ready = true;
         }
-        tronWeb.ready = true;
+
     },
 
     setNode(node) {
@@ -92,6 +106,14 @@ const pageHook = {
         tronWeb.fullNode.configure(node.fullNode);
         tronWeb.solidityNode.configure(node.solidityNode);
         tronWeb.eventServer.configure(node.eventServer);
+    },
+
+    setVisited(href){
+        this.request('setVisited', {
+            href
+        }).then(res => res).catch(err => {
+            logger.error('Failed to set visit:', err);
+        });
     },
 
     sign(transaction, privateKey = false, useTronHeader = true, callback = false) {
