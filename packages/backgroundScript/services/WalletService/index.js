@@ -250,6 +250,7 @@ class Wallet extends EventEmitter {
     }
 
     async refresh() {
+        await this.setCache();
         let res;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
