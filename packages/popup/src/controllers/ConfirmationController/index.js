@@ -294,28 +294,35 @@ class ConfirmationController extends React.Component {
                 { meta.length ? (
                     <div className='meta'>
                         { meta.map(({ key, value }) => (
-                            <div data-tip="click show parameters" data-for={key === 'CONFIRMATIONS.FUNCTION' && args.length?'showArgs':''} className={'metaLine'+(key === 'CONFIRMATIONS.FUNCTION' && args.length?" function":"")+(showArgs?' show':'')} onClick={()=>key === 'CONFIRMATIONS.FUNCTION'&& args.length && this.setState({showArgs:!showArgs})} key={ key }>
-                                <FormattedMessage id={ key } />
-                                <span className='value'>
-                                    { value }
-                                </span>
-                                {
-                                    key === 'CONFIRMATIONS.FUNCTION'?
-                                        <div className="show_arg" onClick={e=>e.stopPropagation()}>
-                                            {
-                                                JSON.stringify(args.map(({name,value})=>{
-                                                    const v ={};
-                                                    v[name] = value;
-                                                    return v;
-                                                }))
-                                            }
-                                        </div>:null
-                                }
-                                {key === 'CONFIRMATIONS.FUNCTION' && args.length?<ReactTooltip id='showArgs' effect='solid' />:null}
-                            </div>
+                            key === 'CONFIRMATIONS.FUNCTION'?
+                                <div className={"function"+(showArgs?' show':'')}>
+                                    <div data-tip="click show parameters" data-for='showArgs' className='metaLine' onClick={()=>args.length && this.setState({showArgs:!showArgs})} key={ key }>
+                                        <FormattedMessage id={ key } />
+                                        <span className='value'>
+                                        { value }
+                                        </span>
+                                        {args.length?<ReactTooltip id='showArgs' effect='solid' />:null}
+                                    </div>
+                                    <div className="show_arg" onClick={e=>e.stopPropagation()}>
+                                        {
+                                            JSON.stringify(args.map(({name,value})=>{
+                                                const v ={};
+                                                v[name] = value;
+                                                return v;
+                                            }))
+                                        }
+                                    </div>
+                                </div>
+                                :
+                                <div className='metaLine' key={ key }>
+                                    <FormattedMessage id={ key } />
+                                    <span className='value'>
+                                        { value }
+                                    </span>
+                                </div>
                         )) }
                     </div>
-                ) : '' }
+                ) : null }
                 { showParameters ? (
                     <div className='parameters mono'>
                         { JSON.stringify(input, null, 2 ) }

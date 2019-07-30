@@ -32,7 +32,7 @@ const pageHook = {
                 return href.match(reg);
             });
             if(c.length && !c[0].isVisit){
-                window.location = 'http://18.222.178.103:82/phishing.html?href='+href;
+                window.location = 'https://www.tronlink.org/phishing.html?href='+href;
             }
         }).catch(err => {
             logger.error('Failed to initialise TronWeb', err);

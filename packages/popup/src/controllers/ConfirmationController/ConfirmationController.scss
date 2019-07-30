@@ -20,54 +20,49 @@
 
     .meta {
         font-size: 13px;
-        .metaLine {
-            display: flex;
-            flex-direction: row;
-            height: 40px;
-            border-bottom:1px solid #EFEFEF;
-            &.function{
-                z-index:10;
-                position: relative;
-                cursor: pointer;
-                align-items: center;
-                &.show{
+        & > .function{
+            z-index:10;
+            position: relative;
+            cursor: pointer;
+            &.show{
+                .metaLine{
                     &:after{
                         transform:rotate(180deg);
                         top:-2px;
                     }
-                    .show_arg{
-                        display: block;
-                    }
                 }
                 .show_arg{
+                    display: block;
+                }
+            }
+            .show_arg{
+                box-sizing: border-box;
+                width: 100%;
+                color: rgb(136, 137, 152);
+                background: #F7F8FA;
+                padding:8px;
+                border-radius:0px;
+                transition:all .2s ease-in-out;
+                line-height:20px;
+                word-break:break-all;
+                display: none;
+                user-select: text;
+                font-size: 12px;
+                .item{
+                    height:40px;
                     box-sizing: border-box;
-                    position: absolute;
-                    width: 100%;
-                    top:100%;
-                    left:0;
-                    color: rgb(136, 137, 152);
-                    background: rgb(247, 248, 250);
-                    padding:8px;
-                    border-radius:0px;
-                    transition:all .2s ease-in-out;
-                    line-height:20px;
-                    word-break:break-all;
-                    display: none;
-                    user-select: text;
-                    font-size: 12px;
-                    .item{
-                        height:40px;
-                        box-sizing: border-box;
-                        border-bottom:1px solid #fff;
-                        padding:0 8px;
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-between;
-                        &:last-child{
-                            border:none;
-                        }
+                    border-bottom:1px solid #fff;
+                    padding:0 8px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    &:last-child{
+                        border:none;
                     }
                 }
+            }
+            .metaLine{
+                align-items: center;
                 &:after{
                     content:'';
                     position: relative;
@@ -81,6 +76,13 @@
                     border-right:5px solid transparent;
                 }
             }
+
+        }
+        .metaLine {
+            display: flex;
+            flex-direction: row;
+            height: 40px;
+            border-bottom:1px solid #EFEFEF;
             span{
                 line-height:40px;
             }
