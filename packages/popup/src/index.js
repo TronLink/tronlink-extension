@@ -49,7 +49,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
-    dsn: 'https://a52a6098294d4c1c8397e22c8b9a1c0f@sentry.io/1455110',
+    dsn: 'http://7b03df289e7d42a7a4d5df9e1651bbd2@18.220.1.137:9000/13',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
 });
 
