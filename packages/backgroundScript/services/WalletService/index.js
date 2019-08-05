@@ -40,7 +40,9 @@ class Wallet extends EventEmitter {
         this.ledgerImportAddress = [];
         setInterval(() => {
             this._updatePrice();
+            this.setCache();
         }, 30 * 60 * 1000);
+
     }
 
     async _checkStorage() {
@@ -250,7 +252,7 @@ class Wallet extends EventEmitter {
     }
 
     async refresh() {
-        await this.setCache();
+        this.setCache();
         let res;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {

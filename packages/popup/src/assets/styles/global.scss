@@ -290,7 +290,9 @@ html, body {
     &.receive,
     &.send,
     &.asset,
-    &.transactions{ .greyModal{background-color: #fff;} }
+    &.transactions{
+        .greyModal{background-color: #fff;}
+    }
     &.choosingType{
         .greyModal{
             padding:0 0 0 24px;
@@ -721,7 +723,9 @@ html, body {
         }
     }
     &.transactions{
+        overflow: auto;
         .greyModal{
+            overflow: auto;
             padding-top:0;
             padding-left:20px;
             padding-right:20px;
