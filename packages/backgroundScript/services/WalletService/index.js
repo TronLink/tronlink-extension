@@ -659,7 +659,7 @@ class Wallet extends EventEmitter {
             StorageService.saveAllTokens(t);
         });
         if(isResetPhishingList) {
-            const {data: {data: phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            const {data: {data: phishingList}} = await axios.get('https://list.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
             this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
         }
     }
