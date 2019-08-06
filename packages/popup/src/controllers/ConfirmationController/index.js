@@ -296,7 +296,7 @@ class ConfirmationController extends React.Component {
                         { meta.map(({ key, value }) => (
                             key === 'CONFIRMATIONS.FUNCTION'?
                                 <div className={"function"+(showArgs?' show':'')}>
-                                    <div data-tip="click show parameters" data-for='showArgs' className='metaLine' onClick={()=>args.length && this.setState({showArgs:!showArgs})} key={ key }>
+                                    <div data-tip={formatMessage({id:'CONFIRMATIONS.CLICK_SHOW_PARAMS'})} data-for='showArgs' className='metaLine' onClick={()=>args.length && this.setState({showArgs:!showArgs})} key={ key }>
                                         <FormattedMessage id={ key } />
                                         <span className='value'>
                                         { value }

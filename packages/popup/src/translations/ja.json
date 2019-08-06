@@ -157,6 +157,7 @@
   "CONFIRMATIONS.WHITELIST.TITLE": "自動サインを有効にする",
   "CONFIRMATIONS.WHITELIST.BODY": "TronLinkがあなたに代わって自動的に取引に署名することを許可する",
   "CONFIRMATIONS.AUTO_AUTHORIZE.DESC":"アプリをホワイトリストに追加すると、ポップアップを廃止、自動承認となります。",
+  "CONFIRMATIONS.CLICK_SHOW_PARAMS":"click to display parameters",
 
   "CONFIRMATIONS.OPTIONS.NO": "自動サインを無効にする",
   "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "自動サインを15分以内に有効にする",

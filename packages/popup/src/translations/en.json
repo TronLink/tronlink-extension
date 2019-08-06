@@ -157,6 +157,7 @@
     "CONFIRMATIONS.WHITELIST.TITLE": "Enable automatic signing",
     "CONFIRMATIONS.WHITELIST.BODY": "This allows TronLink to automatically sign similar transactions on your behalf",
     "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "Add the app to the white list so it will be authenticated automatically. The pop-up window will also stop showing.",
+    "CONFIRMATIONS.CLICK_SHOW_PARAMS":"click to display parameters",
 
     "CONFIRMATIONS.OPTIONS.NO": "Don't automatically sign",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "For fifteen minutes",
