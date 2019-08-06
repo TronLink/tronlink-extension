@@ -40,7 +40,7 @@ class Wallet extends EventEmitter {
         this.ledgerImportAddress = [];
         setInterval(() => {
             this._updatePrice();
-            this.setCache(false);
+            this.setCache();
         }, 30 * 60 * 1000);
 
     }
