@@ -40,7 +40,7 @@ class Wallet extends EventEmitter {
         this.ledgerImportAddress = [];
         setInterval(() => {
             this._updatePrice();
-            this.setCache();
+            this.setCache(false);
         }, 30 * 60 * 1000);
 
     }
@@ -252,7 +252,7 @@ class Wallet extends EventEmitter {
     }
 
     async refresh() {
-        this.setCache();
+        this.setCache(false);
         let res;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
@@ -641,7 +641,7 @@ class Wallet extends EventEmitter {
         return true;
     }
 
-    async setCache(){
+    async setCache(isResetPhishingList = true ){
         const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
         const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
         Promise.all([dapps, dapps2]).then(res => {
@@ -658,8 +658,10 @@ class Wallet extends EventEmitter {
             });
             StorageService.saveAllTokens(t);
         });
-        const {data:{data:phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e=>({data:{data:[]}}));
-        this.phishingList = phishingList.map(v=>({url:v,isVisit:false}));
+        if(isResetPhishingList) {
+            const {data: {data: phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
+        }
     }
 
     selectAccount(address) {
