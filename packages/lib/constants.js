@@ -150,3 +150,9 @@ export const USDT_ACTIVITY_STAGE = {
     }
 
 }
+
+export const TOP_TOKEN = [
+    'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    '1002000',
+    'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
+];

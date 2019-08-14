@@ -32,6 +32,7 @@ class Wallet extends EventEmitter {
         this.phishingList = [];      // dapp phishing list (if it doesn't exit on the list the website will jump a phishing page for risk warning)
         this.confirmations = [];
         this.timer = {};
+        this.vTokenList = []; //add v icon in the  token list
         // This should be moved into its own component
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
@@ -648,18 +649,23 @@ class Wallet extends EventEmitter {
             const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
             StorageService.saveAllDapps(tronDapps);
         });
-        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl');
+        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl,isBlack');
         const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
         Promise.all([trc10tokens, trc20tokens]).then(res => {
             let t = [];
-            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
+            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
             });
             StorageService.saveAllTokens(t);
         });
+        axios.get('https://testlist.tronlink.org/api/wallet/official_token').then(res=>{
+            StorageService.saveVTokenList(res.data.data);
+            this.emit('setVTokenList',res.data.data);
+        }).catch(e => {
+            this.emit('setVTokenList',StorageService.vTokenList);
+        });
         if(isResetPhishingList) {
-            const {data: {data: phishingList}} = await axios.get('https://list.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            const {data: {data: phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
             this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
         }
     }
@@ -1120,6 +1126,10 @@ class Wallet extends EventEmitter {
     async getAbiCode(contract_address){
         const contract = await NodeService.tronWeb.contract().at(contract_address);
         return contract.abi;
+    }
+
+    getVTokenList(){
+        return StorageService.hasOwnProperty('vTokenList') ? StorageService.vTokenList : [];
     }
 
 }

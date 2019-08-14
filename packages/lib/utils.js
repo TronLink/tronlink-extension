@@ -167,8 +167,14 @@ const Utils = {
         return typeof obj === 'function';
     },
 
-    dataLetterSort (data, field, field2) {
+    dataLetterSort (data, field, field2, topArray) {
         let needArray = [];
+        if(topArray){
+            topArray.forEach(v => {
+                needArray.push(v)
+            });
+            data = data.filter(({tokenId})=> !topArray.map(v=>v.tokenId).includes(tokenId))
+        }
         let list = {};
         let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'];
         for (let i = 0; i < data.length; i++) {

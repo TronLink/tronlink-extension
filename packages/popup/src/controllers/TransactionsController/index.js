@@ -134,12 +134,17 @@ class TransactionsController extends React.Component {
                                                     <FormattedMessage id='TRANSACTION.TOKEN_INFO.CONTRACT' />:&nbsp;
                                                     { id.substr(0, 7) + '...' + id.substr(-7) }
                                                     <CopyToClipboard text={id} onCopy={() => { Toast.info(formatMessage({ id: 'TOAST.COPY' })); } }>
-                                                        <span className='copy'></span>
+                                                        <span className='copy'>&nbsp;</span>
                                                     </CopyToClipboard>
                                                 </div>
                                         )
                                         :
-                                        <div className='desc token'>ID:&nbsp;{id}</div>
+                                        <div className='desc token'>
+                                            ID:&nbsp;{id}
+                                            <CopyToClipboard text={id} onCopy={() => { Toast.info(formatMessage({ id: 'TOAST.COPY' })); } }>
+                                                <span className='copy'>&nbsp;</span>
+                                            </CopyToClipboard>
+                                        </div>
                                 )
 
                         }

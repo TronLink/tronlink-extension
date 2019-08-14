@@ -5,7 +5,8 @@ import Utils from '@tronlink/lib/utils';
 import Toast, { T } from 'react-toast-mobile';
 import { Switch } from 'antd-mobile';
 import TronWeb from 'tronweb';
-import { CONTRACT_ADDRESS } from '@tronlink/lib/constants';
+import { TOP_TOKEN } from '@tronlink/lib/constants';
+const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class AssetManageController extends React.Component {
     constructor(props) {
@@ -86,10 +87,30 @@ class AssetManageController extends React.Component {
 
     render() {
         const { formatMessage } = this.props.intl;
-        const { selected, onCancel } = this.props;
+        const { selected, onCancel, vTokenList, prices  } = this.props;
         const { address, allTokens, filterTokens, deleteToken } = this.state;
+        const trx_price = prices.priceList[prices.selected];
+        const trx = { tokenId: '_', name: 'TRX', balance: (selected.balance + (selected.frozenBalance ? selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price}
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT && typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol');
+        const topArray = [];
+        TOP_TOKEN.forEach(v=>{
+            if(tokens.hasOwnProperty(v)){
+                topArray.push(tokens[v]);
+            }else{
+                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
+            }
+        });
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol',topArray);
+        tokens = [trx, ...tokens];
+        tokens = tokens.map(({tokenId,...token})=>{
+            if(TOP_TOKEN.includes(tokenId) || tokenId === '_')
+                token.isTop = true;
+
+            if(vTokenList.includes(tokenId))
+                token.isVerify = true;
+
+            return {tokenId,...token};
+        });
         return (
             <div className='insetContainer asset scroll'>
                 { this.renderDeleteToken(selected.tokens, deleteToken) }
@@ -132,7 +153,7 @@ class AssetManageController extends React.Component {
                                     }
                                 } else {
                                     const regexp = new RegExp(value, 'i');
-                                    fTokens = allTokens.filter(({ name, abbr }) => name.match(regexp) || abbr.match(regexp));
+                                    fTokens = allTokens.filter(({isBlack})=> !isBlack).filter(({ name, abbr }) => name.match(regexp) || abbr.match(regexp));
                                     fTokens = fTokens.map(({ tokenId, ...token }) => {
                                         const field = tokenId.match(/^T/) ? 'smart' : 'basic';
                                         const name = token.name.match(regexp) ? token.name.split(token.name.match(regexp)[ 0 ]).join('<i>' + token.name.match(regexp)[ 0 ] + '</i>') : token.name;
@@ -192,35 +213,53 @@ class AssetManageController extends React.Component {
                         </div>
                         <div className='cellWrap'>
                             {
-                                tokens.map(({ tokenId, symbol, abbr, imgUrl, name, isLocked = false ,balance}) => (
+                                tokens.map(({ tokenId, symbol, abbr, imgUrl, name, isLocked = false ,balance, isVerify = false, isTop = false}) => (
                                     <div className='cell'>
                                         <img src={imgUrl ? imgUrl : token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} />
                                         <div className='desc'>
                                             <div className='row1'>
-                                                {name}({abbr || symbol})
-                                            </div>
-                                            <div className='row2'>
-                                                {tokenId.match(/^T/) ? 'contract' : 'ID'}:{ tokenId.match(/^T/) ? tokenId.substr(0, 7) + '...' + tokenId.substr(-7) : tokenId}
-                                            </div>
-                                        </div>
-                                        <Switch color='#636ACC' checked={!isLocked} onClick={(e) => {
-                                            const field = tokenId.match(/^T/) ? 'smart' : 'basic';
-                                            if( balance > 0 ) {
-                                                selected.tokens[ field ][ tokenId ].isLocked = !isLocked;
-                                                if(filterTokens.length){
-                                                    const fs = filterTokens.map(({ tokenId: id, ...token }) => {
-                                                        if(id === tokenId) {
-                                                            token.isList = isLocked;
-                                                        }
-                                                        return { tokenId: id, ...token };
-                                                    });
-                                                    this.setState({ filterTokens: fs });
+                                                <span>{name}({abbr || symbol})</span>
+                                                {
+                                                    isVerify
+                                                        ?
+                                                    <img src={require('@tronlink/popup/src/assets/images/new/icon-verify.svg')} />
+                                                        :
+                                                    null
                                                 }
-                                            } else {
-                                                this.setState({ deleteToken: { show: true, tokenId } });
+                                            </div>
+                                            {
+                                                tokenId === '_'
+                                                    ?
+                                                null
+                                                    :
+                                                <div className='row2'>
+                                                    {tokenId.match(/^T/) ? 'contract' : 'ID'}:{ tokenId.match(/^T/) ? tokenId.substr(0, 7) + '...' + tokenId.substr(-7) : tokenId}
+                                                </div>
                                             }
-                                            PopupAPI.updateTokens(selected.tokens);
-                                        }} />
+                                        </div>
+                                        {
+                                            !isTop ?
+                                            <Switch color='#636ACC' checked={!isLocked} onClick={(e) => {
+                                                const field = tokenId.match(/^T/) ? 'smart' : 'basic';
+                                                if (balance > 0) {
+                                                    selected.tokens[field][tokenId].isLocked = !isLocked;
+                                                    if (filterTokens.length) {
+                                                        const fs = filterTokens.map(({tokenId: id, ...token}) => {
+                                                            if (id === tokenId) {
+                                                                token.isList = isLocked;
+                                                            }
+                                                            return {tokenId: id, ...token};
+                                                        });
+                                                        this.setState({filterTokens: fs});
+                                                    }
+                                                } else {
+                                                    this.setState({deleteToken: {show: true, tokenId}});
+                                                }
+                                                PopupAPI.updateTokens(selected.tokens);
+                                            }}/>
+                                                :
+                                                null
+                                        }
                                     </div>
                                 ))
                             }

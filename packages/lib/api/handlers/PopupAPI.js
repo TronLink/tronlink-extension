@@ -292,6 +292,10 @@ export default {
 
     getAbiCode(address){
         return this.duplex.send('getAbiCode', address);
+    },
+
+    getVTokenList(){
+        return this.duplex.send('getVTokenList');
     }
 
 }

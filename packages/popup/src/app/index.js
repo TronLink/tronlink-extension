@@ -46,7 +46,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps } = this.props;
+        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps,vTokenList } = this.props;
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -107,7 +107,7 @@ class App extends React.Component {
                 dom = <DappListController onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.ASSET_MANAGE:
-                dom = <AssetManageController selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <AssetManageController prices={prices} vTokenList={vTokenList} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTION_DETAIL:
                 dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
@@ -137,6 +137,7 @@ class App extends React.Component {
 }
 
 export default connect(state => ({
+    vTokenList: state.app.vTokenList,
     language: state.app.language,
     appState: state.app.appState,
     accounts: state.accounts,

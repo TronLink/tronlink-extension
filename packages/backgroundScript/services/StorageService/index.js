@@ -20,7 +20,8 @@ const StorageService = {
         'dappList',
         'allDapps',
         'allTokens',
-        'authorizeDapps'
+        'authorizeDapps',
+        'vTokenList'
     ],
 
     storage: extensionizer.storage.local,
@@ -73,6 +74,7 @@ const StorageService = {
     allDapps: [],
     allTokens : [],
     authorizeDapps: {},
+    vTokenList: [],
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
     },
@@ -413,6 +415,11 @@ const StorageService = {
     setAuthorizeDapps(authorizeDapps) {
         this.authorizeDapps = authorizeDapps;
         this.save('authorizeDapps');
+    },
+
+    saveVTokenList(vTokenList){
+        this.vTokenList = vTokenList;
+        this.save('vTokenList');
     },
 
     purge() {

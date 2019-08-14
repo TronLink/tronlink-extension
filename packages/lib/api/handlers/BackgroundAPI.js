@@ -79,6 +79,10 @@ export default {
 
     setLedgerImportAddress(address) {
         this.duplex.send('popup', 'setLedgerImportAddress',address ,false);
+    },
+
+    setVTokenList(vTokenList) {
+        this.duplex.send('popup', 'setVTokenList',vTokenList ,false);
     }
 
 };

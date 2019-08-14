@@ -1646,15 +1646,19 @@ html, body {
                     align-items: center;
                     border-bottom:1px solid #EFEFEF;
                     padding-right: 20px;
-                    img{
+                    & > img{
                         width: 34px;
                         height: 34px;
+                        border-radius:100%;
                     }
                     .desc{
                         margin-left: 12px;
                         flex:1;
                         overflow: hidden;
                         .row1{
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
                             line-height: 21px;
                             height: 21px;
                             font-size: 15px;
@@ -1666,6 +1670,11 @@ html, body {
                                 font-weight: bold;
                                 font-style: normal;
                                 color: #76ab61;
+                            }
+                            img{
+                                margin-left: 8px;
+                                width: 12px;
+                                height: 12px;
                             }
                         }
                         .row2{

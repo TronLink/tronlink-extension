@@ -171,6 +171,8 @@ const backgroundScript = {
         duplex.on('getLedgerImportAddress', this.walletService.getLedgerImportAddress);
 
         duplex.on('getAbiCode', this.walletService.getAbiCode);
+        duplex.on('getVTokenList', this.walletService.getVTokenList);
+        //duplex.on('setVTokenList', this.walletService.setVTokenList);
 
     },
 
@@ -444,6 +446,10 @@ const backgroundScript = {
 
         this.walletService.on('setLedgerImportAddress', address => (
             BackgroundAPI.setLedgerImportAddress(address)
+        ));
+
+        this.walletService.on('setVTokenList', vTokenList => (
+            BackgroundAPI.setVTokenList(vTokenList)
         ));
 
     }

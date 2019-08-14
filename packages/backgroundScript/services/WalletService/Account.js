@@ -17,7 +17,6 @@ class Account {
     constructor(accountType, importData, accountIndex = 0) {
         this.type = accountType;
         this.accountIndex = accountIndex;
-
         this.address = false;
         this.name = false;
         this.updatingTransactions = false;
@@ -42,7 +41,7 @@ class Account {
             smart: {}
         };
         this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
-            symbol: 'USDT',
+            abbr: 'USDT',
             name: 'Tether USD',
             decimals: 6,
             tokenId: CONTRACT_ADDRESS.USDT,
@@ -162,7 +161,7 @@ class Account {
 
         if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)) {
             this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
-                symbol: 'USDT',
+                abbr: 'USDT',
                 name: 'Tether USD',
                 decimals: 6,
                 tokenId: CONTRACT_ADDRESS.USDT,
@@ -219,6 +218,7 @@ class Account {
                     this.reset();
                     return true;
                 }
+                this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
                 const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
                 for (const [tokenId, token] of addSmartTokens) {
                     const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
@@ -243,7 +243,7 @@ class Account {
                     }
                     this.tokens.smart[ tokenId ].isLocked = token.hasOwnProperty('isLocked') ? token.isLocked : false;
                 }
-                this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
+
                 let sentDelegateBandwidth = 0;
                 const delegated = account.delegated;
                 if (delegated && delegated.sentDelegatedBandwidth) {
@@ -300,7 +300,7 @@ class Account {
                         price
                     };
                 }
-                const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0 && v.contract_address !== CONTRACT_ADDRESS.USDT);
+                const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0);
                 for (let { contract_address, decimals: precision } of smartTokens) {
                     let token = this.tokens.smart[ contract_address ] || false;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === contract_address);

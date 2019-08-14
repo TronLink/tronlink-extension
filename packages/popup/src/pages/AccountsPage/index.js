@@ -9,7 +9,7 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
-import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
@@ -30,16 +30,18 @@ class AccountsPage extends React.Component {
             showBackUp: false,
             showDelete: false,
             news: [],
-            ieos: []
+            ieos: [],
+            allTokens: []
         };
     }
 
 
     async componentDidMount() {
+        const allTokens = await PopupAPI.getAllTokens();
+        this.setState({allTokens})
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
-        //const { developmentMode } = this.props.setting;
         tronscanUrl = 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
@@ -226,7 +228,7 @@ class AccountsPage extends React.Component {
                                         window.open('http://www.tronlending.org');
                                     }}>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
-                                        <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
+                                        {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
                                         <div className='bankPopover'>
                                             <div className='popoverTitle'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>
                                         </div>
@@ -328,6 +330,12 @@ class AccountsPage extends React.Component {
                                             </div>
                                             :null
                                     }
+                                    {
+                                        token.isVerify ?
+                                            <img src={require('@tronlink/popup/src/assets/images/new/icon-verify.svg')} />
+                                            :
+                                            null
+                                    }
                                 </div>
                                 <div className="worth">
                                     <span>{amount}</span>
@@ -425,24 +433,34 @@ class AccountsPage extends React.Component {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
-        const { showNodeList,mnemonic,privateKey,news,ieos }  = this.state;
+        const { showNodeList,mnemonic,privateKey,news,ieos,allTokens }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
-        const { accounts,prices,nodes,setting,language:lng } = this.props;
+        const { accounts,prices,nodes,setting,language:lng,vTokenList } = this.props;
         const { selected: { airdropInfo } } = accounts;
-        //const mode = setting.developmentMode?'developmentMode':'productionMode';
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
+        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', abbr: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
         if(airdropInfo){
             usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
         }
         const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol');
-        tokens = [usdt, trx, ...tokens];
+        const topArray = [];
+        TOP_TOKEN.forEach(v=>{
+            if(tokens.hasOwnProperty(v)){
+                topArray.push(tokens[v]);
+            }else{
+                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
+            }
+        });
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol',topArray);
+        tokens = [trx, ...tokens];
         tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;
+            if(vTokenList.includes(tokenId))
+                token.isVerify = true;
+
             return { tokenId, ...token };
         });
         Object.entries(accounts.accounts).map(([address, account]) => {
@@ -582,15 +600,7 @@ class AccountsPage extends React.Component {
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
-                        <div className="scroll" onScroll={(e)=> {
-                            //const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
-                            //if(transactionGroup && transactionGroup[key].length > 8){
-                            //    const isTop = e.target.scrollTop === 0 ? false : true;
-                            //    this.setState({isTop});
-                            //}
-                            //}}
-                        }}
-                        >
+                        <div className="scroll">
                             { this.renderTokens(tokens) }
                         </div>
                     </div>
@@ -602,6 +612,7 @@ class AccountsPage extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        vTokenList:state.app.vTokenList,
         language: state.app.language,
         accounts: state.accounts,
         prices: state.app.prices,
