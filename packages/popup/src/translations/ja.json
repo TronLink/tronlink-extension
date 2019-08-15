@@ -420,5 +420,8 @@
   "INDEX_ICON_TITLE.EXCHANGE":"trxmarket",
   "INDEX_ICON_TITLE.LOCK":"アンカー",
   "INDEX_ICON_TITLE.REFRESH":"更新",
-  "INDEX_ICON_TITLE.SETTING":"設定"
+  "INDEX_ICON_TITLE.SETTING":"設定",
+
+  "NOTIFICATIONS.TITLE":"取引完了",
+  "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。"
 }

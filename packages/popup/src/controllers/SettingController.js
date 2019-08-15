@@ -401,7 +401,8 @@ class SettingController extends React.Component {
                         </div>
                     </div>
                     <div className="version">
-                        <FormattedMessage id="COMMON.CURRENT_VERSION" values={{version}} />
+                        V{version}
+                        {/*<FormattedMessage id="COMMON.CURRENT_VERSION" values={{version}} />*/}
                     </div>
                 </div>
             </div>

@@ -814,29 +814,26 @@ class Wallet extends EventEmitter {
     }
 
     async sendTrx({ recipient, amount }) {
-        await this.accounts[ this.selectedAccount ].sendTrx(
+        return await this.accounts[ this.selectedAccount ].sendTrx(
             recipient,
             amount
         );
-        this.refresh();
     }
 
     async sendBasicToken({ recipient, amount, token }) {
-        await this.accounts[ this.selectedAccount ].sendBasicToken(
+        return await this.accounts[ this.selectedAccount ].sendBasicToken(
             recipient,
             amount,
             token
         );
-        this.refresh();
     }
 
     async sendSmartToken({ recipient, amount, token }) {
-        await this.accounts[ this.selectedAccount ].sendSmartToken(
+        return await this.accounts[ this.selectedAccount ].sendSmartToken(
             recipient,
             amount,
             token
         );
-        this.refresh();
     }
 
     async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
@@ -1132,5 +1129,28 @@ class Wallet extends EventEmitter {
         return StorageService.hasOwnProperty('vTokenList') ? StorageService.vTokenList : [];
     }
 
+    setPushMessage({iconUrl='packages/popup/static/icon.png', title, message, hash}){
+        const timer = setInterval(async()=>{
+            const {data:transaction} = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
+            if(transaction && transaction.confirmed){
+                clearInterval(timer);
+                extensionizer.notifications.getPermissionLevel((level)=>{
+                    if(level === 'granted'){
+                        extensionizer.notifications.create(
+                            hash,
+                            {type: "basic", iconUrl, title, message, isClickable: true},
+                            notifyId=>{}
+                        );
+                        extensionizer.notifications.onClicked.addListener(notifyId=>{
+                            window.open('https://tronscan.org/#/transaction/'+notifyId)
+                        });
+                    } else {
+
+
+                    }
+                })
+            }
+        },3000);
+    }
 }
 export default Wallet;

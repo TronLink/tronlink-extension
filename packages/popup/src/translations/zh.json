@@ -424,5 +424,8 @@
     "INDEX_ICON_TITLE.EXCHANGE":"交易所",
     "INDEX_ICON_TITLE.LOCK":"锁定",
     "INDEX_ICON_TITLE.REFRESH":"刷新",
-    "INDEX_ICON_TITLE.SETTING":"设置"
+    "INDEX_ICON_TITLE.SETTING":"设置",
+
+    "NOTIFICATIONS.TITLE":"交易完成",
+    "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情"
 }

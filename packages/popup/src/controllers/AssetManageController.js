@@ -162,6 +162,7 @@ class AssetManageController extends React.Component {
                                         token.html = `${name}(${abbr})`;
                                         token.balance = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].balance : 0;
                                         token.price = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].price : 0;
+                                        if(vTokenList.includes(tokenId))token.isVerify = true;
                                         return { tokenId, ...token };
                                     });
                                 }
@@ -172,12 +173,12 @@ class AssetManageController extends React.Component {
                     <div className='leftSpace scroll'>
                         <div className='cellWrap'>
                             {
-                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0 }) => {
+                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0, isVerify = false}) => {
                                     return (
                                         <div className='cell'>
                                             <img src={imgUrl ? imgUrl : token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} />
                                             <div className='desc'>
-                                                <div className='row1' dangerouslySetInnerHTML={{__html: html}}></div>
+                                                <div className={'row1'+(isVerify?' isVerify':'') } dangerouslySetInnerHTML={{__html: html}}></div>
                                                 <div className='row2'>
                                                     {tokenId.match(/^T/) ? 'contract' : 'ID'} : { tokenId.match(/^T/) ? tokenId.substr(0, 7) + '...' + tokenId.substr(-7) : tokenId}
                                                 </div>

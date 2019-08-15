@@ -54,6 +54,8 @@ class AccountsPage extends React.Component {
         await PopupAPI.setAirdropInfo(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
+
+        //PopupAPI.setPushMessage({title:'sdsdsd', message:'dsdasdadsadsad'});
     }
 
     runTime(ieos) {
@@ -218,7 +220,6 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className='line'></div>
                     <div className='cell bankSingle'>
                         <div className='title'>
                             {

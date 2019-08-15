@@ -424,5 +424,8 @@
     "INDEX_ICON_TITLE.EXCHANGE":"trxmarket",
     "INDEX_ICON_TITLE.LOCK":"lock",
     "INDEX_ICON_TITLE.REFRESH":"refresh",
-    "INDEX_ICON_TITLE.SETTING":"set up"
+    "INDEX_ICON_TITLE.SETTING":"set up",
+
+    "NOTIFICATIONS.TITLE":"transaction finished",
+    "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details"
 }

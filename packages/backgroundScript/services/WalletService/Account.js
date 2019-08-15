@@ -534,6 +534,7 @@ class Account {
             ).then(() => true).catch(err => Promise.reject(
                 'Failed to broadcast transaction'
             ));
+            return Promise.resolve(transaction.txID);
         } catch(ex) {
             logger.error('Failed to send TRX:', ex);
             return Promise.reject(ex);
@@ -553,6 +554,7 @@ class Account {
             ).then(() => true).catch(err => Promise.reject(
                 'Failed to broadcast transaction'
             ));
+            return Promise.resolve(transaction.txID);
         } catch(ex) {
             logger.error('Failed to send basic token:', ex);
             return Promise.reject(ex);
@@ -563,11 +565,11 @@ class Account {
         try {
             const contract = await NodeService.tronWeb.contract().at(token);
 
-            await contract.transfer(recipient, amount).send(
+            const transactionId = await contract.transfer(recipient, amount).send(
                 { feeLimit: 10 * Math.pow(10, 6) },
                 this.privateKey
             );
-            return true;
+            return Promise.resolve(transactionId);
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);
             return Promise.reject(ex);

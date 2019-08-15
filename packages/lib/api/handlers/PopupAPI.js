@@ -296,6 +296,10 @@ export default {
 
     getVTokenList(){
         return this.duplex.send('getVTokenList');
+    },
+
+    setPushMessage({iconUrl, title, message, hash}){
+        this.duplex.send('setPushMessage', {iconUrl, title, message, hash}, false);
     }
 
 }

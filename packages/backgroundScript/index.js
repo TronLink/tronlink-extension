@@ -173,6 +173,7 @@ const backgroundScript = {
         duplex.on('getAbiCode', this.walletService.getAbiCode);
         duplex.on('getVTokenList', this.walletService.getVTokenList);
         //duplex.on('setVTokenList', this.walletService.setVTokenList);
+        duplex.on('setPushMessage', this.walletService.setPushMessage);
 
     },
 

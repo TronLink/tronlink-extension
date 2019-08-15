@@ -613,7 +613,6 @@
         border-radius:4px;
         overflow:auto;
         .resource{
-            background-color: #fff;
             //padding:14px;
             display: flex;
             flex-direction: row;
@@ -626,8 +625,9 @@
                 height:28px;
             }
             .cell{
-                padding:14px;
-                border-radius: 2px;
+                background-color: #fff;
+                border-radius: 4px;
+                padding:14px 11px;
                 flex:1;
                 height: 68px;
                 width: 135px;
@@ -635,10 +635,14 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: space-between;
+
                 &:last-child{
+                    margin-left: 6px;
                     cursor: pointer;
+                    transition: .2s all ease-in-out;
                     &:hover{
-                        box-shadow: -3px 3px 7px 0px #f7f8fa;
+                        transform: translate(2px,-2px);
+                        box-shadow: 0 0 6px 0 rgba(61,55,40,0.12);
                     }
                 }
                 .title{
@@ -664,6 +668,7 @@
                         white-space: nowrap;
                         margin-right: 2px;
                         &:before{
+                            margin-left: -2px;
                             content:'';
                             width: 22px;
                             height: 22px;
@@ -678,7 +683,7 @@
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         transform: scale(0.8);
-                        transform-origin:(center,right);
+                        transform-origin:right center;
                         font-size: 12px;
                         span{
                             color: #c3c4ca;

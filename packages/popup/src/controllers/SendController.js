@@ -312,7 +312,7 @@ class SendController extends React.Component {
             loading: true,
             success: false
         });
-        const { selected } = this.props.accounts;
+        const { selectedToken, selected } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         const { value: recipient } = this.state.recipient;
         const { value: amount } = this.state.amount;
@@ -342,9 +342,14 @@ class SendController extends React.Component {
                     id
                 );
             }
-            func.then(() => {
+            func.then((res) => {
                 this.setState({loading: false});
                 Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => this.onCancel(), true);
+                PopupAPI.setPushMessage({
+                    title:`-${amount}${selectedToken.abbr} ${formatMessage({id:'NOTIFICATIONS.TITLE'})}`,
+                    message:formatMessage({id:'NOTIFICATIONS.MESSAGE'}),
+                    hash:res
+                });
             }).catch(error => {
                 Toast.fail(JSON.stringify(error), 3, () => {
                     this.setState({
@@ -446,7 +451,7 @@ class SendController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -454,7 +459,7 @@ class SendController extends React.Component {
                                         const amount = new BN(balance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals }, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
+                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
                                 }
