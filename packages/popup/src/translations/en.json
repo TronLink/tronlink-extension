@@ -400,7 +400,7 @@
     "ASSET.CONFIRM.HIDE_TOKEN": "Hide Tokens",
     "ASSET.CONFIRM.CANCEL": "Cancel",
     "ASSET.CONFIRM.HIDE": "Hide",
-    "ASSET.CONFIRM.CONTENT": "The token balance is 0. When hidden, the token will not be displayed in the list. You can go to \"Asset Management\" - \"Add Token\" to add the token back.",
+    "ASSET.CONFIRM.CONTENT": "The token balance is 0. When hidden, the token will not be displayed in the list.",
 
     "TRANSACTION_DETAIL": "Transaction Detail",
     "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "Successful Transfer",

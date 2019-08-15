@@ -400,7 +400,7 @@
     "ASSET.CONFIRM.HIDE_TOKEN": "隐藏代币",
     "ASSET.CONFIRM.CANCEL": "取消",
     "ASSET.CONFIRM.HIDE": "隐藏",
-    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示，之后你还可以通过资产管理中的“添加代币”来添加此代币。",
+    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示",
 
     "TRANSACTION_DETAIL": "交易详情",
     "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "转账成功",
