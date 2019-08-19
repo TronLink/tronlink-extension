@@ -162,6 +162,7 @@ class AssetManageController extends React.Component {
                                         token.html = `${name}(${abbr})`;
                                         token.balance = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].balance : 0;
                                         token.price = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].price : 0;
+                                        token.isTop = TOP_TOKEN.includes(tokenId);
                                         if(vTokenList.includes(tokenId))token.isVerify = true;
                                         return { tokenId, ...token };
                                     });
@@ -173,7 +174,7 @@ class AssetManageController extends React.Component {
                     <div className='leftSpace scroll'>
                         <div className='cellWrap'>
                             {
-                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0, isVerify = false}) => {
+                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0, isVerify = false ,isTop = false}) => {
                                     return (
                                         <div className='cell'>
                                             <img src={imgUrl ? imgUrl : token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} />
@@ -184,6 +185,9 @@ class AssetManageController extends React.Component {
                                                 </div>
                                             </div>
                                             {
+                                                isTop ?
+                                                    null
+                                                    :
                                                 <Switch color='#636ACC' checked={isList} onClick={(e) => {
                                                     const field = tokenId.match(/^T/) ? 'smart' : 'basic';
                                                     const filters = filterTokens.map(({ tokenId: id, ...token }) => {
