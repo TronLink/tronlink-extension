@@ -271,8 +271,10 @@ class SendController extends React.Component {
                     return this.setState({
                         amount: {
                             ...amount,
-                            valid,
-                            error: 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR'
+                            //valid,
+                            valid:true,
+                            //error: 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR',
+                            error:''
                         }
                     });
                 }

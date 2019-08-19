@@ -441,15 +441,20 @@ class AccountsPage extends React.Component {
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', abbr: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
-        if(airdropInfo){
-            usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
-        }
+        //const usdt_price = prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0;
+        //let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', abbr: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
+        //if(airdropInfo){
+            //usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
+        //}
         const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
         const topArray = [];
         TOP_TOKEN.forEach(v=>{
             if(tokens.hasOwnProperty(v)){
+                if(v === CONTRACT_ADDRESS.USDT){
+                    const f = allTokens.filter(({tokenId})=> tokenId === v)
+                    tokens[v].imgUrl = f.length ? allTokens.filter(({tokenId})=> tokenId === v)[0].imgUrl : false;
+                }
                 topArray.push(tokens[v]);
             }else{
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})

@@ -39,6 +39,7 @@ class Wallet extends EventEmitter {
         // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
         this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
         this.ledgerImportAddress = [];
+        this.times = 0;
         setInterval(() => {
             this._updatePrice();
             this.setCache();
@@ -1131,6 +1132,12 @@ class Wallet extends EventEmitter {
 
     setPushMessage({iconUrl='packages/popup/static/icon.png', title, message, hash}){
         const timer = setInterval(async()=>{
+            this.times++;
+            if(this.times === 15){
+                clearInterval(timer);
+                this.times = 0;
+                return;
+            }
             const {data:transaction} = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
             if(transaction && transaction.confirmed){
                 clearInterval(timer);
@@ -1144,13 +1151,10 @@ class Wallet extends EventEmitter {
                         extensionizer.notifications.onClicked.addListener(notifyId=>{
                             window.open('https://tronscan.org/#/transaction/'+notifyId)
                         });
-                    } else {
-
-
-                    }
+                    } else {}
                 })
             }
-        },3000);
+        },10000);
     }
 }
 export default Wallet;

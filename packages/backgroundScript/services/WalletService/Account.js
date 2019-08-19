@@ -218,7 +218,7 @@ class Account {
                     this.reset();
                     return true;
                 }
-                this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
+                //this.tokens.smart[ CONTRACT_ADDRESS.USDT ].price = usdtPrice;
                 const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
                 for (const [tokenId, token] of addSmartTokens) {
                     const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
@@ -336,7 +336,7 @@ class Account {
                     };
                     this.tokens.smart[ contract_address ] = {
                         ...token,
-                        price,
+                        price: contract_address === CONTRACT_ADDRESS.USDT ? usdtPrice : price,
                         balance
                     };
                 }

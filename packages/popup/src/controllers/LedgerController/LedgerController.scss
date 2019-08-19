@@ -1,6 +1,7 @@
 .insetContainer {
   &.ledger {
     padding:0;
+    overflow: auto;
     .pageHeader {
       height: 56px;
       display: flex;
