@@ -213,7 +213,7 @@ class Account {
             if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || node === '0f22e40f-a004-4c5a-99ef-004c8e6769bf') {
                 const { data: account } = await axios.get('https://apilist.tronscan.org/api/account?address=' + address).catch(e => ( { data: {} } ));
                 const account2 = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
-                if (!account2.address) {
+                if (!account2.address && account.trc20token_balances.length === 0) {
                     logger.info(`Account ${address} does not exist on the network`);
                     this.reset();
                     return true;

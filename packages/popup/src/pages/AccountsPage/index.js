@@ -40,7 +40,7 @@ class AccountsPage extends React.Component {
         const allTokens = await PopupAPI.getAllTokens();
         this.setState({allTokens})
         const { prices, accounts } = this.props;
-        const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
+        const t = { name: 'TRX', abbr:'trx', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
         tronscanUrl = 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();

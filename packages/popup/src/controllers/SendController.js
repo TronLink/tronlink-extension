@@ -21,7 +21,8 @@ class SendController extends React.Component {
                 id: '_',
                 name: 'TRX',
                 amount: 0,
-                decimals: 6
+                decimals: 6,
+                abbr: 'TRX'
             },
             recipient: {
                 error: '',

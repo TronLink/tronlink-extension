@@ -730,7 +730,7 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', amount: 0, decimals: 6 } : StorageService.selectedToken;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', abbr:'trx', amount: 0, decimals: 6 } : StorageService.selectedToken;
     }
 
     setLanguage(language) {
@@ -1133,7 +1133,7 @@ class Wallet extends EventEmitter {
     setPushMessage({iconUrl='packages/popup/static/icon.png', title, message, hash}){
         const timer = setInterval(async()=>{
             this.times++;
-            if(this.times === 15){
+            if(this.times === 16){
                 clearInterval(timer);
                 this.times = 0;
                 return;
