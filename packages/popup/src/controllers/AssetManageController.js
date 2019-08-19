@@ -163,7 +163,7 @@ class AssetManageController extends React.Component {
                                         token.balance = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].balance : 0;
                                         token.price = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].price : 0;
                                         token.isTop = TOP_TOKEN.includes(tokenId);
-                                        if(vTokenList.includes(tokenId))token.isVerify = true;
+                                        token.isVerify = vTokenList.includes(tokenId);
                                         return { tokenId, ...token };
                                     });
                                 }
