@@ -152,6 +152,7 @@ class AssetManageController extends React.Component {
                                         fTokens[ 0 ].isList = selected.tokens.smart.hasOwnProperty(value) && (!selected.tokens.smart[ value ].hasOwnProperty('isLocked') || !selected.tokens.smart[ value ].isLocked ) ? true : false;
                                     }
                                 } else {
+                                    let topArray2 = [];
                                     const regexp = new RegExp(value, 'i');
                                     fTokens = allTokens.filter(({isBlack})=> !isBlack).filter(({ name, abbr }) => name.match(regexp) || abbr.match(regexp));
                                     fTokens = fTokens.map(({ tokenId, ...token }) => {
@@ -166,6 +167,8 @@ class AssetManageController extends React.Component {
                                         token.isVerify = vTokenList.includes(tokenId);
                                         return { tokenId, ...token };
                                     });
+                                    topArray2 = fTokens.filter(({isVerify})=>isVerify);
+                                    fTokens = Utils.dataLetterSort(fTokens,'name','abbr',topArray2);
                                 }
                             }
                             this.setState({ filterTokens: fTokens,  address: {value} });
