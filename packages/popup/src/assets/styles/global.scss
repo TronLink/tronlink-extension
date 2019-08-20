@@ -323,6 +323,7 @@ html, body {
         }
     }
     &.choosingType2{
+        overflow:auto;
         justify-content: space-between;
         .greyModal{
             padding:0;
