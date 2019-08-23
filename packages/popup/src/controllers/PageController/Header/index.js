@@ -4,7 +4,9 @@ import { Toast } from 'antd-mobile';
 import ReactTooltip from 'react-tooltip';
 import { APP_STATE } from '@tronlink/lib/constants';
 import { PopupAPI } from '@tronlink/lib/api';
+
 const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
+
 
 class Header extends React.Component {
     constructor(props) {
@@ -19,18 +21,34 @@ class Header extends React.Component {
     componentDidMount() {}
 
 
+
     render() {
         const { refresh } = this.state;
         const { formatMessage } = this.props.intl;
         const {
-            developmentMode
+            handleSelectChain,
+            showChainList,
+            developmentMode,
+            chains,
+            handleShowChainList
         } = this.props;
         const trxMarketUrl = developmentMode ? 'https://trx.market?from=tronlink' : 'https://trx.market?from=tronlink';
         return (
             <div className='header'>
                 <div className='titleContainer'>
-                    <div>
-                        <img src={logo} alt=""/>
+                    <div className='selectedChain' onClick={handleShowChainList}>
+                        {/*<img src={logo} alt=""/>*/}
+                        <span>{chains.chains[chains.selected].name}</span>
+                        <div className='chainWrap' style={showChainList?{height:120,padding:'10px 0'}:{height:0}}>
+                            {
+                                Object.entries(chains.chains).map(([chainId,{name}])=>{
+                                   return <div className={'item'+(chainId === chains.selected?' selected':'')} onClick={(e)=>{
+                                       e.stopPropagation();
+                                       handleSelectChain(chainId);
+                                   }}>{name}</div>
+                                })
+                            }
+                        </div>
                     </div>
                     <div>
                         <div className="linkWrap">

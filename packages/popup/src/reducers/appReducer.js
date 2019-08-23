@@ -20,6 +20,7 @@ export const setDappList = createAction('setDappList');
 export const setAuthorizeDapps = createAction('setAuthorizeDapps');
 export const setLedgerImportAddress = createAction('setLedgerImportAddress');
 export const setVTokenList = createAction('setVTokenList');
+export const setChains = createAction('setChains');
 
 
 export const appReducer = createReducer({
@@ -27,6 +28,10 @@ export const appReducer = createReducer({
     currentPage: PAGES.ACCOUNTS,
     nodes: {
         nodes: {},
+        selected: false
+    },
+    chains: {
+        chains: {},
         selected: false
     },
     prices: {
@@ -60,6 +65,9 @@ export const appReducer = createReducer({
     },
     [ setNodes ]: (state, { payload }) => {
         state.nodes = payload;
+    },
+    [ setChains ]: (state, { payload }) => {
+        state.chains = payload;
     },
     [ setPage ]: (state, { payload }) => {
         state.currentPage = payload;

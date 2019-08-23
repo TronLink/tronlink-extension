@@ -21,7 +21,8 @@ const StorageService = {
         'allDapps',
         'allTokens',
         'authorizeDapps',
-        'vTokenList'
+        'vTokenList',
+        'chains'
     ],
 
     storage: extensionizer.storage.local,
@@ -48,6 +49,10 @@ const StorageService = {
     nodes: {
         nodeList: {},
         selectedNode: false
+    },
+    chains: {
+        chainList:{},
+        selectedChain: false
     },
     pendingTransactions: {},
     accounts: {},
@@ -181,10 +186,10 @@ const StorageService = {
         this.save('accounts');
     },
 
-    deleteNode(nodeID) {
+    deleteNode(chainId, nodeID) {
         logger.info('Deleting node', nodeID);
 
-        delete this.nodes.nodeList[ nodeID ];
+        delete this.nodes.nodeList[ chainId ][ nodeID ];
         this.save('nodes');
     },
 
@@ -195,11 +200,25 @@ const StorageService = {
         this.save('nodes');
     },
 
+    saveChain(chainId ,chain) {
+        logger.info('Saving chain', chain);
+
+        this.chains.chainList[ chainId ] = chain;
+        this.save('chains');
+    },
+
     selectNode(nodeID) {
         logger.info('Saving selected node', nodeID);
 
         this.nodes.selectedNode = nodeID;
         this.save('nodes');
+    },
+
+    selectChain(chainID) {
+        logger.info('Saving selected chain', chainID);
+
+        this.chains.selectedChain = chainID;
+        this.save('chains');
     },
 
     saveAccount(account) {

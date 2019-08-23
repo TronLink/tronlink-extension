@@ -1,4 +1,3 @@
- import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
 
 export default {
     init(duplex) {
@@ -104,8 +103,8 @@ export default {
         this.duplex.send('selectNode', nodeID, false);
     },
 
-    addNode(node) {
-        this.duplex.send('addNode', node, false);
+    addNode(chainId,node) {
+        this.duplex.send('addNode', {chainId,...node}, false);
     },
 
     deleteNode() {
@@ -114,6 +113,15 @@ export default {
 
     getNodes() {
         return this.duplex.send('getNodes');
+    },
+
+    // Chain manage
+    getChains() {
+        return this.duplex.send('getChains');
+    },
+
+    selectChain(chainId) {
+        this.duplex.send('selectChain', chainId, false);
     },
 
     getSmartToken(address) {
@@ -301,5 +309,4 @@ export default {
     setPushMessage({iconUrl, title, message, hash}){
         this.duplex.send('setPushMessage', {iconUrl, title, message, hash}, false);
     }
-
 }

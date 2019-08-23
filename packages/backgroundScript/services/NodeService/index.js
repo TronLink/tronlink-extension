@@ -8,44 +8,83 @@ import { BigNumber } from 'bignumber.js';
 const logger = new Logger('NodeService');
 
 const NodeService = {
-    _nodes: {
-        'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
-            name: 'Mainnet',
-            fullNode: 'https://api.trongrid.io',
-            solidityNode: 'https://api.trongrid.io',
-            eventServer: 'https://api.trongrid.io',
-            default: true // false
+    _chains:{
+        '_':{
+            name:'TRON',
+            default:true
         },
-        // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
-        //     name: 'Mainnet(beta)',
-        //     fullNode: 'http://47.90.243.77:8090',
-        //     solidityNode: 'http://47.90.243.77:8091',
-        //     eventServer: 'https://api.trongrid.io',
-        //     default: true
-        // },
-        '6739be94-ee43-46af-9a62-690cf0947269': {
-            name: 'Shasta Testnet',
-            fullNode: 'https://api.shasta.trongrid.io',
-            solidityNode: 'https://api.shasta.trongrid.io',
-            eventServer: 'https://api.shasta.trongrid.io',
-            default: true
+        '410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE':{
+            name:'DAppChain',
+            default:false
         }
     },
-
+    _nodes: {
+            'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
+                name: 'Mainnet',
+                fullNode: 'https://api.trongrid.io',
+                solidityNode: 'https://api.trongrid.io',
+                eventServer: 'https://api.trongrid.io',
+                default: true, // false
+                chain:'_'
+            },
+            // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
+            //     name: 'Mainnet(beta)',
+            //     fullNode: 'http://47.90.243.77:8090',
+            //     solidityNode: 'http://47.90.243.77:8091',
+            //     eventServer: 'https://api.trongrid.io',
+            //     default: true
+            // },
+            '6739be94-ee43-46af-9a62-690cf0947269': {
+                name: 'Shasta Testnet',
+                fullNode: 'https://api.shasta.trongrid.io',
+                solidityNode: 'https://api.shasta.trongrid.io',
+                eventServer: 'https://api.shasta.trongrid.io',
+                default: false,
+                chain:'_'
+            },
+            'a981e232-a995-4c81-9653-c85e4d05f599':{
+                name: 'SideChain Testnet',
+                fullNode: 'http://47.252.85.90:8070',
+                solidityNode: 'http://47.252.85.90:8071',
+                eventServer: 'http://47.252.87.129:8070',
+                default: true,
+                chain:'410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE'
+            }
+    },
+    _selectedChain:'_',
     _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
     // TESTNET: _selectedNode: '6739be94-ee43-46af-9a62-690cf0947269',
 
     _read() {
-        logger.info('Reading nodes from storage');
+        logger.info('Reading nodes and chains from storage');
+
+
+
+        const {
+            chainList = {},
+            selectedChain = false
+        } = StorageService.chains;
+
         const {
             nodeList = {},
             selectedNode = false
         } = StorageService.nodes;
 
+        this._chains = chainList;
+        this._selectedChain = selectedChain;
+
         this._nodes = {
             ...this._nodes,
-            ...nodeList
+            ...nodeList,
         };
+
+
+        this._nodes = Object.entries(this._nodes).map(([nodeId, node])=>{
+            if(!node.hasOwnProperty('chain')){
+                node.chain = '_';
+            }
+            return [nodeId, node];
+        }).reduce((accumulator, currentValue)=>{accumulator[currentValue[0]]=currentValue[1];return accumulator;},{});
         if(selectedNode)
             this._selectedNode = selectedNode;
     },
@@ -85,10 +124,16 @@ const NodeService = {
     },
 
     save() {
+
         Object.entries(this._nodes).forEach(([ nodeID, node ]) => (
             StorageService.saveNode(nodeID, node)
         ));
 
+        Object.entries(this._chains).forEach(( [chainId, chain ])=>{
+            StorageService.saveChain(chainId, chain)
+        });
+
+        StorageService.selectChain(this._selectedChain);
         StorageService.selectNode(this._selectedNode);
         this._updateTronWeb();
     },
@@ -97,6 +142,13 @@ const NodeService = {
         return {
             nodes: this._nodes,
             selected: this._selectedNode
+        };
+    },
+
+    getChains() {
+        return {
+            chains: this._chains,
+            selected: this._selectedChain
         };
     },
 
@@ -111,14 +163,20 @@ const NodeService = {
         this._updateTronWeb();
     },
 
-    addNode(node) {
+    selectChain(chainId) {
+        StorageService.selectChain(chainId);
+        this._selectedChain = chainId;
+        this._updateTronWeb();
+    },
+
+    addNode(chainId,node) {
         const nodeID = randomUUID();
 
         this._nodes[ nodeID ] = {
             ...node,
-            default: false
+            default: false,
+            chain:chainId
         };
-
         this.save();
         return nodeID;
     },

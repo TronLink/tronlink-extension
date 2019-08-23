@@ -28,7 +28,8 @@ import {
     setDappList,
     setAuthorizeDapps,
     setLedgerImportAddress,
-    setVTokenList
+    setVTokenList,
+    setChains
 } from 'reducers/appReducer';
 
 import {
@@ -107,7 +108,8 @@ export const app = {
             language,
             authorizeDapps,
             ledgerImportAddress,
-            vTokenList
+            vTokenList,
+            chains
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -119,8 +121,10 @@ export const app = {
             PopupAPI.getLanguage(),
             PopupAPI.getAuthorizeDapps(),
             PopupAPI.getLedgerImportAddress(),
-            PopupAPI.getVTokenList()
+            PopupAPI.getVTokenList(),
+            PopupAPI.getChains()
         ]);
+        console.log(nodes,chains)
         const lang = navigator.language || navigator.browserLanguage;
         if ( lang.indexOf('zh') > -1 ) {
             language = language || 'zh';
@@ -142,6 +146,7 @@ export const app = {
         this.store.dispatch(setAuthorizeDapps(authorizeDapps));
         this.store.dispatch(setLedgerImportAddress(ledgerImportAddress));
         this.store.dispatch(setVTokenList(vTokenList));
+        this.store.dispatch(setChains(chains));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -219,6 +224,10 @@ export const app = {
 
         this.duplex.on('setVTokenList', vTokenList => this.store.dispatch(
             setVTokenList(vTokenList)
+        ));
+
+        this.duplex.on('setChain', chains => this.store.dispatch(
+            setChains(chains)
         ));
 
     },

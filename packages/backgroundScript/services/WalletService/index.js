@@ -696,14 +696,27 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', this.selectedAccount);
     }
 
-    addNode(node) {
+    async selectChain(chainId) {
+        const chains = NodeService.getChains();
+        const nodes = NodeService.getNodes();
+        const node = Object.entries(nodes.nodes).filter(([nodeId,node])=> node.chain === chainId && node.default)[0];
+        await this.selectNode(node[0]);
+        NodeService.selectChain(chainId);
+        chains.selected = chainId;
+        this.emit('setChain',chains);
+    }
+
+    addNode({chainId,...node}) {
         this.selectNode(
-            NodeService.addNode(node)
+            NodeService.addNode(chainId,node)
         );
     }
 
-    getAccounts() {
+    getAccounts(sideChain = false) {
         const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
+            if(sideChain && account.type === ACCOUNT_TYPE.LEDGER)
+                return;
+
             accounts[ address ] = {
                 name: account.name,
                 balance: account.balance + account.frozenBalance,

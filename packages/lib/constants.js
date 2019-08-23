@@ -156,3 +156,14 @@ export const TOP_TOKEN = [
     '1002000',
     'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
 ];
+
+export const CHAINS = {
+    '_':{
+        name:'TRON',
+        default:true
+    },
+    '410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE':{
+        name:'DAppChain',
+        default:false
+    }
+};

@@ -30,6 +30,10 @@ export default {
         }, false);
     },
 
+    setChain(chain){
+        this.duplex.send('popup', 'setChain', chain, false);
+    },
+
     setAccounts(accounts) {
         this.duplex.send('popup', 'setAccounts', accounts, false);
     },

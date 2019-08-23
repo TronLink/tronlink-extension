@@ -124,9 +124,13 @@ const backgroundScript = {
         // NodeService: Node management
         duplex.on('selectNode', this.walletService.selectNode);
         duplex.on('addNode', this.walletService.addNode);
-        // duplex.on('deleteNode', this.nodeService.deleteNode);
+        //duplex.on('deleteNode', this.nodeService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
+
         duplex.on('getSmartToken', this.nodeService.getSmartToken);
+        // chain
+        duplex.on('getChains', this.nodeService.getChains);
+        duplex.on('selectChain', this.walletService.selectChain);
 
         // language
         duplex.on('getLanguage', this.walletService.getLanguage);
@@ -395,6 +399,11 @@ const backgroundScript = {
 
         this.walletService.on('setNode', node => (
             BackgroundAPI.setNode(node)
+        ));
+
+
+        this.walletService.on('setChain', chain => (
+            BackgroundAPI.setChain(chain)
         ));
 
         this.walletService.on('setAccounts', accounts => (

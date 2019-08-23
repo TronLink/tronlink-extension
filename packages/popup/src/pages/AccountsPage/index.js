@@ -11,6 +11,7 @@ import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
 import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { app } from "@tronlink/popup/src";
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
@@ -26,7 +27,7 @@ class AccountsPage extends React.Component {
             mnemonic: false,
             privateKey: false,
             showMenuList: false,
-            showNodeList: false,
+            showChainList: false,
             showBackUp: false,
             showDelete: false,
             news: [],
@@ -109,11 +110,20 @@ class AccountsPage extends React.Component {
         });
     }
 
-    handleShowNodeList() {
+    handleShowChainList() {
         this.setState({
             showMenuList: false,
-            showNodeList: !this.state.showNodeList
+            showChainList: !this.state.showChainList
         });
+    }
+
+    handleSelectChain(chainId){
+        const { chains } = this.props;
+        if(chains.selected !== chainId){
+            PopupAPI.selectChain(chainId);
+            app.getNodes();
+        }
+        this.handleShowChainList();
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {
@@ -222,7 +232,8 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className='cell bankSingle' onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
-                        window.open('http://www.tronlending.org');
+                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === '0f22e40f-a004-4c5a-99ef-004c8e6769bf')
+                            window.open('http://www.tronlending.org');
                     }}>
                         <div className='title'>
                             {
@@ -434,9 +445,9 @@ class AccountsPage extends React.Component {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
-        const { showNodeList,mnemonic,privateKey,news,ieos,allTokens }  = this.state;
+        const { showChainList,mnemonic,privateKey,news,ieos,allTokens }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
-        const { accounts,prices,nodes,setting,language:lng,vTokenList } = this.props;
+        const { accounts,prices,nodes,setting,language:lng,vTokenList,chains } = this.props;
         const { selected: { airdropInfo } } = accounts;
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
@@ -487,7 +498,7 @@ class AccountsPage extends React.Component {
                 {
                     this.renderDeleteAccount()
                 }
-                <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
+                <Header showChainList={showChainList} developmentMode={setting.developmentMode} chains={chains} handleSelectChain={this.handleSelectChain.bind(this)} handleShowChainList={this.handleShowChainList.bind(this)} />
                 <div className='space-controller'>
                     {
                         nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
@@ -618,6 +629,7 @@ class AccountsPage extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        chains:state.app.chains,
         vTokenList:state.app.vTokenList,
         language: state.app.language,
         accounts: state.accounts,
