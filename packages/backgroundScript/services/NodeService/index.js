@@ -19,12 +19,20 @@ const NodeService = {
         }
     },
     _nodes: {
+            'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
+                name: 'Mainnet Testnet',
+                fullNode: 'http://47.252.84.158:8070',
+                solidityNode: 'http://47.252.84.158:8071',
+                eventServer: 'http://47.252.81.14:8070',
+                default: true, // false
+                chain:'_'
+            },
             'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
                 name: 'Mainnet',
                 fullNode: 'https://api.trongrid.io',
                 solidityNode: 'https://api.trongrid.io',
                 eventServer: 'https://api.trongrid.io',
-                default: true, // false
+                default: false, // false
                 chain:'_'
             },
             // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
@@ -52,7 +60,8 @@ const NodeService = {
             }
     },
     _selectedChain:'_',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
+    //_selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
+    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30682',
     // TESTNET: _selectedNode: '6739be94-ee43-46af-9a62-690cf0947269',
 
     _read() {
