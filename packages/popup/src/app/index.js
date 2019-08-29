@@ -29,6 +29,7 @@ import TransactionDetailController from '@tronlink/popup/src/controllers/Transac
 import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhitelistController';
 import LedgerController from '@tronlink/popup/src/controllers/LedgerController';
 import LedgerAccountImportController from '@tronlink/popup/src/controllers/LedgerController/LedgerAccountImportController';
+import NodeManageController from '@tronlink/popup/src/controllers/NodeManageController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -46,7 +47,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps,vTokenList } = this.props;
+        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps,vTokenList,chains } = this.props;
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -80,7 +81,7 @@ class App extends React.Component {
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SETTING:
-                dom = <SettingController lock={lock} version={version} language={language} prices={prices} nodes={nodes} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <SettingController lock={lock} version={version} language={language} prices={prices} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
@@ -121,6 +122,9 @@ class App extends React.Component {
             case APP_STATE.LEDGER_IMPORT_ACCOUNT:
                 dom = <LedgerAccountImportController />;
                 break;
+            case APP_STATE.NODE_MANAGE:
+                dom = <NodeManageController nodes={nodes} chains={chains}  onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
+                break;
             default:
                 dom =
                     <div className='unsupportedState' onClick={ () => PopupAPI.resetState(APP_STATE.USDT_INCOME_RECORD) }>
@@ -145,5 +149,6 @@ export default connect(state => ({
     prices: state.app.prices,
     lock: state.app.setting.lock,
     version: state.app.version,
-    authorizeDapps: state.app.authorizeDapps
+    authorizeDapps: state.app.authorizeDapps,
+    chains: state.app.chains
 }))(App);

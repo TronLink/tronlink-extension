@@ -27,7 +27,8 @@ export const APP_STATE = {
     TRANSACTION_DETAIL: 20, // [X] transaction detail
     DAPP_WHITELIST: 21, // [X] transaction detail
     LEDGER: 22, // [X] connect ledger wallet
-    LEDGER_IMPORT_ACCOUNT: 23 // [X] connect ledger wallet
+    LEDGER_IMPORT_ACCOUNT: 23, // [X] connect ledger wallet
+    NODE_MANAGE:24
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {
@@ -95,7 +96,9 @@ export const CONFIRMATION_TYPE = {
 };
 
 export const CONTRACT_ADDRESS = {
-    USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+    USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    MAIN:"TEaRKX1nazX7EiCu3XwaHjLZeCrHRLXoRa",
+    SIDE:"TDdo671JXH5S74iVvXEDyUXSgADYtg5ns7"
 };
 
 export const USDT_ACTIVITY_STAGE = {
@@ -157,13 +160,3 @@ export const TOP_TOKEN = [
     'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
 ];
 
-export const CHAINS = {
-    '_':{
-        name:'TRON',
-        default:true
-    },
-    '410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE':{
-        name:'DAppChain',
-        default:false
-    }
-};

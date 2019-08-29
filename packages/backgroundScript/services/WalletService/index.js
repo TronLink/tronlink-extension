@@ -297,7 +297,8 @@ class Wallet extends EventEmitter {
             APP_STATE.TRANSACTION_DETAIL,
             APP_STATE.DAPP_WHITELIST,
             APP_STATE.LEDGER,
-            APP_STATE.LEDGER_IMPORT_ACCOUNT
+            APP_STATE.LEDGER_IMPORT_ACCOUNT,
+            APP_STATE.NODE_MANAGE
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -375,7 +376,7 @@ class Wallet extends EventEmitter {
             return this._setState(APP_STATE.UNLOCKED);
         }
 
-        NodeService.init();
+        NodeService.init(true);
 
         this._loadAccounts();
         this._updatePrice();

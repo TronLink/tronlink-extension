@@ -120,6 +120,8 @@
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"Receive Address",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"Choose Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"Transfer Amount",
+    "ACCOUNT.TRANSFER":"Transfer",
+    "ACCOUNT.TRANSFER.SELECT_CHAIN":"Choose Chain",
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -208,6 +210,7 @@
 
     "SETTING.TITLE":"Setting",
     "SETTING.TITLE.DAPP_WHITELIST":"DAPP white list",
+    "SETTING.TITLE.NODE_MANAGE":"节点管理",
     "SETTING.TITLE.NODE":"Switch node",
     "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",

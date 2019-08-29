@@ -522,27 +522,27 @@ html, body {
                             background-image: url('../images/new/icon-node.svg');
                         }
                     }
+                    //&:nth-child(3){
+                    //    &:before{
+                    //        background-image: url('../images/new/icon-add-node.svg');
+                    //    }
+                    //}
                     &:nth-child(3){
-                        &:before{
-                            background-image: url('../images/new/icon-add-node.svg');
-                        }
-                    }
-                    &:nth-child(4){
                         &:before{
                             background-image: url('../images/new/icon-currency.svg');
                         }
                     }
-                    &:nth-child(5){
+                    &:nth-child(4){
                         &:before{
                             background-image: url('../images/new/icon-language.svg');
                         }
                     }
-                    &:nth-child(6){
+                    &:nth-child(5){
                         &:before{
                             background-image: url('../images/new/icon-auto-lock.svg');
                         }
                     }
-                    &:nth-child(7){
+                    &:nth-child(6){
                         &:before{
                             background-image: url('../images/new/icon-lock.svg');
                         }
@@ -563,28 +563,28 @@ html, body {
                         //    }
                         //}
                     }
-                    &:nth-child(3){
+                    &:nth-child(2){
                         &.active{
                             .settingWrap{
                                 height: 360px;
                             }
                         }
                     }
-                    &:nth-child(4){
+                    &:nth-child(3){
                         &.active{
                             .settingWrap{
                                 height: 190px;
                             }
                         }
                     }
-                    &:nth-child(5){
+                    &:nth-child(4){
                         &.active{
                             .settingWrap{
                                 height: 100px;
                             }
                         }
                     }
-                    &:nth-child(6){
+                    &:nth-child(5){
                         &.active{
                             .settingWrap{
                                 height: 160px;
@@ -1270,39 +1270,55 @@ html, body {
         }
         .buttonGroup{
             height: 46px;
-            width: 100%;
+            width: 320px;
             position: fixed;
+            left: 50%;
+            margin-left:-160px;
             bottom:14px;
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            background: #636ACC;
+            box-shadow: 0 0 14px 0 rgba(0,0,0,0.20);
+            border-radius: 8px;
+            align-items: center;
+            .line{
+                height: 14px;
+                width: 1px;
+                background-color: rgba(255,255,255,0.20);
+                transform: scaleX(0.6);
+            }
             button{
+                background:transparent;
                 cursor: pointer;
                 width: 150px;
                 color: #fff;
-                font-size: 16px;
+                font-size: 14px;
                 border-radius: 2px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 border:none;
                 &:before{
-                    width: 16px;
-                    height: 14px;
+                    width: 12px;
+                    height: 12px;
                     content:'';
                     background-position: center;
+                    background-repeat: no-repeat;
                     margin-right: 6px;
                 }
                 &.receive{
-                    background-color: #76AB61;
                     &:before{
                         background-image: url('../../assets/images/new/icon-receive.svg');
                     }
                 }
                 &.send{
-                    background-color: #DB705C;
                     &:before{
                         background-image: url('../../assets/images/new/icon-transfer.svg');
+                    }
+                }
+                &.transfer{
+                    &:before{
+                        background-image: url('../images/new/side/icon-transfer.svg');
                     }
                 }
             }

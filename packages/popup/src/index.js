@@ -124,7 +124,6 @@ export const app = {
             PopupAPI.getVTokenList(),
             PopupAPI.getChains()
         ]);
-        console.log(nodes,chains)
         const lang = navigator.language || navigator.browserLanguage;
         if ( lang.indexOf('zh') > -1 ) {
             language = language || 'zh';

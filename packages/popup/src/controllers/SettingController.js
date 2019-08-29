@@ -218,9 +218,8 @@ class SettingController extends React.Component {
 
 
     render() {
-        const { prices,nodes,onCancel,language,lock,version} = this.props;
+        const { prices,onCancel,language,lock,version } = this.props;
         const { formatMessage } = this.props.intl;
-        const currentNode = nodes.nodes[nodes.selected];
         const {
             name,
             fullNode,
@@ -232,7 +231,7 @@ class SettingController extends React.Component {
         return (
             <div className='insetContainer choosingType2'>
                 <div className='pageHeader'>
-                    <div className="back" onClick={ onCancel }></div>
+                    <div className="back" onClick={ onCancel }>&nbsp;</div>
                     <FormattedMessage id="SETTING.TITLE" />
                 </div>
                 <div className='greyModal' ref="cell">
@@ -244,102 +243,72 @@ class SettingController extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(1)} } data-height={(16 + 122 * Object.keys(nodes.nodes).length)}>
+                        <div className="option" onClick={ ()=>PopupAPI.changeState(APP_STATE.NODE_MANAGE) }>
                             <div className="txt">
                                 <div className="span">
-                                    <FormattedMessage id="SETTING.TITLE.NODE" />
-                                    <div className="unit">{currentNode.name}</div>
-                                </div>
-                                <div className="settingWrap">
-                                    <div className="nodeWrap">
-                                        {
-                                            Object.entries(nodes.nodes).map(([nodeId, node]) => {
-                                                return (
-                                                    <div className={'nodeItem'+(nodeId === nodes.selected ? ' selected' : '')} onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        PopupAPI.selectNode(nodeId);
-                                                        app.getNodes();
-                                                    }}>
-                                                        <div className="title">{node.name}</div>
-                                                        <div className="cell">
-                                                            <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
-                                                            <span>{node.fullNode}</span>
-                                                        </div>
-                                                        <div className="cell">
-                                                            <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
-                                                            <span>{node.solidityNode}</span>
-                                                        </div>
-                                                        <div className="cell">
-                                                            <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
-                                                            <span>{node.eventServer}</span>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
+                                    <FormattedMessage id="SETTING.TITLE.NODE_MANAGE" />
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(2)} }   >
-                            <div className="txt">
-                                <div className="span">
-                                    <FormattedMessage id="SETTING.TITLE.ADD_NODE" />
-                                </div>
-                                <div className="settingWrap" onClick={(e)=>{e.stopPropagation()}}>
-                                    <div className={"input-group"+(!isValid && name.state === VALIDATION_STATE.INVALID ? ' error':'')}>
-                                        <label>
-                                            <FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />
-                                        </label>
-                                        <div className="input">
-                                            <input type="text" value={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>
-                                        </div>
-                                        {
-                                            !isValid && name.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NAME" /></div>:null
-                                        }
-                                    </div>
-                                    <div className={"input-group"+(!isValid && fullNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>
-                                        <label>
-                                            <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
-                                        </label>
-                                        <div className="input">
-                                            <input type="text" value={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />
-                                        </div>
-                                        {
-                                            !isValid && fullNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null
-                                        }
-                                    </div>
-                                    <div className={"input-group"+(!isValid && solidityNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>
-                                        <label>
-                                            <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
-                                        </label>
-                                        <div className="input">
-                                            <input type="text" value={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>
-                                        </div>
-                                        {
-                                            !isValid && solidityNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null
-                                        }
-                                    </div>
-                                    <div className={"input-group"+(!isValid && eventServer.state === VALIDATION_STATE.INVALID ? ' error':'')}>
-                                        <label>
-                                            <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
-                                        </label>
-                                        <div className="input">
-                                            <input type="text" value={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />
-                                        </div>
-                                        {
-                                            !isValid && eventServer.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null
-                                        }
-                                    </div>
-                                    <Button
-                                        id='SETTINGS.CUSTOM_NODE'
-                                        isValid={ isValid }
-                                        onClick={ (e)=>{this.addCustomNode(e)} }
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="option" onClick={ ()=>{this.setting(3)} }>
+                        {/*<div className="option" onClick={ ()=>{this.setting(2)} }   >*/}
+                            {/*<div className="txt">*/}
+                                {/*<div className="span">*/}
+                                    {/*<FormattedMessage id="SETTING.TITLE.ADD_NODE" />*/}
+                                {/*</div>*/}
+                                {/*<div className="settingWrap" onClick={(e)=>{e.stopPropagation()}}>*/}
+                                    {/*<div className={"input-group"+(!isValid && name.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
+                                        {/*<label>*/}
+                                            {/*<FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />*/}
+                                        {/*</label>*/}
+                                        {/*<div className="input">*/}
+                                            {/*<input type="text" value={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>*/}
+                                        {/*</div>*/}
+                                        {/*{*/}
+                                            {/*!isValid && name.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NAME" /></div>:null*/}
+                                        {/*}*/}
+                                    {/*</div>*/}
+                                    {/*<div className={"input-group"+(!isValid && fullNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
+                                        {/*<label>*/}
+                                            {/*<FormattedMessage id="SETTINGS.NODES.FULL_NODE" />*/}
+                                        {/*</label>*/}
+                                        {/*<div className="input">*/}
+                                            {/*<input type="text" value={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />*/}
+                                        {/*</div>*/}
+                                        {/*{*/}
+                                            {/*!isValid && fullNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
+                                        {/*}*/}
+                                    {/*</div>*/}
+                                    {/*<div className={"input-group"+(!isValid && solidityNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
+                                        {/*<label>*/}
+                                            {/*<FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />*/}
+                                        {/*</label>*/}
+                                        {/*<div className="input">*/}
+                                            {/*<input type="text" value={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>*/}
+                                        {/*</div>*/}
+                                        {/*{*/}
+                                            {/*!isValid && solidityNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
+                                        {/*}*/}
+                                    {/*</div>*/}
+                                    {/*<div className={"input-group"+(!isValid && eventServer.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
+                                        {/*<label>*/}
+                                            {/*<FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />*/}
+                                        {/*</label>*/}
+                                        {/*<div className="input">*/}
+                                            {/*<input type="text" value={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />*/}
+                                        {/*</div>*/}
+                                        {/*{*/}
+                                            {/*!isValid && eventServer.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
+                                        {/*}*/}
+                                    {/*</div>*/}
+                                    {/*<Button*/}
+                                        {/*id='SETTINGS.CUSTOM_NODE'*/}
+                                        {/*isValid={ isValid }*/}
+                                        {/*onClick={ (e)=>{this.addCustomNode(e)} }*/}
+                                    {/*/>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                        <div className="option" onClick={ ()=>{this.setting(2)} }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.CURRENCY" />
@@ -352,7 +321,7 @@ class SettingController extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={ ()=>{this.setting(4)} }>
+                        <div className="option" onClick={ ()=>{this.setting(3)} }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.LANGUAGE" />
@@ -369,7 +338,7 @@ class SettingController extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="option" onClick={() =>{this.setting(5)}   }>
+                        <div className="option" onClick={() =>{this.setting(4)}   }>
                             <div className="txt">
                                 <div className="span">
                                     <FormattedMessage id="SETTING.TITLE.AUTO_LOCK" />

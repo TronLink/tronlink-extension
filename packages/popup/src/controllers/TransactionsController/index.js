@@ -256,11 +256,19 @@ class TransactionsController extends React.Component {
                     >
                         <FormattedMessage id='ACCOUNT.RECEIVE' />
                     </button>
+                    <div className="line">&nbsp;</div>
                     <button className='send' onClick={ (e) => {
                         PopupAPI.changeDealCurrencyPage(1);
                         PopupAPI.changeState(APP_STATE.SEND);
                     }}>
                         <FormattedMessage id='ACCOUNT.SEND'/>
+                    </button>
+                    <div className="line">&nbsp;</div>
+                    <button className='transfer' onClick={ (e) => {
+                        PopupAPI.changeDealCurrencyPage(1);
+                        PopupAPI.changeState(APP_STATE.TRANSFER);
+                    }}>
+                        <FormattedMessage id='ACCOUNT.TRANSFER'/>
                     </button>
                 </div>
             </div>

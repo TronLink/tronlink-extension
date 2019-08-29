@@ -98,7 +98,13 @@ const NodeService = {
             this._selectedNode = selectedNode;
     },
 
-    init() {
+    init(isSetChains = false) {
+        if(isSetChains){
+            Object.entries(this._chains).forEach(( [chainId, chain ])=>{
+                StorageService.saveChain(chainId, chain)
+            });
+            StorageService.selectChain(this._selectedChain);
+        }
         this._read();
         this._updateTronWeb();
     },
