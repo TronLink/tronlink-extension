@@ -659,14 +659,16 @@ class Wallet extends EventEmitter {
             });
             StorageService.saveAllTokens(t);
         });
-        axios.get('https://testlist.tronlink.org/api/wallet/official_token').then(res=>{
-            StorageService.saveVTokenList(res.data.data);
-            this.emit('setVTokenList',res.data.data);
-        }).catch(e => {
-            this.emit('setVTokenList',StorageService.vTokenList);
-        });
+
         if(isResetPhishingList) {
-            const {data: {data: phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            axios.get('https://list.tronlink.org/api/wallet/official_token').then(res=>{
+                StorageService.saveVTokenList(res.data.data);
+                this.emit('setVTokenList',res.data.data);
+            }).catch(e => {
+                this.emit('setVTokenList',StorageService.vTokenList);
+            });
+
+            const {data: {data: phishingList}} = await axios.get('https://list.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
             this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
         }
     }
