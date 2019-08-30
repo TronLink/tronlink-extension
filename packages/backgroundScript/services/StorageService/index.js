@@ -186,10 +186,10 @@ const StorageService = {
         this.save('accounts');
     },
 
-    deleteNode(chainId, nodeID) {
+    deleteNode(nodeID) {
         logger.info('Deleting node', nodeID);
 
-        delete this.nodes.nodeList[ chainId ][ nodeID ];
+        delete this.nodes.nodeList[ nodeID ];
         this.save('nodes');
     },
 

@@ -93,7 +93,7 @@ const backgroundScript = {
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
         duplex.on('rejectConfirmation', this.walletService.rejectConfirmation);
 
-        // WalletService: BLockchain actions
+        // WalletService: Blockchain actions
         duplex.on('sendTrx', this.walletService.sendTrx);
         duplex.on('sendBasicToken', this.walletService.sendBasicToken);
         duplex.on('sendSmartToken', this.walletService.sendSmartToken);
@@ -124,7 +124,7 @@ const backgroundScript = {
         // NodeService: Node management
         duplex.on('selectNode', this.walletService.selectNode);
         duplex.on('addNode', this.walletService.addNode);
-        //duplex.on('deleteNode', this.nodeService.deleteNode);
+        duplex.on('deleteNode', this.walletService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
 
         duplex.on('getSmartToken', this.nodeService.getSmartToken);

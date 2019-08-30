@@ -103,12 +103,12 @@ export default {
         this.duplex.send('selectNode', nodeID, false);
     },
 
-    addNode(chainId,node) {
-        this.duplex.send('addNode', {chainId,...node}, false);
+    addNode(node) {
+        this.duplex.send('addNode', node, false);
     },
 
-    deleteNode() {
-
+    deleteNode(nodeID) {
+        this.duplex.send('deleteNode', nodeID, false);
     },
 
     getNodes() {

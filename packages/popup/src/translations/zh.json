@@ -167,6 +167,7 @@
     "CONFIRMATIONS.OPTIONS.ONE_HOUR": "一小时之内自动签名",
     "CONFIRMATIONS.OPTIONS.ONE_DAY": "一天之内自动签名",
     "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "自动签名直到再次登陆",
+    "CONFIRMATIONS.DELETE_NODE.BODY": "确定删除当前节点吗？",
 
     "CONTRACTS.SignMessage": "签名",
     "CONTRACTS.AccountCreateContract": "创建账户",
@@ -352,6 +353,7 @@
     "EXCEPTION.FORMAT_ERROR":"格式错误",
     "EXCEPTION.ACCOUNT_EXIST":"该地址已在账户列表中，请勿重复添加",
     "EXCEPTION.ADD_NODE.NAME":"需大于四个字符",
+    "EXCEPTION.ADD_NODE.REPEAT_NAME":"节点名称不能重复",
     "EXCEPTION.ADD_NODE.NODE_URL":"格式错误，请以http://或https://开头",
     "EXCEPTION.SEND.ADDRESS_FORMAT_ERROR":"地址格式错误",
     "EXCEPTION.SEND.ADDRESS_SAME_ERROR":"支付地址与接收地址不能相同",

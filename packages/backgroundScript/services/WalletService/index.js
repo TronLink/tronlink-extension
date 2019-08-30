@@ -707,9 +707,9 @@ class Wallet extends EventEmitter {
         this.emit('setChain',chains);
     }
 
-    addNode({chainId,...node}) {
+    addNode(node) {
         this.selectNode(
-            NodeService.addNode(chainId,node)
+            NodeService.addNode(node)
         );
     }
 

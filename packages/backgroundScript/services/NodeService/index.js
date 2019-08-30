@@ -178,19 +178,26 @@ const NodeService = {
         this._updateTronWeb();
     },
 
+    deleteNode(nodeID) {
+        StorageService.deleteNode(nodeID);
+        if(nodeID === this._selectedNode) {
+            const nodeId = Object.entries(this._nodes).filter(([nodeId,node])=>node.default && node.chain === this._selectedChain)[0][0];
+            this.selectNode(nodeId);
+        }
+    },
+
     selectChain(chainId) {
         StorageService.selectChain(chainId);
         this._selectedChain = chainId;
         this._updateTronWeb();
     },
 
-    addNode(chainId,node) {
+    addNode(node) {
         const nodeID = randomUUID();
 
         this._nodes[ nodeID ] = {
             ...node,
-            default: false,
-            chain:chainId
+            default: false
         };
         this.save();
         return nodeID;

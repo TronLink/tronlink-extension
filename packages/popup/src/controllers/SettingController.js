@@ -1,34 +1,11 @@
 import React from 'react';
-import swal from 'sweetalert2';
 import { PopupAPI } from "@tronlink/lib/api";
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Button from "@tronlink/popup/src/components/Button";
-import { VALIDATION_STATE } from "@tronlink/lib/constants";
-import { app } from "@tronlink/popup/src";
 import { APP_STATE } from '@tronlink/lib/constants';
 class SettingController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            customNode: {
-                name: {
-                    value: '',
-                    state: VALIDATION_STATE.NONE
-                },
-                fullNode: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                solidityNode: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                eventServer: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                isValid: false
-            },
             languages: [
                 { name: 'English', key: 'en', selected: true },
                 { name: '中文', key: 'zh', selected: false },
@@ -54,179 +31,30 @@ class SettingController extends React.Component {
     }
 
     setting(index) {
-        //const { nodes } = this.props;
         const options = this.refs.cell.getElementsByClassName('option');
-        //if (options[ index ].hasAttribute('data-height'))
-        //if(index !==0 ) {
-            for(let i = 0;i < options.length;i++) {
-                if(i === index) {
-                    options[ index ].classList.toggle('active');
-                    if(options[ index ].hasAttribute('data-height')) {
-                        const height = options[ index ].getAttribute('data-height');
-                        if(options[ index ].classList.contains('active')) {
-                            options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = height + 'px';
-                        } else {
-                            options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
-                        }
-                    }
-                }else {
-                    options[ i ].classList.remove('active');
-                    if(options[ i ].hasAttribute('data-height')) {
-                        options[ i ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
+        for(let i = 0;i < options.length;i++) {
+            if(i === index) {
+                options[ index ].classList.toggle('active');
+                if(options[ index ].hasAttribute('data-height')) {
+                    const height = options[ index ].getAttribute('data-height');
+                    if(options[ index ].classList.contains('active')) {
+                        options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = height + 'px';
+                    } else {
+                        options[ index ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
                     }
                 }
-            }
-
-        //} else {
-            // const idx = parseInt(options[0].getElementsByClassName('settingWrap')[0].style.height);
-            // if(idx === 0){
-            //     options[0].getElementsByClassName('settingWrap')[0].style.height = (16 + 122 * Object.keys(nodes.nodes).length)+'px';
-            // } else {
-            //     options[0].getElementsByClassName('settingWrap')[0].style.height = '0px';
-            // }
-        //}
-    }
-
-    onCustomNameChange(name) {
-        const { nodes } = this.props.nodes;
-
-        name = name.replace(/\s{2,}/g, ' ');
-
-        if(/^\s$/.test(name) || !name.length) {
-            return this.setState({
-                customNode: {
-                    ...this.state.customNode,
-                    isValid: false,
-                    name: {
-                        value: '',
-                        state: VALIDATION_STATE.NONE
-                    }
+            }else {
+                options[ i ].classList.remove('active');
+                if(options[ i ].hasAttribute('data-height')) {
+                    options[ i ].getElementsByClassName('settingWrap')[ 0 ].style.height = '0px';
                 }
-            });
-        }
-
-        const { customNode } = this.state;
-        const nameState = (!Object.values(nodes).some(node => (
-            node.name.toLowerCase() === name.trim().toLowerCase()
-        )) && name.trim().length >= 4) ?
-            VALIDATION_STATE.VALID :
-            VALIDATION_STATE.INVALID;
-
-        const isValid =
-            nameState === VALIDATION_STATE.VALID &&
-            customNode.fullNode.state === VALIDATION_STATE.VALID &&
-            customNode.solidityNode.state === VALIDATION_STATE.VALID &&
-            customNode.eventServer.state === VALIDATION_STATE.VALID;
-
-        this.setState({
-            customNode: {
-                ...this.state.customNode,
-                name: {
-                    state: nameState,
-                    value: name
-                },
-                isValid
             }
-        });
-    }
-
-
-    onCustomNodeChange(nodeType, value) {
-        if(!value.length) {
-            return this.setState({
-                customNode: {
-                    ...this.state.customNode,
-                    isValid: false,
-                    [ nodeType ]: {
-                        value: '',
-                        state: VALIDATION_STATE.NONE
-                    }
-                }
-            });
         }
-
-        const { customNode } = this.state;
-        let nodeState = VALIDATION_STATE.INVALID;
-
-        try {
-            new URL(value);
-            nodeState = VALIDATION_STATE.VALID;
-        } catch(err) {
-
-        }
-
-        customNode[ nodeType ].state = nodeState;
-
-        const isValid =
-            customNode.name.state === VALIDATION_STATE.VALID &&
-            customNode.fullNode.state === VALIDATION_STATE.VALID &&
-            customNode.solidityNode.state === VALIDATION_STATE.VALID &&
-            customNode.eventServer.state === VALIDATION_STATE.VALID;
-
-        this.setState({
-            customNode: {
-                ...this.state.customNode,
-                [ nodeType ]: {
-                    state: nodeState,
-                    value
-                },
-                isValid
-            }
-        });
-    }
-
-    addCustomNode(e) {
-        e.stopPropagation();
-        const { formatMessage } = this.props.intl;
-        const { customNode } = this.state;
-        const name = customNode.name.value.trim();
-        const fullNode = customNode.fullNode.value.trim();
-        const solidityNode = customNode.solidityNode.value.trim();
-        const eventServer = customNode.eventServer.value.trim();
-
-        PopupAPI.addNode({
-            name,
-            fullNode,
-            solidityNode,
-            eventServer
-        });
-
-        app.getNodes();
-        swal(formatMessage({id:'SETTING.SUCCESS.ADD_NODE'}),'','success');
-        this.setState({
-            customNode: {
-                name: {
-                    value: '',
-                    state: VALIDATION_STATE.NONE
-                },
-                fullNode: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                solidityNode: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                eventServer: {
-                    value: 'https://',
-                    state: VALIDATION_STATE.NONE
-                },
-                isValid: false
-            }
-        });
     }
 
 
     render() {
         const { prices,onCancel,language,lock,version } = this.props;
-        const { formatMessage } = this.props.intl;
-        const {
-            name,
-            fullNode,
-            solidityNode,
-            eventServer,
-            isValid
-        } = this.state.customNode;
         const {languages,autoLock} = this.state;
         return (
             <div className='insetContainer choosingType2'>
@@ -250,64 +78,6 @@ class SettingController extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        {/*<div className="option" onClick={ ()=>{this.setting(2)} }   >*/}
-                            {/*<div className="txt">*/}
-                                {/*<div className="span">*/}
-                                    {/*<FormattedMessage id="SETTING.TITLE.ADD_NODE" />*/}
-                                {/*</div>*/}
-                                {/*<div className="settingWrap" onClick={(e)=>{e.stopPropagation()}}>*/}
-                                    {/*<div className={"input-group"+(!isValid && name.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
-                                        {/*<label>*/}
-                                            {/*<FormattedMessage id="SETTINGS.CUSTOM_NODE.NAME" />*/}
-                                        {/*</label>*/}
-                                        {/*<div className="input">*/}
-                                            {/*<input type="text" value={name.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.NAME.PLACEHOLDER"})} onChange={ (e)=>this.onCustomNameChange(e.target.value) }/>*/}
-                                        {/*</div>*/}
-                                        {/*{*/}
-                                            {/*!isValid && name.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NAME" /></div>:null*/}
-                                        {/*}*/}
-                                    {/*</div>*/}
-                                    {/*<div className={"input-group"+(!isValid && fullNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
-                                        {/*<label>*/}
-                                            {/*<FormattedMessage id="SETTINGS.NODES.FULL_NODE" />*/}
-                                        {/*</label>*/}
-                                        {/*<div className="input">*/}
-                                            {/*<input type="text" value={fullNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.FULL_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('fullNode', e.target.value) } />*/}
-                                        {/*</div>*/}
-                                        {/*{*/}
-                                            {/*!isValid && fullNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
-                                        {/*}*/}
-                                    {/*</div>*/}
-                                    {/*<div className={"input-group"+(!isValid && solidityNode.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
-                                        {/*<label>*/}
-                                            {/*<FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />*/}
-                                        {/*</label>*/}
-                                        {/*<div className="input">*/}
-                                            {/*<input type="text" value={solidityNode.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.SOLIDITY_NODE.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('solidityNode', e.target.value) }/>*/}
-                                        {/*</div>*/}
-                                        {/*{*/}
-                                            {/*!isValid && solidityNode.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
-                                        {/*}*/}
-                                    {/*</div>*/}
-                                    {/*<div className={"input-group"+(!isValid && eventServer.state === VALIDATION_STATE.INVALID ? ' error':'')}>*/}
-                                        {/*<label>*/}
-                                            {/*<FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />*/}
-                                        {/*</label>*/}
-                                        {/*<div className="input">*/}
-                                            {/*<input type="text" value={eventServer.value} placeholder={formatMessage({id:"SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER"})} onChange={ e => this.onCustomNodeChange('eventServer', e.target.value) } />*/}
-                                        {/*</div>*/}
-                                        {/*{*/}
-                                            {/*!isValid && eventServer.state === VALIDATION_STATE.INVALID ? <div className="tipError"><FormattedMessage id="EXCEPTION.ADD_NODE.NODE_URL" /></div>:null*/}
-                                        {/*}*/}
-                                    {/*</div>*/}
-                                    {/*<Button*/}
-                                        {/*id='SETTINGS.CUSTOM_NODE'*/}
-                                        {/*isValid={ isValid }*/}
-                                        {/*onClick={ (e)=>{this.addCustomNode(e)} }*/}
-                                    {/*/>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
-                        {/*</div>*/}
                         <div className="option" onClick={ ()=>{this.setting(2)} }>
                             <div className="txt">
                                 <div className="span">
