@@ -713,6 +713,11 @@ class Wallet extends EventEmitter {
         );
     }
 
+    deleteNode(nodeId){
+        const id = NodeService.deleteNode(nodeId);
+        id  ? this.selectNode(id) : null;
+    }
+
     getAccounts(sideChain = false) {
         const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
             if(sideChain && account.type === ACCOUNT_TYPE.LEDGER)

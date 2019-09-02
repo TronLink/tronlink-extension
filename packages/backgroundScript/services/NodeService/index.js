@@ -183,6 +183,9 @@ const NodeService = {
         if(nodeID === this._selectedNode) {
             const nodeId = Object.entries(this._nodes).filter(([nodeId,node])=>node.default && node.chain === this._selectedChain)[0][0];
             this.selectNode(nodeId);
+            return nodeId;
+        }else{
+            return false;
         }
     },
 
