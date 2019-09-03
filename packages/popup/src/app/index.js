@@ -30,6 +30,7 @@ import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhiteli
 import LedgerController from '@tronlink/popup/src/controllers/LedgerController';
 import LedgerAccountImportController from '@tronlink/popup/src/controllers/LedgerController/LedgerAccountImportController';
 import NodeManageController from '@tronlink/popup/src/controllers/NodeManageController';
+import TransferController from '@tronlink/popup/src/controllers/TransferController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -76,6 +77,9 @@ class App extends React.Component {
                 break;
             case APP_STATE.SEND:
                 dom = <SendController accounts={accounts} />;
+                break;
+            case APP_STATE.TRANSFER:
+                dom = <TransferController accounts={accounts} chains={chains} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) }  />;
                 break;
             case APP_STATE.TRANSACTIONS:
                 dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;

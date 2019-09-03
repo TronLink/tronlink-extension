@@ -160,6 +160,14 @@ export const app = {
         );
     },
 
+    async getChains() {
+        const chains = await PopupAPI.getChains();
+
+        this.store.dispatch(
+            setChains(chains)
+        );
+    },
+
     bindDuplexRequests() {
         this.duplex.on('setState', appState => this.store.dispatch(
             setAppState(appState)

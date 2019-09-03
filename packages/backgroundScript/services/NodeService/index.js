@@ -1,8 +1,9 @@
 import StorageService from '../StorageService';
 import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
+import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-
+import { CONTRACT_ADDRESS } from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
@@ -13,7 +14,7 @@ const NodeService = {
             name:'TRON',
             default:true
         },
-        '410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE':{
+        '413AF23F37DA0D48234FDD43D89931E98E1144481B':{
             name:'DAppChain',
             default:false
         }
@@ -56,7 +57,7 @@ const NodeService = {
                 solidityNode: 'http://47.252.85.90:8071',
                 eventServer: 'http://47.252.87.129:8070',
                 default: true,
-                chain:'410A6DBD0780EA9B136E3E9F04EBE80C6C288B80EE'
+                chain:'413AF23F37DA0D48234FDD43D89931E98E1144481B'
             }
     },
     _selectedChain:'_',
@@ -67,20 +68,19 @@ const NodeService = {
     _read() {
         logger.info('Reading nodes and chains from storage');
 
-
-
         const {
             chainList = {},
             selectedChain = false
         } = StorageService.chains;
+        this._chains = chainList;
+        this._selectedChain = selectedChain;
 
         const {
             nodeList = {},
             selectedNode = false
         } = StorageService.nodes;
 
-        this._chains = chainList;
-        this._selectedChain = selectedChain;
+
 
         this._nodes = {
             ...this._nodes,
@@ -110,17 +110,30 @@ const NodeService = {
     },
 
     _updateTronWeb(skipAddress = false) {
+        console.log(this._selectedChain,'this._selectedChain')
         const {
             fullNode,
             solidityNode,
             eventServer
         } = this.getCurrentNode();
+        if(this._selectedChain === '_') {
+            this.tronWeb = new TronWeb(
+                fullNode,
+                solidityNode,
+                eventServer
+            );
+        }else{
 
-        this.tronWeb = new TronWeb(
-            fullNode,
-            solidityNode,
-            eventServer
-        );
+            const sunWeb = new SunWeb(
+                {fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
+                {fullNode,solidityNode,eventServer},
+                CONTRACT_ADDRESS.MAIN,
+                CONTRACT_ADDRESS.SIDE,
+                this._selectedChain);
+
+            this.tronWeb = sunWeb.sidechain;
+
+        }
 
         if(!skipAddress)
             this.setAddress();
@@ -155,7 +168,7 @@ const NodeService = {
 
     getNodes() {
         return {
-            nodes: this._nodes,
+            nodes: StorageService.nodes.nodeList,
             selected: this._selectedNode
         };
     },

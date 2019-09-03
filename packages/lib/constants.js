@@ -28,7 +28,8 @@ export const APP_STATE = {
     DAPP_WHITELIST: 21, // [X] transaction detail
     LEDGER: 22, // [X] connect ledger wallet
     LEDGER_IMPORT_ACCOUNT: 23, // [X] connect ledger wallet
-    NODE_MANAGE:24
+    NODE_MANAGE:24, // node manage
+    TRANSFER:25 // transfer
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {
@@ -97,7 +98,7 @@ export const CONFIRMATION_TYPE = {
 
 export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
-    MAIN:"TEaRKX1nazX7EiCu3XwaHjLZeCrHRLXoRa",
+    MAIN:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX",
     SIDE:"TDdo671JXH5S74iVvXEDyUXSgADYtg5ns7"
 };
 

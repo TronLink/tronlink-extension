@@ -55,8 +55,7 @@ class AccountsPage extends React.Component {
         await PopupAPI.setAirdropInfo(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
-
-        //PopupAPI.setPushMessage({title:'sdsdsd', message:'dsdasdadsadsad'});
+        app.getChains();
     }
 
     runTime(ieos) {
@@ -118,11 +117,8 @@ class AccountsPage extends React.Component {
     }
 
     handleSelectChain(chainId){
-        const { chains } = this.props;
-        if(chains.selected !== chainId){
-            PopupAPI.selectChain(chainId);
-            app.getNodes();
-        }
+        PopupAPI.selectChain(chainId);
+        app.getNodes();
         this.handleShowChainList();
     }
 

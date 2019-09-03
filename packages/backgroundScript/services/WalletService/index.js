@@ -298,7 +298,8 @@ class Wallet extends EventEmitter {
             APP_STATE.DAPP_WHITELIST,
             APP_STATE.LEDGER,
             APP_STATE.LEDGER_IMPORT_ACCOUNT,
-            APP_STATE.NODE_MANAGE
+            APP_STATE.NODE_MANAGE,
+            APP_STATE.TRANSFER
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -687,7 +688,7 @@ class Wallet extends EventEmitter {
         ));
 
         const node = NodeService.getCurrentNode();
-
+        NodeService.selectChain(node.chain);
         this.emit('setNode', {
             fullNode: node.fullNode,
             solidityNode: node.solidityNode,
@@ -695,22 +696,26 @@ class Wallet extends EventEmitter {
         });
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
+
     }
 
     async selectChain(chainId) {
-        const chains = NodeService.getChains();
-        const nodes = NodeService.getNodes();
-        const node = Object.entries(nodes.nodes).filter(([nodeId,node])=> node.chain === chainId && node.default)[0];
-        await this.selectNode(node[0]);
-        NodeService.selectChain(chainId);
-        chains.selected = chainId;
-        this.emit('setChain',chains);
+        if(StorageService.chains.selectedChain !== chainId) {
+            const chains = NodeService.getChains();
+            const nodes = NodeService.getNodes();
+            const node = Object.entries(nodes.nodes).filter(([nodeId, node]) => node.chain === chainId && node.default)[0];
+            await this.selectNode(node[0]);
+            NodeService.selectChain(chainId);
+            chains.selected = chainId;
+            this.emit('setChain', chains);
+        }
     }
 
     addNode(node) {
-        this.selectNode(
-            NodeService.addNode(node)
-        );
+        NodeService.addNode(node)
+        // this.selectNode(
+        //
+        // );
     }
 
     deleteNode(nodeId){

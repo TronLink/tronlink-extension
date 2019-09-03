@@ -244,12 +244,17 @@ class NodeManageController extends React.Component {
                     <FormattedMessage id='SETTING.TITLE.NODE_MANAGE' />
                     <div className="chains">
                         {chains.chains[selectedChain].name}
+                        <div className="chainWrap">
+                            {
+                                Object.entries(chains.chains).map(([chainId,chain])=><div className="item" onClick={()=>this.setState({selectedChain:chainId})}>{chain.name}</div>)
+                            }
+                        </div>
                     </div>
                 </div>
                 <div className='greyModal'>
                     <div className='node scroll'>
                         {
-                            Object.entries(nodes.nodes).filter(([nodeId,node])=> node.chain === chains.selected).map(([nodeId, {name, fullNode, solidityNode, eventServer, isDelete = false}])=>{
+                            Object.entries(nodes.nodes).filter(([nodeId,node])=> node.chain === selectedChain).map(([nodeId, {name, fullNode, solidityNode, eventServer, isDelete = false}])=>{
                                 return(
                                     <div className='item' onClick={()=>{
                                         PopupAPI.selectNode(nodeId);

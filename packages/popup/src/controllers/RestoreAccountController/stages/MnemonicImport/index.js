@@ -8,7 +8,6 @@ import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { PopupAPI } from '@tronlink/lib/api';
 
 import './MnemonicImport.scss';
-NodeService.init();
 const IMPORT_STAGE = {
     ENTERING_MNEMONIC: 0,
     SELECTING_ACCOUNTS: 1

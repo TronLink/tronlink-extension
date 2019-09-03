@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import { APP_STATE } from '@tronlink/lib/constants';
 import { PopupAPI } from '@tronlink/lib/api';
 
+
 const logo = require('@tronlink/popup/src/assets/images/new/logo2.svg');
 
 
@@ -18,8 +19,8 @@ class Header extends React.Component {
         }
     }
 
-    componentDidMount() {}
-
+    componentDidMount() {
+    }
 
 
     render() {

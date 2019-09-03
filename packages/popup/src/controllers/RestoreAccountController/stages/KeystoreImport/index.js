@@ -4,14 +4,12 @@ import Utils from '@tronlink/lib/utils';
 import { connect } from 'react-redux';
 import { Toast } from 'antd-mobile';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import NodeService from '@tronlink/backgroundScript/services/NodeService';
 import { PopupAPI } from '@tronlink/lib/api';
 import { bytesToString } from "@tronscan/client/src/utils/bytes";
 import { hexStr2byteArray } from "@tronscan/client/src/lib/code";
 import { pkToAddress } from "@tronscan/client/src/utils/crypto";
 
 import './KeystoreImport.scss';
-NodeService.init();
 
 
 class KeystoreImport extends React.Component {
