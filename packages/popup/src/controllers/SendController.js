@@ -348,11 +348,11 @@ class SendController extends React.Component {
             func.then((res) => {
                 this.setState({loading: false});
                 Toast.success(formatMessage({ id: 'SEND.SUCCESS' }), 3, () => this.onCancel(), true);
-                PopupAPI.setPushMessage({
-                    title:`-${amount}${selectedToken.abbr} ${formatMessage({id:'NOTIFICATIONS.TITLE'})}`,
-                    message:formatMessage({id:'NOTIFICATIONS.MESSAGE'}),
-                    hash:res
-                });
+                // PopupAPI.setPushMessage({
+                //     title:`-${amount}${selectedToken.abbr} ${formatMessage({id:'NOTIFICATIONS.TITLE'})}`,
+                //     message:formatMessage({id:'NOTIFICATIONS.MESSAGE'}),
+                //     hash:res
+                // });
             }).catch(error => {
                 Toast.fail(JSON.stringify(error), 3, () => {
                     this.setState({
