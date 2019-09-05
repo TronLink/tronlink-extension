@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
 import Loading from '@tronlink/popup/src/components/Loading';
-import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE } from '@tronlink/lib/constants';
+import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import TronWeb from "tronweb";
 import { Toast } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
@@ -37,7 +37,8 @@ class SendController extends React.Component {
                 values: ''
             },
             loading: false,
-            loadingLedger: false
+            loadingLedger: false,
+            allTokens:[]
         };
         this.listener = this.listener.bind(this);
     }
@@ -73,8 +74,9 @@ class SendController extends React.Component {
             }
         }
     }
-
-    componentDidMount() {
+    async componentDidMount() {
+        const allTokens = await PopupAPI.getAllTokens();
+        this.setState({allTokens});
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 ,  6) : selectedToken.amount;
         this.setState({selectedToken});
@@ -408,13 +410,24 @@ class SendController extends React.Component {
     }
 
     render() {
-        const { isOpen, selectedToken, loading, amount, recipient, loadingLedger } = this.state;
+        const { isOpen, selectedToken, loading, amount, recipient, loadingLedger,allTokens } = this.state;
         const { selected, accounts } = this.props.accounts;
-        const usdt = { tokenId: CONTRACT_ADDRESS.USDT, ...selected.tokens.smart[ CONTRACT_ADDRESS.USDT ] };
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart};
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && tokenId !== CONTRACT_ADDRESS.USDT ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol');
-        tokens = [usdt, trx, ...tokens];
+        const topArray = [];
+        allTokens.length && TOP_TOKEN.forEach(v=>{
+            if(tokens.hasOwnProperty(v)){
+                if(v === CONTRACT_ADDRESS.USDT){
+                    const f = allTokens.filter(({tokenId})=> tokenId === v);
+                    tokens[v].imgUrl = f.length ? allTokens.filter(({tokenId})=> tokenId === v)[0].imgUrl : false;
+                }
+                topArray.push(tokens[v]);
+            }else{
+                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
+            }
+        });
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
+        tokens = [trx, ...tokens];
         return (
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>
                 <Loading show={loadingLedger} onClose={this.handleClose.bind(this)} />

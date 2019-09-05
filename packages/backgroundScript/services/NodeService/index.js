@@ -26,7 +26,8 @@ const NodeService = {
                 solidityNode: 'http://47.252.84.158:8071',
                 eventServer: 'http://47.252.81.14:8070',
                 default: true, // false
-                chain:'_'
+                chain:'_',
+                connect: '413AF23F37DA0D48234FDD43D89931E98E1144481B'
             },
             'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
                 name: 'Mainnet',
@@ -34,7 +35,8 @@ const NodeService = {
                 solidityNode: 'https://api.trongrid.io',
                 eventServer: 'https://api.trongrid.io',
                 default: false, // false
-                chain:'_'
+                chain:'_' ,
+                connect:''
             },
             // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
             //     name: 'Mainnet(beta)',
@@ -72,14 +74,12 @@ const NodeService = {
             chainList = {},
             selectedChain = false
         } = StorageService.chains;
-        this._chains = chainList;
-        this._selectedChain = selectedChain;
+        this._chains = {...this._chains,...chainList};
 
         const {
             nodeList = {},
             selectedNode = false
         } = StorageService.nodes;
-
 
 
         this._nodes = {
@@ -94,47 +94,38 @@ const NodeService = {
             }
             return [nodeId, node];
         }).reduce((accumulator, currentValue)=>{accumulator[currentValue[0]]=currentValue[1];return accumulator;},{});
+
+        if(selectedChain)
+            this._selectedChain = selectedChain;
+
         if(selectedNode)
             this._selectedNode = selectedNode;
     },
 
-    init(isSetChains = false) {
-        if(isSetChains){
-            Object.entries(this._chains).forEach(( [chainId, chain ])=>{
-                StorageService.saveChain(chainId, chain)
-            });
-            StorageService.selectChain(this._selectedChain);
-        }
+    init() {
         this._read();
         this._updateTronWeb();
     },
 
     _updateTronWeb(skipAddress = false) {
-        console.log(this._selectedChain,'this._selectedChain')
         const {
             fullNode,
             solidityNode,
             eventServer
         } = this.getCurrentNode();
-        if(this._selectedChain === '_') {
-            this.tronWeb = new TronWeb(
-                fullNode,
-                solidityNode,
-                eventServer
-            );
-        }else{
 
-            const sunWeb = new SunWeb(
-                {fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
-                {fullNode,solidityNode,eventServer},
-                CONTRACT_ADDRESS.MAIN,
-                CONTRACT_ADDRESS.SIDE,
-                this._selectedChain);
+        this.sunWeb = new SunWeb(
+            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+            CONTRACT_ADDRESS.MAIN,
+            CONTRACT_ADDRESS.SIDE,
+            this._selectedChain);
 
-            this.tronWeb = sunWeb.sidechain;
-
-        }
-
+        this.tronWeb = new TronWeb(
+            fullNode,
+            solidityNode,
+            eventServer
+        );
         if(!skipAddress)
             this.setAddress();
     },
@@ -168,7 +159,7 @@ const NodeService = {
 
     getNodes() {
         return {
-            nodes: StorageService.nodes.nodeList,
+            nodes: this._nodes,
             selected: this._selectedNode
         };
     },
@@ -193,6 +184,7 @@ const NodeService = {
 
     deleteNode(nodeID) {
         StorageService.deleteNode(nodeID);
+        delete this._nodes[nodeID];
         if(nodeID === this._selectedNode) {
             const nodeId = Object.entries(this._nodes).filter(([nodeId,node])=>node.default && node.chain === this._selectedChain)[0][0];
             this.selectNode(nodeId);

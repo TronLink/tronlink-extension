@@ -8,7 +8,8 @@ import { BigNumber } from 'bignumber.js';
 
 import {
     ACCOUNT_TYPE,
-    CONTRACT_ADDRESS
+    CONTRACT_ADDRESS,
+    FEE
 } from '@tronlink/lib/constants';
 import axios from 'axios';
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
@@ -360,7 +361,7 @@ class Account {
                             precision: trc20Filter[ 0 ].sPrecision
                         } : { price: 0, precision: 0 });
                         price = price / Math.pow(10, precision);
-                        if ((!token && !StorageService.tokenCache.hasOwnProperty(key)) || (token && token.imgUrl == undefined))
+                        if ((!token && !StorageService.tokenCache.hasOwnProperty(key)))
                             await StorageService.cacheToken(key);
 
                         if (StorageService.tokenCache.hasOwnProperty(key)) {
@@ -368,7 +369,7 @@ class Account {
                                 name,
                                 abbr,
                                 decimals,
-                                imgUrl
+                                imgUrl = false
                             } = StorageService.tokenCache[ key ];
 
                             token = {
@@ -572,6 +573,46 @@ class Account {
             return Promise.resolve(transactionId);
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async depositTrx(amount){
+        try {
+            const txId = await NodeService.sunWeb.depositTrx(amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            return Promise.resolve(txId);
+        } catch(ex) {
+            logger.error('Failed to send TRX:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async withdrawTrx(amount){
+        try {
+            const txId = await NodeService.sunWeb.withdrawTrx(amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            return Promise.resolve(txId);
+        } catch(ex) {
+            logger.error('Failed to send TRX:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async depositTrc10(id,amount){
+        try {
+            const txId = await NodeService.sunWeb.depositTrc10(id,amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            return Promise.resolve(txId);
+        } catch(ex) {
+            logger.error('Failed to send TRX:', ex);
+            return Promise.reject(ex);
+        }
+    }
+
+    async withdrawTrc10(id,amount){
+        try {
+            const txId = await NodeService.sunWeb.withdrawTrc10(id,amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            return Promise.resolve(txId);
+        } catch(ex) {
+            logger.error('Failed to send TRX:', ex);
             return Promise.reject(ex);
         }
     }

@@ -308,5 +308,21 @@ export default {
 
     setPushMessage({iconUrl, title, message, hash}){
         this.duplex.send('setPushMessage', {iconUrl, title, message, hash}, false);
+    },
+
+    depositTrx(amount){
+        return this.duplex.send('depositTrx', amount);
+    },
+
+    withdrawTrx(amount){
+        return this.duplex.send('withdrawTrx', amount);
+    },
+
+    depositTrc10(id, amount){
+        return this.duplex.send('depositTrc10', {id,amount});
+    },
+
+    withdrawTrc10(id, amount){
+        return this.duplex.send('withdrawTrc10', {id,amount});
     }
 }

@@ -377,7 +377,7 @@ class Wallet extends EventEmitter {
             return this._setState(APP_STATE.UNLOCKED);
         }
 
-        NodeService.init(true);
+        NodeService.init();
 
         this._loadAccounts();
         this._updatePrice();
@@ -1162,8 +1162,8 @@ class Wallet extends EventEmitter {
                 this.times = 0;
                 return;
             }
-            const {data:transaction} = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
-            if(transaction && transaction.confirmed){
+            const transaction = await NodeService.tronWeb.trx.getConfirmedTransaction(hash);
+            if(transaction && transaction.txID === hash){
                 clearInterval(timer);
                 extensionizer.notifications.getPermissionLevel((level)=>{
                     if(level === 'granted'){
@@ -1179,6 +1179,24 @@ class Wallet extends EventEmitter {
                 })
             }
         },10000);
+    }
+
+    async depositTrx(amount){
+        return await this.accounts[ this.selectedAccount ].depositTrx(amount);
+    }
+
+    async withdrawTrx(amount){
+        return await this.accounts[ this.selectedAccount ].withdrawTrx(amount);
+
+    }
+
+    async depositTrc10({id,amount}){
+        return await this.accounts[ this.selectedAccount ].depositTrc10(id,amount);
+    }
+
+    async withdrawTrc10({id,amount}){
+        return await this.accounts[ this.selectedAccount ].withdrawTrc10(id,amount);
+
     }
 }
 export default Wallet;

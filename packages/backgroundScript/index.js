@@ -179,6 +179,13 @@ const backgroundScript = {
         //duplex.on('setVTokenList', this.walletService.setVTokenList);
         duplex.on('setPushMessage', this.walletService.setPushMessage);
 
+        // WalletService:deposit, withdraw
+        duplex.on('depositTrx', this.walletService.depositTrx);
+        duplex.on('withdrawTrx', this.walletService.withdrawTrx);
+
+        duplex.on('depositTrc10', this.walletService.depositTrc10);
+        duplex.on('withdrawTrc10', this.walletService.withdrawTrc10);
+
     },
 
     bindTabDuplex() {
