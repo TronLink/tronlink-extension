@@ -10,8 +10,7 @@
         "storage",
         "unlimitedStorage",
         "clipboardWrite",
-        "activeTab",
-        "notifications"
+        "activeTab"
     ],
     "browser_action": {
         "default_popup": "packages/popup/build/index.html",
