@@ -186,6 +186,8 @@ const backgroundScript = {
         duplex.on('depositTrc10', this.walletService.depositTrc10);
         duplex.on('withdrawTrc10', this.walletService.withdrawTrc10);
 
+        duplex.on('depositTrc20', this.walletService.depositTrc20);
+
     },
 
     bindTabDuplex() {

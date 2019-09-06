@@ -975,57 +975,64 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId({ tokenId, start = 0, direction = "all" }) {
+    async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = "all" ,limit = 30 }) {
+        const { fullNode } = NodeService.getCurrentNode();
         const address = this.selectedAccount;
-        const limit = 30;
-        let params = { limit, start: limit * start };
-        let requestUrl;
-        let newRecord = [];
+        const params = {limit,fingerprint};
+        let requestUrl = '';
+
         if(!tokenId.match(/^T/)) {
-            if(tokenId === '_') {
-                requestUrl = 'https://apilist.tronscan.org/api/simple-transaction';
-                //params.asset_name = 'TRX';
-            } else {
-                requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
-                params.token_id = tokenId;
+            requestUrl = `${fullNode}/v1/accounts/${address}/transactions`;
+            if(direction === 'to') {
+                params.only_to = true;
+            } else if(direction === 'from') {
+                params.only_from = true;
             }
-            if(direction === 'all') {
-                params = {...params, address};
-            } else if(direction === 'to') {
-                params = { ...params, from: address };
-            } else {
-                params = { ...params, to: address };
-            }
-            const { data: { data: records, total } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
-            if(tokenId !== '_') {
-                newRecord = records;
-            }else {
-                if(records.length > 0) {
-                    records.forEach((val, index) => {
-                        if((val.contractData.call_value || val.contractData.amount) && val.contractType !== 2) {
-                            newRecord.push(val);
-                        }
-                    });
-                }else {
-                    newRecord = [];
+            params.token_id = tokenId === '_' ? 'trx' : tokenId;
+            const { data: { data: records, meta:{ fingerprint: finger } } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+            let lists = records.map(record=>{
+                let fromAddress = '';
+                let toAddress = '';
+                let amount = 0;
+                let timestamp = 0;
+                let hash = '';
+                if(record['internal_tx_id']){
+                    fromAddress = TronWeb.address.fromHex(record['from_address']);
+                    toAddress = TronWeb.address.fromHex(record['to_address']);
+                    amount = record['data']['call_value'][tokenId];
+                    timestamp = record['block_timestamp'];
+                    hash = record['tx_id'];
+                }else{
+                    const value = record['raw_data']['contract'][0]['parameter']['value'];
+                    fromAddress = TronWeb.address.fromHex(value['owner_address']);
+                    toAddress = TronWeb.address.fromHex(value['to_address']);
+                    amount = value['amount'];
+                    timestamp = record['raw_data']['timestamp'];
+                    hash = record['txID']
                 }
-            }
-            return { records: newRecord, total };
-        } else {
-            params.address = address;
-            params.contract = tokenId;
-            const { data: { data: transactions, total } } = await axios.get('https://apilist.tronscan.org/api/contract/events', {
-                params
-            }).catch(err => {
-                return { data: { data: [], total: 0 } };
+                return {fromAddress,toAddress,amount,timestamp,hash};
             });
-            if(direction === 'all') {
-                return { records: transactions, total };
-            }else if(direction === 'to') {
-                return { records: transactions.filter(({ transferFromAddress }) => transferFromAddress === address), total };
-            }else {
-                return { records: transactions.filter(({ transferToAddress })=> transferToAddress === address), total };
+            return { records:lists, finger};
+        } else {
+            params['event_name'] = 'Transfer';
+            if(direction === 'to') {
+                params.filters = `{"_to":"${TronWeb.address.toHex(address).replace(/41/,'0x')}"}`;
+            } else if(direction === 'from') {
+                params.filters = `{"_from":"${TronWeb.address.toHex(address).replace(/41/,'0x')}"}`;
             }
+            requestUrl = `${fullNode}/v1/contracts/${tokenId}/events`;
+            const { data: { data: records, meta:{fingerprint: finger } } }  = await axios.get( requestUrl, { params });
+            console.log(records);
+            let lists = records.map(record=>{
+                const fromAddress = TronWeb.address.fromHex(record['result']['from'].replace(/^0x/,'41'));
+                const toAddress = TronWeb.address.fromHex(record['result']['to'].replace(/^0x/,'41'));
+                const amount = record['result']['value'];
+                const timestamp = record['block_timestamp'];
+                const hash = record['transaction_id'];
+                console.log({fromAddress,toAddress,amount,timestamp,hash});
+                return {fromAddress,toAddress,amount,timestamp,hash};
+            });
+            return { records:lists, finger};
         }
     }
 
@@ -1196,6 +1203,11 @@ class Wallet extends EventEmitter {
 
     async withdrawTrc10({id,amount}){
         return await this.accounts[ this.selectedAccount ].withdrawTrc10(id,amount);
+
+    }
+
+    async depositTrc20({contract_address,amount}){
+        return await this.accounts[ this.selectedAccount ].depositTrc20(contract_address,amount);
 
     }
 }

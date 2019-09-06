@@ -29,7 +29,8 @@ class TransactionsController extends React.Component {
         } = this.props;
         const { id = "_" } = accounts.selectedToken;
         Toast.loading('', 0, false, false);
-        const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
+        const transactions = await PopupAPI.getTransactionsByTokenId(id);
+        console.log(transactions);
         this.setState({ transactions });
         Toast.hide();
     }
@@ -154,7 +155,7 @@ class TransactionsController extends React.Component {
                         <div className={index == 0 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 0 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'all' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id,'','all');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
@@ -164,7 +165,7 @@ class TransactionsController extends React.Component {
                         <div className={ index == 2 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 2 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'from' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
@@ -174,7 +175,7 @@ class TransactionsController extends React.Component {
                         <div className={index == 1 ? 'active' : ''} onClick={async () => {
                             this.setState({ index: 1 }) ;
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'to' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
                         }}>
@@ -191,7 +192,7 @@ class TransactionsController extends React.Component {
                                     this.setState({ isRequest: true });
                                     const page = currentPage + 1;
                                     Toast.loading('', 0);
-                                    const records = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: page - 1, direction: key });
+                                    const records = await PopupAPI.getTransactionsByTokenId(id, transactions.finger, key);
                                     Toast.hide();
                                     if(records.records.length === 0) {
                                         this.setState({ isRequest: true });
@@ -209,23 +210,14 @@ class TransactionsController extends React.Component {
                                 <div className='lists'>
                                     {
                                         transactions.records.map((v, transIndex) => {
-                                            let callValue = 0;
-                                            let direction;
-                                            let addr;
-                                            if(v.contractData) {
-                                                if(v.contractData.call_value) callValue = v.contractData.call_value;
-                                                if(v.contractData.amount) callValue = v.contractData.amount;
-                                                direction = v.toAddress === v.ownerAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
-                                                addr = v.ownerAddress === address ? v.toAddress : v.ownerAddress;// trigger => ownerAddress show toAddress
-                                            }else{
-                                                direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
-                                                addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
-                                                callValue = v.amount;
-                                            }
+
+                                            const direction = v.toAddress === v.fromAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
+                                            const addr = v.toAddress === address ? v.fromAddress : v.toAddress;
+
                                             return (
                                                 <div className={`item ${direction}`} key={transIndex} onClick={async() => {
                                                     Toast.loading('', 0);
-                                                    await PopupAPI.setTransactionDetail(v.transactionHash || v.hash);
+                                                    await PopupAPI.setTransactionDetail(v.hash);
                                                     Toast.hide();
                                                     PopupAPI.changeState(APP_STATE.TRANSACTION_DETAIL);
                                                 }}>
@@ -234,7 +226,7 @@ class TransactionsController extends React.Component {
                                                         <div className='time'>{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                     </div>
                                                     <div className='right'>
-                                                        {new BigNumber(callValue).shiftedBy(-decimals).toString()}
+                                                        {new BigNumber(v.amount).shiftedBy(-decimals).toString()}
                                                     </div>
                                                 </div>
                                             );

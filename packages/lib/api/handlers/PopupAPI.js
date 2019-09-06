@@ -201,8 +201,8 @@ export default {
         return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
     },
 
-    getTransactionsByTokenId({tokenId,start,direction}) {
-        return this.duplex.send('getTransactionsByTokenId', {tokenId,start,direction});
+    getTransactionsByTokenId(tokenId,fingerprint,direction,limit) {
+        return this.duplex.send('getTransactionsByTokenId', {tokenId,fingerprint,direction,limit});
     },
 
     getNews() {
@@ -324,5 +324,11 @@ export default {
 
     withdrawTrc10(id, amount){
         return this.duplex.send('withdrawTrc10', {id,amount});
+    },
+
+    depositTrc20(contract_address,amount){
+        return this.duplex.send('depositTrc20', {contract_address,amount});
     }
+
+
 }

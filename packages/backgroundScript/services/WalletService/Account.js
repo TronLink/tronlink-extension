@@ -616,6 +616,21 @@ class Account {
             return Promise.reject(ex);
         }
     }
+
+    async depositTrc20(id,amount){
+        try {
+            const approve = await NodeService.sunWeb.approveTrc20(amount,FEE.FEE_LIMIT,id,{},this.privateKey);
+            if(approve) {
+                const txId = await NodeService.sunWeb.depositTrc20(amount, FEE.DEPOSIT_FEE, FEE.FEE_LIMIT, id, {}, this.privateKey);
+                return Promise.resolve(txId);
+            }else{
+                return Promise.resolve('failed');
+            }
+        } catch(ex) {
+            logger.error('Failed to send TRX:', ex);
+            return Promise.reject(ex);
+        }
+    }
 }
 
 export default Account;

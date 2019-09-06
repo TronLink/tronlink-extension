@@ -230,13 +230,9 @@ class TransferController extends React.Component {
                 }else{
                     func = PopupAPI.withdrawTrx(new BigNumber(amount).shiftedBy(6).toString());
                 }
-
             } else if (id.match(/^T/)) {
                 if(chains.selected === '_') {
-                    func = PopupAPI.sendSmartToken(
-                        new BigNumber(amount).shiftedBy(decimals).toString(),
-                        id
-                    );
+                    func = PopupAPI.depositTrc20(id, new BigNumber(amount).shiftedBy(decimals).toString());
                 }else{
 
                 }
