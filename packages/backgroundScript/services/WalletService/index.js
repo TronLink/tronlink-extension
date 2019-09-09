@@ -661,14 +661,16 @@ class Wallet extends EventEmitter {
             });
             StorageService.saveAllTokens(t);
         });
-        axios.get('https://testlist.tronlink.org/api/wallet/official_token').then(res=>{
-            StorageService.saveVTokenList(res.data.data);
-            this.emit('setVTokenList',res.data.data);
-        }).catch(e => {
-            this.emit('setVTokenList',StorageService.vTokenList);
-        });
+
         if(isResetPhishingList) {
-            const {data: {data: phishingList}} = await axios.get('https://testlist.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            axios.get('https://list.tronlink.org/api/wallet/official_token').then(res=>{
+                StorageService.saveVTokenList(res.data.data);
+                this.emit('setVTokenList',res.data.data);
+            }).catch(e => {
+                this.emit('setVTokenList',StorageService.vTokenList);
+            });
+
+            const {data: {data: phishingList}} = await axios.get('https://list.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
             this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
         }
     }
@@ -1035,9 +1037,7 @@ class Wallet extends EventEmitter {
     }
 
     async getNews() {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = 'https://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal_v2').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1047,9 +1047,7 @@ class Wallet extends EventEmitter {
     }
 
     async getIeos() {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = 'https://list.tronlink.org';
         const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1059,9 +1057,7 @@ class Wallet extends EventEmitter {
     }
 
     async addCount(id) {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = 'https://list.tronlink.org';
         const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
         if(res && res.data.code === 0) {
             return true;
@@ -1071,8 +1067,6 @@ class Wallet extends EventEmitter {
     }
 
     async setAirdropInfo(address) {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
         const apiUrl = 'https://list.tronlink.org';
         const hexAddress = TronWeb.address.toHex(address);
         const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
