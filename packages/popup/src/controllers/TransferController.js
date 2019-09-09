@@ -234,7 +234,7 @@ class TransferController extends React.Component {
                 if(chains.selected === '_') {
                     func = PopupAPI.depositTrc20(id, new BigNumber(amount).shiftedBy(decimals).toString());
                 }else{
-
+                    func = PopupAPI.withdrawTrc20(id, new BigNumber(amount).shiftedBy(decimals).toString());
                 }
 
             } else {
@@ -269,7 +269,7 @@ class TransferController extends React.Component {
     }
 
     render() {
-        const { isOpen, selectedToken, loading, amount, recipient,allTokens } = this.state;
+        const { isOpen, selectedToken, loading, amount,allTokens } = this.state;
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
@@ -286,7 +286,7 @@ class TransferController extends React.Component {
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
             }
         });
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && !token.hasOwnProperty('chain') || token.chain === chains.selected ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
         tokens = [trx, ...tokens];
         return (
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>

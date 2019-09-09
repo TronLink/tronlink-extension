@@ -76,7 +76,7 @@ class App extends React.Component {
                 dom = <ReceiveController accounts={accounts} address={accounts.selected.address} />;
                 break;
             case APP_STATE.SEND:
-                dom = <SendController accounts={accounts} />;
+                dom = <SendController chains={chains} accounts={accounts} />;
                 break;
             case APP_STATE.TRANSFER:
                 dom = <TransferController accounts={accounts} chains={chains} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) }  />;
@@ -112,7 +112,7 @@ class App extends React.Component {
                 dom = <DappListController onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.ASSET_MANAGE:
-                dom = <AssetManageController prices={prices} vTokenList={vTokenList} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <AssetManageController chains={chains} prices={prices} vTokenList={vTokenList} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTION_DETAIL:
                 dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;

@@ -87,7 +87,7 @@ class AssetManageController extends React.Component {
 
     render() {
         const { formatMessage } = this.props.intl;
-        const { selected, onCancel, vTokenList, prices  } = this.props;
+        const { selected, onCancel, vTokenList, prices, chains  } = this.props;
         const { address, allTokens, filterTokens, deleteToken } = this.state;
         const trx_price = prices.priceList[prices.selected];
         const trx = { tokenId: '_', name: 'TRX', balance: (selected.balance + (selected.frozenBalance ? selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price}
@@ -102,7 +102,7 @@ class AssetManageController extends React.Component {
         });
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol',topArray);
         tokens = [trx, ...tokens];
-        tokens = tokens.map(({tokenId,...token})=>{
+        tokens = tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({tokenId,...token})=>{
             if(TOP_TOKEN.includes(tokenId) || tokenId === '_')
                 token.isTop = true;
 
@@ -201,8 +201,12 @@ class AssetManageController extends React.Component {
                                                     this.setState({ filterTokens: filters });
                                                     if(!isList) {
                                                         const token = { name, imgUrl, balance, isLocked: false, decimals, price: 0 };
-                                                        const key = TronWeb.isAddress(address.value) && !selected.tokens.smart.hasOwnProperty(address.value) ? 'symbol' : 'abbr';
+                                                        //const key = TronWeb.isAddress(address.value) && !selected.tokens.smart.hasOwnProperty(address.value) ? 'symbol' : 'abbr';
+                                                        const key = 'symbol';
                                                         token[ key ] = abbr || symbol;
+                                                        if(field === 'smart'){
+                                                            token.chain = chains.selected;
+                                                        }
                                                         selected.tokens[ field ][ tokenId ] = token;
                                                     } else {
                                                         selected.tokens[ field ][ tokenId ].isLocked = true;

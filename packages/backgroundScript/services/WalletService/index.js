@@ -989,7 +989,7 @@ class Wallet extends EventEmitter {
                 params.only_from = true;
             }
             params.token_id = tokenId === '_' ? 'trx' : tokenId;
-            const { data: { data: records, meta:{ fingerprint: finger } } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+            const { data: { data: records, meta:{ fingerprint: finger } } } = await axios.get(requestUrl, { params,timeout:5000 }).catch(err => ({ data: { data: [], meta:{ fingerprint: '' } }}));
             let lists = records.map(record=>{
                 let fromAddress = '';
                 let toAddress = '';
@@ -1021,15 +1021,13 @@ class Wallet extends EventEmitter {
                 params.filters = `{"_from":"${TronWeb.address.toHex(address).replace(/41/,'0x')}"}`;
             }
             requestUrl = `${fullNode}/v1/contracts/${tokenId}/events`;
-            const { data: { data: records, meta:{fingerprint: finger } } }  = await axios.get( requestUrl, { params });
-            console.log(records);
+            const { data: { data: records, meta:{fingerprint: finger } } }  = await axios.get( requestUrl, { params,timeout:5000 }).catch(r=>({ data: { data: [], meta:{ fingerprint: '' } }}));
             let lists = records.map(record=>{
                 const fromAddress = TronWeb.address.fromHex(record['result']['from'].replace(/^0x/,'41'));
                 const toAddress = TronWeb.address.fromHex(record['result']['to'].replace(/^0x/,'41'));
                 const amount = record['result']['value'];
                 const timestamp = record['block_timestamp'];
                 const hash = record['transaction_id'];
-                console.log({fromAddress,toAddress,amount,timestamp,hash});
                 return {fromAddress,toAddress,amount,timestamp,hash};
             });
             return { records:lists, finger};
@@ -1208,6 +1206,11 @@ class Wallet extends EventEmitter {
 
     async depositTrc20({contract_address,amount}){
         return await this.accounts[ this.selectedAccount ].depositTrc20(contract_address,amount);
+
+    }
+
+    async withdrawTrc20({contract_address,amount}){
+        return await this.accounts[ this.selectedAccount ].withdrawTrc20(contract_address,amount);
 
     }
 }

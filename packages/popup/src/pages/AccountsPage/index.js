@@ -303,11 +303,11 @@ class AccountsPage extends React.Component {
     }
 
     renderTokens(tokens) {
-        const { prices, accounts } = this.props;
+        const { prices, accounts,chains } = this.props;
         return (
             <div className='tokens'>
                 {
-                    tokens.map(({ tokenId, ...token }) => {
+                    tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({ tokenId, ...token }) => {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();

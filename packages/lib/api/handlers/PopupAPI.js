@@ -328,6 +328,10 @@ export default {
 
     depositTrc20(contract_address,amount){
         return this.duplex.send('depositTrc20', {contract_address,amount});
+    },
+
+    withdrawTrc20(contract_address,amount){
+        return this.duplex.send('withdrawTrc20', {contract_address,amount});
     }
 
 

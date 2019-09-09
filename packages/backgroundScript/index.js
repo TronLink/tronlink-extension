@@ -187,6 +187,7 @@ const backgroundScript = {
         duplex.on('withdrawTrc10', this.walletService.withdrawTrc10);
 
         duplex.on('depositTrc20', this.walletService.depositTrc20);
+        duplex.on('withdrawTrc20', this.walletService.withdrawTrc20);
 
     },
 
