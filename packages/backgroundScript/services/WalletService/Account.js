@@ -206,7 +206,6 @@ class Account {
      * usdtPrice            price of usdt
      **/
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
-        console.log(this.tokens.smart);
         if(!StorageService.allTokens.length)return;
         const selectedChain = NodeService._selectedChain;
         const { address } = this;
@@ -513,18 +512,24 @@ class Account {
     }
 
     async sendTrx(recipient, amount) {
+        const selectedChain = NodeService._selectedChain;
         try {
-            const transaction = await NodeService.tronWeb.transactionBuilder.sendTrx(
-                recipient,
-                amount
-            );
+            if(selectedChain === '_') {
+                const transaction = await NodeService.tronWeb.transactionBuilder.sendTrx(
+                    recipient,
+                    amount
+                );
 
-            await NodeService.tronWeb.trx.sendRawTransaction(
-                await this.sign(transaction)
-            ).then(() => true).catch(err => Promise.reject(
-                'Failed to broadcast transaction'
-            ));
-            return Promise.resolve(transaction.txID);
+                await NodeService.tronWeb.trx.sendRawTransaction(
+                    await this.sign(transaction)
+                ).then(() => true).catch(err => Promise.reject(
+                    'Failed to broadcast transaction'
+                ));
+                return Promise.resolve(transaction.txID);
+            }else{
+                const {transaction} = await NodeService.sunWeb.sidechain.trx.sendTransaction(recipient, amount,{privateKey:this.privateKey});
+                return Promise.resolve(transaction.txID);
+            }
         } catch(ex) {
             logger.error('Failed to send TRX:', ex);
             return Promise.reject(ex);
@@ -532,19 +537,25 @@ class Account {
     }
 
     async sendBasicToken(recipient, amount, token) {
+        const selectedChain = NodeService._selectedChain;
         try {
-            const transaction = await NodeService.tronWeb.transactionBuilder.sendToken(
-                recipient,
-                amount,
-                token
-            );
+            if(selectedChain === '_') {
+                const transaction = await NodeService.tronWeb.transactionBuilder.sendToken(
+                    recipient,
+                    amount,
+                    token
+                );
 
-            await NodeService.tronWeb.trx.sendRawTransaction(
-                await this.sign(transaction)
-            ).then(() => true).catch(err => Promise.reject(
-                'Failed to broadcast transaction'
-            ));
-            return Promise.resolve(transaction.txID);
+                await NodeService.tronWeb.trx.sendRawTransaction(
+                    await this.sign(transaction)
+                ).then(() => true).catch(err => Promise.reject(
+                    'Failed to broadcast transaction'
+                ));
+                return Promise.resolve(transaction.txID);
+            }else{
+                const {transaction} = await NodeService.sunWeb.sidechain.trx.sendToken(recipient, amount,token,{privateKey:this.privateKey});
+                return Promise.resolve(transaction.txID);
+            }
         } catch(ex) {
             logger.error('Failed to send basic token:', ex);
             return Promise.reject(ex);
@@ -552,14 +563,22 @@ class Account {
     }
 
     async sendSmartToken(recipient, amount, token) {
+        const selectedChain = NodeService._selectedChain;
         try {
-            const contract = await NodeService.tronWeb.contract().at(token);
-
-            const transactionId = await contract.transfer(recipient, amount).send(
-                { feeLimit: 10 * Math.pow(10, 6) },
-                this.privateKey
-            );
-            return Promise.resolve(transactionId);
+            if(selectedChain === '_') {
+                const contract = await NodeService.tronWeb.contract().at(token);
+                const transactionId = await contract.transfer(recipient, amount).send(
+                    {feeLimit: 10 * Math.pow(10, 6)},
+                    this.privateKey
+                );
+                return Promise.resolve(transactionId);
+            }else{
+                const sidechain = NodeService.sunWeb.sidechain;
+                const { transaction } = await NodeService.tronWeb.transactionBuilder.triggerSmartContract(TronWeb.address.toHex(token),'transfer(address,uint256)',{feeLimit:1000000},[{'type':'address','value':recipient},{'type':'uint256','value':amount}])
+                const signTransaction = await sidechain.trx.sign(transaction,this.privateKey);
+                await sidechain.trx.sendRawTransaction(signTransaction);
+                return Promise.resolve(transaction.txID);
+            }
         } catch(ex) {
             logger.error('Failed to send smart token:', ex);
             return Promise.reject(ex);
@@ -578,7 +597,7 @@ class Account {
 
     async withdrawTrx(amount){
         try {
-            const txId = await NodeService.sunWeb.withdrawTrx(amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            const txId = await NodeService.sunWeb.withdrawTrx(amount,FEE.WITHDRAW_FEE,FEE.FEE_LIMIT,{},this.privateKey);
             return Promise.resolve(txId);
         } catch(ex) {
             logger.error('Failed to send TRX:', ex);
@@ -598,7 +617,7 @@ class Account {
 
     async withdrawTrc10(id,amount){
         try {
-            const txId = await NodeService.sunWeb.withdrawTrc10(id,amount,FEE.DEPOSIT_FEE,FEE.FEE_LIMIT,{},this.privateKey);
+            const txId = await NodeService.sunWeb.withdrawTrc10(id,amount,FEE.WITHDRAW_FEE,FEE.FEE_LIMIT,{},this.privateKey);
             return Promise.resolve(txId);
         } catch(ex) {
             logger.error('Failed to send TRX:', ex);
@@ -624,7 +643,7 @@ class Account {
     async withdrawTrc20(id,amount){
         try {
 
-            const txId = await NodeService.sunWeb.withdrawTrc20(amount, FEE.DEPOSIT_FEE, FEE.FEE_LIMIT, id, {}, this.privateKey);
+            const txId = await NodeService.sunWeb.withdrawTrc20(amount, FEE.WITHDRAW_FEE, FEE.FEE_LIMIT, id, {}, this.privateKey);
             return Promise.resolve(txId);
 
         } catch(ex) {

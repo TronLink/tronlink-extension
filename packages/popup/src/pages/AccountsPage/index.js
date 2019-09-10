@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { app } from "@tronlink/popup/src";
+import Alert from '@tronlink/popup/src/components/Alert';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
@@ -618,6 +619,21 @@ class AccountsPage extends React.Component {
                         </div>
                     </div>
                 </div>
+                {
+                    setting.showUpdateDescription
+                        ?
+                    <div className="alertWrap">
+                        <Alert show={setting.showUpdateDescription} buttonText="BUTTON.GOT_IT"
+                               title={formatMessage({id: "ALERT.UPDATE_DESCRIPTION.TITLE"})}
+                               body={formatMessage({id: "ALERT.UPDATE_DESCRIPTION.BODY"})}
+                               onClose={async() => {
+                                    const setting = await PopupAPI.getSetting();
+                                    PopupAPI.setSetting({...setting,showUpdateDescription:false});
+                               }} />
+                    </div>
+                    :
+                    null
+                }
             </div>
         );
     }

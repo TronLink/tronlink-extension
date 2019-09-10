@@ -30,7 +30,6 @@ class TransactionsController extends React.Component {
         const { id = "_" } = accounts.selectedToken;
         Toast.loading('', 0, false, false);
         const transactions = await PopupAPI.getTransactionsByTokenId(id);
-        console.log(transactions);
         this.setState({ transactions });
         Toast.hide();
     }

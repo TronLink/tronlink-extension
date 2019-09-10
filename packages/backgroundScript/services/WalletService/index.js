@@ -978,62 +978,116 @@ class Wallet extends EventEmitter {
     }
 
     async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = "all" ,limit = 30 }) {
+        const selectedChain = NodeService._selectedChain;
         const { fullNode } = NodeService.getCurrentNode();
         const address = this.selectedAccount;
-        const params = {limit,fingerprint};
-        let requestUrl = '';
-
-        if(!tokenId.match(/^T/)) {
-            requestUrl = `${fullNode}/v1/accounts/${address}/transactions`;
-            if(direction === 'to') {
-                params.only_to = true;
-            } else if(direction === 'from') {
-                params.only_from = true;
-            }
-            params.token_id = tokenId === '_' ? 'trx' : tokenId;
-            const { data: { data: records, meta:{ fingerprint: finger } } } = await axios.get(requestUrl, { params,timeout:5000 }).catch(err => ({ data: { data: [], meta:{ fingerprint: '' } }}));
-            let lists = records.map(record=>{
-                let fromAddress = '';
-                let toAddress = '';
-                let amount = 0;
-                let timestamp = 0;
-                let hash = '';
-                if(record['internal_tx_id']){
-                    fromAddress = TronWeb.address.fromHex(record['from_address']);
-                    toAddress = TronWeb.address.fromHex(record['to_address']);
-                    amount = record['data']['call_value'][tokenId];
-                    timestamp = record['block_timestamp'];
-                    hash = record['tx_id'];
-                }else{
-                    const value = record['raw_data']['contract'][0]['parameter']['value'];
-                    fromAddress = TronWeb.address.fromHex(value['owner_address']);
-                    toAddress = TronWeb.address.fromHex(value['to_address']);
-                    amount = value['amount'];
-                    timestamp = record['raw_data']['timestamp'];
-                    hash = record['txID']
+        let params = {limit};
+        let requestUrl = selectedChain === '_'?'http://3.14.14.175:9000':'http://3.15.181.169:9000';
+        // if(selectedChain === '_') {
+        //     params.fingerprint = fingerprint;
+        //     if (!tokenId.match(/^T/)) {
+        //         requestUrl = `${fullNode}/v1/accounts/${address}/transactions`;
+        //         if (direction === 'to') {
+        //             params.only_to = true;
+        //         } else if (direction === 'from') {
+        //             params.only_from = true;
+        //         }
+        //         params.token_id = tokenId === '_' ? 'trx' : tokenId;
+        //         const {data: {data: records, meta: {fingerprint: finger}}} = await axios.get(requestUrl, {
+        //             params,
+        //             timeout: 5000
+        //         }).catch(err => ({data: {data: [], meta: {fingerprint: ''}}}));
+        //         let lists = records.map(record => {
+        //             let fromAddress = '';
+        //             let toAddress = '';
+        //             let amount = 0;
+        //             let timestamp = 0;
+        //             let hash = '';
+        //             if (record['internal_tx_id']) {
+        //                 fromAddress = TronWeb.address.fromHex(record['from_address']);
+        //                 toAddress = TronWeb.address.fromHex(record['to_address']);
+        //                 amount = record['data']['call_value'][tokenId];
+        //                 timestamp = record['block_timestamp'];
+        //                 hash = record['tx_id'];
+        //             } else {
+        //                 const value = record['raw_data']['contract'][0]['parameter']['value'];
+        //                 fromAddress = TronWeb.address.fromHex(value['owner_address']);
+        //                 toAddress = TronWeb.address.fromHex(value['to_address']);
+        //                 amount = value['amount'];
+        //                 timestamp = record['raw_data']['timestamp'];
+        //                 hash = record['txID']
+        //             }
+        //             return {fromAddress, toAddress, amount, timestamp, hash};
+        //         });
+        //         return {records: lists, finger};
+        //     } else {
+        //         params['event_name'] = 'Transfer';
+        //         if (direction === 'to') {
+        //             params.filters = `{"_to":"${TronWeb.address.toHex(address).replace(/41/, '0x')}"}`;
+        //         } else if (direction === 'from') {
+        //             params.filters = `{"_from":"${TronWeb.address.toHex(address).replace(/41/, '0x')}"}`;
+        //         }
+        //         requestUrl = `${fullNode}/v1/contracts/${tokenId}/events`;
+        //         const {data: {data: records, meta: {fingerprint: finger}}} = await axios.get(requestUrl, {
+        //             params,
+        //             timeout: 5000
+        //         }).catch(r => ({data: {data: [], meta: {fingerprint: ''}}}));
+        //         let lists = records.map(record => {
+        //             const fromAddress = TronWeb.address.fromHex(record['result']['from'].replace(/^0x/, '41'));
+        //             const toAddress = TronWeb.address.fromHex(record['result']['to'].replace(/^0x/, '41'));
+        //             const amount = record['result']['value'];
+        //             const timestamp = record['block_timestamp'];
+        //             const hash = record['transaction_id'];
+        //             return {fromAddress, toAddress, amount, timestamp, hash};
+        //         });
+        //         return {records: lists, finger};
+        //     }
+        // } else {
+            let newRecord = [];
+            const finger = fingerprint || 0;
+            params.start = limit * finger;
+            if(!tokenId.match(/^T/)) {
+                if(tokenId === '_') {
+                    requestUrl += '/api/simple-transaction';
+                } else {
+                    requestUrl += '/api/simple-transfer';
+                    params.token_id = tokenId;
                 }
-                return {fromAddress,toAddress,amount,timestamp,hash};
-            });
-            return { records:lists, finger};
-        } else {
-            params['event_name'] = 'Transfer';
-            if(direction === 'to') {
-                params.filters = `{"_to":"${TronWeb.address.toHex(address).replace(/41/,'0x')}"}`;
-            } else if(direction === 'from') {
-                params.filters = `{"_from":"${TronWeb.address.toHex(address).replace(/41/,'0x')}"}`;
+                if(direction === 'all') {
+                    params = {...params, address};
+                } else if(direction === 'to') {
+                    params = { ...params, from: address };
+                } else {
+                    params = { ...params, to: address };
+                }
+                const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+
+                newRecord = records.filter(({contractData})=> contractData.hasOwnProperty('call_value')).map(({hash,timestamp,contractType,confirmed,contractData,toAddress,ownerAddress})=>{
+                    return {hash,timestamp,toAddress,fromAddress:ownerAddress,amount:contractData['call_value'] || contractData.amount || 0};
+                });
+
+                return { records: newRecord,  finger: finger+1 };
+            } else {
+                params.address = address;
+                params.contract = tokenId;
+                const { data: { data: transactions } } = await axios.get(`${requestUrl}/api/contract/events`, {
+                    params
+                }).catch(err => {
+                    return { data: { data: [] } };
+                });
+                const transactions2 = transactions.map(({transactionHash,transferFromAddress,transferToAddress,amount,timestamp})=>{
+                    return {fromAddress:transferFromAddress,toAddress:transferToAddress,hash:transactionHash,timestamp,amount};
+                });
+                if(direction === 'all') {
+                    return { records: transactions2 };
+                }else if(direction === 'to') {
+                    return { records: transactions2.filter(({ fromAddress }) => fromAddress === address) };
+                }else {
+                    return { records: transactions2.filter(({ toAddress })=> toAddress === address) };
+                }
             }
-            requestUrl = `${fullNode}/v1/contracts/${tokenId}/events`;
-            const { data: { data: records, meta:{fingerprint: finger } } }  = await axios.get( requestUrl, { params,timeout:5000 }).catch(r=>({ data: { data: [], meta:{ fingerprint: '' } }}));
-            let lists = records.map(record=>{
-                const fromAddress = TronWeb.address.fromHex(record['result']['from'].replace(/^0x/,'41'));
-                const toAddress = TronWeb.address.fromHex(record['result']['to'].replace(/^0x/,'41'));
-                const amount = record['result']['value'];
-                const timestamp = record['block_timestamp'];
-                const hash = record['transaction_id'];
-                return {fromAddress,toAddress,amount,timestamp,hash};
-            });
-            return { records:lists, finger};
-        }
+
+        //}
     }
 
     async getNews() {
@@ -1113,7 +1167,10 @@ class Wallet extends EventEmitter {
     }
 
     async setTransactionDetail(hash) {
-        const res = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
+        const selectedChain = NodeService._selectedChain;
+        const requestUrl = selectedChain === '_'?'http://3.14.14.175:9000':'http://3.15.181.169:9000';
+        //const reauestUrl = 'https://apilist.tronscan.org';
+        const res = await axios.get(`${requestUrl}/api/transaction-info`, { params: { hash } }).catch(e=>false);
         if(res) {
             let { confirmed, ownerAddress, toAddress, hash, block,timestamp = 0 ,cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
             if( contractType === 31 && tokenTransferInfo ) {

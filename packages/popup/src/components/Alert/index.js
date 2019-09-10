@@ -20,22 +20,24 @@ class Alert extends React.Component {
     render() {
         const {formatMessage} = this.props.intl;
         const {
+            className = '',
             show = true,
             title = formatMessage({id: 'CREATION.LEDGER.ALERT.TIP'}),
-            body = formatMessage({id: 'CREATION.LEDGER.ALERT.BODY'})
+            body = formatMessage({id: 'CREATION.LEDGER.ALERT.BODY'}),
+            buttonText = 'BUTTON.CONFIRM'
         } = this.props;
 
         return (
             show
                 ?
-                <div className="alert">
+                <div className={"alert"+(className?' '+className:"")}>
                     <div className="title">
                         {title}
                     </div>
                     <div className="body">
                         {body}
                     </div>
-                    <Button id="BUTTON.CONFIRM" onClick={this.props.onClose}/>
+                    <Button id={buttonText} onClick={this.props.onClose}/>
                 </div>
                 :
                 null

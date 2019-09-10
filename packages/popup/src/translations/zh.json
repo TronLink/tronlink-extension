@@ -27,6 +27,7 @@
     "BUTTON.WHITELIST": "白名单",
     "BUTTON.ADD_NODE": "添加节点",
     "BUTTON.CLOSE": "关闭",
+    "BUTTON.GOT_IT": "我知道了",
 
     "TITLES.ACCOUNTS": "账户",
     "TITLES.TRANSACTIONS": "历史交易",
@@ -121,6 +122,7 @@
     "ACCOUNT.SEND.CHOOSE_TOKEN":"选择Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"发送数量",
     "ACCOUNT.TRANSFER":"转移",
+    "ACCOUNT.TRANSFER.DESC":"转移指token在主链与侧链之间的移动。将token从主链转移至侧链时，trx与trc10token默认都可转移，trc20token需要项目方在侧链上完成合约部署才可转移。",
     "ACCOUNT.TRANSFER.SELECT_CHAIN":"选择到帐链",
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
@@ -430,5 +432,8 @@
     "INDEX_ICON_TITLE.SETTING":"设置",
 
     "NOTIFICATIONS.TITLE":"交易完成",
-    "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情"
+    "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情",
+
+    "ALERT.UPDATE_DESCRIPTION.TITLE":"更新说明",
+    "ALERT.UPDATE_DESCRIPTION.BODY":"本次更新主要支持了Tron官方的sunnetwork，即添加了侧链功能。现在您可以将资产在主链与侧链之间转移，并可以通过TronLink使用优先支持了侧链的Dapp。请注意，目前侧链上暂不支持ledger"
 }

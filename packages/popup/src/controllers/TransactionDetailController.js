@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import ReactTooltip from 'react-tooltip';
 import { Popover } from 'antd-mobile';
 import CopyToClipboard from 'react-copy-to-clipboard';
-const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />
+const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />;
 class TransactionDetailController extends React.Component {
     constructor(props) {
         super(props);

@@ -8,8 +8,10 @@ import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
 import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import { Toast } from 'antd-mobile';
+import { Popover } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
+const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />;
 class TransferController extends React.Component {
     constructor(props) {
         super(props);
@@ -33,7 +35,8 @@ class TransferController extends React.Component {
             },
             loading: false,
             loadingLedger: false,
-            allTokens:[]
+            allTokens:[],
+            help: false
         };
     }
 
@@ -269,7 +272,7 @@ class TransferController extends React.Component {
     }
 
     render() {
-        const { isOpen, selectedToken, loading, amount,allTokens } = this.state;
+        const { isOpen, selectedToken, loading, amount,allTokens,help } = this.state;
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
@@ -293,6 +296,22 @@ class TransferController extends React.Component {
                 <div className='pageHeader'>
                     <div className='back' onClick={(e) => onCancel() }>&nbsp;</div>
                     <FormattedMessage id='ACCOUNT.TRANSFER' />
+                    <Popover
+                        overlayClassName='fortest'
+                        overlayStyle={{ color: 'currentColor' }}
+                        visible={ help }
+                        overlay={<div style={{padding:10}}> <FormattedMessage id='ACCOUNT.TRANSFER.DESC' /> </div>}
+                        placement='bottom'
+                        align={{
+                            overflow: { adjustY: 0, adjustX: 0 },
+                            offset: [0, 10],
+                        }}
+                    >
+                        <div className='help' onMouseEnter={() => this.setState({ help: true })}
+                             onMouseLeave={() => this.setState({ help: false })}>
+                            {myImg('uQIYTFeRrjPELImDRrPt')}
+                        </div>
+                    </Popover>
                 </div>
                 <div className='greyModal'>
                     <div className='input-group'>

@@ -163,6 +163,7 @@ export const TOP_TOKEN = [
 
 
 export const FEE = {
-    DEPOSIT_FEE:100000,
+    WITHDRAW_FEE:10000000,
+    DEPOSIT_FEE:0,
     FEE_LIMIT:100000000
-}
+};

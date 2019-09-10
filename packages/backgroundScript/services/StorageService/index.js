@@ -67,7 +67,8 @@ const StorageService = {
         },
         openAccountsMenu:false,
         advertising: {},
-        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
+        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec',
+        showUpdateDescription:true
     },
     language: '',
     ready: false,
@@ -256,6 +257,9 @@ const StorageService = {
     getSetting(){
         if(!this.setting.hasOwnProperty('advertising')){
             this.setting.advertising = {};
+        }
+        if(!this.setting.hasOwnProperty('showUpdateDescription')){
+            this.setting.showUpdateDescription = true;
         }
         return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
     },
