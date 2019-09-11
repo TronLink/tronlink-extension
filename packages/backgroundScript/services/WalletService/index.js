@@ -1062,8 +1062,8 @@ class Wallet extends EventEmitter {
                 }
                 const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
 
-                newRecord = records.filter(({contractData})=> contractData.hasOwnProperty('call_value')).map(({hash,timestamp,contractType,confirmed,contractData,toAddress,ownerAddress})=>{
-                    return {hash,timestamp,toAddress,fromAddress:ownerAddress,amount:contractData['call_value'] || contractData.amount || 0};
+                newRecord = records.map(({hash,transactionHash = '',timestamp, contractType, confirmed,contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
+                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount};
                 });
 
                 return { records: newRecord,  finger: finger+1 };
