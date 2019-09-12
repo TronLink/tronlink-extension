@@ -235,12 +235,12 @@ class AccountsPage extends React.Component {
                     </div>
                     <div className='cell bankSingle' onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
-                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === '0f22e40f-a004-4c5a-99ef-004c8e6769bf')
+                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
                             window.open('http://www.tronlending.org');
                     }}>
                         <div className='title'>
                             {
-                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === '0f22e40f-a004-4c5a-99ef-004c8e6769bf' ?
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
                                     <span className='bankBox'>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
