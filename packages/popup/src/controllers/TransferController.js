@@ -52,14 +52,13 @@ class TransferController extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { selected } = nextProps.accounts;
         const { selectedToken } = this.state;
+        const field = selectedToken.id.match(/^T/) ? 'smart':'basic';
+        const balance = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].balance : 0;
+        const decimals = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].decimals : 6;
         if(selectedToken.id === '_') {
             selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
-            if(selectedToken.id.match(/^T/)) {
-                selectedToken.amount = selected.tokens.smart[ selectedToken.id ].balance / Math.pow(10, selected.tokens.smart[ selectedToken.id ].decimals);
-            } else {
-                selectedToken.amount = selected.tokens.basic[ selectedToken.id ].balance / Math.pow(10, selected.tokens.basic[ selectedToken.id ].decimals);
-            }
+            selectedToken.amount = balance / (Math.pow(10, decimals));
         }
         this.setState({ selectedToken });
     }

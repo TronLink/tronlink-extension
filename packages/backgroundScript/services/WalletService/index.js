@@ -654,7 +654,7 @@ class Wallet extends EventEmitter {
         });
         const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl,isBlack');
         const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
-        await Promise.all([trc10tokens, trc20tokens]).then(res => {
+        Promise.all([trc10tokens, trc20tokens]).then(res => {
             let t = [];
             res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
                 t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
@@ -1063,7 +1063,7 @@ class Wallet extends EventEmitter {
                 const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
 
                 newRecord = records.map(({hash,transactionHash = '',timestamp, contractType, confirmed,contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
-                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount};
+                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount || 0};
                 });
 
                 return { records: newRecord,  finger: finger+1 };

@@ -90,14 +90,13 @@ class SendController extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { selected } = nextProps.accounts;
         const { selectedToken } = this.state;
+        const field = selectedToken.id.match(/^T/) ? 'smart':'basic';
+        const balance = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].balance : 0;
+        const decimals = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].decimals : 6;
         if(selectedToken.id === '_') {
             selectedToken.amount = selected.balance / Math.pow(10, 6);
         } else {
-            if(selectedToken.id.match(/^T/)) {
-                selectedToken.amount = selected.tokens.smart[ selectedToken.id ].balance / Math.pow(10, selected.tokens.smart[ selectedToken.id ].decimals);
-            } else {
-                selectedToken.amount = selected.tokens.basic[ selectedToken.id ].balance / Math.pow(10, selected.tokens.basic[ selectedToken.id ].decimals);
-            }
+            selectedToken.amount = balance / (Math.pow(10, decimals));
         }
         this.setState({ selectedToken });
     }
@@ -427,6 +426,7 @@ class SendController extends React.Component {
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
             }
         });
+        console.log(topArray);
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && !token.hasOwnProperty('chain') || token.chain === chains.selected ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
         tokens = [trx, ...tokens];
         return (
@@ -468,7 +468,7 @@ class SendController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false, imgUrl=false }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -476,7 +476,7 @@ class SendController extends React.Component {
                                         const amount = new BN(balance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
+                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol,imgUrl}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
                                 }
