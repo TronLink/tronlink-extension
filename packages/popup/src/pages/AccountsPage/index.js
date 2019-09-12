@@ -39,8 +39,14 @@ class AccountsPage extends React.Component {
 
 
     async componentDidMount() {
-        const allTokens = await PopupAPI.getAllTokens();
-        this.setState({allTokens})
+        const timer = setInterval(async()=>{
+            const allTokens = await PopupAPI.getAllTokens();
+            if(allTokens.length){
+                clearInterval(timer);
+                this.setState({allTokens})
+            }
+        },1000);
+
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', abbr:'trx', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);

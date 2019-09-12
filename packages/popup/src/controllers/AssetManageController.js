@@ -5,7 +5,7 @@ import Utils from '@tronlink/lib/utils';
 import Toast, { T } from 'react-toast-mobile';
 import { Switch } from 'antd-mobile';
 import TronWeb from 'tronweb';
-import { TOP_TOKEN } from '@tronlink/lib/constants';
+import { TOP_TOKEN,CONTRACT_ADDRESS } from '@tronlink/lib/constants';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class AssetManageController extends React.Component {
@@ -95,6 +95,10 @@ class AssetManageController extends React.Component {
         const topArray = [];
         TOP_TOKEN.forEach(v=>{
             if(tokens.hasOwnProperty(v)){
+                if(v === CONTRACT_ADDRESS.USDT){
+                    const f = allTokens.filter(({tokenId})=> tokenId === v)
+                    tokens[v].imgUrl = f.length ? allTokens.filter(({tokenId})=> tokenId === v)[0].imgUrl : false;
+                }
                 topArray.push(tokens[v]);
             }else{
                 allTokens.length && topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
