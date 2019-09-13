@@ -26,6 +26,7 @@ const pageHook = {
                 this.setNode(node);
 
             logger.info('TronLink initiated');
+            tronWeb.initiated = true;
             const href = window.location.origin;
             const c = phishingList.filter(({url})=>{
                 const reg = new RegExp(url);
