@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import { PopupAPI } from "@tronlink/lib/api";
 import Button from '@tronlink/popup/src/components/Button';
-import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
+import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE, TOP_TOKEN,FEE } from '@tronlink/lib/constants';
 import { Toast } from 'antd-mobile';
 import { Popover } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
@@ -106,8 +106,10 @@ class TransferController extends React.Component {
             decimals,
             id
         } = this.state.selectedToken;
+        const { chains } = this.props;
         const { selected } = this.props.accounts;
         let { amount } = this.state;
+
         if(amount.value === '') {
             return this.setState({
                 amount: {
@@ -126,7 +128,7 @@ class TransferController extends React.Component {
                     error: 'EXCEPTION.SEND.AMOUNT_FORMAT_ERROR'
                 }
             });
-        }else if(value.gt(tokenCount)) {
+        } else if(value.gt(tokenCount)) {
             return this.setState({
                 amount: {
                     ...amount,
@@ -144,63 +146,55 @@ class TransferController extends React.Component {
                 }
             });
         } else {
-            if(id.match(/^T/)) {
-                    const isEnough = new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false;
-                if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid:isEnough,
-                            error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                } else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000) {
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid:isEnough,
-                            error: 'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                } else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000) {
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid:isEnough,
-                            error: 'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR'
-                        }
-                    });
+            const min = chains.selected === '_'? new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW).shiftedBy(-6) : new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW + FEE.WITHDRAW_FEE).shiftedBy(-6);
+            const valid = id === '_' ? value.gte(min) && value.lte(new BigNumber(selected.balance - 1000000).shiftedBy(-6)):new BigNumber(selected.balance).gte(new BigNumber(1));
 
-                } else {
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid: true,
-                            error: ''
-                        }
-                    });
-                }
+            if(id === '_' && value.lt(new BigNumber(10))){
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid:false,
+                        error: 'ACCOUNT.TRANSFER.WARNING.TRX_LIMIT'
+                    }
+                });
+            }
+
+            if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid,
+                        error: valid?'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_TRX_ERROR'
+                    }
+                });
+            } else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000) {
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid,
+                        error: valid?'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR'
+                    }
+                });
+            } else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000) {
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid:valid,
+                        error: valid?'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR'
+                    }
+                });
 
             } else {
-                if(selected.netLimit - selected.netUsed < 200){
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid: new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false,
-                            error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
-                        }
-                    });
-                } else {
-                    return this.setState({
-                        amount: {
-                            ...amount,
-                            valid: true,
-                            error: ''
-                        }
-                    });
-                }
-
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid: true,
+                        error: ''
+                    }
+                });
             }
+
+
             return this.setState({
                 amount: {
                     ...amount,
@@ -218,7 +212,6 @@ class TransferController extends React.Component {
             success: false
         });
         const { chains, onCancel } = this.props;
-        const { selectedToken } = this.props.accounts;
         const { formatMessage } = this.props.intl;
         const { value: amount } = this.state.amount;
         const {
@@ -238,7 +231,6 @@ class TransferController extends React.Component {
                 }else{
                     func = PopupAPI.withdrawTrc20(id, new BigNumber(amount).shiftedBy(decimals).toString());
                 }
-
             } else {
                 if(chains.selected === '_') {
                     func = PopupAPI.depositTrc10(
@@ -274,8 +266,9 @@ class TransferController extends React.Component {
         const { isOpen, selectedToken, loading, amount,allTokens,help } = this.state;
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
+        const { formatMessage } = this.props.intl;
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
-        let tokens = { ...selected.tokens.basic, ...selected.tokens.smart};
+        let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
         const topArray = [];
         allTokens.length && TOP_TOKEN.forEach(v=>{
             if(tokens.hasOwnProperty(v)){
@@ -353,7 +346,7 @@ class TransferController extends React.Component {
                     <div className={'input-group hasBottomMargin' + (amount.error ? ' error' : '')}>
                         <label><FormattedMessage id='ACCOUNT.SEND.TRANSFER_AMOUNT' /></label>
                         <div className='input'>
-                            <input type='text' value={amount.value} onChange={ (e) => {
+                            <input type='text' value={amount.value} placeholder={selectedToken.id === '_'?formatMessage({id:'ACCOUNT.TRANSFER.WARNING.TRX_LIMIT'}):''} onChange={ (e) => {
                                 if(e.target.value != selectedToken.amount){
                                     this.refs['max'].classList.remove('selected');
                                 }else{
@@ -363,6 +356,7 @@ class TransferController extends React.Component {
                             }}/>
                             <button className='max' ref='max' onClick={(e)=> {
                                 e.target.classList.add('selected');
+                                const {} = selected;
                                 this.setState({
                                         amount: {
                                             value: selectedToken.amount,
@@ -377,6 +371,14 @@ class TransferController extends React.Component {
                             {amount.error ? (amount.values ? <FormattedMessage id={amount.error} values={amount.values} /> : <FormattedMessage id={amount.error} />) : null}
                         </div>
                     </div>
+                    {
+                        chains.selected !== '_'?
+                        <div className="tip">
+                            <FormattedMessage id='ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE'/>
+                        </div>
+                            :
+                        null
+                    }
                     <Button
                         id='ACCOUNT.TRANSFER'
                         isLoading={ loading }

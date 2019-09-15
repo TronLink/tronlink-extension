@@ -1517,6 +1517,18 @@ html, body {
                     }
                 }
             }
+            .tip{
+                width: 100%;
+                font-size: 12px;
+                color: #DB705C;
+                min-height: 18px;
+                line-height: 18px;
+                margin-top:5px;
+                margin-bottom: 5px;
+                &:before{
+                    content:'*';
+                }
+            }
             .input-group{
                 &.error {
                     input{
