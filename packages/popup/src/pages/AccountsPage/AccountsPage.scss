@@ -860,7 +860,7 @@
                 &:first-child{
                     margin-top: 0;
                     .name{
-                        flex:2;
+                        flex:3;
                     }
                 }
                 & > img {
@@ -896,7 +896,7 @@
                     }
                 }
                 .worth{
-                    flex:1;
+                    flex:2;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;

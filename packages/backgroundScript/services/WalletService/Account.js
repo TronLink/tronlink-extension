@@ -187,6 +187,7 @@ class Account {
 
     reset() {
         this.balance = 0;
+        this.frozenBalance = 0;
         this.energy = 0;
         this.energyUsed = 0;
         this.netUsed = 0;

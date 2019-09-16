@@ -1062,11 +1062,11 @@ class Wallet extends EventEmitter {
                 }
                 const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
 
-                newRecord = records.map(({hash,transactionHash = '',timestamp, contractType, confirmed,contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
-                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount || 0};
+                newRecord = records.filter(({contractType,contractData})=>![2,5,11,12,30,31].includes(contractType) || (contractType === 31 && contractData.hasOwnProperty('call_value')) ).map(({hash, transactionHash = '', timestamp, contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
+                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress || ownerAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount || 0};
                 });
 
-                return { records: newRecord,  finger: finger+1 };
+                return { records: newRecord, finger };
             } else {
                 params.address = address;
                 params.contract = tokenId;

@@ -189,15 +189,14 @@ class TransactionsController extends React.Component {
                             if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)) {
                                 if(!isRequest) {
                                     this.setState({ isRequest: true });
-                                    const page = currentPage + 1;
                                     Toast.loading('', 0);
-                                    const records = await PopupAPI.getTransactionsByTokenId(id, transactions.finger, key);
+                                    const records = await PopupAPI.getTransactionsByTokenId(id, ++transactions.finger, key);
                                     Toast.hide();
                                     if(records.records.length === 0) {
                                         this.setState({ isRequest: true });
                                     }else{
                                         transactions.records = transactions.records.concat(records.records);
-                                        this.setState({ transactions, currentPage: page, isRequest: false });
+                                        this.setState({ transactions, isRequest: false });
                                     }
                                 }
                             }
