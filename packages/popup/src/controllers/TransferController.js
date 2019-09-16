@@ -146,8 +146,8 @@ class TransferController extends React.Component {
                 }
             });
         } else {
-            const min = chains.selected === '_'? new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW).shiftedBy(-6) : new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW + FEE.WITHDRAW_FEE).shiftedBy(-6);
-            const valid = id === '_' ? value.gte(min) && value.lte(new BigNumber(selected.balance - 1000000).shiftedBy(-6)):new BigNumber(selected.balance).gte(new BigNumber(1));
+            const min = new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW).shiftedBy(-6);
+            const valid = id === '_' ? value.gte(min) && value.lte(new BigNumber(selected.balance - (chains.selected === '_'? 0 : FEE.WITHDRAW_FEE) - 1000000).shiftedBy(-6)):new BigNumber(selected.balance).gte(new BigNumber(1));
 
             if(id === '_' && value.lt(new BigNumber(10))){
                 return this.setState({
@@ -308,13 +308,8 @@ class TransferController extends React.Component {
                 <div className='greyModal'>
                     <div className='input-group'>
                         <label><FormattedMessage id='ACCOUNT.TRANSFER.SELECT_CHAIN'/></label>
-                        <div className={'input dropDown' + (isOpen.chain ? ' isOpen' : '')} onClick={ (e) => { e.stopPropagation();isOpen.token = false ;isOpen.chain = !isOpen.chain; this.setState({ isOpen }); } }>
+                        <div className='input dropDown noArrow'>
                             <div className='selected'>{ Object.entries(chains.chains).filter(([chainId])=>chainId !== chains.selected)[0][1].name }</div>
-                            <div className='dropWrap' style={isOpen.chain ? (Object.entries(chains.chains).length <= 5 ? { height : 36 * (Object.entries(chains.chains).length - 1) } : { height: 180, overflow: 'scroll'}) : {}}>
-                                {
-                                    Object.entries(chains.chains).filter(([chainId])=>chainId !== chains.selected).map(([chainId,chain]) => <div onClick={(e) => this.changeChain(chainId, e) } className='dropItem'>{chain.name}</div>)
-                                }
-                            </div>
                         </div>
                         <div className='otherInfo'>
                             <FormattedMessage id='COMMON.BALANCE'/>:&nbsp;
@@ -328,7 +323,7 @@ class TransferController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false,imgUrl=false }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -336,7 +331,7 @@ class TransferController extends React.Component {
                                         const amount = new BN(balance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
+                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol,imgUrl}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
                                 }
@@ -344,7 +339,16 @@ class TransferController extends React.Component {
                         </div>
                     </div>
                     <div className={'input-group hasBottomMargin' + (amount.error ? ' error' : '')}>
-                        <label><FormattedMessage id='ACCOUNT.SEND.TRANSFER_AMOUNT' /></label>
+                        <label>
+                            <FormattedMessage id='ACCOUNT.SEND.TRANSFER_AMOUNT' />
+                            {chains.selected !== '_'?
+                                <div className="tip">
+                                    <FormattedMessage id='ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE'/>
+                                </div>
+                                :
+                                null
+                            }
+                        </label>
                         <div className='input'>
                             <input type='text' value={amount.value} placeholder={selectedToken.id === '_'?formatMessage({id:'ACCOUNT.TRANSFER.WARNING.TRX_LIMIT'}):''} onChange={ (e) => {
                                 if(e.target.value != selectedToken.amount){
@@ -371,14 +375,6 @@ class TransferController extends React.Component {
                             {amount.error ? (amount.values ? <FormattedMessage id={amount.error} values={amount.values} /> : <FormattedMessage id={amount.error} />) : null}
                         </div>
                     </div>
-                    {
-                        chains.selected !== '_'?
-                        <div className="tip">
-                            <FormattedMessage id='ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE'/>
-                        </div>
-                            :
-                        null
-                    }
                     <Button
                         id='ACCOUNT.TRANSFER'
                         isLoading={ loading }

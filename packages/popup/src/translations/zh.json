@@ -124,7 +124,7 @@
     "ACCOUNT.TRANSFER":"转移",
     "ACCOUNT.TRANSFER.DESC":"转移指token在主链与侧链之间的移动。将token从主链转移至侧链时，trx与trc10token默认都可转移，trc20token需要项目方在侧链上完成合约部署才可转移。",
     "ACCOUNT.TRANSFER.SELECT_CHAIN":"选择到帐链",
-    "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"需额外消耗10TRX",
+    "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（需额外消耗10TRX）",
     "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX余额不足",
     "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"最小数量为10",
 

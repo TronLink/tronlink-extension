@@ -233,7 +233,7 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className='cell bankSingle' onClick={ () => {
+                    <div className={'cell'+(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
                         if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
                             window.open('http://www.tronlending.org');
