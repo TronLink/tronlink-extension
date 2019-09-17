@@ -70,7 +70,7 @@ class TransactionsController extends React.Component {
                 </div>
                 <div className='greyModal'>
                     <div className='showTokenInfo' style={ isTop ? { height: 0, paddingTop: 0, overflow: 'hidden' } : { overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden', height: (id === '_' || (id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow) ? 216 : 176) }}>
-                        <img src={imgUrl} onError={(e) => e.target.src = token10DefaultImg } />
+                        <img src={imgUrl?imgUrl:token10DefaultImg} onError={(e) => e.target.src = token10DefaultImg } />
                         <div className='amount'>
                             {amount}
                         </div>
