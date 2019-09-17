@@ -157,7 +157,17 @@ class TransferController extends React.Component {
                         error: 'ACCOUNT.TRANSFER.WARNING.TRX_LIMIT'
                     }
                 });
+            } else if(id !== '_' && chains.selected !== '_' && new BigNumber(selected.balance).shiftedBy(-6).lt(new BigNumber(FEE.WITHDRAW_FEE).shiftedBy(-6))){
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid: false,
+                        error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
+                    }
+                });
             }
+
+
 
             if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
                 return this.setState({
@@ -267,7 +277,7 @@ class TransferController extends React.Component {
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
         const { formatMessage } = this.props.intl;
-        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
+        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, frozenBalance:selected.frozenBalance ,abbr: 'TRX', decimals: 6, imgUrl: trxImg };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
         const topArray = [];
         allTokens.length && TOP_TOKEN.forEach(v=>{
@@ -289,7 +299,7 @@ class TransferController extends React.Component {
                     <div className='back' onClick={(e) => onCancel() }>&nbsp;</div>
                     <FormattedMessage id='ACCOUNT.TRANSFER' />
                     <Popover
-                        overlayClassName='fortest'
+                        overlayClassName='fortest2'
                         overlayStyle={{ color: 'currentColor' }}
                         visible={ help }
                         overlay={<div style={{padding:10}}> <FormattedMessage id='ACCOUNT.TRANSFER.DESC' /> </div>}
@@ -323,7 +333,7 @@ class TransferController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false,imgUrl=false }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false,imgUrl=false,frozenBalance = 0 }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -331,7 +341,11 @@ class TransferController extends React.Component {
                                         const amount = new BN(balance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol,imgUrl}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
+                                        const frozenAmount = new BN(frozenBalance)
+                                            .shiftedBy(-decimals)
+                                            .toString();
+                                        const token = { id, amount, name, decimals, abbr: abbr || symbol,imgUrl};
+                                        return <div onClick={(e) => this.changeToken(id === '_'?{...token,balance:amount,frozenBalance:frozenAmount}:token, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
                                 }

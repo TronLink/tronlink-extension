@@ -121,8 +121,8 @@
     "ACCOUNT.SEND.CHOOSE_TOKEN":"Choose Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"Transfer Amount",
     "ACCOUNT.TRANSFER":"Transfer",
-    "ACCOUNT.TRANSFER.DESC":"转移指token在主链与侧链之间的移动。将token从主链转移至侧链时，trx与trc10token默认都可转移，trc20token需要项目方在侧链上完成合约部署才可转移。将token从侧链转移至主链时，需要消耗10trx的手续费",
-    "ACCOUNT.TRANSFER.SELECT_CHAIN":"Choose Chain",
+    "ACCOUNT.TRANSFER.DESC":"\"Transfer\" refers to the movement of token between the main chain and the side chain. TRX and TRC10 tokens are applicable for token transfer from the main chain to the side chain, while TRC20 tokens requie the completion of contract deployment on the side chain by the project before they can be transferred.10 TRX will be charged for transfering tokens from the side chain to the main chain.",
+    "ACCOUNT.TRANSFER.SELECT_CHAIN":"Choose the recipient chain",
     "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"(Another 10 TRX will be consumed)",
     "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"Insufficient TRX balance",
     "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"Minimal amount: 10",
@@ -214,7 +214,7 @@
 
     "SETTING.TITLE":"Setting",
     "SETTING.TITLE.DAPP_WHITELIST":"DAPP white list",
-    "SETTING.TITLE.NODE_MANAGE":"节点管理",
+    "SETTING.TITLE.NODE_MANAGE":"Node manage",
     "SETTING.TITLE.NODE":"Switch node",
     "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
@@ -437,5 +437,9 @@
     "INDEX_ICON_TITLE.SETTING":"set up",
 
     "NOTIFICATIONS.TITLE":"transaction finished",
-    "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details"
+    "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details",
+
+    "ALERT.UPDATE_DESCRIPTION.TITLE":"Update Description",
+    "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet."
+
 }

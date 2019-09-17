@@ -120,9 +120,9 @@
   "ACCOUNT.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "ACCOUNT.SEND.CHOOSE_TOKEN":"トークンを選ぶ",
   "ACCOUNT.SEND.TRANSFER_AMOUNT":"発送する数量",
-  "ACCOUNT.TRANSFER":"转移",
-  "ACCOUNT.TRANSFER.DESC":"转移指token在主链与侧链之间的移动。将token从主链转移至侧链时，trx与trc10token默认都可转移，trc20token需要项目方在侧链上完成合约部署才可转移。将token从侧链转移至主链时，需要消耗10trx的手续费",
-  "ACCOUNT.TRANSFER.SELECT_CHAIN":"选择到帐链",
+  "ACCOUNT.TRANSFER":"移転",
+  "ACCOUNT.TRANSFER.DESC":"移転とはメインチェーンとサイドチェーンの中でトークンの移動のことです。トークンをメインチェーンからサイドチェーンに移動する時、TRX、TRC10トークンがデフォルトで移転可能となり、TRC20の場合、プロジェクトのサイドチェーンでコントラクトデプロイできたら、移転可能になります。トークンをサイドチェーンからメインチェーンに移動する場合、10TRXの手数料がかかります",
+  "ACCOUNT.TRANSFER.SELECT_CHAIN":"着金するチェーンを選んでください",
   "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（10TRXを消費する必要があります）",
   "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX残高が不足です",
   "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"最小の数量は10です",
@@ -171,6 +171,7 @@
   "CONFIRMATIONS.OPTIONS.ONE_HOUR": "自動サインを一時間以内に有効にする",
   "CONFIRMATIONS.OPTIONS.ONE_DAY": "自動サインを一日間以内に有効にする",
   "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "自動サインを再登録まで有効にする",
+  "CONFIRMATIONS.DELETE_NODE.BODY": "該当ノードを本当に削除しますか",
 
   "CONTRACTS.SignMessage": "メッセージに署名する",
   "CONTRACTS.AccountCreateContract": "アカウントを作成する",
@@ -213,6 +214,7 @@
 
   "SETTING.TITLE":"設定する",
   "SETTING.TITLE.DAPP_WHITELIST":"DAPPホワイトリスト",
+  "SETTING.TITLE.NODE_MANAGE":"ノード管理",
   "SETTING.TITLE.NODE":"切り替え節",
   "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
@@ -353,6 +355,7 @@
   "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",
   "EXCEPTION.ACCOUNT_EXIST":"アドレスは既に存在します。 再度追加しないでください。",
   "EXCEPTION.ADD_NODE.NAME":"4文字以上が必要です。",
+  "EXCEPTION.ADD_NODE.REPEAT_NAME":"重複なノード名称がダメです",
   "EXCEPTION.ADD_NODE.NODE_URL":"フォーマットが正しくありません。http：// または https：// で始めてください。",
   "EXCEPTION.SEND.ADDRESS_FORMAT_ERROR":"アドレスフォーマットが正しくありません",
   "EXCEPTION.SEND.ADDRESS_SAME_ERROR":"支払い先住所と受取人住所を同じにすることはできません。",
@@ -429,5 +432,8 @@
   "INDEX_ICON_TITLE.SETTING":"設定",
 
   "NOTIFICATIONS.TITLE":"取引完了",
-  "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。"
+  "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。",
+
+  "ALERT.UPDATE_DESCRIPTION.TITLE":"アップデートについての説明",
+  "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。"
 }

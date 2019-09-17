@@ -10,6 +10,9 @@
 .mono {
     font-family: 'Ubuntu Mono', monospace;
 }
+.fortest2{
+    width: 200px;
+}
 html,body,#root {
     height: 600px;
     width: 360px;
@@ -1799,6 +1802,14 @@ html, body {
         }
         .title{
             //font-size: 15px;
+        }
+        .help{
+            cursor: pointer;
+            margin-left: 6px;
+            img{
+                width: 14px;
+                height: 14px;
+            }
         }
     }
     .greyModal {

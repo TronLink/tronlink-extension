@@ -230,11 +230,21 @@ class SendController extends React.Component {
                         }
                     });
                 }
+            }else{
+                if(id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(1))){
+                    return this.setState({
+                        amount: {
+                            ...amount,
+                            valid: false,
+                            error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_TRX_ERROR'
+                        }
+                    });
+                }
             }
             if(id.match(/^T/)) {
                 const valid = this.state.recipient.isActivated ? true : false;
                 if(valid) {
-                    const isEnough = new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false;
+                    const isEnough = new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1))   ? true : false;
                     if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
                         return this.setState({
                             amount: {
@@ -285,7 +295,7 @@ class SendController extends React.Component {
                     return this.setState({
                         amount: {
                             ...amount,
-                            valid: new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false,
+                            valid: value.lte(new BigNumber(selected.balance).shiftedBy(-6).minus(1)),   //new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false,
                             error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
                         }
                     });
@@ -412,7 +422,7 @@ class SendController extends React.Component {
         const {chains} = this.props;
         const { isOpen, selectedToken, loading, amount, recipient, loadingLedger,allTokens } = this.state;
         const { selected, accounts } = this.props.accounts;
-        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
+        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance,frozenBalance: selected.frozenBalance, abbr: 'TRX', decimals: 6, imgUrl: trxImg };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart};
         const topArray = [];
         allTokens.length && TOP_TOKEN.forEach(v=>{
@@ -426,7 +436,6 @@ class SendController extends React.Component {
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
             }
         });
-        console.log(topArray);
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && !token.hasOwnProperty('chain') || token.chain === chains.selected ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
         tokens = [trx, ...tokens];
         return (
@@ -468,7 +477,7 @@ class SendController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false, imgUrl=false }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false, imgUrl = false,frozenBalance = 0 }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -476,7 +485,11 @@ class SendController extends React.Component {
                                         const amount = new BN(balance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        return <div onClick={(e) => this.changeToken({ id, amount, name, decimals, abbr: abbr || symbol,imgUrl}, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
+                                        const frozenAmount = new BN(frozenBalance)
+                                            .shiftedBy(-decimals)
+                                            .toString();
+                                        const token = { id, amount, name, decimals, abbr: abbr || symbol,imgUrl};
+                                        return <div onClick={(e) => this.changeToken(id === '_'? {...token, balance:amount, frozenBalance:frozenAmount}:token, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
                                 }

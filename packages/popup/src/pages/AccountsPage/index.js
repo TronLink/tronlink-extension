@@ -132,6 +132,7 @@ class AccountsPage extends React.Component {
     renderAccountInfo(accounts, prices, totalMoney) {
         const { formatMessage } = this.props.intl;
         const { showMenuList } = this.state;
+        const { chains } = this.props;
         return (
             <div className='accountInfo'>
                 <div className='row1'>
@@ -147,29 +148,31 @@ class AccountsPage extends React.Component {
                         }
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
-                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER?6:2), opacity: 1 } : {}}>
+                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_'?6:2), opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
                                 <span className='icon asset'>&nbsp;</span>
                                 <FormattedMessage id='ASSET.ASSET_MANAGE' />
                             </div>
                             {
-                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
-                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
-                                <span className='icon frozen'>&nbsp;</span>
-                                <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
-                            </div>
-                                :
-                                null
-                            }
-                            {accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
-                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
-                                <span className='icon vote'>&nbsp;</span>
-                                <FormattedMessage id='MENU.VOTE' />
-                            </div>
-                                :null
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
+                                        <span className='icon frozen'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
+                                    </div>
+                                    :
+                                    null
                             }
                             {
-                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
+                                        <span className='icon vote'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.VOTE' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
                                     <div onClick={ this.onExport } className='item'>
                                         <span className='icon backup'>&nbsp;</span>
                                         <FormattedMessage id='ACCOUNTS.EXPORT' />
@@ -178,7 +181,7 @@ class AccountsPage extends React.Component {
                                     null
                             }
                             {
-                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_'
                                     ?
                                     <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className='item'>
                                         <span className='icon link'>&nbsp;</span>
