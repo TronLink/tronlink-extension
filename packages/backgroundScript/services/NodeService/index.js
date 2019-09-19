@@ -55,7 +55,7 @@ const NodeService = {
     },
     _selectedChain:'_',
     //_selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30682',
+    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
     // TESTNET: _selectedNode: '6739be94-ee43-46af-9a62-690cf0947269',
 
     _read() {
