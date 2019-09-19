@@ -25,17 +25,10 @@ const NodeService = {
                 fullNode: 'https://api.trongrid.io',
                 solidityNode: 'https://api.trongrid.io',
                 eventServer: 'https://api.trongrid.io',
-                default: false, // false
+                default: true, // false
                 chain:'_' ,
                 connect:''
             },
-            // '0f22e40f-a004-4c5a-99ef-004c8e6769bf':{
-            //     name: 'Mainnet(beta)',
-            //     fullNode: 'http://47.90.243.77:8090',
-            //     solidityNode: 'http://47.90.243.77:8091',
-            //     eventServer: 'https://api.trongrid.io',
-            //     default: true
-            // },
             '6739be94-ee43-46af-9a62-690cf0947269': {
                 name: 'Shasta Testnet',
                 fullNode: 'https://api.shasta.trongrid.io',
@@ -50,14 +43,11 @@ const NodeService = {
                 solidityNode: 'https://sun.tronex.io',
                 eventServer: 'https://sun.tronex.io',
                 default: true,
-                chain:SIDE_CHAIN_ID
+                chain: SIDE_CHAIN_ID
             }
     },
     _selectedChain:'_',
-    //_selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
     _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
-    // TESTNET: _selectedNode: '6739be94-ee43-46af-9a62-690cf0947269',
-
     _read() {
         logger.info('Reading nodes and chains from storage');
 
