@@ -34,7 +34,7 @@ class LedgerAccountImportController extends React.Component {
         const accounts = [];
         const { ledgerImportAddress } = this.props;
         for(const address of ledgerImportAddress){
-            let { balance } = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+            let { balance } = await PopupAPI.getAccountInfo(address);
             balance = balance ? balance:0;
             accounts.push({address,balance:balance});
         }
