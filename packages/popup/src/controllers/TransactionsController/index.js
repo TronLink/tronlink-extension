@@ -164,17 +164,17 @@ class TransactionsController extends React.Component {
                         <div className={ index == 2 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 2 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
                         }}>
                             <FormattedMessage id='ACCOUNT.RECEIVE' />
                         </div>
-                        <div className={index == 1 ? 'active' : ''} onClick={async () => {
+                        <div className={index === 1 ? 'active' : ''} onClick={async () => {
                             this.setState({ index: 1 }) ;
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
                         }}>
@@ -190,12 +190,13 @@ class TransactionsController extends React.Component {
                                 if(!isRequest) {
                                     this.setState({ isRequest: true });
                                     Toast.loading('', 0);
-                                    const records = await PopupAPI.getTransactionsByTokenId(id, ++transactions.finger, key);
+                                    const records = await PopupAPI.getTransactionsByTokenId(id, typeof transactions.finger === 'string'? transactions.finger  : ++transactions.finger, key);
                                     Toast.hide();
-                                    if(records.records.length === 0) {
+                                    if(records.records.length === 0 || !records.finger) {
                                         this.setState({ isRequest: true });
                                     }else{
                                         transactions.records = transactions.records.concat(records.records);
+                                        transactions.finger = records.finger;
                                         this.setState({ transactions, isRequest: false });
                                     }
                                 }
@@ -253,12 +254,23 @@ class TransactionsController extends React.Component {
                     }}>
                         <FormattedMessage id='ACCOUNT.SEND'/>
                     </button>
-                    <div className="line">&nbsp;</div>
-                    <button className='transfer' onClick={ (e) => {
-                        PopupAPI.changeState(APP_STATE.TRANSFER);
-                    }}>
-                        <FormattedMessage id='ACCOUNT.TRANSFER'/>
-                    </button>
+                    {
+                        accounts.selectedToken.isMapping?
+                            <div className="line">&nbsp;</div>
+                            :
+                            null
+                    }
+                    {
+                        accounts.selectedToken.isMapping?
+                            <button className='transfer' onClick={ (e) => {
+                                PopupAPI.changeState(APP_STATE.TRANSFER);
+                            }}>
+                                <FormattedMessage id='ACCOUNT.TRANSFER'/>
+                            </button>
+                            :
+                        null
+                    }
+
                 </div>
             </div>
         );

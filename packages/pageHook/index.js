@@ -1,7 +1,9 @@
 import EventChannel from '@tronlink/lib/EventChannel';
 import Logger from '@tronlink/lib/logger';
 import TronWeb from 'tronweb';
+import SunWeb from 'sunweb';
 import Utils from '@tronlink/lib/utils';
+import {CONTRACT_ADDRESS,SIDE_CHAIN_ID} from '@tronlink/lib/constants'
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 
@@ -43,6 +45,14 @@ const pageHook = {
         if(window.tronWeb !== undefined)
             logger.warn('TronWeb is already initiated. TronLink will overwrite the current instance');
 
+        const sunWeb = new SunWeb(
+            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+            CONTRACT_ADDRESS.MAIN,
+            CONTRACT_ADDRESS.SIDE,
+            SIDE_CHAIN_ID
+        );
+
         const tronWeb = new TronWeb(
             new ProxiedProvider(),
             new ProxiedProvider(),
@@ -57,15 +67,22 @@ const pageHook = {
             sign: tronWeb.trx.sign.bind(tronWeb)
         };
 
-        [ 'setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer' ].forEach(method => (
-            tronWeb[ method ] = () => new Error('TronLink has disabled this method')
-        ));
+        [ 'setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer' ].forEach(method => {
+            tronWeb[ method ] = () => new Error('TronLink has disabled this method');
+            sunWeb.mainchain[ method ] = () => new Error('TronLink has disabled this method');
+            sunWeb.sidechain[ method ] = () => new Error('TronLink has disabled this method');
+        });
 
         tronWeb.trx.sign = (...args) => (
             this.sign(...args)
         );
 
+        sunWeb.mainchain.trx.sign = sunWeb.sidechain.trx.sign = (...args) => (
+            this.sign(...args)
+        );
 
+
+        window.sunWeb = sunWeb;
         window.tronWeb = tronWeb;
     },
 

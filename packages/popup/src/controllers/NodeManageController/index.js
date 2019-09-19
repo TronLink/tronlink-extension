@@ -172,7 +172,6 @@ class NodeManageController extends React.Component {
     onConfirmed(){
         const { deleteNodeId } = this.state;
         this.setState({showDeleteNodeDialog:false});
-        console.log(deleteNodeId);
         PopupAPI.deleteNode(deleteNodeId);
         app.getNodes();
     }
@@ -286,9 +285,12 @@ class NodeManageController extends React.Component {
                             })
                         }
                     </div>
-                    <div className='addNode' onClick={()=>this.setState({showAddNodeDialog:true})}>
-                        <FormattedMessage id="SETTING.TITLE.ADD_NODE" />
-                    </div>
+                    {
+                        selectedChain === '_'?
+                        <div className='addNode' onClick={() => this.setState({showAddNodeDialog: true})}>
+                            <FormattedMessage id="SETTING.TITLE.ADD_NODE"/>
+                        </div>:null
+                    }
                 </div>
             </div>
         )

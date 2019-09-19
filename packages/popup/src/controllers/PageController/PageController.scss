@@ -67,13 +67,18 @@
                                 content: '';
                                 width: 9px;
                                 height: 9px;
-                                background-color: #A9AFFF;
+
                                 border-radius: 100%;
                                 margin-right: 8px;
                             }
-                            &.selected{
+                            &:first-child{
                                 &:before{
                                     background-color: #68C842;
+                                }
+                            }
+                            &:nth-child(2){
+                                &:before{
+                                    background-color: #A9AFFF;
                                 }
                             }
                         }
@@ -87,7 +92,17 @@
                         width: 9px;
                         height: 9px;
                         border-radius:100%;
-                        background-color: #68C842;
+
+                    }
+                    &.selected1{
+                        &:before{
+                            background-color: #68C842;
+                        }
+                    }
+                    &.selected2{
+                        &:before{
+                            background-color: #A9AFFF;
+                        }
                     }
                     &:after{
                         content: '';

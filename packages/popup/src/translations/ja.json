@@ -434,6 +434,7 @@
   "NOTIFICATIONS.TITLE":"取引完了",
   "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。",
 
+  "ALERT.TRANSFER_DESCRIPTION.TITLE":"移転説明",
   "ALERT.UPDATE_DESCRIPTION.TITLE":"アップデートについての説明",
   "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。"
 }

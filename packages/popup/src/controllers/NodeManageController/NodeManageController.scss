@@ -2,7 +2,7 @@
   &.nodeManage{
     overflow:auto;
     padding:0;
-    background:transparent url('../../assets/images/new/background.svg') left top no-repeat;
+    background:transparent url('../../assets/images/new/background.svg') left -130px no-repeat;
     .addNodeWrap{
       position: fixed;
       left: 0;
@@ -135,12 +135,13 @@
     }
     .greyModal{
       overflow: auto;
-      padding: 15px 25px 0;
+      padding: 15px 0 0;
       background-color: transparent;
       display: flex;
       flex-direction:column;
       flex:1;
       .node{
+        padding:0 25px;
         flex:1;
         .item{
           margin-top: 16px;
@@ -179,12 +180,13 @@
               width: 34px;
               height: 34px;
               top:-6px;
-              right:50px;
+              right:26px;
               position: absolute;
               background-color: #FFFFFF;
-              background-image: url('../../assets/images/new/side/icon-delete.svg');
+              background-image: url('../../assets/images/new/side/icon-delete.png');
               background-position: center;
               background-repeat: no-repeat;
+              background-size:45% auto;
               box-shadow: 0 2px 20px 0 rgba(1,27,140,0.12);
               border-radius: 20px;
 
@@ -269,8 +271,7 @@
         }
       }
       .addNode{
-        margin-top: 16px;
-        margin-bottom:16px;
+        margin: 16px 25px;
         height: 50px;
         border: 1px solid rgba(80,81,96,0.10);
         border-radius: 2px;

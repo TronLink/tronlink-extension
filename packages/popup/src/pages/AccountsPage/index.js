@@ -325,7 +325,7 @@ class AccountsPage extends React.Component {
                         const money = (tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT) ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2);
                         return (
                             <div className='tokenItem' onClick={ () => {
-                                let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg };
+                                let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg,isMapping:token.isMapping};
                                 if(tokenId === '_') {
                                     o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                         .shiftedBy(-token.decimals)
@@ -463,7 +463,7 @@ class AccountsPage extends React.Component {
         //if(airdropInfo){
             //usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
         //}
-        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
+        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price,isMapping:true};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
         const topArray = [];
         TOP_TOKEN.forEach(v=>{
@@ -477,7 +477,7 @@ class AccountsPage extends React.Component {
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
             }
         });
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol',topArray);
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[1].isMapping = v[1].hasOwnProperty('isMapping')?v[1].isMapping:true;v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol',topArray);
         tokens = [trx, ...tokens];
         tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;

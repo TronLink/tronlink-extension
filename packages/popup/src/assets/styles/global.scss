@@ -35,6 +35,22 @@ html, body {
     flex: 1;
     flex-direction: column;
     background:#fff;
+    .alertWrap{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: rgba(3,5,26,0.60);
+        z-index:999;
+        padding:0 45px;
+        .alert{
+            margin-top: 160px;
+            .body{
+                color: rgba(80,81,96,.5);
+            }
+        }
+    }
 }
 
 :focus {
@@ -1805,11 +1821,12 @@ html, body {
         }
         .help{
             cursor: pointer;
-            margin-left: 6px;
-            img{
-                width: 14px;
-                height: 14px;
-            }
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            width: 16px;
+            height: 16px;
+            background-image: url('../../assets/images/new/side/icon-help.svg');
         }
     }
     .greyModal {

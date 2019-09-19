@@ -99,7 +99,7 @@ export const CONFIRMATION_TYPE = {
 export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
     MAIN:"TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU",
-    SIDE:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX"
+    SIDE:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX",
 };
 
 export const USDT_ACTIVITY_STAGE = {
@@ -161,6 +161,7 @@ export const TOP_TOKEN = [
     'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
 ];
 
+export const SIDE_CHAIN_ID = '413AF23F37DA0D48234FDD43D89931E98E1144481B';
 
 export const FEE = {
     WITHDRAW_FEE:10000000,

@@ -37,13 +37,13 @@ class Header extends React.Component {
         return (
             <div className='header'>
                 <div className='titleContainer'>
-                    <div className='selectedChain' onClick={handleShowChainList}>
+                    <div className={'selectedChain '+(chains.selected === '_'?'selected1':'selected2')} onClick={handleShowChainList}>
                         {/*<img src={logo} alt=""/>*/}
                         <span>{chains.chains[chains.selected].name}</span>
                         <div className='chainWrap' style={showChainList?{height:120,padding:'10px 0'}:{height:0}}>
                             {
                                 Object.entries(chains.chains).map(([chainId,{name}])=>{
-                                   return <div className={'item'+(chainId === chains.selected?' selected':'')} onClick={(e)=>{
+                                   return <div className='item' onClick={(e)=>{
                                        e.stopPropagation();
                                        handleSelectChain(chainId);
                                    }}>{name}</div>

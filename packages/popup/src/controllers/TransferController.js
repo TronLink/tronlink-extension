@@ -10,8 +10,8 @@ import { VALIDATION_STATE, APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE, TOP_TOKEN,
 import { Toast } from 'antd-mobile';
 import { Popover } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
+import Alert from '@tronlink/popup/src/components/Alert';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
-const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />;
 class TransferController extends React.Component {
     constructor(props) {
         super(props);
@@ -277,7 +277,7 @@ class TransferController extends React.Component {
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
         const { formatMessage } = this.props.intl;
-        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, frozenBalance:selected.frozenBalance ,abbr: 'TRX', decimals: 6, imgUrl: trxImg };
+        const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, frozenBalance:selected.frozenBalance ,abbr: 'TRX', decimals: 6, imgUrl: trxImg,isMapping:true };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
         const topArray = [];
         allTokens.length && TOP_TOKEN.forEach(v=>{
@@ -291,29 +291,14 @@ class TransferController extends React.Component {
                 topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
             }
         });
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && !token.hasOwnProperty('chain') || token.chain === chains.selected ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && !token.hasOwnProperty('chain') || token.chain === chains.selected ).map(v => { v[1].isMapping = v[1].hasOwnProperty('isMapping')?v[1].isMapping:true;v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
         tokens = [trx, ...tokens];
         return (
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>
                 <div className='pageHeader'>
                     <div className='back' onClick={(e) => onCancel() }>&nbsp;</div>
                     <FormattedMessage id='ACCOUNT.TRANSFER' />
-                    <Popover
-                        overlayClassName='fortest2'
-                        overlayStyle={{ color: 'currentColor' }}
-                        visible={ help }
-                        overlay={<div style={{padding:10}}> <FormattedMessage id='ACCOUNT.TRANSFER.DESC' /> </div>}
-                        placement='bottom'
-                        align={{
-                            overflow: { adjustY: 0, adjustX: 0 },
-                            offset: [0, 10],
-                        }}
-                    >
-                        <div className='help' onMouseEnter={() => this.setState({ help: true })}
-                             onMouseLeave={() => this.setState({ help: false })}>
-                            {myImg('uQIYTFeRrjPELImDRrPt')}
-                        </div>
-                    </Popover>
+                    <div className='help' onClick={() => this.setState({ help: true })}>&nbsp;</div>
                 </div>
                 <div className='greyModal'>
                     <div className='input-group'>
@@ -396,6 +381,20 @@ class TransferController extends React.Component {
                         onClick={ () => this.onSend() }
                     />
                 </div>
+                {
+                    help
+                        ?
+                        <div className="alertWrap">
+                            <Alert show={help} buttonText="BUTTON.GOT_IT"
+                                   title={formatMessage({id: "ALERT.TRANSFER_DESCRIPTION.TITLE"})}
+                                   body={formatMessage({id: "ACCOUNT.TRANSFER.DESC"})}
+                                   onClose={async() => {
+                                       this.setState({help:false})
+                                   }} />
+                        </div>
+                        :
+                        null
+                }
             </div>
         );
     }

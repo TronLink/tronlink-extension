@@ -3,7 +3,7 @@ import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
 import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-import { CONTRACT_ADDRESS } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS,SIDE_CHAIN_ID } from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
@@ -14,7 +14,7 @@ const NodeService = {
             name:'TRON',
             default:true
         },
-        '413AF23F37DA0D48234FDD43D89931E98E1144481B':{
+        [ SIDE_CHAIN_ID ]:{
             name:'DAppChain',
             default:false
         }
@@ -27,7 +27,7 @@ const NodeService = {
                 eventServer: 'http://47.252.81.14:8070',
                 default: true, // false
                 chain:'_',
-                connect: '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                connect: SIDE_CHAIN_ID
             },
             'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
                 name: 'Mainnet',
@@ -59,7 +59,7 @@ const NodeService = {
                 solidityNode: 'http://47.252.85.90:8071',
                 eventServer: 'http://47.252.87.129:8070',
                 default: true,
-                chain:'413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                chain:SIDE_CHAIN_ID
             }
     },
     _selectedChain:'_',
@@ -119,7 +119,8 @@ const NodeService = {
             {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
-            this._selectedChain);
+            '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+        );
 
         this.tronWeb = new TronWeb(
             fullNode,
