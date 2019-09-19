@@ -46,9 +46,9 @@ const NodeService = {
             },
             'a981e232-a995-4c81-9653-c85e4d05f599':{
                 name: 'SideChain Testnet',
-                fullNode: 'http://47.252.85.90:8070',
-                solidityNode: 'http://47.252.85.90:8071',
-                eventServer: 'http://47.252.87.129:8070',
+                fullNode: 'https://sun.tronex.io',
+                solidityNode: 'https://sun.tronex.io',
+                eventServer: 'https://sun.tronex.io',
                 default: true,
                 chain:SIDE_CHAIN_ID
             }
