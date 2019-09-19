@@ -182,7 +182,7 @@ class TransactionsController extends React.Component {
                         </div>
                     </div>
                     <div className='transaction scroll' onScroll={async(e) => {
-                        const key = index === 0 ? 'all' : ( index === 1 ? 'to' : 'from');
+                        const key = index === 0 ? 'all' : ( index === 1 ? 'from' : 'to');
                         if(transactions.records.length > 8) {
                             const isTop = e.target.scrollTop === 0 ? false : true;
                             this.setState({ isTop });
