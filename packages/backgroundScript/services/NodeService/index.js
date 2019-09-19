@@ -45,7 +45,7 @@ const NodeService = {
                 chain:'_'
             },
             'a981e232-a995-4c81-9653-c85e4d05f599':{
-                name: 'SideChain Testnet',
+                name: 'DappChain',
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
                 eventServer: 'https://sun.tronex.io',
