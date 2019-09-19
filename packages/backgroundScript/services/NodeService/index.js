@@ -119,7 +119,7 @@ const NodeService = {
             {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
-            '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+            SIDE_CHAIN_ID
         );
 
         this.tronWeb = new TronWeb(
