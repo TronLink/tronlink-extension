@@ -46,8 +46,8 @@ const pageHook = {
             logger.warn('TronWeb is already initiated. TronLink will overwrite the current instance');
 
         const sunWeb = new SunWeb(
-            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
-            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+            {fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
+            {fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
             SIDE_CHAIN_ID
