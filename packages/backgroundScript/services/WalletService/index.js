@@ -136,16 +136,17 @@ class Wallet extends EventEmitter {
 
         const accounts = Object.values(this.accounts);
         if(accounts.length > 0) {
-            const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
-                logger.error('get trc10 token price fail');
-                return { data: { data: [] } };
-            });
+            // const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
+            //     logger.error('get trc10 token price fail');
+            //     return { data: { data: [] } };
+            // });
             const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
                 logger.error('get trc20 token price fail');
                 return { data: { data: { rows: [] } } };
             });
             const prices = StorageService.prices;
-            basicPrice = basicTokenPriceList;
+            //basicPrice = basicTokenPriceList;
+            basicPrice = [];
             smartPrice = smartTokenPriceList;
             usdtPrice = prices.usdtPriceList ? prices.usdtPriceList[ prices.selected ] : 0;
             for (const account of accounts) {
