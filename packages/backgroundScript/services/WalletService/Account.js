@@ -253,7 +253,6 @@ class Account {
                 this.balance = account.balance || 0;
                 const filteredTokens = (account.assetV2 || []).filter(({ value }) => value >= 0);
                 for (const { key, value } of filteredTokens) {
-
                     let token = this.tokens.basic[ key ] || false;
                     const filter = basicTokenPriceList.length ? basicTokenPriceList.filter(({ first_token_id }) => first_token_id === key) : [];
                     const trc20Filter = smartTokenPriceList.length ? smartTokenPriceList.filter(({ fTokenAddr }) => key === fTokenAddr) : [];
@@ -312,6 +311,11 @@ class Account {
                     }
                 }
                 //const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0);
+                const sTokens = smartTokens.map((tokenAddress)=>tokenAddress);
+                Object.entries(this.tokens.smart).forEach(([tokenId,token])=>{
+                    if(!sTokens.includes(tokenId) && !token.hasOwnProperty('abbr'))
+                        delete this.tokens.smart[tokenId];
+                });
                 for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance } of smartTokens) {
                     let token = this.tokens.smart[ tokenAddress ] || false;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === tokenAddress);
