@@ -164,7 +164,7 @@ class TransactionsController extends React.Component {
                         <div className={ index == 2 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 2 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
@@ -174,7 +174,7 @@ class TransactionsController extends React.Component {
                         <div className={index === 1 ? 'active' : ''} onClick={async () => {
                             this.setState({ index: 1 }) ;
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
                         }}>
@@ -182,7 +182,7 @@ class TransactionsController extends React.Component {
                         </div>
                     </div>
                     <div className='transaction scroll' onScroll={async(e) => {
-                        const key = index === 0 ? 'all' : ( index === 1 ? 'from' : 'to');
+                        const key = index === 0 ? 'all' : ( index === 1 ? 'to' : 'from');
                         if(transactions.records.length > 8) {
                             const isTop = e.target.scrollTop === 0 ? false : true;
                             this.setState({ isTop });
