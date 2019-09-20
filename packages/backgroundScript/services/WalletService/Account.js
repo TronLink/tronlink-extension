@@ -311,9 +311,9 @@ class Account {
                     }
                 }
                 //const smartTokens = account.trc20token_balances.filter(v => v.balance >= 0);
-                const sTokens = smartTokens.map((tokenAddress)=>tokenAddress);
+                const sTokens = smartTokens.map(({tokenAddress})=>tokenAddress);
                 Object.entries(this.tokens.smart).forEach(([tokenId,token])=>{
-                    if(!sTokens.includes(tokenId) && !token.hasOwnProperty('abbr'))
+                    if(!sTokens.includes(tokenId) && token.hasOwnProperty('abbr'))
                         delete this.tokens.smart[tokenId];
                 });
                 for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance } of smartTokens) {
