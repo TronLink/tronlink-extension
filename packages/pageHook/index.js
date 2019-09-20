@@ -64,6 +64,8 @@ const pageHook = {
         };
         this.proxiedMethods = {
             setAddress: tronWeb.setAddress.bind(tronWeb),
+            setMainAddress: sunWeb.mainchain.setAddress.bind(sunWeb.mainchain),
+            setSideAddress: sunWeb.sidechain.setAddress.bind(sunWeb.sidechain),
             sign: tronWeb.trx.sign.bind(tronWeb)
         };
 
@@ -111,11 +113,16 @@ const pageHook = {
             tronWeb.ready = false;
         }else{
             this.proxiedMethods.setAddress(address);
+            this.proxiedMethods.setMainAddress(address);
+            this.proxiedMethods.setSideAddress(address);
             tronWeb.defaultAddress.name = name;
             tronWeb.defaultAddress.type =  type;
+            sunWeb.mainchain.defaultAddress.name = name;
+            sunWeb.mainchain.defaultAddress.type =  type;
+            sunWeb.sidechain.defaultAddress.name = name;
+            sunWeb.sidechain.defaultAddress.type =  type;
             tronWeb.ready = true;
         }
-
     },
 
     setNode(node) {
