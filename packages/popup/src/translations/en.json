@@ -27,6 +27,7 @@
     "BUTTON.WHITELIST": "Whitelist",
     "BUTTON.ADD_NODE": "Add node",
     "BUTTON.CLOSE": "Close",
+    "BUTTON.GOT_IT": "Got it",
 
     "TITLES.ACCOUNTS": "Accounts",
     "TITLES.TRANSACTIONS": "Transaction History",
@@ -120,8 +121,10 @@
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"Receive Address",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"Choose Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"Transfer Amount",
-    "ACCOUNT.TRANSFER":"Transfer",
-    "ACCOUNT.TRANSFER.DESC":"\"Transfer\" refers to the movement of token between the main chain and the side chain. TRX and TRC10 tokens are applicable for token transfer from the main chain to the side chain, while TRC20 tokens requie the completion of contract deployment on the side chain by the project before they can be transferred.10 TRX will be charged for transfering tokens from the side chain to the main chain.",
+    "ACCOUNT.TRANSFER":"deposit",
+    "ACCOUNT.TRANSFER2":"withdraw",
+    "ACCOUNT.TRANSFER.DESC":"\"Deposit\" means to transfer tokens from the main chain to the side chain. TRX and TRC10 can be deposited by default; while TRC20 tokens can only be deposited after the requester has completed the contract deployment. No extra service fee will be charged for deposit.",
+    "ACCOUNT.TRANSFER.DESC2":"Withdraw means to transfer tokens from the side chain to the main chain. Withdrawal consumes 10 TRX each time as a service fee.",
     "ACCOUNT.TRANSFER.SELECT_CHAIN":"Choose the recipient chain",
     "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"(Another 10 TRX will be consumed)",
     "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"Insufficient TRX balance",
@@ -439,7 +442,6 @@
     "NOTIFICATIONS.TITLE":"transaction finished",
     "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details",
 
-    "ALERT.TRANSFER_DESCRIPTION.TITLE":"Transfer Description",
     "ALERT.UPDATE_DESCRIPTION.TITLE":"Update Description",
     "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet."
 

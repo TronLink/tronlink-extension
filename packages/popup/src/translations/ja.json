@@ -27,6 +27,7 @@
   "BUTTON.WHITELIST": "ホワイトリスト",
   "BUTTON.ADD_NODE": "ノードを追加する",
   "BUTTON.CLOSE": "閉める",
+  "BUTTON.GOT_IT": "分かりました",
 
   "TITLES.ACCOUNTS": "アカウント",
   "TITLES.TRANSACTIONS": "過去の取引",
@@ -120,8 +121,10 @@
   "ACCOUNT.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "ACCOUNT.SEND.CHOOSE_TOKEN":"トークンを選ぶ",
   "ACCOUNT.SEND.TRANSFER_AMOUNT":"発送する数量",
-  "ACCOUNT.TRANSFER":"移転",
-  "ACCOUNT.TRANSFER.DESC":"移転とはメインチェーンとサイドチェーンの中でトークンの移動のことです。トークンをメインチェーンからサイドチェーンに移動する時、TRX、TRC10トークンがデフォルトで移転可能となり、TRC20の場合、プロジェクトのサイドチェーンでコントラクトデプロイできたら、移転可能になります。トークンをサイドチェーンからメインチェーンに移動する場合、10TRXの手数料がかかります",
+  "ACCOUNT.TRANSFER":"抵当",
+  "ACCOUNT.TRANSFER2":"引き出す",
+  "ACCOUNT.TRANSFER.DESC":"「抵当」とは、トークンをメインチェーンからサイドチェーンに移動する時、TRXとTRC-10トークンの場合、デフォルトで抵当可能となり、TRC20トークンの場合、プロジェクトが先にサイドチェーンでコントラクトデプロイしてから抵当可能となります。抵当は手数料をかかりません。",
+  "ACCOUNT.TRANSFER.DESC2":"「引き出す」とは、トークンをサイドチェーンからメインチェーンに移動する時、引き出す度に10TRXの手数料をかかるということです。",
   "ACCOUNT.TRANSFER.SELECT_CHAIN":"着金するチェーンを選んでください",
   "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（10TRXを消費する必要があります）",
   "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX残高が不足です",
@@ -434,7 +437,6 @@
   "NOTIFICATIONS.TITLE":"取引完了",
   "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。",
 
-  "ALERT.TRANSFER_DESCRIPTION.TITLE":"移転説明",
   "ALERT.UPDATE_DESCRIPTION.TITLE":"アップデートについての説明",
   "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。"
 }

@@ -82,7 +82,7 @@ class App extends React.Component {
                 dom = <TransferController accounts={accounts} chains={chains} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) }  />;
                 break;
             case APP_STATE.TRANSACTIONS:
-                dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <TransactionsController chains={chains} prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SETTING:
                 dom = <SettingController lock={lock} version={version} language={language} prices={prices} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />

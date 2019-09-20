@@ -39,7 +39,8 @@ class TransactionsController extends React.Component {
         const {
             accounts,
             onCancel,
-            prices
+            prices,
+            chains
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { address, airdropInfo } = accounts.selected;
@@ -265,7 +266,7 @@ class TransactionsController extends React.Component {
                             <button className='transfer' onClick={ (e) => {
                                 PopupAPI.changeState(APP_STATE.TRANSFER);
                             }}>
-                                <FormattedMessage id='ACCOUNT.TRANSFER'/>
+                                <FormattedMessage id={'ACCOUNT.TRANSFER'+(chains.selected === '_'?'':'2')} />
                             </button>
                             :
                         null

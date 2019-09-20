@@ -297,7 +297,7 @@ class TransferController extends React.Component {
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>
                 <div className='pageHeader'>
                     <div className='back' onClick={(e) => onCancel() }>&nbsp;</div>
-                    <FormattedMessage id='ACCOUNT.TRANSFER' />
+                    <FormattedMessage id={'ACCOUNT.TRANSFER'+(chains.selected === '_'?'':'2')} />
                     <div className='help' onClick={() => this.setState({ help: true })}>&nbsp;</div>
                 </div>
                 <div className='greyModal'>
@@ -386,8 +386,8 @@ class TransferController extends React.Component {
                         ?
                         <div className="alertWrap">
                             <Alert show={help} buttonText="BUTTON.GOT_IT"
-                                   title={formatMessage({id: "ALERT.TRANSFER_DESCRIPTION.TITLE"})}
-                                   body={formatMessage({id: "ACCOUNT.TRANSFER.DESC"})}
+                                   title={formatMessage({id: "ACCOUNT.TRANSFER"+(chains.selected === '_'? '':'2')})}
+                                   body={formatMessage({id: "ACCOUNT.TRANSFER.DESC"+(chains.selected === '_'? '':'2')})}
                                    onClose={async() => {
                                        this.setState({help:false})
                                    }} />

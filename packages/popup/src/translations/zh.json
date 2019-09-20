@@ -121,8 +121,10 @@
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"接收地址",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"选择Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"发送数量",
-    "ACCOUNT.TRANSFER":"转移",
-    "ACCOUNT.TRANSFER.DESC":"转移指token在主链与侧链之间的移动。将token从主链转移至侧链时，trx与trc10token默认都可转移，trc20token需要项目方在侧链上完成合约部署才可转移。将token从侧链转移至主链时，需要消耗10trx的手续费",
+    "ACCOUNT.TRANSFER":"质押",
+    "ACCOUNT.TRANSFER2":"提取",
+    "ACCOUNT.TRANSFER.DESC":"质押指的是将token从主链转移至侧链，trx与trc10token默认都可质押，trc20token需要项目方在侧链上完成合约部署才可质押，质押不需额外手续费",
+    "ACCOUNT.TRANSFER.DESC2":"提取指的是将token从侧链转移至主链，每次提取需额外消耗10trx的手续费",
     "ACCOUNT.TRANSFER.SELECT_CHAIN":"选择到帐链",
     "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（需额外消耗10TRX）",
     "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX余额不足",
@@ -440,7 +442,6 @@
     "NOTIFICATIONS.TITLE":"交易完成",
     "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情",
 
-    "ALERT.TRANSFER_DESCRIPTION.TITLE":"转移说明",
     "ALERT.UPDATE_DESCRIPTION.TITLE":"更新说明",
     "ALERT.UPDATE_DESCRIPTION.BODY":"本次更新主要支持了Tron官方的sunnetwork，即添加了侧链功能。现在您可以将资产在主链与侧链之间转移，并可以通过TronLink使用优先支持了侧链的Dapp。请注意，目前侧链上暂不支持ledger"
 }
