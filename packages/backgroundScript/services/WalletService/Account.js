@@ -9,7 +9,8 @@ import { BigNumber } from 'bignumber.js';
 import {
     ACCOUNT_TYPE,
     CONTRACT_ADDRESS,
-    FEE
+    FEE,
+    TOP_TOKEN
 } from '@tronlink/lib/constants';
 import axios from 'axios';
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
@@ -314,7 +315,7 @@ class Account {
                 for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance } of smartTokens) {
                     let token = this.tokens.smart[ tokenAddress ] || false;
                     const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === tokenAddress);
-                    const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-precision).toString() : 0;
+                    const price = filter.length ? new BigNumber(filter[ 0 ].price).shiftedBy(-decimals).toString() : 0;
 
                     token = {
                         price: 0,
@@ -330,9 +331,9 @@ class Account {
                     this.tokens.smart[ tokenAddress ] = {
                         ...token,
                         price: tokenAddress === CONTRACT_ADDRESS.USDT ? usdtPrice : price,
-                        balance,
-                        chain:selectedChain
+                        balance
                     };
+                    this.tokens.smart[ tokenAddress ] = !TOP_TOKEN.includes(tokenAddress) ? {...this.tokens.smart[ tokenAddress ],chain:selectedChain} : this.tokens.smart[ tokenAddress ];
                 }
             //} else {
                 // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
