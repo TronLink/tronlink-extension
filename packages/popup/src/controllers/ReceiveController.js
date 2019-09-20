@@ -22,7 +22,8 @@ class ReceiveController extends React.Component {
                 price: selectedToken.price,
                 imgUrl: selectedToken.imgUrl ? selectedToken.imgUrl : token10DefaultImg,
                 balance: selectedToken.balance || 0,
-                frozenBalance: selectedToken.frozenBalance || 0
+                frozenBalance: selectedToken.frozenBalance || 0,
+                isMapping : selectedToken.isMapping
             };
             PopupAPI.setSelectedToken(selectedCurrency);
             PopupAPI.changeState(APP_STATE.TRANSACTIONS);
