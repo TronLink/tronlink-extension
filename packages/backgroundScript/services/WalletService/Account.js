@@ -197,7 +197,7 @@ class Account {
      * usdtPrice            price of usdt
      **/
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
-        if(!StorageService.allTokens.length)return;
+        if(!StorageService.allTokens[NodeService._selectedChain === '_'? 'mainchain':'sidechain'].length)return;
         const selectedChain = NodeService._selectedChain;
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
