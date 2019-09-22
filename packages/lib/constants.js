@@ -98,7 +98,7 @@ export const CONFIRMATION_TYPE = {
 
 export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
-    MAIN:"TDDs9MPcj3PVjpui7XzBqqb4XWkXwDMUqv",
+    MAIN:"TGKotco6YoULzbYisTBuP6DWXDjEgJSpYz",
     SIDE:"TPtpbcBL4i4byBziP48nNf2McMY8dbw3ko",
 };
 
@@ -155,15 +155,16 @@ export const USDT_ACTIVITY_STAGE = {
 
 };
 
-export const TOP_TOKEN = {mainchain:[
-    'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-    '1002000',
-    'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
-],
+export const TOP_TOKEN = {
+    mainchain:[
+        'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        '1002000',
+        'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
+    ],
     sidechain:['1002000']
 };
 
-export const SIDE_CHAIN_ID = '4123AE0A7DAE104020CB076E4517538747AAFAF862';
+export const SIDE_CHAIN_ID = '41E209E4DE650F0150788E8EC5CAFA240A23EB8EB7';
 
 export const FEE = {
     WITHDRAW_FEE:10000000,
