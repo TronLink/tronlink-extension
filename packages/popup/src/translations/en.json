@@ -375,6 +375,7 @@
     "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR":"Insufficient Energy, a small amout of TRX will be consumed, insufficient TRX balance",
     "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_TRX_ERROR":"Insufficient bandwidth and Energy, a small amout of TRX will be consumed, insufficient TRX balance",
     "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"The address is not activated, 20token cannot be sent. Please transfer TRX to activate the address.",
+    "EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE":"This address is not activated on the Tron main chain",
 
     "USDT.MAIN.INCOME_YESTERDAY":"Yesterday's Income {earning}",
     "USDT.TEXT.YESTERDAY_INCOME":"Yesterday's Income",

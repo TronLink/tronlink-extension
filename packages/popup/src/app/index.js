@@ -124,7 +124,7 @@ class App extends React.Component {
                 dom = <LedgerController language={language} />;
                 break;
             case APP_STATE.LEDGER_IMPORT_ACCOUNT:
-                dom = <LedgerAccountImportController />;
+                dom = <LedgerAccountImportController chains={chains}  />;
                 break;
             case APP_STATE.NODE_MANAGE:
                 dom = <NodeManageController nodes={nodes} chains={chains}  onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;

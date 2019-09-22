@@ -375,6 +375,7 @@
     "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR":"能量不足，将额外消耗少量trx，trx余额不足",
     "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_TRX_ERROR":"带宽，能量不足，将额外消耗少量trx，trx余额不足",
     "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"地址未激活，无法发送20token，请向其转入trx，以激活该地址",
+    "EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE":"该地址在Tron主链上未激活",
 
     "USDT.MAIN.INCOME_YESTERDAY":"昨日收益 {earning}",
     "USDT.TEXT.YESTERDAY_INCOME":"昨日收益",

@@ -100,7 +100,7 @@ class TransferController extends React.Component {
         );
     }
 
-    validateAmount() {
+   async validateAmount() {
         const {
             amount:tokenCount,
             decimals,
@@ -108,8 +108,9 @@ class TransferController extends React.Component {
         } = this.state.selectedToken;
         const { chains } = this.props;
         const { selected } = this.props.accounts;
+        console.log(selected.address);
+        const accountInfo = await PopupAPI.getAccountInfo(selected.address);
         let { amount } = this.state;
-
         if(amount.value === '') {
             return this.setState({
                 amount: {
@@ -120,6 +121,16 @@ class TransferController extends React.Component {
             });
         }
         const value = new BigNumber(amount.value);
+        console.log(accountInfo);
+        if(chains.selected !== '_' && !accountInfo.mainchain.address){
+            return this.setState({
+                amount: {
+                    ...amount,
+                    valid: false,
+                    error: 'EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE'
+                }
+            });
+        }
         if(value.isNaN() || value.lte(0)) {
             return this.setState({
                 amount: {
@@ -292,7 +303,7 @@ class TransferController extends React.Component {
             }
         });
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' && (!token.hasOwnProperty('chain') || token.chain === chains.selected) ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }), 'abbr' ,'symbol',topArray);
-        tokens = tokens.map(v=>{ v.isMapping = v.hasOwnProperty('isMapping') ? v.isMapping:true; return v;}).filter(({isMapping = false})=> isMapping);
+        tokens = tokens.map(v=>{ v.isMapping = v.hasOwnProperty('isMapping') ? v.isMapping:( v.tokenId.match(/^T/) ? false : true); return v;}).filter(({isMapping = false})=> isMapping);
         tokens = [trx, ...tokens];
         return (
             <div className='insetContainer send' onClick={() => this.setState({ isOpen: { account: false, token: false } }) }>
