@@ -274,8 +274,8 @@ export default {
         this.duplex.send('updateTokens', tokens, false);
     },
 
-    getAllTokens() {
-        return this.duplex.send('getAllTokens');
+    getAllTokens(selectedChain) {
+        return this.duplex.send('getAllTokens',selectedChain);
     },
 
     setTransactionDetail(hash) {

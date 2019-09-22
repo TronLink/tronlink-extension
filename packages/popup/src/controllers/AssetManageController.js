@@ -26,7 +26,8 @@ class AssetManageController extends React.Component {
     }
 
     async componentDidMount() {
-        const allTokens = await PopupAPI.getAllTokens();
+        const { chains } = this.props;
+        const allTokens = await PopupAPI.getAllTokens(chains.selected);
         this.setState({ allTokens: Utils.dataLetterSort(allTokens, 'abbr') });
     }
 
@@ -93,7 +94,7 @@ class AssetManageController extends React.Component {
         const trx = { tokenId: '_', name: 'TRX', balance: (selected.balance + (selected.frozenBalance ? selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price}
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
         const topArray = [];
-        TOP_TOKEN.forEach(v=>{
+        TOP_TOKEN[ chains.selected === '_'? 'mainchain':'sidechain' ].forEach(v=>{
             if(tokens.hasOwnProperty(v)){
                 if(v === CONTRACT_ADDRESS.USDT){
                     const f = allTokens.filter(({tokenId})=> tokenId === v)
@@ -107,7 +108,7 @@ class AssetManageController extends React.Component {
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => typeof token === 'object' ).map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => v.balance > 0 || (v.balance == 0 && !v.isLocked) ), 'abbr', 'symbol',topArray);
         tokens = [trx, ...tokens];
         tokens = tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({tokenId,...token})=>{
-            if(TOP_TOKEN.includes(tokenId) || tokenId === '_')
+            if(TOP_TOKEN[ chains.selected === '_'? 'mainchain':'sidechain' ].includes(tokenId) || tokenId === '_')
                 token.isTop = true;
 
             if(vTokenList.includes(tokenId))
@@ -167,7 +168,7 @@ class AssetManageController extends React.Component {
                                         token.html = `${name}(${abbr})`;
                                         token.balance = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].balance : 0;
                                         token.price = selected.tokens[ field ].hasOwnProperty(tokenId) ? selected.tokens[ field ][ tokenId ].price : 0;
-                                        token.isTop = TOP_TOKEN.includes(tokenId);
+                                        token.isTop = TOP_TOKEN[ chains.selected === '_'? 'mainchain':'sidechain' ].includes(tokenId);
                                         token.isVerify = vTokenList.includes(tokenId);
                                         return { tokenId, ...token };
                                     });

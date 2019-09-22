@@ -22,7 +22,7 @@ const StorageService = {
         'allTokens',
         'authorizeDapps',
         'vTokenList',
-        'chains'
+        'chains',
     ],
 
     storage: extensionizer.storage.local,
@@ -78,7 +78,11 @@ const StorageService = {
         used: []
     },
     allDapps: [],
-    allTokens : [],
+    allTokens : {
+        mainchain: [],
+        sidechain: []
+    },
+    allSideTokens : [],
     authorizeDapps: {},
     vTokenList: [],
     get needsMigrating() {
@@ -430,8 +434,9 @@ const StorageService = {
         this.save('allDapps');
     },
 
-    saveAllTokens(tokens) {
-        this.allTokens = tokens;
+    saveAllTokens(tokens,tokens2) {
+        this.allTokens.mainchain = tokens;
+        this.allTokens.sidechain = tokens2;
         this.save('allTokens');
     },
 

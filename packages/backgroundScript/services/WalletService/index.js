@@ -655,12 +655,17 @@ class Wallet extends EventEmitter {
         });
         const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl,isBlack');
         const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
-        Promise.all([trc10tokens, trc20tokens]).then(res => {
+        const trc20tokens_s = axios.get('https://dappchainapi.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
+        Promise.all([trc10tokens, trc20tokens, trc20tokens_s]).then(res => {
             let t = [];
+            let t2 = [];
             res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
                 t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
             });
-            StorageService.saveAllTokens(t);
+            res[ 0 ].data.data.concat( res[ 2 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t2.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
+            });
+            StorageService.saveAllTokens(t,t2);
         });
 
         if(isResetPhishingList) {
@@ -1163,8 +1168,8 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', this.selectedAccount);
     }
 
-    getAllTokens() {
-        return StorageService.hasOwnProperty('allTokens') ? StorageService.allTokens : [];
+    getAllTokens(selectedChain = '_') {
+        return StorageService.hasOwnProperty('allTokens') ? (selectedChain === '_' ? StorageService.allTokens.mainchain : StorageService.allTokens.sidechain) : {};
     }
 
     async setTransactionDetail(hash) {
