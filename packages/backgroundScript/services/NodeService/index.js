@@ -20,12 +20,21 @@ const NodeService = {
         }
     },
     _nodes: {
+            'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
+                name: 'Mainnet Testnet',
+                fullNode: 'http://47.252.84.158:8070',
+                solidityNode: 'http://47.252.84.158:8071',
+                eventServer: 'http://47.252.81.14:8070',
+                default: true, // false
+                chain:'_',
+                connect: SIDE_CHAIN_ID
+            },
             'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
                 name: 'Mainnet',
                 fullNode: 'https://api.trongrid.io',
                 solidityNode: 'https://api.trongrid.io',
                 eventServer: 'https://api.trongrid.io',
-                default: true, // false
+                default: false, // false
                 chain:'_' ,
                 connect:''
             },
@@ -37,14 +46,23 @@ const NodeService = {
                 default: false,
                 chain:'_'
             },
+            'a981e232-a995-4c81-9653-c85e4d05f598':{
+                name: 'SideChain Testnet',
+                fullNode: 'http://47.252.85.90:8070',
+                solidityNode: 'http://47.252.85.90:8071',
+                eventServer: 'http://47.252.87.129:8070',
+                default: true,
+                chain:SIDE_CHAIN_ID
+            },
             'a981e232-a995-4c81-9653-c85e4d05f599':{
                 name: 'DappChain',
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
                 eventServer: 'https://sun.tronex.io',
-                default: true,
+                default: false,
                 chain: SIDE_CHAIN_ID
-            }
+            },
+
     },
     _selectedChain:'_',
     _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
@@ -96,8 +114,10 @@ const NodeService = {
         } = this.getCurrentNode();
 
         this.sunWeb = new SunWeb(
-            {fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
-            {fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
+            //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
+            //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
+            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
             SIDE_CHAIN_ID
