@@ -251,13 +251,13 @@ class Account {
                     } : { price: 0, precision: 0 });
                     price = price / Math.pow(10, precision);
                     if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || node=== 'a981e232-a995-4c81-9653-c85e4d05f599') {
-                        if (StorageService.allTokens.filter(({tokenId}) => tokenId === key).length === 0)return;
+                        if (StorageService.allTokens[NodeService._selectedChain === '_'? 'mainchain':'sidechain'].filter(({tokenId}) => tokenId === key).length === 0)return;
                         const {
                             name = 'TRX',
                             abbr = 'TRX',
                             decimals = 6,
                             imgUrl = false
-                        } = StorageService.allTokens.filter(({tokenId}) => tokenId === key)[0];
+                        } = StorageService.allTokens[NodeService._selectedChain === '_'? 'mainchain':'sidechain'].filter(({tokenId}) => tokenId === key)[0];
                         token = {
                             balance: 0,
                             name,
