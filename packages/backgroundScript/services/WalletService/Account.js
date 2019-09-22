@@ -42,14 +42,14 @@ class Account {
             basic: {},
             smart: {}
         };
-        this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
-            abbr: 'USDT',
-            name: 'Tether USD',
-            decimals: 6,
-            tokenId: CONTRACT_ADDRESS.USDT,
-            balance: 0,
-            price: 0
-        };
+        // this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
+        //     abbr: 'USDT',
+        //     name: 'Tether USD',
+        //     decimals: 6,
+        //     tokenId: CONTRACT_ADDRESS.USDT,
+        //     balance: 0,
+        //     price: 0
+        // };
         if(accountType == ACCOUNT_TYPE.MNEMONIC) {
             this._importMnemonic(importData);
         } else{
@@ -160,17 +160,6 @@ class Account {
         this.lastUpdated = lastUpdated;
         this.asset = asset;
         this.hash = '';
-
-        if(!this.tokens.smart.hasOwnProperty(CONTRACT_ADDRESS.USDT)) {
-            this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
-                abbr: 'USDT',
-                name: 'Tether USD',
-                decimals: 6,
-                tokenId: CONTRACT_ADDRESS.USDT,
-                balance: 0,
-                price: 0
-            };
-        }
     }
 
     matches(accountType, importData) {
@@ -335,9 +324,11 @@ class Account {
                     this.tokens.smart[ tokenAddress ] = {
                         ...token,
                         price: tokenAddress === CONTRACT_ADDRESS.USDT ? usdtPrice : price,
-                        balance
+                        balance,
+                        chain:selectedChain
                     };
-                    this.tokens.smart[ tokenAddress ] = !TOP_TOKEN.includes(tokenAddress) ? {...this.tokens.smart[ tokenAddress ],chain:selectedChain} : this.tokens.smart[ tokenAddress ];
+                    //this.tokens.smart[ tokenAddress ] = !TOP_TOKEN[selectedChain === '_' ? 'mainchain':'sidechain'].includes(tokenAddress) ? {...this.tokens.smart[ tokenAddress ],chain:selectedChain} : this.tokens.smart[ tokenAddress ];
+                    //console.log(tokenAddress, this.tokens.smart[ tokenAddress ]);
                 }
             //} else {
                 // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);

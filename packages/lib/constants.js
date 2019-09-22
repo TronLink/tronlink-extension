@@ -155,11 +155,13 @@ export const USDT_ACTIVITY_STAGE = {
 
 };
 
-export const TOP_TOKEN = [
+export const TOP_TOKEN = {mainchain:[
     'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
     '1002000',
     'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
-];
+],
+    sidechain:['1002000']
+};
 
 export const SIDE_CHAIN_ID = '4123AE0A7DAE104020CB076E4517538747AAFAF862';
 

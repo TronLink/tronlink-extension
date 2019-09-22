@@ -5,7 +5,7 @@ import { Toast } from 'antd-mobile';
 import { BigNumber } from 'bignumber.js';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
-import { APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
+import { APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE } from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class TransactionsController extends React.Component {
@@ -43,7 +43,7 @@ class TransactionsController extends React.Component {
             chains
         } = this.props;
         const { formatMessage } = this.props.intl;
-        const { address, airdropInfo } = accounts.selected;
+        const { address, airdropInfo, type } = accounts.selected;
         const { id = '_', name = 'TRX', decimals = 6, imgUrl, price = 0, amount, balance = 0, frozenBalance = 0 } = accounts.selectedToken;
         return (
             <div className='insetContainer transactions'>
@@ -256,13 +256,13 @@ class TransactionsController extends React.Component {
                         <FormattedMessage id='ACCOUNT.SEND'/>
                     </button>
                     {
-                        accounts.selectedToken.isMapping?
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
                             <div className="line">&nbsp;</div>
                             :
                             null
                     }
                     {
-                        accounts.selectedToken.isMapping?
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
                             <button className='transfer' onClick={ (e) => {
                                 PopupAPI.changeState(APP_STATE.TRANSFER);
                             }}>

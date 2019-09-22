@@ -458,23 +458,18 @@ class AccountsPage extends React.Component {
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        //const usdt_price = prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0;
-        //let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', abbr: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
-        //if(airdropInfo){
-            //usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
-        //}
         const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price,isMapping:true};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
         const topArray = [];
-        TOP_TOKEN.forEach(v=>{
+        TOP_TOKEN[chains.selected === '_' ? 'mainchain':'sidechain'].forEach(v=>{
             if(tokens.hasOwnProperty(v)){
                 if(v === CONTRACT_ADDRESS.USDT){
                     const f = allTokens.filter(({tokenId})=> tokenId === v)
                     tokens[v].imgUrl = f.length ? allTokens.filter(({tokenId})=> tokenId === v)[0].imgUrl : false;
                 }
-                topArray.push(tokens[v]);
+                topArray.push({...tokens[v],tokenId:v});
             }else{
-                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],price:'0',balance:'0',isLocked:false})
+                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],tokenId:v,price:'0',balance:'0',isLocked:false})
             }
         });
         tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[1].isMapping = v[1].hasOwnProperty('isMapping')?v[1].isMapping:true;v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol',topArray);
