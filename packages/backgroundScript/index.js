@@ -289,8 +289,8 @@ const backgroundScript = {
                         }
 
                         const signedTransaction = await account.sign(
-                            mapped.transaction ||
-                            mapped
+                            mapped.transaction || mapped,
+                            NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
                         );
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];

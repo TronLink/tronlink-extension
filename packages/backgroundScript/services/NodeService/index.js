@@ -3,7 +3,7 @@ import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
 import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-import { CONTRACT_ADDRESS,SIDE_CHAIN_ID } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS,SIDE_CHAIN_ID,NODE } from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
@@ -116,8 +116,8 @@ const NodeService = {
         this.sunWeb = new SunWeb(
             //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
             //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
-            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
-            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+            NODE.MAIN,
+            NODE.SIDE,
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
             SIDE_CHAIN_ID

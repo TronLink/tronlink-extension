@@ -1,11 +1,15 @@
 import EventChannel from '@tronlink/lib/EventChannel';
 import Logger from '@tronlink/lib/logger';
 import TronWeb from 'tronweb';
-import SunWeb from 'sunweb';
+//import SunWeb from 'sunweb';
+
 import Utils from '@tronlink/lib/utils';
-import {CONTRACT_ADDRESS,SIDE_CHAIN_ID} from '@tronlink/lib/constants'
+import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE } from '@tronlink/lib/constants'
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
+import SunWeb from './SunWeb';
+// import SunWeb from './SunWeb/js-sdk/src/index';
+console.log(SunWeb)
 
 const logger = new Logger('pageHook');
 
@@ -45,21 +49,38 @@ const pageHook = {
         if(window.tronWeb !== undefined)
             logger.warn('TronWeb is already initiated. TronLink will overwrite the current instance');
 
-        const sunWeb = new SunWeb(
-            //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
-            //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
-            {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
-            {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
-            CONTRACT_ADDRESS.MAIN,
-            CONTRACT_ADDRESS.SIDE,
-            SIDE_CHAIN_ID
-        );
-
         const tronWeb = new TronWeb(
             new ProxiedProvider(),
             new ProxiedProvider(),
             new ProxiedProvider()
         );
+
+        const tronWeb1 = new TronWeb(
+            new ProxiedProvider(),
+            new ProxiedProvider(),
+            new ProxiedProvider()
+        );
+
+        const tronWeb2 = new TronWeb(
+            new ProxiedProvider(),
+            new ProxiedProvider(),
+            new ProxiedProvider()
+        );
+        console.log(tronWeb1,tronWeb2,tronWeb1.isAddress(CONTRACT_ADDRESS.MAIN));
+        const sunWeb = new SunWeb(
+            tronWeb1,
+            tronWeb2,
+            //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
+            //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
+            //{fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+            //{fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+            CONTRACT_ADDRESS.MAIN,
+            CONTRACT_ADDRESS.SIDE,
+            SIDE_CHAIN_ID
+        );
+
+
+
         tronWeb.extension = {}; //add a extension object for black list
         tronWeb.extension.setVisited=(href)=>{
             this.setVisited(href);
@@ -136,6 +157,14 @@ const pageHook = {
         tronWeb.fullNode.configure(node.fullNode);
         tronWeb.solidityNode.configure(node.solidityNode);
         tronWeb.eventServer.configure(node.eventServer);
+
+        sunWeb.mainchain.fullNode.configure(NODE.MAIN.fullNode);
+        sunWeb.mainchain.solidityNode.configure(NODE.MAIN.solidityNode);
+        sunWeb.mainchain.eventServer.configure(NODE.MAIN.eventServer);
+
+        sunWeb.sidechain.fullNode.configure(NODE.SIDE.fullNode);
+        sunWeb.sidechain.solidityNode.configure(NODE.SIDE.solidityNode);
+        sunWeb.sidechain.eventServer.configure(NODE.SIDE.eventServer);
     },
 
     setVisited(href){

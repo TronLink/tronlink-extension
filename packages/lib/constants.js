@@ -169,6 +169,10 @@ export const TOP_TOKEN = {
 //export const SIDE_CHAIN_ID = '41E209E4DE650F0150788E8EC5CAFA240A23EB8EB7';
 export const SIDE_CHAIN_ID = '413AF23F37DA0D48234FDD43D89931E98E1144481B';
 
+export const NODE = {
+    MAIN: {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+    SIDE: {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'}
+};
 export const FEE = {
     WITHDRAW_FEE:10000000,
     DEPOSIT_FEE:0,
