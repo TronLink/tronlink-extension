@@ -176,8 +176,15 @@ class TransferController extends React.Component {
                         error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
                     }
                 });
+            } else if(id === '_' && chains.selected !== '_' && new BigNumber(selected.balance - FEE.MIN_DEPOSIT_OR_WITHDRAW - FEE.WITHDRAW_FEE).shiftedBy(-6).gte(0) && new BigNumber(selected.balance - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(value)){
+                return this.setState({
+                    amount: {
+                        ...amount,
+                        valid: false,
+                        error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
+                    }
+                });
             }
-
 
 
             if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
@@ -204,8 +211,8 @@ class TransferController extends React.Component {
                         error: valid?'EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR'
                     }
                 });
-
             } else {
+                //const v = id === '_' ? ( chains.selected !== '_' &&   ) : ()
                 return this.setState({
                     amount: {
                         ...amount,
@@ -371,7 +378,6 @@ class TransferController extends React.Component {
                             }}/>
                             <button className='max' ref='max' onClick={(e)=> {
                                 e.target.classList.add('selected');
-                                const {} = selected;
                                 this.setState({
                                         amount: {
                                             value: selectedToken.amount,
@@ -387,7 +393,7 @@ class TransferController extends React.Component {
                         </div>
                     </div>
                     <Button
-                        id='ACCOUNT.TRANSFER'
+                        id={'ACCOUNT.TRANSFER'+(chains.selected === '_'? '':'2')}
                         isLoading={ loading }
                         isValid={ amount.valid }
                         onClick={ () => this.onSend() }
