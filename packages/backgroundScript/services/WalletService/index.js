@@ -647,6 +647,7 @@ class Wallet extends EventEmitter {
     }
 
     async setCache(isResetPhishingList = true ){
+        const selectedChain = NodeService._selectedChain;
         const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
         const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
         Promise.all([dapps, dapps2]).then(res => {
@@ -669,7 +670,7 @@ class Wallet extends EventEmitter {
         });
 
         if(isResetPhishingList) {
-            axios.get('https://list.tronlink.org/api/wallet/official_token').then(res=>{
+            axios.get('https://testlist.tronlink.org/api/wallet/official_token',{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'}}).then(res=>{
                 StorageService.saveVTokenList(res.data.data);
                 this.emit('setVTokenList',res.data.data);
             }).catch(e => {
