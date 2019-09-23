@@ -145,7 +145,7 @@ class SendController extends React.Component {
             recipient.error = 'EXCEPTION.SEND.ADDRESS_FORMAT_ERROR';
         } else {
             const account = await PopupAPI.getAccountInfo(address);
-            if(!account[chains.selected === '_'? 'mainchain' : 'mainchain' ].address) {
+            if(!account[chains.selected === '_'? 'mainchain' : 'sidechain' ].address) {
                 recipient.isActivated = false;
                 recipient.valid = true;
                 recipient.error = 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_ERROR';
