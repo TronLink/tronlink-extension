@@ -81,7 +81,10 @@ const pageHook = {
             this.sign(...args)
         );
 
-        sunWeb.mainchain.trx.sign = sunWeb.sidechain.trx.sign = (...args) => (
+        sunWeb.mainchain.trx.sign = (...args) => (
+            this.sign(...args)
+        );
+        sunWeb.sidechain.trx.sign = (...args) => (
             this.sign(...args)
         );
 
@@ -113,8 +116,10 @@ const pageHook = {
                 base58: false
             };
             tronWeb.ready = false;
-        }else{
+        } else {
             this.proxiedMethods.setAddress(address);
+            this.proxiedMethods.setMainAddress(address);
+            this.proxiedMethods.setSideAddress(address);
             tronWeb.defaultAddress.name = name;
             tronWeb.defaultAddress.type =  type;
             sunWeb.mainchain.defaultAddress.name = name;

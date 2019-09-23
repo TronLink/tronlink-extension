@@ -201,7 +201,7 @@ class Account {
         const selectedChain = NodeService._selectedChain;
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
-        const {data:{data:smartTokens}} = await axios.get('https://testpre.tronlink.org/api/wallet/trc20_info',{headers:{chain:selectedChain==='_'?'MainChain':'DappChain'},params:{address}}).catch(e=>{
+        const {data:{data:smartTokens}} = await axios.get('https://testlist.tronlink.org/api/wallet/trc20_info',{headers:{chain:selectedChain==='_'?'MainChain':'DappChain'},params:{address}}).catch(e=>{
             return {data:{data:[]}};
         });
         try {

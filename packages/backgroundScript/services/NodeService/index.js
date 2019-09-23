@@ -65,7 +65,7 @@ const NodeService = {
 
     },
     _selectedChain:'_',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
+    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30682',
     _read() {
         logger.info('Reading nodes and chains from storage');
 
