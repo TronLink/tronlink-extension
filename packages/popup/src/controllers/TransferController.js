@@ -158,7 +158,7 @@ class TransferController extends React.Component {
             });
         } else {
             const min = new BigNumber(FEE.MIN_DEPOSIT_OR_WITHDRAW).shiftedBy(-6);
-            const valid = id === '_' ? value.gte(min) && value.lte(new BigNumber(selected.balance - (chains.selected === '_'? 0 : FEE.WITHDRAW_FEE) - 1000000).shiftedBy(-6)):new BigNumber(selected.balance).gte(new BigNumber(1));
+            const valid = id === '_' ? ( value.gte(min) && value.lte(new BigNumber(selected.balance - (chains.selected === '_'? 0 : FEE.WITHDRAW_FEE) - 1000000).shiftedBy(-6))) : new BigNumber(selected.balance - ( chains.selected === '_' ? 0 : FEE.MIN_DEPOSIT_OR_WITHDRAW ) ).shiftedBy(-6).gte(new BigNumber(1));
 
             if(id === '_' && value.lt(new BigNumber(10))){
                 return this.setState({
