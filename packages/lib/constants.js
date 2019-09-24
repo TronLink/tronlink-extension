@@ -98,8 +98,8 @@ export const CONFIRMATION_TYPE = {
 
 export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
-    MAIN:"TGKotco6YoULzbYisTBuP6DWXDjEgJSpYz",
-    SIDE:"TPtpbcBL4i4byBziP48nNf2McMY8dbw3ko",
+    MAIN:"TWaPZru6PR5VjgT4sJrrZ481Zgp3iJ8Rfo",
+    SIDE:"TGKotco6YoULzbYisTBuP6DWXDjEgJSpYz",
     //MAIN:"TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU", //testnet mainchain
     //SIDE:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX", //testnet sidechain
 };
