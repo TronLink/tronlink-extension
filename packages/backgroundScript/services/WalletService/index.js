@@ -11,7 +11,8 @@ import TronWeb from 'tronweb';
 import {
     APP_STATE,
     ACCOUNT_TYPE,
-    CONTRACT_ADDRESS
+    CONTRACT_ADDRESS,
+    API_URL
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService');
@@ -670,14 +671,14 @@ class Wallet extends EventEmitter {
         });
 
         if(isResetPhishingList) {
-            axios.get('https://testlist.tronlink.org/api/wallet/official_token',{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'}}).then(res=>{
+            axios.get(`${API_URL}/api/wallet/official_token`,{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'}}).then(res=>{
                 StorageService.saveVTokenList(res.data.data);
                 this.emit('setVTokenList',res.data.data);
             }).catch(e => {
                 this.emit('setVTokenList',StorageService.vTokenList);
             });
 
-            const {data: {data: phishingList}} = await axios.get('https://list.tronlink.org/api/activity/website/blacklist').catch(e => ({data: {data: []}}));
+            const {data: {data: phishingList}} = await axios.get(`${API_URL}/api/activity/website/blacklist`).catch(e => ({data: {data: []}}));
             this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
         }
     }
@@ -1099,7 +1100,7 @@ class Wallet extends EventEmitter {
     }
 
     async getNews() {
-        const apiUrl = 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal_v2').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1109,7 +1110,7 @@ class Wallet extends EventEmitter {
     }
 
     async getIeos() {
-        const apiUrl = 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1119,7 +1120,7 @@ class Wallet extends EventEmitter {
     }
 
     async addCount(id) {
-        const apiUrl = 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
         if(res && res.data.code === 0) {
             return true;
@@ -1129,7 +1130,7 @@ class Wallet extends EventEmitter {
     }
 
     async setAirdropInfo(address) {
-        const apiUrl = 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const hexAddress = TronWeb.address.toHex(address);
         const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
         if(res && res.data.code === 0) {

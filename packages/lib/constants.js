@@ -181,3 +181,5 @@ export const FEE = {
     FEE_LIMIT:100000000,
     MIN_DEPOSIT_OR_WITHDRAW:10000000
 };
+
+export const API_URL = 'https://testpre.tronlink.org';

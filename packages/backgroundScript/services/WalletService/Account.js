@@ -10,7 +10,8 @@ import {
     ACCOUNT_TYPE,
     CONTRACT_ADDRESS,
     FEE,
-    TOP_TOKEN
+    TOP_TOKEN,
+    API_URL
 } from '@tronlink/lib/constants';
 import axios from 'axios';
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
@@ -201,7 +202,7 @@ class Account {
         const selectedChain = NodeService._selectedChain;
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
-        const {data:{data:smartTokens}} = await axios.get('https://testlist.tronlink.org/api/wallet/trc20_info',{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'},params:{address}}).catch(e=>{
+        const {data:{data:smartTokens}} = await axios.get(`${API_URL}/api/wallet/trc20_info`,{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'},params:{address}}).catch(e=>{
             return {data:{data:[]}};
         });
         try {

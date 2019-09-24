@@ -34,7 +34,7 @@ const NodeService = {
                 fullNode: 'https://api.trongrid.io',
                 solidityNode: 'https://api.trongrid.io',
                 eventServer: 'https://api.trongrid.io',
-                default: false, // false
+                default: true, // false
                 chain:'_' ,
                 connect: SIDE_CHAIN_ID
             },
@@ -59,7 +59,7 @@ const NodeService = {
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
                 eventServer: 'https://sun.tronex.io',
-                default: false,
+                default: true,
                 chain: SIDE_CHAIN_ID
             },
 
