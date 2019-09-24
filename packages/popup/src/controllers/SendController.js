@@ -240,7 +240,7 @@ class SendController extends React.Component {
                     });
                 }
             }else{
-                if(id === '_' && selected.netLimit - selected.netUsed < 200 && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(1))){
+                if(id === '_' && selected.netLimit - selected.netUsed < 300 && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(1))){
                     return this.setState({
                         amount: {
                             ...amount,
@@ -254,7 +254,7 @@ class SendController extends React.Component {
                 const valid = this.state.recipient.isActivated ? true : false;
                 if(valid) {
                     const isEnough = new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1))   ? true : false;
-                    if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+                    if(selected.netLimit - selected.netUsed < 300 && selected.energy - selected.energyUsed > 10000){
                         return this.setState({
                             amount: {
                                 ...amount,
@@ -262,7 +262,7 @@ class SendController extends React.Component {
                                 error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
                             }
                         });
-                    } else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000) {
+                    } else if(selected.netLimit - selected.netUsed >= 300 && selected.energy - selected.energyUsed < 10000) {
                         return this.setState({
                             amount: {
                                 ...amount,
@@ -270,7 +270,7 @@ class SendController extends React.Component {
                                 error: 'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR'
                             }
                         });
-                    } else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000) {
+                    } else if(selected.netLimit - selected.netUsed < 300 && selected.energy - selected.energyUsed < 10000) {
                         return this.setState({
                             amount: {
                                 ...amount,
@@ -300,11 +300,11 @@ class SendController extends React.Component {
                     });
                 }
             } else {
-                if(selected.netLimit - selected.netUsed < 200){
+                if(selected.netLimit - selected.netUsed < 300){
                     return this.setState({
                         amount: {
                             ...amount,
-                            valid: value.lte(new BigNumber(selected.balance).shiftedBy(-6).minus(1)),   //new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false,
+                            valid: id === '_' ? value.lte(new BigNumber(selected.balance).shiftedBy(-6).minus(1)) : new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)),   //new BigNumber(selected.balance).shiftedBy(-6).gte(new BigNumber(1)) ? true : false,
                             error: 'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR'
                         }
                     });
