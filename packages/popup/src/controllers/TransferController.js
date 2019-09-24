@@ -174,7 +174,7 @@ class TransferController extends React.Component {
                         error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
                     }
                 });
-            } else if(id === '_' && chains.selected !== '_' &&  new BigNumber(selected.balance - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(value) ){
+            } else if(id === '_' && chains.selected !== '_' && new BigNumber(selected.balance - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(value) ){
                 return this.setState({
                     amount: {
                         ...amount,
@@ -185,7 +185,7 @@ class TransferController extends React.Component {
             }
 
 
-            if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed > 10000){
+            if(selected.netLimit - selected.netUsed < 300 && selected.energy - selected.energyUsed > 10000){
                 return this.setState({
                     amount: {
                         ...amount,
@@ -193,7 +193,7 @@ class TransferController extends React.Component {
                         error: valid?'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_TRX_ERROR'
                     }
                 });
-            } else if(selected.netLimit - selected.netUsed >= 200 && selected.energy - selected.energyUsed < 10000) {
+            } else if(selected.netLimit - selected.netUsed >= 300 && selected.energy - selected.energyUsed < 10000) {
                 return this.setState({
                     amount: {
                         ...amount,
@@ -201,7 +201,7 @@ class TransferController extends React.Component {
                         error: valid?'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR':'EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR'
                     }
                 });
-            } else if(selected.netLimit - selected.netUsed < 200 && selected.energy - selected.energyUsed < 10000) {
+            } else if(selected.netLimit - selected.netUsed < 300 && selected.energy - selected.energyUsed < 10000) {
                 return this.setState({
                     amount: {
                         ...amount,
