@@ -123,7 +123,7 @@ class SendController extends React.Component {
             name: 'TRX',
             decimals: 6,
             amount: new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString(),
-            balance : new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString(),
+            balance : new BigNumber(accounts[ address ].balance - accounts[ address ].frozenBalance).shiftedBy(-6).toString(),
             frozenBalance : new BigNumber(accounts[ address ].frozenBalance).shiftedBy(-6).toString()
         };
 

@@ -20,15 +20,15 @@ const NodeService = {
         }
     },
     _nodes: {
-            'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
-                name: 'Mainnet Testnet',
-                fullNode: 'http://47.252.84.158:8070',
-                solidityNode: 'http://47.252.84.158:8071',
-                eventServer: 'http://47.252.81.14:8070',
-                default: true, // false
-                chain:'_',
-                connect: SIDE_CHAIN_ID
-            },
+            // 'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
+            //     name: 'Mainnet Testnet',
+            //     fullNode: 'http://47.252.84.158:8070',
+            //     solidityNode: 'http://47.252.84.158:8071',
+            //     eventServer: 'http://47.252.81.14:8070',
+            //     default: true, // false
+            //     chain:'_',
+            //     connect: SIDE_CHAIN_ID
+            // },
             'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
                 name: 'Mainnet',
                 fullNode: 'https://api.trongrid.io',
@@ -36,7 +36,7 @@ const NodeService = {
                 eventServer: 'https://api.trongrid.io',
                 default: false, // false
                 chain:'_' ,
-                connect:''
+                connect: SIDE_CHAIN_ID
             },
             '6739be94-ee43-46af-9a62-690cf0947269': {
                 name: 'Shasta Testnet',
@@ -46,14 +46,14 @@ const NodeService = {
                 default: false,
                 chain:'_'
             },
-            'a981e232-a995-4c81-9653-c85e4d05f598':{
-                name: 'SideChain Testnet',
-                fullNode: 'http://47.252.85.90:8070',
-                solidityNode: 'http://47.252.85.90:8071',
-                eventServer: 'http://47.252.87.129:8070',
-                default: true,
-                chain:SIDE_CHAIN_ID
-            },
+            // 'a981e232-a995-4c81-9653-c85e4d05f598':{
+            //     name: 'SideChain Testnet',
+            //     fullNode: 'http://47.252.85.90:8070',
+            //     solidityNode: 'http://47.252.85.90:8071',
+            //     eventServer: 'http://47.252.87.129:8070',
+            //     default: true,
+            //     chain:SIDE_CHAIN_ID
+            // },
             'a981e232-a995-4c81-9653-c85e4d05f599':{
                 name: 'DappChain',
                 fullNode: 'https://sun.tronex.io',
@@ -65,7 +65,7 @@ const NodeService = {
 
     },
     _selectedChain:'_',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30682',
+    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
     _read() {
         logger.info('Reading nodes and chains from storage');
 
