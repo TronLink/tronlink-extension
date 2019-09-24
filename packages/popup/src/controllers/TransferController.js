@@ -174,7 +174,7 @@ class TransferController extends React.Component {
                         error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
                     }
                 });
-            } else if(id === '_' && chains.selected !== '_' && new BigNumber(selected.balance - FEE.MIN_DEPOSIT_OR_WITHDRAW - FEE.WITHDRAW_FEE).shiftedBy(-6).gte(0) && new BigNumber(selected.balance - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(value)){
+            } else if(id === '_' && chains.selected !== '_' && (new BigNumber(selected.balance - FEE.MIN_DEPOSIT_OR_WITHDRAW - FEE.WITHDRAW_FEE).shiftedBy(-6).gte(0) && new BigNumber(selected.balance - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(value)) || new BigNumber(selected.balance - FEE.MIN_DEPOSIT_OR_WITHDRAW - FEE.WITHDRAW_FEE).shiftedBy(-6).lt(0) ){
                 return this.setState({
                     amount: {
                         ...amount,
