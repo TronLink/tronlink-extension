@@ -748,7 +748,8 @@ class Wallet extends EventEmitter {
                 netLimit: account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
                 asset: account.asset,
-                type: account.type
+                type: account.type,
+                frozenBalance: account.frozenBalance
             };
 
             return accounts;

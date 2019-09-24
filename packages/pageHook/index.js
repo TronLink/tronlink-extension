@@ -9,7 +9,6 @@ import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 import SunWeb from './SunWeb';
 // import SunWeb from './SunWeb/js-sdk/src/index';
-console.log(SunWeb)
 
 const logger = new Logger('pageHook');
 
@@ -66,7 +65,6 @@ const pageHook = {
             new ProxiedProvider(),
             new ProxiedProvider()
         );
-        console.log(tronWeb1,tronWeb2,tronWeb1.isAddress(CONTRACT_ADDRESS.MAIN));
         const sunWeb = new SunWeb(
             tronWeb1,
             tronWeb2,

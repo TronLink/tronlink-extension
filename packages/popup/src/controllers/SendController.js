@@ -38,7 +38,8 @@ class SendController extends React.Component {
             },
             loading: false,
             loadingLedger: false,
-            allTokens:[]
+            allTokens:[],
+            selectedAddress:''
         };
         this.listener = this.listener.bind(this);
     }
@@ -79,7 +80,7 @@ class SendController extends React.Component {
         this.setState({allTokens});
         let {selectedToken,selected} = this.props.accounts;
         selectedToken.amount = selectedToken.id === '_' ? selected.balance / Math.pow(10 ,  6) : selectedToken.amount;
-        this.setState({selectedToken});
+        this.setState({selectedToken,selectedAddress:selected.address});
         window.addEventListener('message',this.listener,false);
     }
 
@@ -110,28 +111,35 @@ class SendController extends React.Component {
         PopupAPI.setSelectedToken(selectedToken);
     }
 
-    changeAccount(address, e) {
+    async changeAccount(address, e) {
         e.stopPropagation();
-        const { isOpen } = this.state;
+        const { isOpen,recipient } = this.state;
         isOpen.account = !isOpen.account;
         const { selected, accounts } = this.props.accounts;
         const selectedToken = {
+            isMapping : true,
+            imgUrl: trxImg,
             id: '_',
             name: 'TRX',
             decimals: 6,
-            amount: new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString()
+            amount: new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString(),
+            balance : new BigNumber(accounts[ address ].balance).shiftedBy(-6).toString(),
+            frozenBalance : new BigNumber(accounts[ address ].frozenBalance).shiftedBy(-6).toString()
         };
-        this.setState({ isOpen, selectedToken },() => { this.validateAmount() });
+
         if(selected.address === address)
             return;
-        PopupAPI.selectAccount(address);
+
+        await PopupAPI.selectAccount(address);
+        await PopupAPI.setSelectedToken(selectedToken);
+        this.setState({ isOpen, selectedToken, selectedAddress:address },() => { this.validateAmount() });
+        await this.onRecipientChange(recipient.value);
+
     }
 
-    async onRecipientChange(e) {
+    async onRecipientChange(address) {
+        const { selectedAddress } = this.state;
         const { chains } = this.props;
-        const { selected } = this.props.accounts;
-        const address = e.target.value;
-
         const recipient = {
             value: address,
             valid: VALIDATION_STATE.NONE
@@ -149,7 +157,7 @@ class SendController extends React.Component {
                 recipient.isActivated = false;
                 recipient.valid = true;
                 recipient.error = 'EXCEPTION.SEND.ADDRESS_UNACTIVATED_ERROR';
-            } else if(address === selected.address) {
+            } else if(address === selectedAddress) {
                 recipient.isActivated = true;
                 recipient.valid = false;
                 recipient.error = 'EXCEPTION.SEND.ADDRESS_SAME_ERROR';
@@ -232,7 +240,7 @@ class SendController extends React.Component {
                     });
                 }
             }else{
-                if(id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(1))){
+                if(id === '_' && selected.netLimit - selected.netUsed < 200 && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(1))){
                     return this.setState({
                         amount: {
                             ...amount,
@@ -466,7 +474,7 @@ class SendController extends React.Component {
                     <div className={'input-group' + (recipient.error ? ' error' : '')}>
                         <label><FormattedMessage id='ACCOUNT.SEND.RECEIVE_ADDRESS' /></label>
                         <div className='input'>
-                            <input type='text' onChange={(e) => this.onRecipientChange(e) }/>
+                            <input type='text' onChange={(e) => this.onRecipientChange(e.target.value) }/>
                         </div>
                         <div className='tipError'>
                             {recipient.error ? <FormattedMessage id={recipient.error} /> : null}

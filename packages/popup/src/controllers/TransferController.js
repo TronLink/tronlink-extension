@@ -108,7 +108,6 @@ class TransferController extends React.Component {
         } = this.state.selectedToken;
         const { chains } = this.props;
         const { selected } = this.props.accounts;
-        console.log(selected.address);
         const accountInfo = await PopupAPI.getAccountInfo(selected.address);
         let { amount } = this.state;
         if(amount.value === '') {
@@ -121,7 +120,6 @@ class TransferController extends React.Component {
             });
         }
         const value = new BigNumber(amount.value);
-        console.log(accountInfo);
         if(chains.selected !== '_' && !accountInfo.mainchain.address){
             return this.setState({
                 amount: {
@@ -337,7 +335,7 @@ class TransferController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false,imgUrl=false,frozenBalance = 0 }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, abbr = false, symbol = false,imgUrl=false,frozenBalance = 0, isMapping }) => {
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: decimals,
                                             ROUNDING_MODE: Math.min(8, decimals)
@@ -348,7 +346,7 @@ class TransferController extends React.Component {
                                         const frozenAmount = new BN(frozenBalance)
                                             .shiftedBy(-decimals)
                                             .toString();
-                                        const token = { id, amount, name, decimals, abbr: abbr || symbol,imgUrl};
+                                        const token = { id, amount, name, decimals, abbr: abbr || symbol, imgUrl, isMapping};
                                         return <div onClick={(e) => this.changeToken(id === '_'?{...token,balance:amount,frozenBalance:frozenAmount}:token, e) } className={'dropItem' + (id === selectedToken.id ? ' selected' : '')}><span title={`${name}(${amount})`}>{`${name}(${amount})`}</span>{id !== '_' ? (<span>id:{id.length === 7 ? id : id.substr(0, 6) + '...' + id.substr(-6)}</span>) : ''}</div>
 
                                     })
