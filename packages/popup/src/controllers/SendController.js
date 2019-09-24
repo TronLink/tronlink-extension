@@ -230,12 +230,12 @@ class SendController extends React.Component {
             });
         } else {
             if(!this.state.recipient.isActivated) {
-                if(id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1))) {
+                if(id === '_' && value.gt(new BigNumber(selected.balance).shiftedBy(-6).minus(0.1)) || id !=='_' && new BigNumber(selected.balance).shiftedBy(-6).lt(new BigNumber(0.1))) {
                     return this.setState({
                         amount: {
                             ...amount,
                             valid: false,
-                            error: 'EXCEPTION.SEND.AMOUNT_NOT_ENOUGH_ERROR'
+                            error: 'ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH'
                         }
                     });
                 }
