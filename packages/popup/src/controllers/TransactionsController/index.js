@@ -5,7 +5,7 @@ import { Toast } from 'antd-mobile';
 import { BigNumber } from 'bignumber.js';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { PopupAPI } from '@tronlink/lib/api';
-import { APP_STATE, CONTRACT_ADDRESS } from "@tronlink/lib/constants";
+import { APP_STATE, CONTRACT_ADDRESS, ACCOUNT_TYPE } from "@tronlink/lib/constants";
 BigNumber.config({ EXPONENTIAL_AT: [-20, 30] });
 const token10DefaultImg = require('@tronlink/popup/src/assets/images/new/token_10_default.png');
 class TransactionsController extends React.Component {
@@ -28,10 +28,10 @@ class TransactionsController extends React.Component {
             accounts
         } = this.props;
         const { id = "_" } = accounts.selectedToken;
-        Toast.loading('', 0);
-        const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id });
-        Toast.hide();
+        Toast.loading('', 0, false, false);
+        const transactions = await PopupAPI.getTransactionsByTokenId(id);
         this.setState({ transactions });
+        Toast.hide();
     }
 
     render() {
@@ -39,15 +39,20 @@ class TransactionsController extends React.Component {
         const {
             accounts,
             onCancel,
-            prices
+            prices,
+            chains
         } = this.props;
         const { formatMessage } = this.props.intl;
-        const { address, airdropInfo } = accounts.selected;
+        const { address, airdropInfo, type } = accounts.selected;
         const { id = '_', name = 'TRX', decimals = 6, imgUrl, price = 0, amount, balance = 0, frozenBalance = 0 } = accounts.selectedToken;
         return (
             <div className='insetContainer transactions'>
                 <div className='pageHeader'>
-                    <div className='back' onClick={onCancel}></div>
+                    <div className='back' onClick={
+                        () => {
+                            Toast.hide();
+                            onCancel();
+                        }}></div>
                     <span className='title'>{name}</span>
                     {
                         id !== '_' ?
@@ -66,7 +71,7 @@ class TransactionsController extends React.Component {
                 </div>
                 <div className='greyModal'>
                     <div className='showTokenInfo' style={ isTop ? { height: 0, paddingTop: 0, overflow: 'hidden' } : { overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden', height: (id === '_' || (id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow) ? 216 : 176) }}>
-                        <img src={imgUrl} onError={(e) => e.target.src = token10DefaultImg } />
+                        <img src={imgUrl?imgUrl:token10DefaultImg} onError={(e) => e.target.src = token10DefaultImg } />
                         <div className='amount'>
                             {amount}
                         </div>
@@ -130,12 +135,17 @@ class TransactionsController extends React.Component {
                                                     <FormattedMessage id='TRANSACTION.TOKEN_INFO.CONTRACT' />:&nbsp;
                                                     { id.substr(0, 7) + '...' + id.substr(-7) }
                                                     <CopyToClipboard text={id} onCopy={() => { Toast.info(formatMessage({ id: 'TOAST.COPY' })); } }>
-                                                        <span className='copy'></span>
+                                                        <span className='copy'>&nbsp;</span>
                                                     </CopyToClipboard>
                                                 </div>
                                         )
                                         :
-                                        <div className='desc token'>ID:&nbsp;{id}</div>
+                                        <div className='desc token'>
+                                            ID:&nbsp;{id}
+                                            <CopyToClipboard text={id} onCopy={() => { Toast.info(formatMessage({ id: 'TOAST.COPY' })); } }>
+                                                <span className='copy'>&nbsp;</span>
+                                            </CopyToClipboard>
+                                        </div>
                                 )
 
                         }
@@ -145,7 +155,7 @@ class TransactionsController extends React.Component {
                         <div className={index == 0 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 0 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'all' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id,'','all');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
@@ -155,17 +165,17 @@ class TransactionsController extends React.Component {
                         <div className={ index == 2 ? 'active' : '' } onClick={async () => {
                             this.setState({ index: 2 });
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'from' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'from');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
 
                         }}>
                             <FormattedMessage id='ACCOUNT.RECEIVE' />
                         </div>
-                        <div className={index == 1 ? 'active' : ''} onClick={async () => {
+                        <div className={index === 1 ? 'active' : ''} onClick={async () => {
                             this.setState({ index: 1 }) ;
                             Toast.loading('', 0);
-                            const transactions = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: 0, direction: 'to' });
+                            const transactions = await PopupAPI.getTransactionsByTokenId(id, '', 'to');
                             Toast.hide();
                             this.setState({ transactions, currentPage: 1, isRequest: false });
                         }}>
@@ -180,15 +190,15 @@ class TransactionsController extends React.Component {
                             if(e.target.scrollTop === ((58 * transactions.records.length + 36) - 484)) {
                                 if(!isRequest) {
                                     this.setState({ isRequest: true });
-                                    const page = currentPage + 1;
                                     Toast.loading('', 0);
-                                    const records = await PopupAPI.getTransactionsByTokenId({ tokenId: id, start: page - 1, direction: key });
+                                    const records = await PopupAPI.getTransactionsByTokenId(id, typeof transactions.finger === 'string'? transactions.finger  : ++transactions.finger, key);
                                     Toast.hide();
-                                    if(records.records.length === 0) {
+                                    if(records.records.length === 0 || !records.finger) {
                                         this.setState({ isRequest: true });
                                     }else{
                                         transactions.records = transactions.records.concat(records.records);
-                                        this.setState({ transactions, currentPage: page, isRequest: false });
+                                        transactions.finger = records.finger;
+                                        this.setState({ transactions, isRequest: false });
                                     }
                                 }
                             }
@@ -200,23 +210,14 @@ class TransactionsController extends React.Component {
                                 <div className='lists'>
                                     {
                                         transactions.records.map((v, transIndex) => {
-                                            let callValue = 0;
-                                            let direction;
-                                            let addr;
-                                            if(v.contractData) {
-                                                if(v.contractData.call_value) callValue = v.contractData.call_value;
-                                                if(v.contractData.amount) callValue = v.contractData.amount;
-                                                direction = v.toAddress === v.ownerAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
-                                                addr = v.ownerAddress === address ? v.toAddress : v.ownerAddress;// trigger => ownerAddress show toAddress
-                                            }else{
-                                                direction = v.transferToAddress === v.transferFromAddress ? 'send' : (v.transferToAddress === address ? 'receive' : 'send');
-                                                addr = v.transferToAddress === address ? v.transferFromAddress : v.transferToAddress;
-                                                callValue = v.amount;
-                                            }
+
+                                            const direction = v.toAddress === v.fromAddress ? 'send' : (v.toAddress === address ? 'receive' : 'send');
+                                            const addr = v.toAddress === address ? v.fromAddress : v.toAddress;
+
                                             return (
                                                 <div className={`item ${direction}`} key={transIndex} onClick={async() => {
                                                     Toast.loading('', 0);
-                                                    await PopupAPI.setTransactionDetail(v.transactionHash || v.hash);
+                                                    await PopupAPI.setTransactionDetail(v.hash);
                                                     Toast.hide();
                                                     PopupAPI.changeState(APP_STATE.TRANSACTION_DETAIL);
                                                 }}>
@@ -225,7 +226,7 @@ class TransactionsController extends React.Component {
                                                         <div className='time'>{moment(v.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
                                                     </div>
                                                     <div className='right'>
-                                                        {new BigNumber(callValue).shiftedBy(-decimals).toString()}
+                                                        {new BigNumber(v.amount).shiftedBy(-decimals).toString()}
                                                     </div>
                                                 </div>
                                             );
@@ -247,12 +248,30 @@ class TransactionsController extends React.Component {
                     >
                         <FormattedMessage id='ACCOUNT.RECEIVE' />
                     </button>
+                    <div className="line">&nbsp;</div>
                     <button className='send' onClick={ (e) => {
                         PopupAPI.changeDealCurrencyPage(1);
                         PopupAPI.changeState(APP_STATE.SEND);
                     }}>
                         <FormattedMessage id='ACCOUNT.SEND'/>
                     </button>
+                    {
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
+                            <div className="line">&nbsp;</div>
+                            :
+                            null
+                    }
+                    {
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
+                            <button className='transfer' onClick={ (e) => {
+                                PopupAPI.changeState(APP_STATE.TRANSFER);
+                            }}>
+                                <FormattedMessage id={'ACCOUNT.TRANSFER'+(chains.selected === '_'?'':'2')} />
+                            </button>
+                            :
+                        null
+                    }
+
                 </div>
             </div>
         );

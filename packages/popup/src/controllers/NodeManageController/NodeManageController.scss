@@ -1,0 +1,309 @@
+.insetContainer{
+  &.nodeManage{
+    overflow:auto;
+    padding:0;
+    background:transparent url('../../assets/images/new/background.svg') left -130px no-repeat;
+    .addNodeWrap{
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 99;
+      width: 100%;
+      height: 100%;
+      background: rgba(3,5,26,0.60);
+      .addNode{
+        width: 300px;
+        margin:80px auto 0;
+        background: #FFFFFF;
+        border-radius: 2px;
+        padding:20px;
+        display: flex;
+        flex-direction: column;
+        label{
+          width: 100%;
+          height: 20px;
+          line-height: 20px;
+          font-size: 14px;
+          color: #888998;
+          margin-top: 20px;
+          &:first-child{
+            margin-top: 0;
+          }
+        }
+        .input{
+          width: 100%;
+          height: 36px;
+          margin-top: 8px;
+          background: #F7F8FA;
+          border-radius: 2px;
+          input{
+            width: 100%;
+            height: 100%;
+            border:none;
+            background-color: transparent;
+            padding:0 10px;
+            font-size: 14px;
+            color: #505160;
+          }
+        }
+        .tipError{
+          height: 20px;
+          font-size: 14px;
+          color: #DB705C;
+          line-height: 20px;
+          margin-top: 6px;
+        }
+        button{
+          margin-top: 16px;
+        }
+      }
+    }
+    .back{
+      background-image:url('../../assets/images/new/icon-back2.svg');
+    }
+    .pageHeader{
+      position: relative;
+      height: 56px;
+      display: flex;
+      flex-direction:row;
+      align-items:center;
+      justify-content:center;
+      color: #fff;
+      .chains{
+        width: 90px;
+        height: 26px;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-size: 13px;
+        border: 1px solid rgba(255,255,255,0.20);
+        border-radius: 6px;
+        padding:4px 12px;
+        cursor: pointer;
+        &:after{
+          position: relative;
+          top:2px;
+          margin-left:4px;
+          content: '';
+          width: 0;
+          height: 0;
+          border-top:4px solid rgba(255,255,255,.5);
+          border-left:4px solid transparent;
+          border-right:4px solid transparent;
+          border-bottom:4px solid transparent;
+        }
+        &:hover{
+          .chainWrap{
+            height:100px;
+          }
+        }
+        .chainWrap{
+          width: 120%;
+          position: absolute;
+          z-index:100;
+          background: rgba(80,81,96,0.90);
+          border-radius: 6px;
+          left: -10%;
+          top: 24px;
+          transition: all ease-in-out .2s;
+          cursor: pointer;
+          overflow:hidden;
+          height:0;
+          .item{
+            width: 100%;
+            height: 50px;
+            color: rgba(255,255,255,.5);
+            display: flex;
+            flex-direction: row;
+            padding-left: 10px;
+            align-items: center;
+            font-size: 12px;
+            &.selected{
+              color: #fff;
+            }
+            &:hover{
+              background-color: rgba(136,137,152,.5);
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+    .greyModal{
+      overflow: auto;
+      padding: 15px 0 0;
+      background-color: transparent;
+      display: flex;
+      flex-direction:column;
+      flex:1;
+      .node{
+        padding:0 25px;
+        flex:1;
+        .item{
+          margin-top: 16px;
+          width: 100%;
+          height: 138px;
+          background: #FFFFFF;
+          box-shadow: 0 2px 16px 0 rgba(136,137,152,0.10);
+          border-radius: 4px;
+          display: flex;
+          flex-direction: column;
+          border-left:4px solid rgba(99,106,204,0.70);
+          cursor: pointer;
+          .r1{
+            padding-left:10px;
+            height: 46px;
+            border-bottom: 1px solid #F7F8FA;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            font-size: 16px;
+            color: #515060;
+            &:before{
+              content: '';
+              width: 16px;
+              height: 16px;
+              background-image: url('../../assets/images/new/side/icon-unseleted.svg');
+              margin-right: 12px;
+            }
+            &.selected{
+              &:before{
+                background-image: url('../../assets/images/new/side/icon-seleted.svg');
+              }
+            }
+            .delete{
+              width: 34px;
+              height: 34px;
+              top:-6px;
+              right:26px;
+              position: absolute;
+              background-color: #FFFFFF;
+              background-image: url('../../assets/images/new/side/icon-delete.png');
+              background-position: center;
+              background-repeat: no-repeat;
+              background-size:45% auto;
+              box-shadow: 0 2px 20px 0 rgba(1,27,140,0.12);
+              border-radius: 20px;
+
+            }
+          }
+          .r2{
+            padding:10px;
+            display: flex;
+            flex-direction: column;
+            .cell{
+              height: 20px;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              margin-top: 4px;
+              &:first-child{
+                margin-top: 0;
+              }
+              span{
+                &:first-child{
+                  font-size: 14px;
+                  color: #BABACC;
+                }
+                &:last-child{
+                  font-size: 14px;
+                  color: #888998;
+                }
+              }
+            }
+          }
+          &:hover{
+            .url {
+              .delete {
+                opacity: 1;
+              }
+            }
+          }
+          &:first-child{
+            margin-top: 0px;
+          }
+          .url,.row{
+            padding-left: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            & > span{
+              &:nth-child(1){
+                margin-right: 10px;
+              }
+            }
+            & > a{
+              color: #515060;
+              &:hover {
+                color: #0006ec;
+                text-decoration: underline;
+              }
+            }
+          }
+          .url{
+            position: relative;
+            height: 49px;
+            border-radius:4px 4px 0 0;
+            background: #F7F8FA;
+            font-size: 16px;
+            color: #515060;
+            .delete{
+              transition:all .2s ease-in-out;
+              position: absolute;
+              top:16px;
+              right:14px;
+              width: 16px;
+              height: 16px;
+              background-image: url('../../assets/images/new/icon-close.svg');
+              opacity:0;
+            }
+          }
+          .row{
+            height:30px;
+            font-size: 14px;
+            color: #888998;
+          }
+        }
+      }
+      .addNode{
+        margin: 16px 25px;
+        height: 50px;
+        border: 1px solid rgba(80,81,96,0.10);
+        border-radius: 2px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        color: #515060;
+        cursor: pointer;
+        &:before{
+          content: '';
+          width: 11px;
+          height: 11px;
+          background-image: url('../../assets/images/new/side/icon-add.svg');
+          margin-right:10px;
+          cursor: pointer;
+        }
+      }
+      .noData{
+        color: #fff;
+        font-size: 14px;
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+
+
+
+

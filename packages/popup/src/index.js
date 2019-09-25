@@ -25,7 +25,11 @@ import {
     setLanguage,
     setSetting,
     setVersion,
-    setDappList
+    setDappList,
+    setAuthorizeDapps,
+    setLedgerImportAddress,
+    setVTokenList,
+    setChains
 } from 'reducers/appReducer';
 
 import {
@@ -47,7 +51,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
-    dsn: 'https://a52a6098294d4c1c8397e22c8b9a1c0f@sentry.io/1455110',
+    dsn: 'http://7b03df289e7d42a7a4d5df9e1651bbd2@18.220.1.137:9000/13',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
 });
 
@@ -101,7 +105,11 @@ export const app = {
             prices,
             confirmations,
             selectedToken,
-            language
+            language,
+            authorizeDapps,
+            ledgerImportAddress,
+            vTokenList,
+            chains
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -111,6 +119,10 @@ export const app = {
             PopupAPI.getConfirmations(),
             PopupAPI.getSelectedToken(),
             PopupAPI.getLanguage(),
+            PopupAPI.getAuthorizeDapps(),
+            PopupAPI.getLedgerImportAddress(),
+            PopupAPI.getVTokenList(),
+            PopupAPI.getChains()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
         if ( lang.indexOf('zh') > -1 ) {
@@ -130,6 +142,10 @@ export const app = {
         this.store.dispatch(setLanguage(language));
         this.store.dispatch(setSetting(setting));
         this.store.dispatch(setVersion(version));
+        this.store.dispatch(setAuthorizeDapps(authorizeDapps));
+        this.store.dispatch(setLedgerImportAddress(ledgerImportAddress));
+        this.store.dispatch(setVTokenList(vTokenList));
+        this.store.dispatch(setChains(chains));
         if(selectedAccount)
             this.store.dispatch(setAccount(selectedAccount));
 
@@ -141,6 +157,14 @@ export const app = {
 
         this.store.dispatch(
             setNodes(nodes)
+        );
+    },
+
+    async getChains() {
+        const chains = await PopupAPI.getChains();
+
+        this.store.dispatch(
+            setChains(chains)
         );
     },
 
@@ -195,6 +219,22 @@ export const app = {
 
         this.duplex.on('setDappList', dappList => this.store.dispatch(
             setDappList(dappList)
+        ));
+
+        this.duplex.on('setAuthorizeDapps', authorizeDapps => this.store.dispatch(
+            setAuthorizeDapps(authorizeDapps)
+        ));
+
+        this.duplex.on('setLedgerImportAddress', address => this.store.dispatch(
+            setLedgerImportAddress(address)
+        ));
+
+        this.duplex.on('setVTokenList', vTokenList => this.store.dispatch(
+            setVTokenList(vTokenList)
+        ));
+
+        this.duplex.on('setChain', chains => this.store.dispatch(
+            setChains(chains)
         ));
 
     },

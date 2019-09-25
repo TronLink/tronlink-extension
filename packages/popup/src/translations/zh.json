@@ -27,6 +27,7 @@
     "BUTTON.WHITELIST": "白名单",
     "BUTTON.ADD_NODE": "添加节点",
     "BUTTON.CLOSE": "关闭",
+    "BUTTON.GOT_IT": "我知道了",
 
     "TITLES.ACCOUNTS": "账户",
     "TITLES.TRANSACTIONS": "历史交易",
@@ -48,28 +49,46 @@
     "INPUT.PASSWORD": "密码",
     "INPUT.REPEAT_PASSWORD": "重复密码",
     "INPUT.ACCOUNT_NAME": "账户名",
-    "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
-    "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
     "CREATION.CREATE.TITLE": "创建账号",
     "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "确认助记词",
     "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "助记词顺序错误",
-    "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
     "CREATION.CREATE.TIP":"推荐给新用户使用",
     "CREATION.RESTORE.TITLE": "导入账号",
-    "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
     "CREATION.RESTORE.TIP":"推荐给已有tron账户使用",
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "通过私钥导入",
     "CREATION.RESTORE.MNEMONIC.TITLE": "通过助记词导入",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "选择账户",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "密钥库文件导入",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "暂只支持tronscan导出的.txt文件",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "选择文件",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "输入密码",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "导入失败，请检查文件及密码是否匹配",
+    "CREATION.LEDGER.TITLE": "硬件钱包",
+    "CREATION.LEDGER.TIP": "Ledger用户使用",
+    "CREATION.LEDGER.CONNECT_TITLE": "连接硬件钱包",
+    "CREATION.LEDGER.PROCESS_1":"将Ledger与电脑连接，<br />并在Ledger中打开Tron APP",
+    "CREATION.LEDGER.PROCESS_2":"核对即将导入的账户地址",
+    "CREATION.LEDGER.PROCESS_3":"连接完成，请开始使用",
+    "CREATION.LEDGER.LOADING":"在Ledger上打开TRON APP",
+    "CREATION.LEDGER.CHOOSE_ADDRESS":"核对即将导入的账户地址",
+    "CREATION.LEDGER.CONNECT":"连接",
+    "CREATION.LEDGER.KNOW_MORE":"了解更多",
+    "CREATION.LEDGER.CONNECT_TIMEOUT":"连接超时，请接入ledger并打开tronapp",
+    "CREATION.LEDGER.AUTHORIZE_TIMEOUT":"授权超时，请重试",
+    "CREATION.LEDGER.REPEAT_IMPORT":"当前账户已存在",
+    "CREATION.LEDGER.REJECT":"已拒绝",
+    "CREATION.LEDGER.NO_TOKEN":"目前Ledger不支持该币种的转账",
+    "CREATION.LEDGER.ALERT.TIP":"提示",
+    "CREATION.LEDGER.ALERT.BODY":"目前对于硬件钱包账户只支持基础的转账功能，暂不支持授权DAPP等操作。",
+    "CREATION.LEDGER.NOT_MATCH":"账户地址与Ledger不匹配",
+    "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"已取消，请在ledger上选择拒绝",
 
-    "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"导入方式",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "助记词",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "所有可选的账户已经被导入",
-    "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "私钥",
-    "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "密钥库文件",
 
     "CREATION_CRITERIA.HAS_LENGTH": "至少包含<strong>4个</strong>字符",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "仅包含数字，字母及空格",
@@ -80,7 +99,7 @@
 
     "ACCOUNT_NAME.DESC": "请为您的新账号选择一个好记的名字",
 
-    "MNEMONIC_IMPORT.DESC": "请在下方输入你的助记词.长度为12，16，或者24个词（需用空格隔开）",
+    "MNEMONIC_IMPORT.DESC": "请在下方输入你的助记词.长度为12，或者24个词（需用空格隔开）",
     "MNEMONIC_IMPORT.SELECTION": "选择下面你想导入的账户",
 
     "PRIVATE_KEY_IMPORT.DESC": "请在下方输入你的私钥，只能包含16进制字符",
@@ -102,8 +121,14 @@
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"接收地址",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"选择Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"发送数量",
-
-
+    "ACCOUNT.TRANSFER":"转入",
+    "ACCOUNT.TRANSFER2":"转出",
+    "ACCOUNT.TRANSFER.DESC":"转入指的是将token从主链转移至侧链，trx与trc10token默认都可转入，trc20token需要项目方在侧链上完成合约部署才可转入，转入不需额外手续费",
+    "ACCOUNT.TRANSFER.DESC2":"转出指的是将token从侧链转移至主链，每次提取需额外消耗10trx的手续费",
+    "ACCOUNT.TRANSFER.SELECT_CHAIN":"选择到帐链",
+    "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（需额外消耗10TRX）",
+    "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX余额不足",
+    "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"最小数量为10",
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -140,6 +165,8 @@
     "CONFIRMATIONS.QUANTITY": "数量",
     "CONFIRMATIONS.WHITELIST.TITLE": "激活自动签名",
     "CONFIRMATIONS.WHITELIST.BODY": "允许TronLink代表您自动签署交易",
+    "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "将该应用加入白名单，此弹窗将不再弹出，自动授权。",
+    "CONFIRMATIONS.CLICK_SHOW_PARAMS":"展示参数",
 
     "CONFIRMATIONS.OPTIONS.NO": "不自动签名",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "十五分钟之内自动签名",
@@ -147,6 +174,7 @@
     "CONFIRMATIONS.OPTIONS.ONE_HOUR": "一小时之内自动签名",
     "CONFIRMATIONS.OPTIONS.ONE_DAY": "一天之内自动签名",
     "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "自动签名直到再次登陆",
+    "CONFIRMATIONS.DELETE_NODE.BODY": "确定删除当前节点吗？",
 
     "CONTRACTS.SignMessage": "签名",
     "CONTRACTS.AccountCreateContract": "创建账户",
@@ -188,6 +216,8 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"设置",
+    "SETTING.TITLE.DAPP_WHITELIST":"DAPP白名单",
+    "SETTING.TITLE.NODE_MANAGE":"节点管理",
     "SETTING.TITLE.NODE":"切换节点",
     "SETTING.TITLE.ADD_NODE":"添加节点",
     "SETTING.TITLE.CURRENCY":"设置货币",
@@ -201,15 +231,6 @@
     "SETTING.TITLE.AUTO_LOCK.30_MIN":"30分钟",
     "SETTING.TITLE.AUTO_LOCK.NEVER":"永不",
 
-    "SEND.RECIPIENT": "Recipient's address",
-    "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
-    "SEND.TOKENS.TRX": "TRX",
-    "SEND.TOKENS.TRC10": "Basic TRC10",
-    "SEND.TOKENS.TRC20": "Smart TRC20",
-    "SEND.AMOUNT.PLACEHOLDER": "1000",
-    "SEND.BUTTON.TRX": "Send TRX",
-    "SEND.BUTTON.TRC10": "Send Basic Token",
-    "SEND.BUTTON.TRC20": "Send Smart Token",
     "SEND.SUCCESS": "交易已被成功广播",
 
     "ACCOUNTS.CONFIRM_DELETE": "删除账户",
@@ -329,9 +350,7 @@
 
     "BANK.RENTINFO.SUCCESS":"支付成功，能量约1分钟后到账",
     "BANK.RENTINFO.FAILED":"租用失败，1分钟不能下五笔订单",
-
-
-
+    "BANK.RENTINFO.TIMEOUT":"支付超时，请检查网络后重试",
 
 
     "IEOS.BUY_ING":"抢购中",
@@ -341,6 +360,7 @@
     "EXCEPTION.FORMAT_ERROR":"格式错误",
     "EXCEPTION.ACCOUNT_EXIST":"该地址已在账户列表中，请勿重复添加",
     "EXCEPTION.ADD_NODE.NAME":"需大于四个字符",
+    "EXCEPTION.ADD_NODE.REPEAT_NAME":"节点名称不能重复",
     "EXCEPTION.ADD_NODE.NODE_URL":"格式错误，请以http://或https://开头",
     "EXCEPTION.SEND.ADDRESS_FORMAT_ERROR":"地址格式错误",
     "EXCEPTION.SEND.ADDRESS_SAME_ERROR":"支付地址与接收地址不能相同",
@@ -351,7 +371,11 @@
     "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"带宽不足，将额外消耗少量trx（不超过1TRX）",
     "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"能量不足，将额外消耗少量trx（不超过1TRX）",
     "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"带宽，能量不足，将额外消耗少量trx（不超过1TRX）",
+    "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_TRX_ERROR":"带宽不足，将额外消耗少量trx，trx余额不足",
+    "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR":"能量不足，将额外消耗少量trx，trx余额不足",
+    "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_TRX_ERROR":"带宽，能量不足，将额外消耗少量trx，trx余额不足",
     "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"地址未激活，无法发送20token，请向其转入trx，以激活该地址",
+    "EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE":"该地址在Tron主链上未激活",
 
     "USDT.MAIN.INCOME_YESTERDAY":"昨日收益 {earning}",
     "USDT.TEXT.YESTERDAY_INCOME":"昨日收益",
@@ -390,18 +414,35 @@
     "ASSET.CONFIRM.HIDE_TOKEN": "隐藏代币",
     "ASSET.CONFIRM.CANCEL": "取消",
     "ASSET.CONFIRM.HIDE": "隐藏",
-    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示，之后你还可以通过资产管理中的“添加代币”来添加此代币。",
+    "ASSET.CONFIRM.CONTENT": "该币余额为0，隐藏后，将不在列表中显示",
 
     "TRANSACTION_DETAIL": "交易详情",
     "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "转账成功",
     "TRANSACTION_DETAIL.SEND_ADDRESS": "发送地址",
     "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "接收地址",
     "TRANSACTION_DETAIL.ID": "交易ID",
+    "TRANSACTION_DETAIL.TIME": "交易时间",
     "TRANSACTION_DETAIL.BLOCK_HEIGHT": "区块高度",
     "TRANSACTION_DETAIL.FEE": "费用",
     "TRANSACTION_DETAIL.GO_TRONSCAN": "去tronscan查看更详细数据",
     "TRANSACTION_DETAIL.COPIED": "截图已复制到粘贴板",
     "TRANSACTION_DETAIL.ENABLE_COPY": "可复制",
     "TRANSACTION_DETAIL.HAVE_COPIED": "已复制",
-    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗"
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "由于激活新地址，或带宽能量不足等原因，造成的TRX消耗",
+
+    "DAPP_WHITELIST.URL":"网址",
+    "DAPP_WHITELIST.CONTRACT_ADDRESS":"合约地址",
+    "DAPP_WHITELIST.ADD_TIME":"添加时间",
+
+    "INDEX_ICON_TITLE.OFFICIAL_WEBSITE":"官网",
+    "INDEX_ICON_TITLE.EXCHANGE":"交易所",
+    "INDEX_ICON_TITLE.LOCK":"锁定",
+    "INDEX_ICON_TITLE.REFRESH":"刷新",
+    "INDEX_ICON_TITLE.SETTING":"设置",
+
+    "NOTIFICATIONS.TITLE":"交易完成",
+    "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情",
+
+    "ALERT.UPDATE_DESCRIPTION.TITLE":"更新说明",
+    "ALERT.UPDATE_DESCRIPTION.BODY":"本次更新主要支持了Tron官方的sunnetwork，即添加了侧链功能。现在您可以将资产在主链与侧链之间转移，并可以通过TronLink使用优先支持了侧链的Dapp。请注意，目前侧链上暂不支持ledger"
 }

@@ -1,0 +1,28 @@
+.alert{
+  background: #fff;
+  border-radius: 2px;
+  padding:30px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .title{
+    height: 28px;
+    line-height: 28px;
+    font-size: 20px;
+    color: #505160;
+  }
+  .body{
+    margin-top: 20px;
+    font-size: 14px;
+    color: #505160;
+    line-height:20px;
+  }
+  .customButton{
+    margin-top: 30px;
+    height: 36px;
+    width: 90px;
+  }
+  &.normal{
+
+  }
+}

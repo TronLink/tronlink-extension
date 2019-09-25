@@ -9,8 +9,10 @@ import Header from '@tronlink/popup/src/controllers/PageController/Header';
 import ProcessBar from '@tronlink/popup/src/components/ProcessBar';
 import Button from '@tronlink/popup/src/components/Button';
 import { connect } from 'react-redux';
-import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, APP_STATE, BUTTON_TYPE, ACCOUNT_TYPE, TOP_TOKEN } from '@tronlink/lib/constants';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { app } from "@tronlink/popup/src";
+import Alert from '@tronlink/popup/src/components/Alert';
 import './AccountsPage.scss';
 import '@tronlink/popup/src/controllers/PageController/Header/Header.scss';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
@@ -26,19 +28,28 @@ class AccountsPage extends React.Component {
             mnemonic: false,
             privateKey: false,
             showMenuList: false,
-            showNodeList: false,
+            showChainList: false,
             showBackUp: false,
             showDelete: false,
             news: [],
-            ieos: []
+            ieos: [],
+            allTokens: []
         };
     }
 
+
     async componentDidMount() {
+        const timer = setInterval(async()=>{
+            const allTokens = await PopupAPI.getAllTokens();
+            if(allTokens.length){
+                clearInterval(timer);
+                this.setState({allTokens});
+            }
+        },100);
+
         const { prices, accounts } = this.props;
-        const t = { name: 'TRX', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
+        const t = { name: 'TRX', abbr:'trx', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
-        //const { developmentMode } = this.props.setting;
         tronscanUrl = 'https://tronscan.org/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
@@ -51,6 +62,7 @@ class AccountsPage extends React.Component {
         await PopupAPI.setAirdropInfo(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
+        app.getChains();
     }
 
     runTime(ieos) {
@@ -104,16 +116,23 @@ class AccountsPage extends React.Component {
         });
     }
 
-    handleShowNodeList() {
+    handleShowChainList() {
         this.setState({
             showMenuList: false,
-            showNodeList: !this.state.showNodeList
+            showChainList: !this.state.showChainList
         });
+    }
+
+    handleSelectChain(chainId){
+        PopupAPI.selectChain(chainId);
+        app.getNodes();
+        this.handleShowChainList();
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {
         const { formatMessage } = this.props.intl;
         const { showMenuList } = this.state;
+        const { chains } = this.props;
         return (
             <div className='accountInfo'>
                 <div className='row1'>
@@ -124,35 +143,55 @@ class AccountsPage extends React.Component {
                     }}
                     >
                         <span>{accounts.selected.name.length > 30 ? accounts.selected.name.substr(0,30)+'...' : accounts.selected.name}</span>
+                        {
+                            accounts.selected.type === ACCOUNT_TYPE.LEDGER ? <div className="ledger">&nbsp;</div>:null
+                        }
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
-                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * 6, opacity: 1 } : {}}>
+                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_'?6:2), opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
-                                <span className='icon asset'></span>
+                                <span className='icon asset'>&nbsp;</span>
                                 <FormattedMessage id='ASSET.ASSET_MANAGE' />
                             </div>
-                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
-                                <span className='icon frozen'></span>
-                                <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
-                            </div>
-                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
-                                <span className='icon vote'></span>
-                                <FormattedMessage id='MENU.VOTE' />
-                            </div>
-                            {/*<div onClick={ () => { PopupAPI.changeState(APP_STATE.ADD_TRC20_TOKEN); }} className='item'>*/}
-                            {/*    <span className='icon addToken'></span>*/}
-                            {/*    <FormattedMessage id='MENU.ADD_TRC20_TOKEN' />*/}
-                            {/*</div>*/}
-                            <div onClick={ this.onExport } className='item'>
-                                <span className='icon backup'></span>
-                                <FormattedMessage id='ACCOUNTS.EXPORT' />
-                            </div>
-                            <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className='item'>
-                                <span className='icon link'></span>
-                                <FormattedMessage id='MENU.ACCOUNT_DETAIL' />
-                            </div>
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=frozen`); }} className='item'>
+                                        <span className='icon frozen'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.FROZEN_UNFROZEN' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
+                                        <span className='icon vote'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.VOTE' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
+                                    <div onClick={ this.onExport } className='item'>
+                                        <span className='icon backup'>&nbsp;</span>
+                                        <FormattedMessage id='ACCOUNTS.EXPORT' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_'
+                                    ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink`) }} className='item'>
+                                        <span className='icon link'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.ACCOUNT_DETAIL' />
+                                    </div>
+                                    :
+                                    null
+                            }
                             <div className='item' onClick={ () => { this.onDelete(); } }>
-                                <span className='icon delete'></span>
+                                <span className='icon delete'>&nbsp;</span>
                                 <FormattedMessage id='MENU.DELETE_WALLET' />
                             </div>
                         </div>
@@ -162,9 +201,6 @@ class AccountsPage extends React.Component {
                     <span>{`${accounts.selected.address.substr(0, 10)}...${accounts.selected.address.substr(-10)}`}</span>
                     <CopyToClipboard text={accounts.selected.address} onCopy={(e) => { Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2); }}>
                         <span className='copy' onClick={() => {
-                            const target = this.refs.address;
-                            Utils.getSelect(target);
-                            document.execCommand('copy');
                             Toast.info(formatMessage({ id: 'TOAST.COPY' }), 2)
                         }}></span>
                     </CopyToClipboard>
@@ -200,17 +236,20 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className='line'></div>
-                    <div className='cell bankSingle'>
+                    <div className={'cell'+(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
+                        //PopupAPI.changeState(APP_STATE.TRONBANK);
+                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
+                            window.open('http://www.tronlending.org');
+                    }}>
                         <div className='title'>
                             {
-                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' ?
-                                    <span className='bankBox' onClick={ () => { PopupAPI.changeState(APP_STATE.TRONBANK); }}>
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
+                                    <span className='bankBox'>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
-                                        <img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>
-                                        <div className='bankPopover'>
-                                            <div className='popoverTitle'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>
-                                        </div>
+                                        {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
+                                        {/*<div className='bankPopover'>*/}
+                                            {/*<div className='popoverTitle'><FormattedMessage id='BANK.INDEX.ENTRANCE' /></div>*/}
+                                        {/*</div>*/}
                                     </span> :
                                     <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                             }
@@ -274,11 +313,11 @@ class AccountsPage extends React.Component {
     }
 
     renderTokens(tokens) {
-        const { prices, accounts } = this.props;
+        const { prices, accounts,chains } = this.props;
         return (
             <div className='tokens'>
                 {
-                    tokens.map(({ tokenId, ...token }) => {
+                    tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({ tokenId, ...token }) => {
                         const amount = new BigNumber(token.balance)
                             .shiftedBy(-token.decimals)
                             .toString();
@@ -286,7 +325,7 @@ class AccountsPage extends React.Component {
                         const money = (tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT) ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2);
                         return (
                             <div className='tokenItem' onClick={ () => {
-                                let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg };
+                                let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg,isMapping:token.isMapping};
                                 if(tokenId === '_') {
                                     o.frozenBalance = new BigNumber(accounts.selected.frozenBalance)
                                         .shiftedBy(-token.decimals)
@@ -308,6 +347,12 @@ class AccountsPage extends React.Component {
                                                 <FormattedMessage id='USDT.MAIN.INCOME_YESTERDAY' values={{earning:(token.income>0?'+':'')+new BigNumber(token.income).toFixed(2).toString()}} />
                                             </div>
                                             :null
+                                    }
+                                    {
+                                        token.isVerify ?
+                                            <img src={require('@tronlink/popup/src/assets/images/new/icon-verify.svg')} />
+                                            :
+                                            null
                                     }
                                 </div>
                                 <div className="worth">
@@ -406,24 +451,34 @@ class AccountsPage extends React.Component {
         BigNumber.config({ EXPONENTIAL_AT: [-20,30] });
         let totalAsset = new BigNumber(0);
         let totalTrx = new BigNumber(0);
-        const { showNodeList,mnemonic,privateKey,news,ieos }  = this.state;
+        const { showChainList,mnemonic,privateKey,news,ieos,allTokens }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
-        const { accounts,prices,nodes,setting,language:lng } = this.props;
+        const { accounts,prices,nodes,setting,language:lng,vTokenList,chains } = this.props;
         const { selected: { airdropInfo } } = accounts;
-        //const mode = setting.developmentMode?'developmentMode':'productionMode';
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
-        let usdt = { ...accounts.selected.tokens.smart[ CONTRACT_ADDRESS.USDT ], name: 'Tether USD', symbol: 'USDT', imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png', tokenId: CONTRACT_ADDRESS.USDT, price: prices.hasOwnProperty('usdtPriceList') ? prices.usdtPriceList[prices.selected] : 0 };
-        if(airdropInfo){
-            usdt = { ...usdt, isShow: airdropInfo.isShow ,income: new BigNumber(airdropInfo.yesterdayEarnings).shiftedBy(-6).toString() };
-        }
-        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price};
+        const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price,isMapping:true};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
-        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token]) => tokenId !== CONTRACT_ADDRESS.USDT).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol');
-        tokens = [usdt, trx, ...tokens];
+        const topArray = [];
+        TOP_TOKEN[chains.selected === '_' ? 'mainchain':'sidechain'].forEach(v=>{
+            if(tokens.hasOwnProperty(v)){
+                if(v === CONTRACT_ADDRESS.USDT){
+                    const f = allTokens.filter(({tokenId})=> tokenId === v)
+                    tokens[v].imgUrl = f.length ? allTokens.filter(({tokenId})=> tokenId === v)[0].imgUrl : false;
+                }
+                topArray.push({...tokens[v],tokenId:v});
+            }else{
+                topArray.push({...allTokens.filter(({tokenId})=> tokenId === v)[0],tokenId:v,price:'0',balance:'0',isLocked:false})
+            }
+        });
+        tokens = Utils.dataLetterSort(Object.entries(tokens).filter(([tokenId, token])=> typeof token === 'object').map(v => { v[1].isMapping = v[1].hasOwnProperty('isMapping')?v[1].isMapping:true;v[ 1 ].tokenId = v[ 0 ];return v[ 1 ]; }).filter(v => !v.isLocked ), 'abbr', 'symbol',topArray);
+        tokens = [trx, ...tokens];
         tokens = tokens.map(({ tokenId, ...token }) => {
             token.decimals = token.decimals || 0;
+            if(vTokenList.includes(tokenId))
+                token.isVerify = true;
+
             return { tokenId, ...token };
         });
         Object.entries(accounts.accounts).map(([address, account]) => {
@@ -444,7 +499,7 @@ class AccountsPage extends React.Component {
                 {
                     this.renderDeleteAccount()
                 }
-                <Header showNodeList={showNodeList} developmentMode={setting.developmentMode} nodes={nodes} handleShowNodeList={this.handleShowNodeList.bind(this)} />
+                <Header showChainList={showChainList} developmentMode={setting.developmentMode} chains={chains} handleSelectChain={this.handleSelectChain.bind(this)} handleShowChainList={this.handleShowChainList.bind(this)} />
                 <div className='space-controller'>
                     {
                         nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
@@ -497,6 +552,9 @@ class AccountsPage extends React.Component {
                                 <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.RESTORING) }>
                                     <FormattedMessage id="CREATION.RESTORE.TITLE" />
                                 </div>
+                                <div className="cell"  onClick={ () => PopupAPI.changeState(APP_STATE.LEDGER) }>
+                                    <FormattedMessage id="CREATION.LEDGER.TITLE" />
+                                </div>
                             </div>
                             <div className="row2">
                                 <div className="cell">
@@ -522,7 +580,10 @@ class AccountsPage extends React.Component {
                                         }}>
                                             <div className="top">
                                                 <div className="name">
-                                                    {account.name.length>30?account.name.substr(0,30)+'...':account.name}
+                                                    <div className="nameWrap">
+                                                        {account.name.length>30?account.name.substr(0,30)+'...':account.name}
+                                                        {account.type === ACCOUNT_TYPE.LEDGER ? <div className="ledger">&nbsp;</div>:null}
+                                                    </div>
                                                 </div>
                                                 <div className="asset">
                                                     <span>TRX: { new BigNumber(new BigNumber(account.balance).shiftedBy(-6).toFixed(2)).toFormat() }</span>
@@ -557,19 +618,26 @@ class AccountsPage extends React.Component {
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
-                        <div className="scroll" onScroll={(e)=> {
-                            //const key = index === 0 ? 'all' : ( index === 1 ? 'send':'receive');
-                            //if(transactionGroup && transactionGroup[key].length > 8){
-                            //    const isTop = e.target.scrollTop === 0 ? false : true;
-                            //    this.setState({isTop});
-                            //}
-                            //}}
-                        }}
-                        >
+                        <div className="scroll">
                             { this.renderTokens(tokens) }
                         </div>
                     </div>
                 </div>
+                {
+                    setting.showUpdateDescription
+                        ?
+                    <div className="alertWrap">
+                        <Alert show={setting.showUpdateDescription} buttonText="BUTTON.GOT_IT"
+                               title={formatMessage({id: "ALERT.UPDATE_DESCRIPTION.TITLE"})}
+                               body={formatMessage({id: "ALERT.UPDATE_DESCRIPTION.BODY"})}
+                               onClose={async() => {
+                                    const setting = await PopupAPI.getSetting();
+                                    PopupAPI.setSetting({...setting,showUpdateDescription:false});
+                               }} />
+                    </div>
+                    :
+                    null
+                }
             </div>
         );
     }
@@ -577,6 +645,8 @@ class AccountsPage extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        chains:state.app.chains,
+        vTokenList:state.app.vTokenList,
         language: state.app.language,
         accounts: state.accounts,
         prices: state.app.prices,

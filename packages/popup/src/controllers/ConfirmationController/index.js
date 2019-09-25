@@ -1,11 +1,12 @@
 import React from 'react';
-import Toast,{ T } from 'react-toast-mobile';
 import Button from '@tronlink/popup/src/components/Button';
+import Alert from '@tronlink/popup/src/components/Alert';
 import TronWeb from 'tronweb';
 import Dropdown from 'react-dropdown';
-
+import Utils from '@tronlink/lib/utils';
 import { PopupAPI } from '@tronlink/lib/api';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
 import {
     FormattedMessage,
     FormattedHTMLMessage,
@@ -14,7 +15,8 @@ import {
 
 import {
     CONFIRMATION_TYPE,
-    BUTTON_TYPE
+    BUTTON_TYPE,
+    ACCOUNT_TYPE
 } from '@tronlink/lib/constants';
 
 import 'react-dropdown/style.css';
@@ -24,13 +26,22 @@ class ConfirmationController extends React.Component {
     constructor({ intl }) {
         super();
         this.loadWhitelistOptions(intl);
-
         this.onReject = this.onReject.bind(this);
         this.onAccept = this.onAccept.bind(this);
         this.onWhitelist = this.onWhitelist.bind(this);
     }
 
-    async componentDidMount() {}
+    async componentDidMount() {
+        const {
+            contractType,
+            input:{ parameter,contract_address,function_selector }
+        } = this.props.confirmation;
+        if(contractType === "TriggerSmartContract"){
+            const abi = await PopupAPI.getAbiCode(contract_address);
+            const args = Utils.decodeParams(parameter,abi,function_selector);
+            this.setState({args});
+        }
+    }
 
     loadWhitelistOptions({ formatMessage }) {
         const options = [{
@@ -55,9 +66,12 @@ class ConfirmationController extends React.Component {
 
         // eslint-disable-next-line
         this.state = {
+            args:[],
+            showArgs:false,
             whitelisting: {
                 selected: options[ 0 ],
-                options
+                options,
+                isAutoAuthorize:false
             }
         };
     }
@@ -87,13 +101,21 @@ class ConfirmationController extends React.Component {
 
     async onAccept() {
         const {
-            selected
+            selected,
+            isAutoAuthorize
         } = this.state.whitelisting;
-        const { confirmation } = this.props;
+        const { confirmation,authorizeDapps } = this.props;
         if( confirmation.contractType === 'TriggerSmartContract' ) {
-            T.loading();
             await this.addUsedDapp();
-            T.loaded();
+            const contractAddress = TronWeb.address.fromHex(confirmation.input.contract_address);
+            if(isAutoAuthorize && !authorizeDapps.hasOwnProperty(contractAddress)) {
+                const o = {};
+                o.url = confirmation.hostname;
+                o.contract = contractAddress;
+                o.addTime = new Date().getTime();
+                authorizeDapps[contractAddress] = o;
+                PopupAPI.setAuthorizeDapps(authorizeDapps);
+            }
         }
         PopupAPI.acceptConfirmation(selected.value);
     }
@@ -117,6 +139,12 @@ class ConfirmationController extends React.Component {
             input
         } = this.props.confirmation;
 
+        const {
+            options,
+            selected,
+            isAutoAuthorize
+        } = this.state.whitelisting;
+
         return (
             <React.Fragment>
                 <div className='modalDesc hasBottomMargin'>
@@ -131,14 +159,41 @@ class ConfirmationController extends React.Component {
                 <div className='parameters mono'>
                     { input }
                 </div>
+                <div className='whitelist hasBottomMargin'>
+                    <FormattedMessage
+                        id='CONFIRMATIONS.WHITELIST.TITLE'
+                        children={ text => (
+                            <div className='whitelistTitle'>
+                                { text }
+                            </div>
+                        ) }
+                    />
+                    <FormattedMessage
+                        id='CONFIRMATIONS.WHITELIST.BODY'
+                        children={ text => (
+                            <div className='whitelistBody'>
+                                { text }
+                            </div>
+                        ) }
+                    />
+                    <Dropdown
+                        disabled={isAutoAuthorize}
+                        className='dropdown'
+                        options={ options }
+                        value={ selected }
+                        onChange={ this.onWhitelist }
+                    />
+                </div>
             </React.Fragment>
         );
     }
 
     renderTransaction() {
+        const { args,showArgs } = this.state;
         const {
             options,
-            selected
+            selected,
+            isAutoAuthorize
         } = this.state.whitelisting;
 
         const {
@@ -154,6 +209,8 @@ class ConfirmationController extends React.Component {
 
         const meta = [];
         const showWhitelist = contractType === 'TriggerSmartContract';
+        //const showWhitelist = true;
+        const showAuthorizeAudio = contractType === 'TriggerSmartContract';
 
         let showParameters = false;
 
@@ -187,8 +244,10 @@ class ConfirmationController extends React.Component {
         if(input.resource)
             meta.push({ key: 'CONFIRMATIONS.RESOURCE', value: formatMessage({ id: `CONFIRMATIONS.RESOURCE.${ input.resource }` }) });
 
-        if(input.function_selector)
-            meta.push({ key: 'CONFIRMATIONS.FUNCTION', value: input.function_selector });
+        if(input.function_selector) {
+            meta.push({key: 'CONFIRMATIONS.FUNCTION', value: input.function_selector});
+            //args.length && args.map(({name,type,value})=>({key:name,value})).forEach(v=>meta.push(v))
+        }
 
         if(input.trx_num)
             meta.push({ key: 'CONFIRMATIONS.TRX_RATIO', value: formatNumber(input.trx_num) });
@@ -235,20 +294,40 @@ class ConfirmationController extends React.Component {
                 { meta.length ? (
                     <div className='meta'>
                         { meta.map(({ key, value }) => (
-                            <div className='metaLine' key={ key }>
-                                <FormattedMessage id={ key } />
-                                <span className='value'>
-                                    { value }
-                                </span>
-                            </div>
+                            key === 'CONFIRMATIONS.FUNCTION'?
+                                <div className={"function"+(showArgs?' show':'')}>
+                                    <div data-tip={formatMessage({id:'CONFIRMATIONS.CLICK_SHOW_PARAMS'})} data-for='showArgs' className='metaLine' onClick={()=>args.length && this.setState({showArgs:!showArgs})} key={ key }>
+                                        <FormattedMessage id={ key } />
+                                        <span className='value'>
+                                        { value }
+                                        </span>
+                                        {args.length?<ReactTooltip id='showArgs' effect='solid' />:null}
+                                    </div>
+                                    <div className="show_arg" onClick={e=>e.stopPropagation()}>
+                                        {
+                                            JSON.stringify(args.map(({name,value})=>{
+                                                const v ={};
+                                                v[name] = value;
+                                                return v;
+                                            }))
+                                        }
+                                    </div>
+                                </div>
+                                :
+                                <div className='metaLine' key={ key }>
+                                    <FormattedMessage id={ key } />
+                                    <span className='value'>
+                                        { value }
+                                    </span>
+                                </div>
                         )) }
                     </div>
-                ) : '' }
+                ) : null }
                 { showParameters ? (
                     <div className='parameters mono'>
                         { JSON.stringify(input, null, 2 ) }
                     </div>
-                ) : '' }
+                ) : null }
                 { showWhitelist ? (
                     <div className='whitelist'>
                         <FormattedMessage
@@ -268,25 +347,44 @@ class ConfirmationController extends React.Component {
                             ) }
                         />
                         <Dropdown
+                            disabled={isAutoAuthorize}
                             className='dropdown'
                             options={ options }
                             value={ selected }
                             onChange={ this.onWhitelist }
                         />
                     </div>
-                ) : '' }
+                ) : null }
+                {
+                    showAuthorizeAudio ?
+                        <div className='authorize' onClick={ () => {
+                            const { whitelisting } = this.state;
+                            whitelisting.isAutoAuthorize = !whitelisting.isAutoAuthorize;
+                            this.setState({whitelisting});
+                        }}>
+                            <div className={'radio'+(isAutoAuthorize?' checked':'')}>&nbsp;</div>
+                            <div className='txt'>
+                                <FormattedMessage id='CONFIRMATIONS.AUTO_AUTHORIZE.DESC' />
+                            </div>
+                        </div>
+                    :
+                        null
+                }
             </React.Fragment>
         );
     }
 
     render() {
         const {
-            type
+            type,
+            input:{ parameter,contract_address }
         } = this.props.confirmation;
         return (
             <div className='insetContainer confirmationController'>
-                <div className='greyModal confirmModal'>
-                    <Toast />
+                {
+                    this.props.type !== ACCOUNT_TYPE.LEDGER
+                        ?
+                    <div className='greyModal confirmModal'>
                     <FormattedMessage id='CONFIRMATIONS.HEADER' children={ text => (
                         <div className='pageHeader hasBottomMargin'>
                             { text }
@@ -313,6 +411,9 @@ class ConfirmationController extends React.Component {
                         />
                     </div>
                 </div>
+                        :
+                    <Alert onClose={()=>PopupAPI.rejectConfirmation()} />
+                }
             </div>
         );
     }
@@ -320,6 +421,7 @@ class ConfirmationController extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        type: state.accounts.selected.type,
         confirmation: state.confirmations[ 0 ]
     }))(ConfirmationController)
 );

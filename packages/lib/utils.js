@@ -2,6 +2,17 @@ import crypto from 'crypto';
 import bip39 from 'bip39';
 import bip32 from 'bip32';
 import TronWeb from 'tronweb';
+import pbkdf2 from 'pbkdf2';
+import aesjs from "aes-js";
+import { isAddressValid,pkToAddress } from "@tronscan/client/src/utils/crypto";
+import {utils} from 'ethers';
+
+const encryptKey = (password, salt) => {
+    return pbkdf2.pbkdf2Sync(password, salt, 1, 256 / 8, 'sha512');
+};
+
+const AbiCoder = utils.AbiCoder;
+const abiCoder = new AbiCoder();
 
 const Utils = {
     encryptionAlgorithm: 'aes-256-ctr',
@@ -156,8 +167,14 @@ const Utils = {
         return typeof obj === 'function';
     },
 
-    dataLetterSort (data, field, field2) {
+    dataLetterSort (data, field, field2, topArray) {
         let needArray = [];
+        if(topArray){
+            topArray.forEach(v => {
+                needArray.push(v)
+            });
+            data = data.filter(({tokenId})=> !topArray.map(v=>v.tokenId).includes(tokenId))
+        }
         let list = {};
         let LetterArray = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9'];
         for (let i = 0; i < data.length; i++) {
@@ -220,21 +237,68 @@ const Utils = {
         return `${timeY}/${timeM}/${timeD} ${timeh}:${timem}`;
     },
 
-    getSelect(targetNode){
-        if (window.getSelection) {
-            //chrome等主流浏览器
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNode(targetNode);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        } else if (document.body.createTextRange) {
-            //ie
-            const range = document.body.createTextRange();
-            range.moveToElementText(targetNode);
-            range.select();
+    readFileContentsFromEvent(ev) {
+      return new Promise(resolve => {
+        const files = ev.target.files;
+        const reader = new FileReader();
+        reader.onload = (file) => {
+          const contents = file.target.result;
+          resolve(contents);
+        };
+
+        reader.readAsText(files[0]);
+      });
+    },
+
+
+    decryptString(password, salt, hexString) {
+      const key = encryptKey(password, salt);
+      const encryptedBytes = aesjs.utils.hex.toBytes(hexString);
+      const aesCtr = new aesjs.ModeOfOperation.ctr(key);
+      const decryptedBytes = aesCtr.decrypt(encryptedBytes);
+      return aesjs.utils.utf8.fromBytes(decryptedBytes);
+    },
+
+    validatePrivateKey(privateKey){
+        try {
+            let address = pkToAddress(privateKey);
+            return isAddressValid(address);
+        } catch (e) {
+            return false;
         }
-    }
+    },
+
+    delay(timeout){
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    },
+
+    decodeParams(message,abiCode,function_selector) {
+        const cutArr = function_selector.match(/(.+)\((.*)\)/);
+        if(cutArr[2]!==''){
+            const byteArray = TronWeb.utils.code.hexStr2byteArray(message);
+            const abi = abiCode.filter(({name})=> name === cutArr[1]);
+            return abi[0].inputs.map(({name,type},i)=>{
+                let value;
+                const array = byteArray.filter((v,index)=>index >=32 * i && index< 32 * (i + 1));
+                if(type === 'address') {
+                    value = TronWeb.address.fromHex('41'+TronWeb.utils.code.byteArray2hexStr(array.filter((v,i) => i>11)));
+                } else if(type === 'trcToken') {
+                    value = TronWeb.toDecimal('0x'+TronWeb.utils.code.byteArray2hexStr(array));
+                } else {
+                    value = TronWeb.toDecimal('0x'+TronWeb.utils.code.byteArray2hexStr(array));
+                }
+                return {name,type,value};
+            });
+        }else{
+            return [];
+        }
+    },
+
+
+
+
 };
 
 export default Utils;

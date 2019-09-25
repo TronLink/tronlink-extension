@@ -1,5 +1,5 @@
 {
-    "ERRORS.UNSUPPORTED_STATE": "State '{appState}' not yet implemented. Click to force a state refresh",
+    "ERRORS.UNSUPPORTED_STATE": "State {appState} not yet implemented. Click to force a state refresh",
     "ERRORS.ALREADY_INITIALISED": "TronLink has already been initialised",
     "ERRORS.ACCOUNT_CREATION_FAILED": "Account creation failed",
     "ERRORS.UNLOCK_FAILED": "Account unlock failed",
@@ -27,6 +27,7 @@
     "BUTTON.WHITELIST": "Whitelist",
     "BUTTON.ADD_NODE": "Add node",
     "BUTTON.CLOSE": "Close",
+    "BUTTON.GOT_IT": "Got it",
 
     "TITLES.ACCOUNTS": "Accounts",
     "TITLES.TRANSACTIONS": "Transaction History",
@@ -48,28 +49,46 @@
     "INPUT.PASSWORD": "Password",
     "INPUT.REPEAT_PASSWORD": "Repeat password",
     "INPUT.ACCOUNT_NAME": "Account name",
-    "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
-    "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
-    "CREATION.CREATE.TITLE": "Create Account",
+    "CREATION.CREATE.TITLE": "Create",
     "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "Confirm mnemonic phrase",
     "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "Mnemonic error",
-    "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
     "CREATION.CREATE.TIP":"Recommend new users to use",
-    "CREATION.RESTORE.TITLE": "Restore Account",
-    "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
+    "CREATION.RESTORE.TITLE": "Restore",
     "CREATION.RESTORE.TIP":"Recommend for users with existing Tron accounts",
     "CREATION.RESTORE.PRIVATE_KEY.TITLE": "Import by private key",
     "CREATION.RESTORE.MNEMONIC.TITLE": "Import by mnemonic phrase",
     "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "Select account",
+    "CREATION.RESTORE.KEY_STORE.TITLE": "Keystore files",
+    "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "Temporarily only supports TXT files exported by tronscan",
+    "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "Choose file",
+    "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "Input password",
+    "CREATION.RESTORE.KEY_STORE.EXCEPTION": "Import failed. Please check if the file matches the password",
+    "CREATION.LEDGER.TITLE": "Hardware",
+    "CREATION.LEDGER.TIP": "for Ledger users",
+    "CREATION.LEDGER.CONNECT_TITLE": "Connect to hardware wallet",
+    "CREATION.LEDGER.PROCESS_1":"connect Ledger with your PC，<br />and open TRON APP in Ledger",
+    "CREATION.LEDGER.PROCESS_2":"check the account address",
+    "CREATION.LEDGER.PROCESS_3":"connection completed. You can use it now.",
+    "CREATION.LEDGER.LOADING":"open TRON APP in Ledger",
+    "CREATION.LEDGER.CHOOSE_ADDRESS":"check the account address",
+    "CREATION.LEDGER.CONNECT":"connect",
+    "CREATION.LEDGER.KNOW_MORE":"learn more",
+    "CREATION.LEDGER.CONNECT_TIMEOUT":"connection timed out; please connect Ledger and open TRON APP",
+    "CREATION.LEDGER.AUTHORIZE_TIMEOUT":"authorization timed out; please try again",
+    "CREATION.LEDGER.REPEAT_IMPORT":"the current account already exists",
+    "CREATION.LEDGER.REJECT":"rejected ",
+    "CREATION.LEDGER.NO_TOKEN":"the current Ledger does not support transfers with this token",
+    "CREATION.LEDGER.ALERT.TIP":"prompt",
+    "CREATION.LEDGER.ALERT.BODY":"only basic transfer features are available for hardware wallet accounts at the moment; you cannot authorize DApps yet",
+    "CREATION.LEDGER.NOT_MATCH":"account address does not match Ledger",
+    "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"Canceled, please choose to refuse in ledger",
 
-    "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
     "CHOOSING_TYPE.TITLE":"Choosing type",
     "CHOOSING_TYPE.MNEMONIC.TITLE": "Mnemonic phrase",
     "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "All your accounts have been imported.",
-    "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
     "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "Private key",
-    "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+    "CHOOSING_TYPE.KEY_STORE.TITLE": "Import Keystore files",
 
     "CREATION_CRITERIA.HAS_LENGTH": "Contains at least <strong>four</strong> characters",
     "CREATION_CRITERIA.IS_ALPHANUMERIC": "Contains only <strong>alphanumeric</strong> characters, along with optional spaces",
@@ -80,7 +99,7 @@
 
     "ACCOUNT_NAME.DESC": "Please choose a memorable name for your new account",
 
-    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12, 16 or 24 words in length (separated by spaces)",
+    "MNEMONIC_IMPORT.DESC": "Please enter your mnemonic phrase below. This will either be 12 or 24 words in length (separated by spaces)",
     "MNEMONIC_IMPORT.SELECTION": "Select the accounts you would like to import below",
 
     "PRIVATE_KEY_IMPORT.DESC": "Please enter your private key below. This can only contain hexadecimal characters",
@@ -102,8 +121,14 @@
     "ACCOUNT.SEND.RECEIVE_ADDRESS":"Receive Address",
     "ACCOUNT.SEND.CHOOSE_TOKEN":"Choose Token",
     "ACCOUNT.SEND.TRANSFER_AMOUNT":"Transfer Amount",
-
-
+    "ACCOUNT.TRANSFER":"deposit",
+    "ACCOUNT.TRANSFER2":"withdraw",
+    "ACCOUNT.TRANSFER.DESC":"\"Deposit\" means to transfer tokens from the main chain to the side chain. TRX and TRC10 can be deposited by default; while TRC20 tokens can only be deposited after the requester has completed the contract deployment. No extra service fee will be charged for deposit.",
+    "ACCOUNT.TRANSFER.DESC2":"Withdraw means to transfer tokens from the side chain to the main chain. Withdrawal consumes 10 TRX each time as a service fee.",
+    "ACCOUNT.TRANSFER.SELECT_CHAIN":"Choose the recipient chain",
+    "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"(Another 10 TRX will be consumed)",
+    "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"Insufficient TRX balance",
+    "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"Minimal amount: 10",
 
     "TOKENS.SMART": "Smart TRC20 Tokens",
     "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -140,6 +165,8 @@
     "CONFIRMATIONS.QUANTITY": "Quantity",
     "CONFIRMATIONS.WHITELIST.TITLE": "Enable automatic signing",
     "CONFIRMATIONS.WHITELIST.BODY": "This allows TronLink to automatically sign similar transactions on your behalf",
+    "CONFIRMATIONS.AUTO_AUTHORIZE.DESC": "Add the app to the white list so it will be authenticated automatically. The pop-up window will also stop showing.",
+    "CONFIRMATIONS.CLICK_SHOW_PARAMS":"click to display parameters",
 
     "CONFIRMATIONS.OPTIONS.NO": "Don't automatically sign",
     "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "For fifteen minutes",
@@ -147,6 +174,7 @@
     "CONFIRMATIONS.OPTIONS.ONE_HOUR": "For one hour",
     "CONFIRMATIONS.OPTIONS.ONE_DAY": "For one day",
     "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "Until the next login",
+
 
     "CONTRACTS.SignMessage": "sign a message",
     "CONTRACTS.AccountCreateContract": "create an account",
@@ -188,6 +216,8 @@
     "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
     "SETTING.TITLE":"Setting",
+    "SETTING.TITLE.DAPP_WHITELIST":"DAPP white list",
+    "SETTING.TITLE.NODE_MANAGE":"Node manage",
     "SETTING.TITLE.NODE":"Switch node",
     "SETTING.TITLE.ADD_NODE":"Add node",
     "SETTING.TITLE.CURRENCY":"Setting currency",
@@ -201,15 +231,6 @@
     "SETTING.TITLE.AUTO_LOCK.30_MIN":"30min",
     "SETTING.TITLE.AUTO_LOCK.NEVER":"never",
 
-    "SEND.RECIPIENT": "Recipient's address",
-    "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
-    "SEND.TOKENS.TRX": "TRX",
-    "SEND.TOKENS.TRC10": "Basic TRC10",
-    "SEND.TOKENS.TRC20": "Smart TRC20",
-    "SEND.AMOUNT.PLACEHOLDER": "1000",
-    "SEND.BUTTON.TRX": "Send TRX",
-    "SEND.BUTTON.TRC10": "Send Basic Token",
-    "SEND.BUTTON.TRC20": "Send Smart Token",
     "SEND.SUCCESS": "Successfully broadcasted transaction",
 
     "ACCOUNTS.CONFIRM_DELETE": "Delete Account",
@@ -328,6 +349,7 @@
     "BANK.RENTINFO.INSUFFICIENT":"Balance insufficient",
     "BANK.RENTINFO.SUCCESS":"Your payment was successful, energy will arrive in your account in 1 min",
     "BANK.RENTINFO.FAILED":"Renting failed, you cannot place five orders within 1 minute.",
+    "BANK.RENTINFO.TIMEOUT":"Payment overtime, please check the network",
 
 
 
@@ -349,7 +371,11 @@
     "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_ERROR":"Insufficient bandwidth. Small amount of extra TRX (no more than 1 TRX) will be consumed. ",
     "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"Insufficient energy. Small amount of extra TRX (no more than 1 TRX) will be consumed.",
     "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"Insufficient energy and bandwidth. Small amount of extra TRX (no more than 1 TRX) will be consumed.",
+    "EXCEPTION.SEND.BANDWIDTH_NOT_ENOUGH_TRX_ERROR":"Insufficient bandwidth, a small amout of TRX will be consumed, insufficient TRX balance",
+    "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_TRX_ERROR":"Insufficient Energy, a small amout of TRX will be consumed, insufficient TRX balance",
+    "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_TRX_ERROR":"Insufficient bandwidth and Energy, a small amout of TRX will be consumed, insufficient TRX balance",
     "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"The address is not activated, 20token cannot be sent. Please transfer TRX to activate the address.",
+    "EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE":"This address is not activated on the Tron main chain",
 
     "USDT.MAIN.INCOME_YESTERDAY":"Yesterday's Income {earning}",
     "USDT.TEXT.YESTERDAY_INCOME":"Yesterday's Income",
@@ -388,18 +414,36 @@
     "ASSET.CONFIRM.HIDE_TOKEN": "Hide Tokens",
     "ASSET.CONFIRM.CANCEL": "Cancel",
     "ASSET.CONFIRM.HIDE": "Hide",
-    "ASSET.CONFIRM.CONTENT": "The token balance is 0. When hidden, the token will not be displayed in the list. You can go to \"Asset Management\" - \"Add Token\" to add the token back.",
+    "ASSET.CONFIRM.CONTENT": "The token balance is 0. When hidden, the token will not be displayed in the list.",
 
     "TRANSACTION_DETAIL": "Transaction Detail",
     "TRANSACTION_DETAIL.TRANSFER_SUCCESS": "Successful Transfer",
     "TRANSACTION_DETAIL.SEND_ADDRESS": "Sending Address",
     "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "Receiving Address",
     "TRANSACTION_DETAIL.ID": "Transaction ID",
+    "TRANSACTION_DETAIL.TIME": "Transaction time",
     "TRANSACTION_DETAIL.BLOCK_HEIGHT": "Block Height",
     "TRANSACTION_DETAIL.FEE": "Fee",
     "TRANSACTION_DETAIL.GO_TRONSCAN": "Go to Tronscan for detailed data",
     "TRANSACTION_DETAIL.COPYED": "The screenshot is copied to the clipboard",
     "TRANSACTION_DETAIL.ENABLE_COPY": "Copyable",
     "TRANSACTION_DETAIL.HAVE_COPIED": "Copied",
-    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy"
+    "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "TRX consumption due to activation of new addresses or inadequate bandwidth or energy",
+
+    "DAPP_WHITELIST.URL":"Website",
+    "DAPP_WHITELIST.CONTRACT_ADDRESS":"Contract",
+    "DAPP_WHITELIST.ADD_TIME":"Add time",
+
+    "INDEX_ICON_TITLE.OFFICIAL_WEBSITE":"website",
+    "INDEX_ICON_TITLE.EXCHANGE":"trxmarket",
+    "INDEX_ICON_TITLE.LOCK":"lock",
+    "INDEX_ICON_TITLE.REFRESH":"refresh",
+    "INDEX_ICON_TITLE.SETTING":"set up",
+
+    "NOTIFICATIONS.TITLE":"transaction finished",
+    "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details",
+
+    "ALERT.UPDATE_DESCRIPTION.TITLE":"Update Description",
+    "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet."
+
 }

@@ -11,7 +11,8 @@ import TronWeb from 'tronweb';
 import {
     APP_STATE,
     ACCOUNT_TYPE,
-    CONTRACT_ADDRESS
+    CONTRACT_ADDRESS,
+    API_URL
 } from '@tronlink/lib/constants';
 
 const logger = new Logger('WalletService');
@@ -27,19 +28,24 @@ class Wallet extends EventEmitter {
         this.isConfirming = false;
         this.popup = false;
         this.accounts = {};
-        this.contractWhitelist = {};
+        this.contractWhitelist = {}; // sign white list for trigger smart contract
+        this.appWhitelist = {};      // sign white list for string limit some website
+        this.phishingList = [];      // dapp phishing list (if it doesn't exit on the list the website will jump a phishing page for risk warning)
         this.confirmations = [];
         this.timer = {};
+        this.vTokenList = []; //add v icon in the  token list
         // This should be moved into its own component
-        this.isPolling = false;
         this.shouldPoll = false;
         this._checkStorage(); //change store by judge
         // this.bankContractAddress = 'TMdSctThYMVEuGgPU8tumKc1TuyinkeEFK'; //test
         this.bankContractAddress = 'TPgbgZReSnPnJeXPakHcionXzsGk6kVqZB'; //online
-
+        this.ledgerImportAddress = [];
+        this.times = 0;
         setInterval(() => {
             this._updatePrice();
+            this.setCache();
         }, 30 * 60 * 1000);
+
     }
 
     async _checkStorage() {
@@ -109,7 +115,7 @@ class Wallet extends EventEmitter {
         Object.entries(accounts).forEach(([ address, account ]) => {
             const accountObj = new Account(
                 account.type,
-                account.mnemonic || account.privateKey,
+                account.mnemonic || account.privateKey || account.address,
                 account.accountIndex
             );
 
@@ -126,24 +132,22 @@ class Wallet extends EventEmitter {
         clearTimeout(this.timer);
         if(!this.shouldPoll) {
             logger.info('Stopped polling');
-            return this.isPolling = false;
-        }
-
-        if(this.isPolling)
             return;
-
-        this.isPolling = true;
+        }
 
         const accounts = Object.values(this.accounts);
         if(accounts.length > 0) {
-            const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
-                return { data: { data: [] } };
-            });
+            // const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
+            //     logger.error('get trc10 token price fail');
+            //     return { data: { data: [] } };
+            // });
             const { data: { data: { rows: smartTokenPriceList } } } = await axios.get('https://api.trx.market/api/exchange/marketPair/list').catch(e => {
+                logger.error('get trc20 token price fail');
                 return { data: { data: { rows: [] } } };
             });
             const prices = StorageService.prices;
-            basicPrice = basicTokenPriceList;
+            //basicPrice = basicTokenPriceList;
+            basicPrice = [];
             smartPrice = smartTokenPriceList;
             usdtPrice = prices.usdtPriceList ? prices.usdtPriceList[ prices.selected ] : 0;
             for (const account of accounts) {
@@ -153,16 +157,14 @@ class Wallet extends EventEmitter {
                             this.emit('setAccount', this.selectedAccount);
                         }
                     }).catch(e => {
-                        console.log(e);
+                        logger.error(`update account ${account.address} fail`, e);
                     });
                 } else {
                     await account.update(basicPrice, smartPrice, usdtPrice);
-                    //continue;
                 }
             }
             this.emit('setAccounts', this.getAccounts());
         }
-        this.isPolling = false;
         this.timer = setTimeout(() => {
             this._pollAccounts(); // ??TODO repeatedly request
         }, 10000);
@@ -172,12 +174,14 @@ class Wallet extends EventEmitter {
         if(!StorageService.ready)
             return;
 
-        const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,GBP,EUR,BTC,ETH');
-        const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,GBP,EUR,BTC,ETH');
+        const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
+        const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
         Promise.all([prices, usdtPrices]).then(res => {
             StorageService.setPrices(res[0].data, res[1].data);
             this.emit('setPriceList', [res[0].data, res[1].data]);
-        }).catch(e => logger.warn('Failed to update prices'));
+        }).catch(e => {
+            logger.error('Failed to update prices',e);
+        });
 
     }
 
@@ -240,11 +244,6 @@ class Wallet extends EventEmitter {
     }
 
     startPolling() {
-        if(this.isPolling && this.shouldPoll)
-            return; // Don't poll if already polling
-
-        if(this.isPolling && !this.shouldPoll)
-            return this.shouldPoll = true;
 
         logger.info('Started polling');
 
@@ -257,6 +256,7 @@ class Wallet extends EventEmitter {
     }
 
     async refresh() {
+        this.setCache(false);
         let res;
         const accounts = Object.values(this.accounts);
         for(const account of accounts) {
@@ -296,7 +296,12 @@ class Wallet extends EventEmitter {
             APP_STATE.USDT_ACTIVITY_DETAIL,
             APP_STATE.DAPP_LIST,
             APP_STATE.ASSET_MANAGE,
-            APP_STATE.TRANSACTION_DETAIL
+            APP_STATE.TRANSACTION_DETAIL,
+            APP_STATE.DAPP_WHITELIST,
+            APP_STATE.LEDGER,
+            APP_STATE.LEDGER_IMPORT_ACCOUNT,
+            APP_STATE.NODE_MANAGE,
+            APP_STATE.TRANSFER
         ];
         if(!stateAry.includes(appState))
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
@@ -404,22 +409,7 @@ class Wallet extends EventEmitter {
         setting.lock.lockTime = new Date().getTime();
         this.setSetting(setting);
         if (this.confirmations.length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-            Promise.all([dapps, dapps2]).then(res => {
-                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-                StorageService.saveAllDapps(tronDapps);
-            });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
-            Promise.all([trc10tokens, trc20tokens]).then(res => {
-                let t = [];
-                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
-                });
-                StorageService.saveAllTokens(t);
-            });
+            await this.setCache();
             this._setState(APP_STATE.READY);
         } else {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -428,8 +418,10 @@ class Wallet extends EventEmitter {
 
     async lockWallet() {
         StorageService.lock();
-        //this.accounts = {};
-        //this.selectedAccount = false;
+        this.accounts = {};
+        this.selectedAccount = false;
+        this.appWhitelist = {};
+        this.emit('setAccount', this.selectedAccount);
         this._setState(APP_STATE.PASSWORD_SET);
     }
 
@@ -440,11 +432,11 @@ class Wallet extends EventEmitter {
             uuid
         });
 
-        if(this.state === APP_STATE.PASSWORD_SET) {
-            this.emit('setConfirmations', this.confirmations);
-            this._openPopup();
-            return;
-        }
+        // if(this.state === APP_STATE.PASSWORD_SET) {
+        //     this.emit('setConfirmations', this.confirmations);
+        //     this._openPopup();
+        //     return;
+        // }
 
         if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
@@ -463,32 +455,51 @@ class Wallet extends EventEmitter {
             contractType,
             hostname
         } = confirmation;
+        //if(!address)
+        //    return Promise.reject('INVALID_CONFIRMATION');
 
-        if(!address)
-            return Promise.reject('INVALID_CONFIRMATION');
+        if(contractType !== 'TriggerSmartContract'){
+            //return Promise.reject('INVALID_CONFIRMATION');
+            //this.contractWhitelist[ hostname ] = {};
+            if(!this.appWhitelist[ hostname ])
+                this.appWhitelist[ hostname ] = {};
 
-        if(contractType !== 'TriggerSmartContract')
-            return Promise.reject('INVALID_CONFIRMATION');
+            this.appWhitelist[ hostname ].duration = duration === -1 ? -1 : Date.now() + duration;
+            logger.info(`Added auto sign on host ${ hostname } with duration ${ duration } to whitelist`);
 
-        if(!this.contractWhitelist[ address ])
-            this.contractWhitelist[ address ] = {};
+            ga('send', 'event', {
+                eventCategory: 'Transaction',
+                eventAction: 'Whitelisted Transaction',
+                eventLabel: confirmation.contractType || 'SignMessage',
+                eventValue: duration,
+                referrer: hostname,
+                userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
+            });
 
-        this.contractWhitelist[ address ][ hostname ] = (
-            duration === -1 ?
-                -1 :
-                Date.now() + duration
-        );
+        } else {
+            if(!this.contractWhitelist[ address ])
+                this.contractWhitelist[ address ] = {};
 
-        logger.info(`Added contact ${ address } on host ${ hostname } with duration ${ duration } to whitelist`);
+            this.contractWhitelist[ address ][ hostname ] = (
+                duration === -1 ?
+                    -1 :
+                    Date.now() + duration
+            );
 
-        ga('send', 'event', {
-            eventCategory: 'Smart Contract',
-            eventAction: 'Whitelisted Smart Contract',
-            eventLabel: TronWeb.address.fromHex(confirmation.input.contract_address),
-            eventValue: duration,
-            referrer: confirmation.hostname,
-            userId: Utils.hash(confirmation.input.owner_address)
-        });
+            logger.info(`Added contact ${ address } on host ${ hostname } with duration ${ duration } to whitelist`);
+
+            ga('send', 'event', {
+                eventCategory: 'Smart Contract',
+                eventAction: 'Whitelisted Smart Contract',
+                eventLabel: TronWeb.address.fromHex(confirmation.input.contract_address),
+                eventValue: duration,
+                referrer: confirmation.hostname,
+                userId: Utils.hash(confirmation.input.owner_address)
+            });
+        }
+
+
+
 
         this.acceptConfirmation();
     }
@@ -517,9 +528,7 @@ class Wallet extends EventEmitter {
             eventLabel: confirmation.contractType || 'SignMessage',
             eventValue: confirmation.input.amount || 0,
             referrer: confirmation.hostname,
-            userId: Utils.hash(
-                TronWeb.address.toHex(this.selectedAccount)
-            )
+            userId: Utils.hash(TronWeb.address.toHex(this.selectedAccount))
         });
 
         callback({
@@ -573,25 +582,18 @@ class Wallet extends EventEmitter {
         this.resetState();
     }
 
+    /**
+     *
+     * @param mnemonic
+     * @param name
+     * @returns {Promise.<boolean>} create an account with mnemonic after confirming by generated mnemonic
+     */
+
     async addAccount({ mnemonic, name }) {
         logger.info(`Adding account '${ name }' from popup`);
-
-        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-        await Promise.all([dapps, dapps2]).then(res => {
-            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-            StorageService.saveAllDapps(tronDapps);
-        });
-        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
-        await Promise.all([trc10tokens, trc20tokens]).then(res => {
-            let t = [];
-            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
-            });
-            StorageService.saveAllTokens(t);
-        });
+        if(Object.keys(this.accounts).length === 0) {
+            this.setCache();
+        }
 
         const account = new Account(
             ACCOUNT_TYPE.MNEMONIC,
@@ -609,16 +611,23 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
-        this.refresh();
         return true;
     }
 
+
     // This and the above func should be merged into one
+    /**
+     *
+     * @param privateKey
+     * @param name
+     * @returns {Promise.<boolean>}
+     */
+
     async importAccount({ privateKey, name }) {
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
-            ACCOUNT_TYPE.PRIVATE_KEY,
+            privateKey.match(/^T/) && TronWeb.isAddress(privateKey) ? ACCOUNT_TYPE.LEDGER : ACCOUNT_TYPE.PRIVATE_KEY,
             privateKey
         );
 
@@ -628,31 +637,50 @@ class Wallet extends EventEmitter {
 
         account.name = name;
         if(Object.keys(this.accounts).length === 0) {
-            const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest',{ timeout: 5000 });
-            const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0', { timeout: 5000 });
-            await Promise.all([dapps, dapps2]).then(res => {
-                const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
-                StorageService.saveAllDapps(tronDapps);
-            });
-            const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=3000',{ timeout: 10000 });
-            const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20',{ timeout: 5000 });
-            await Promise.all([trc10tokens, trc20tokens]).then(res => {
-                let t = [];
-                res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false }) => {
-                    if(contractAddress && contractAddress === CONTRACT_ADDRESS.USDT)return;
-                    t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0 });
-                });
-                StorageService.saveAllTokens(t);
-            });
-
+            this.setCache();
         }
         this.accounts[ address ] = account;
         StorageService.saveAccount(account);
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
-        this.refresh();
         return true;
+    }
+
+    async setCache(isResetPhishingList = true ){
+        const selectedChain = NodeService._selectedChain;
+        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+        Promise.all([dapps, dapps2]).then(res => {
+            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+            StorageService.saveAllDapps(tronDapps);
+        });
+        const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl,isBlack');
+        const trc20tokens = axios.get('https://apilist.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
+        const trc20tokens_s = axios.get('https://dappchainapi.tronscan.org/api/tokens/overview?start=0&limit=1000&filter=trc20');
+        Promise.all([trc10tokens, trc20tokens, trc20tokens_s]).then(res => {
+            let t = [];
+            let t2 = [];
+            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
+            });
+            res[ 0 ].data.data.concat( res[ 2 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t2.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
+            });
+            StorageService.saveAllTokens(t,t2);
+        });
+
+        if(isResetPhishingList) {
+            axios.get(`${API_URL}/api/wallet/official_token`,{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'}}).then(res=>{
+                StorageService.saveVTokenList(res.data.data);
+                this.emit('setVTokenList',res.data.data);
+            }).catch(e => {
+                this.emit('setVTokenList',StorageService.vTokenList);
+            });
+
+            const {data: {data: phishingList}} = await axios.get(`${API_URL}/api/activity/website/blacklist`).catch(e => ({data: {data: []}}));
+            this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
+        }
     }
 
     selectAccount(address) {
@@ -670,7 +698,7 @@ class Wallet extends EventEmitter {
         ));
 
         const node = NodeService.getCurrentNode();
-
+        NodeService.selectChain(node.chain);
         this.emit('setNode', {
             fullNode: node.fullNode,
             solidityNode: node.solidityNode,
@@ -678,16 +706,38 @@ class Wallet extends EventEmitter {
         });
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
+
+    }
+
+    async selectChain(chainId) {
+        if(StorageService.chains.selectedChain !== chainId) {
+            const chains = NodeService.getChains();
+            const nodes = NodeService.getNodes();
+            const node = Object.entries(nodes.nodes).filter(([nodeId, node]) => node.chain === chainId && node.default)[0];
+            await this.selectNode(node[0]);
+            NodeService.selectChain(chainId);
+            chains.selected = chainId;
+            this.emit('setChain', chains);
+        }
     }
 
     addNode(node) {
-        this.selectNode(
-            NodeService.addNode(node)
-        );
+        NodeService.addNode(node)
+        // this.selectNode(
+        //
+        // );
     }
 
-    getAccounts() {
+    deleteNode(nodeId){
+        const id = NodeService.deleteNode(nodeId);
+        id  ? this.selectNode(id) : null;
+    }
+
+    getAccounts(sideChain = false) {
         const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
+            if(sideChain && account.type === ACCOUNT_TYPE.LEDGER)
+                return;
+
             accounts[ address ] = {
                 name: account.name,
                 balance: account.balance + account.frozenBalance,
@@ -698,7 +748,9 @@ class Wallet extends EventEmitter {
                 netUsed: account.netUsed,
                 netLimit: account.netLimit,
                 tokenCount: Object.keys(account.tokens.basic).length + Object.keys(account.tokens.smart).length,
-                asset: account.asset
+                asset: account.asset,
+                type: account.type,
+                frozenBalance: account.frozenBalance
             };
 
             return accounts;
@@ -713,7 +765,7 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', amount: 0, decimals: 6 } : StorageService.selectedToken;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', abbr:'trx', amount: 0, decimals: 6 } : StorageService.selectedToken;
     }
 
     setLanguage(language) {
@@ -798,29 +850,26 @@ class Wallet extends EventEmitter {
     }
 
     async sendTrx({ recipient, amount }) {
-        await this.accounts[ this.selectedAccount ].sendTrx(
+        return await this.accounts[ this.selectedAccount ].sendTrx(
             recipient,
             amount
         );
-        this.refresh();
     }
 
     async sendBasicToken({ recipient, amount, token }) {
-        await this.accounts[ this.selectedAccount ].sendBasicToken(
+        return await this.accounts[ this.selectedAccount ].sendBasicToken(
             recipient,
             amount,
             token
         );
-        this.refresh();
     }
 
     async sendSmartToken({ recipient, amount, token }) {
-        await this.accounts[ this.selectedAccount ].sendSmartToken(
+        return await this.accounts[ this.selectedAccount ].sendSmartToken(
             recipient,
             amount,
             token
         );
-        this.refresh();
     }
 
     async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
@@ -937,65 +986,121 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId({ tokenId, start = 0, direction = "all" }) {
+    async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = "all" ,limit = 30 }) {
+        const selectedChain = NodeService._selectedChain;
+        const { fullNode } = NodeService.getCurrentNode();
         const address = this.selectedAccount;
-        const limit = 30;
-        let params = { limit, start: limit * start };
-        let requestUrl;
-        let newRecord = [];
-        if(!tokenId.match(/^T/)) {
-            if(tokenId === '_') {
-                requestUrl = 'https://apilist.tronscan.org/api/simple-transaction';
-                // params.asset_name = 'TRX';
-            } else {
-                requestUrl = 'https://apilist.tronscan.org/api/simple-transfer';
-                params.token_id = tokenId;
+        let params = {limit};
+        let requestUrl = selectedChain === '_' ? 'https://apilist.tronscan.org' : 'https://dappchainapi.tronscan.org';
+        // if(selectedChain === '_') {
+        //     params.fingerprint = fingerprint;
+        //     if (!tokenId.match(/^T/)) {
+        //         requestUrl = `${fullNode}/v1/accounts/${address}/transactions`;
+        //         if (direction === 'to') {
+        //             params.only_to = true;
+        //         } else if (direction === 'from') {
+        //             params.only_from = true;
+        //         }
+        //         params.token_id = tokenId === '_' ? 'trx' : tokenId;
+        //         const {data: {data: records, meta: {fingerprint: finger}}} = await axios.get(requestUrl, {
+        //             params,
+        //             timeout: 5000
+        //         }).catch(err => ({data: {data: [], meta: {fingerprint: ''}}}));
+        //         let lists = records.map(record => {
+        //             let fromAddress = '';
+        //             let toAddress = '';
+        //             let amount = 0;
+        //             let timestamp = 0;
+        //             let hash = '';
+        //             if (record['internal_tx_id']) {
+        //                 fromAddress = TronWeb.address.fromHex(record['from_address']);
+        //                 toAddress = TronWeb.address.fromHex(record['to_address']);
+        //                 amount = record['data']['call_value'][tokenId];
+        //                 timestamp = record['block_timestamp'];
+        //                 hash = record['tx_id'];
+        //             } else {
+        //                 const value = record['raw_data']['contract'][0]['parameter']['value'];
+        //                 fromAddress = TronWeb.address.fromHex(value['owner_address']);
+        //                 toAddress = TronWeb.address.fromHex(value['to_address']);
+        //                 amount = value['amount'];
+        //                 timestamp = record['raw_data']['timestamp'];
+        //                 hash = record['txID']
+        //             }
+        //             return {fromAddress, toAddress, amount, timestamp, hash};
+        //         });
+        //         return {records: lists, finger};
+        //     } else {
+        //         params['event_name'] = 'Transfer';
+        //         if (direction === 'to') {
+        //             params.filters = `{"to":"${TronWeb.address.toHex(address).replace(/41/, '0x')}"}`;
+        //         } else if (direction === 'from') {
+        //             params.filters = `{"from":"${TronWeb.address.toHex(address).replace(/41/, '0x')}"}`;
+        //         }
+        //         requestUrl = `${fullNode}/v1/contracts/${tokenId}/events`;
+        //         const {data: {data: records, meta: {fingerprint: finger}}} = await axios.get(requestUrl, {
+        //             params,
+        //             timeout: 5000
+        //         }).catch(r => ({data: {data: [], meta: {fingerprint: ''}}}));
+        //         let lists = records.map(record => {
+        //             const fromAddress = TronWeb.address.fromHex(record['result']['from'].replace(/^0x/, '41'));
+        //             const toAddress = TronWeb.address.fromHex(record['result']['to'].replace(/^0x/, '41'));
+        //             const amount = record['result']['value'];
+        //             const timestamp = record['block_timestamp'];
+        //             const hash = record['transaction_id'];
+        //             return {fromAddress, toAddress, amount, timestamp, hash};
+        //         });
+        //         return {records: lists, finger};
+        //     }
+        // } else {
+            let newRecord = [];
+            const finger = fingerprint || 0;
+            params.start = limit * finger;
+            if(!tokenId.match(/^T/)) {
+                if(tokenId === '_') {
+                    requestUrl += '/api/simple-transaction';
+                } else {
+                    requestUrl += '/api/simple-transfer';
+                    params.token_id = tokenId;
+                }
+                if(direction === 'all') {
+                    params = {...params, address};
+                } else if(direction === 'to') {
+                    params = { ...params, from: address };
+                } else {
+                    params = { ...params, to: address };
+                }
+                const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
 
-            }
-            if(direction === 'all') {
-                params = {...params, address};
-            } else if(direction === 'to') {
-                params = { ...params, from: address };
+                newRecord = records.filter(({contractType,contractData})=>![2,5,11,12,30,31].includes(contractType) || (contractType === 31 && contractData.hasOwnProperty('call_value')) ).map(({hash, transactionHash = '', timestamp, contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
+                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress || ownerAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount || 0};
+                });
+
+                return { records: newRecord, finger };
             } else {
-                params = { ...params, to: address };
-            }
-            const { data: { data: records, total } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
-            if(tokenId !== '_') {
-                newRecord = records;
-            }else {
-                if(records.length > 0) {
-                    records.forEach((val, index) => {
-                        if((val.contractData.call_value || val.contractData.amount) && val.contractType !== 2) {
-                            newRecord.push(val);
-                        }
-                    });
+                params.address = address;
+                params.contract = tokenId;
+                const { data: { data: transactions } } = await axios.get(`${requestUrl}/api/contract/events`, {
+                    params
+                }).catch(err => {
+                    return { data: { data: [] } };
+                });
+                const transactions2 = transactions.map(({transactionHash,transferFromAddress,transferToAddress,amount,timestamp})=>{
+                    return {fromAddress:transferFromAddress,toAddress:transferToAddress,hash:transactionHash,timestamp,amount};
+                });
+                if(direction === 'all') {
+                    return { records: transactions2, finger};
+                }else if(direction === 'to') {
+                    return { records: transactions2.filter(({ fromAddress }) => fromAddress === address),finger };
                 }else {
-                    newRecord = [];
+                    return { records: transactions2.filter(({ toAddress })=> toAddress === address),finger };
                 }
             }
-            return { records: newRecord, total };
-        } else {
-            params.address = address;
-            params.contract = tokenId;
-            const { data: { data: transactions, total } } = await axios.get('https://apilist.tronscan.org/api/contract/events', {
-                params
-            }).catch(err => {
-                return { data: { data: [], total: 0 } };
-            });
-            if(direction === 'all') {
-                return { records: transactions, total };
-            }else if(direction === 'to') {
-                return { records: transactions.filter(({ transferFromAddress }) => transferFromAddress === address), total };
-            }else {
-                return { records: transactions.filter(({ transferToAddress })=> transferToAddress === address), total };
-            }
-        }
+
+        //}
     }
 
     async getNews() {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.get(apiUrl+'/api/activity/announcement/reveal_v2').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1005,9 +1110,7 @@ class Wallet extends EventEmitter {
     }
 
     async getIeos() {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://172.16.22.43:8090':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
         if(res) {
             return res.data.data;
@@ -1017,9 +1120,7 @@ class Wallet extends EventEmitter {
     }
 
     async addCount(id) {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8920':'https://list.tronlink.org';
-        const apiUrl = developmentMode ? 'https://list.tronlink.org' : 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
         if(res && res.data.code === 0) {
             return true;
@@ -1029,9 +1130,7 @@ class Wallet extends EventEmitter {
     }
 
     async setAirdropInfo(address) {
-        const developmentMode = StorageService.setting.developmentMode;
-        //const apiUrl = developmentMode? 'http://52.14.133.221:8951':'https://list.tronlink.org';
-        const apiUrl = 'https://list.tronlink.org';
+        const apiUrl = API_URL;
         const hexAddress = TronWeb.address.toHex(address);
         const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
         if(res && res.data.code === 0) {
@@ -1050,7 +1149,10 @@ class Wallet extends EventEmitter {
     }
 
     async getAccountInfo(address) {
-        return await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
+        return {
+            mainchain: await NodeService.sunWeb.mainchain.trx.getUnconfirmedAccount(address),
+            sidechain: await NodeService.sunWeb.sidechain.trx.getUnconfirmedAccount(address),
+        };
     }
 
     setGaEvent({ eventCategory, eventAction, eventLabel, referrer }) {
@@ -1072,23 +1174,107 @@ class Wallet extends EventEmitter {
         this.emit('setAccount', this.selectedAccount);
     }
 
-    getAllTokens() {
-        return StorageService.hasOwnProperty('allTokens') ? StorageService.allTokens : [];
+    getAllTokens(selectedChain = '_') {
+        return StorageService.hasOwnProperty('allTokens') ? (selectedChain === '_' ? StorageService.allTokens.mainchain : StorageService.allTokens.sidechain) : {};
     }
 
     async setTransactionDetail(hash) {
-        const res = await axios.get('https://apilist.tronscan.org/api/transaction-info', { params: { hash } }).catch(e=>false);
+        const selectedChain = NodeService._selectedChain;
+        const requestUrl = selectedChain === '_'?'https://apilist.tronscan.org':'https://dappchainapi.tronscan.org';
+        //const reauestUrl = 'https://apilist.tronscan.org';
+        const res = await axios.get(`${requestUrl}/api/transaction-info`, { params: { hash } }).catch(e=>false);
         if(res) {
-            let { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
+            let { confirmed, ownerAddress, toAddress, hash, block,timestamp = 0 ,cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
             if( contractType === 31 && tokenTransferInfo ) {
                 ownerAddress = tokenTransferInfo.from_address;
                 toAddress = tokenTransferInfo.to_address;
             }
-            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
+            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, timestamp, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
             this.emit('setAccount', this.selectedAccount);
         }
         return res;
     }
 
+    getAuthorizeDapps(){
+        return StorageService.hasOwnProperty('authorizeDapps') ? StorageService.authorizeDapps : {};
+    }
+
+    setAuthorizeDapps(authorizeDapps) {
+        StorageService.setAuthorizeDapps(authorizeDapps);
+        this.emit('setAuthorizeDapps',authorizeDapps);
+    }
+
+    setLedgerImportAddress(address){
+        this.ledgerImportAddress = address;
+        this.emit('setLedgerImportAddress',address);
+    }
+
+    getLedgerImportAddress(){
+        return this.hasOwnProperty('ledgerImportAddress')?this.ledgerImportAddress:[];
+    }
+
+    async getAbiCode(contract_address){
+        const contract = await NodeService.tronWeb.contract().at(contract_address);
+        return contract.abi;
+    }
+
+    getVTokenList(){
+        return StorageService.hasOwnProperty('vTokenList') ? StorageService.vTokenList : [];
+    }
+
+    setPushMessage({iconUrl='packages/popup/static/icon.png', title, message, hash}){
+        const timer = setInterval(async()=>{
+            this.times++;
+            if(this.times === 16){
+                clearInterval(timer);
+                this.times = 0;
+                return;
+            }
+            const transaction = await NodeService.tronWeb.trx.getConfirmedTransaction(hash);
+            if(transaction && transaction.txID === hash){
+                clearInterval(timer);
+                extensionizer.notifications.getPermissionLevel((level)=>{
+                    if(level === 'granted'){
+                        extensionizer.notifications.create(
+                            hash,
+                            {type: "basic", iconUrl, title, message, isClickable: true},
+                            notifyId=>{}
+                        );
+                        extensionizer.notifications.onClicked.addListener(notifyId=>{
+                            window.open('https://tronscan.org/#/transaction/'+notifyId)
+                        });
+                    } else {}
+                })
+            }
+        },10000);
+    }
+
+    async depositTrx(amount){
+        return await this.accounts[ this.selectedAccount ].depositTrx(amount);
+    }
+
+    async withdrawTrx(amount){
+        return await this.accounts[ this.selectedAccount ].withdrawTrx(amount);
+
+    }
+
+    async depositTrc10({id,amount}){
+        return await this.accounts[ this.selectedAccount ].depositTrc10(id,amount);
+    }
+
+    async withdrawTrc10({id,amount}){
+        return await this.accounts[ this.selectedAccount ].withdrawTrc10(id,amount);
+
+    }
+
+    async depositTrc20({contract_address,amount}){
+        return await this.accounts[ this.selectedAccount ].depositTrc20(contract_address,amount);
+
+    }
+
+    async withdrawTrc20({contract_address,amount}){
+        return await this.accounts[ this.selectedAccount ].withdrawTrc20(contract_address,amount);
+
+    }
 }
 export default Wallet;

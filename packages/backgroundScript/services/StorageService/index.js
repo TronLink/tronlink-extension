@@ -19,13 +19,17 @@ const StorageService = {
         'language',
         'dappList',
         'allDapps',
-        'allTokens'
+        'allTokens',
+        'authorizeDapps',
+        'vTokenList',
+        'chains',
     ],
 
     storage: extensionizer.storage.local,
 
     prices: {
         priceList: {
+            CNY: 0,
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -33,6 +37,7 @@ const StorageService = {
             ETH: 0
         },
         usdtPriceList: {
+            CNY: 0,
             USD: 0,
             GBP: 0,
             EUR: 0,
@@ -44,6 +49,10 @@ const StorageService = {
     nodes: {
         nodeList: {},
         selectedNode: false
+    },
+    chains: {
+        chainList:{},
+        selectedChain: false
     },
     pendingTransactions: {},
     accounts: {},
@@ -58,7 +67,8 @@ const StorageService = {
         },
         openAccountsMenu:false,
         advertising: {},
-        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'
+        developmentMode: location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec',
+        showUpdateDescription:true
     },
     language: '',
     ready: false,
@@ -68,7 +78,13 @@ const StorageService = {
         used: []
     },
     allDapps: [],
-    allTokens : [],
+    allTokens : {
+        mainchain: [],
+        sidechain: []
+    },
+    allSideTokens : [],
+    authorizeDapps: {},
+    vTokenList: [],
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
     },
@@ -170,9 +186,9 @@ const StorageService = {
         logger.info('Deleting account', address);
 
         delete this.accounts[ address ];
-        delete this.transactions[ address ];
-
-        this.save('accounts', 'transactions');
+        //delete this.transactions[ address ];
+        //this.accounts = Object.entries(this.accounts).filter(([key,accounts])=>key !== address).reduce((accumulator, currentValue)=>{accumulator[currentValue[0]]=currentValue[1];return accumulator;},{});
+        this.save('accounts');
     },
 
     deleteNode(nodeID) {
@@ -189,11 +205,25 @@ const StorageService = {
         this.save('nodes');
     },
 
+    saveChain(chainId ,chain) {
+        logger.info('Saving chain', chain);
+
+        this.chains.chainList[ chainId ] = chain;
+        this.save('chains');
+    },
+
     selectNode(nodeID) {
         logger.info('Saving selected node', nodeID);
 
         this.nodes.selectedNode = nodeID;
         this.save('nodes');
+    },
+
+    selectChain(chainID) {
+        logger.info('Saving selected chain', chainID);
+
+        this.chains.selectedChain = chainID;
+        this.save('chains');
     },
 
     saveAccount(account) {
@@ -231,6 +261,9 @@ const StorageService = {
     getSetting(){
         if(!this.setting.hasOwnProperty('advertising')){
             this.setting.advertising = {};
+        }
+        if(!this.setting.hasOwnProperty('showUpdateDescription')){
+            this.setting.showUpdateDescription = true;
         }
         return {...this.setting,developmentMode:location.hostname !== 'ibnejdfjmmkpcnlpebklmnkoeoihofec'};
     },
@@ -348,54 +381,26 @@ const StorageService = {
         logger.info('Storage saved');
     },
 
+    /**
+     *
+     * @param tokenID
+     * @returns {Promise.<void>}
+     * get token  name,abbr,precision and cache the token (only called this function in shast environment)
+     */
+
     async cacheToken(tokenID) {
 
-        if(NodeService.getNodes().selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
-            if(typeof tokenID === 'string' ) {
-                if(tokenID === '_'){
-                   this.tokenCache[ tokenID ] = {
-                        name:'TRX',
-                        abbr:'TRX',
-                        decimals:6
-                    };
-                }else{
-                    const {data} = await axios.get('https://apilist.tronscan.org/api/token', {params:{id:tokenID,showAll:1}});
-                    const {
-                        name,
-                        abbr,
-                        precision: decimals = 0,
-                        imgUrl = false
-                    } = data.data[0];
-                    this.tokenCache[ tokenID ] = {
-                        name,
-                        abbr,
-                        decimals,
-                        imgUrl
-                    };
-                }
-            } else {
-                const { contract_address, decimals, name, abbr } = tokenID;
-                const { data: { trc20_tokens: [{ icon_url = false }] } } = await axios.get('https://apilist.tronscan.org/api/token_trc20?contract=' + contract_address);
-                this.tokenCache[ contract_address ] = {
-                    name,
-                    abbr,
-                    decimals,
-                    imgUrl:icon_url
-                };
-            }
 
-        } else {
-            const {
-                name,
-                abbr,
-                precision: decimals = 0
-            } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
-            this.tokenCache[ tokenID ] = {
-                name,
-                abbr,
-                decimals
-            };
-        }
+        const {
+            name,
+            abbr,
+            precision: decimals = 0
+        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+        this.tokenCache[ tokenID ] = {
+            name,
+            abbr,
+            decimals
+        };
 
 
         logger.info(`Cached token ${ tokenID }:`, this.tokenCache[ tokenID ]);
@@ -409,13 +414,13 @@ const StorageService = {
         }
         if(!isFromStorage) {
             const { data: { data: recommend } } = await axios.get('https://list.tronlink.org/dapphouseapp/plug').catch(e => {
+                logger.error('Get dapp recommend list fail',e);
                 return { data: { data: this.dappList.recommend } };
             });
             this.dappList.recommend = recommend;
         }
         const used = this.dappList.used.filter(v => v != null);
         this.dappList.used = used;
-        this.save('dappList');
         return this.dappList;
     },
 
@@ -429,9 +434,20 @@ const StorageService = {
         this.save('allDapps');
     },
 
-    saveAllTokens(tokens) {
-        this.allTokens = tokens;
+    saveAllTokens(tokens,tokens2) {
+        this.allTokens.mainchain = tokens;
+        this.allTokens.sidechain = tokens2;
         this.save('allTokens');
+    },
+
+    setAuthorizeDapps(authorizeDapps) {
+        this.authorizeDapps = authorizeDapps;
+        this.save('authorizeDapps');
+    },
+
+    saveVTokenList(vTokenList){
+        this.vTokenList = vTokenList;
+        this.save('vTokenList');
     },
 
     purge() {

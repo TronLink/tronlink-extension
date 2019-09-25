@@ -4,7 +4,7 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "2.5.2",
+  "version": "3.0.0",
   "dependencies": {
     "@sentry/browser": "^4.3.4",
     "axios": "^0.18.0",
@@ -12,7 +12,8 @@
     "bip39": "^2.5.0",
     "buffer": "^5.2.1",
     "eventemitter3": "^3.1.0",
-    "tronweb": "^2.5.0"
+    "tronweb": "^2.7.1",
+    "sunweb": "^1.0.7"
   },
   "scripts": {
     "build": "webpack --config ../../webpack.config.js --progress --colors -o ../../dist/backgroundScript.js",

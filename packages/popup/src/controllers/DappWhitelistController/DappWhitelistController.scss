@@ -1,0 +1,101 @@
+.insetContainer{
+  &.whitelist{
+    padding:0;
+    background:transparent url('../../assets/images/new/background.svg') left top no-repeat;
+    .back{
+      background-image:url('../../assets/images/new/icon-back2.svg');
+    }
+    .pageHeader{
+      height: 56px;
+      display: flex;
+      flex-direction:row;
+      align-items:center;
+      justify-content:center;
+      color: #fff;
+    }
+    .greyModal{
+      margin-top: 15px;
+      padding: 0 25px;
+      background-color: transparent;
+      display: flex;
+      flex-direction:column;
+      flex:1;
+      .dapp{
+        margin-top: 10px;
+        width: 100%;
+        height: 118px;
+        background: #FFFFFF;
+        box-shadow: 0 2px 16px 0 rgba(136,137,152,0.10);
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        border-left:4px solid rgba(99,106,204,0.70);
+        cursor: pointer;
+        &:hover{
+          .url {
+            .delete {
+              opacity: 1;
+            }
+          }
+        }
+        &:first-child{
+          margin-top: 0px;
+        }
+        .url,.row{
+          padding-left: 10px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          & > span{
+            &:nth-child(1){
+              margin-right: 10px;
+            }
+          }
+          & > a{
+            color: #515060;
+            &:hover {
+              color: #0006ec;
+              text-decoration: underline;
+            }
+          }
+        }
+        .url{
+          position: relative;
+          height: 49px;
+          border-radius:4px 4px 0 0;
+          background: #F7F8FA;
+          font-size: 16px;
+          color: #515060;
+          .delete{
+            transition:all .2s ease-in-out;
+            position: absolute;
+            top:16px;
+            right:14px;
+            width: 16px;
+            height: 16px;
+            background-image: url('../../assets/images/new/icon-close.svg');
+            opacity:0;
+          }
+        }
+        .row{
+          height:30px;
+          font-size: 14px;
+          color: #888998;
+        }
+      }
+      .noData{
+        color: #fff;
+        font-size: 14px;
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+
+
+
+

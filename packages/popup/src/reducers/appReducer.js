@@ -17,12 +17,21 @@ export const setLanguage = createAction('setLanguage');
 export const setSetting = createAction('setSetting');
 export const setVersion = createAction('setVersion');
 export const setDappList = createAction('setDappList');
+export const setAuthorizeDapps = createAction('setAuthorizeDapps');
+export const setLedgerImportAddress = createAction('setLedgerImportAddress');
+export const setVTokenList = createAction('setVTokenList');
+export const setChains = createAction('setChains');
+
 
 export const appReducer = createReducer({
     appState: APP_STATE.UNINITIALISED,
     currentPage: PAGES.ACCOUNTS,
     nodes: {
         nodes: {},
+        selected: false
+    },
+    chains: {
+        chains: {},
         selected: false
     },
     prices: {
@@ -38,7 +47,10 @@ export const appReducer = createReducer({
     dappList: {
         recommend:[],
         used:[]
-    }
+    },
+    authorizeDapps: {},
+    ledgerImportAddress:[],
+    vTokenList:[]
 
 }, {
     [ setAppState ]: (state, { payload }) => {
@@ -54,6 +66,9 @@ export const appReducer = createReducer({
     [ setNodes ]: (state, { payload }) => {
         state.nodes = payload;
     },
+    [ setChains ]: (state, { payload }) => {
+        state.chains = payload;
+    },
     [ setPage ]: (state, { payload }) => {
         state.currentPage = payload;
     },
@@ -68,5 +83,17 @@ export const appReducer = createReducer({
     },
     [ setDappList ]: (state, { payload }) => {
         state.dappList = payload;
+    },
+
+    [ setAuthorizeDapps ]: (state, { payload }) => {
+        state.authorizeDapps = payload;
+    },
+
+    [ setLedgerImportAddress ]: (state, { payload }) => {
+        state.ledgerImportAddress = payload;
+    },
+
+    [ setVTokenList ]: (state, { payload }) =>{
+        state.vTokenList = payload;
     }
 });

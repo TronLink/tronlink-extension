@@ -1,10 +1,11 @@
 import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { BigNumber } from 'bignumber.js';
 import ReactTooltip from 'react-tooltip';
-import { Popover, icon } from 'antd-mobile';
+import { Popover } from 'antd-mobile';
 import CopyToClipboard from 'react-copy-to-clipboard';
-const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />
+const myImg = src => <img src={`https://gw.alipayobjects.com/zos/rmsportal/${src}.svg`} className='am-icon am-icon-xs' alt="" />;
 class TransactionDetailController extends React.Component {
     constructor(props) {
         super(props);
@@ -17,13 +18,10 @@ class TransactionDetailController extends React.Component {
     copy(id) {
         const { ids } = this.state;
         const { formatMessage } = this.props.intl;
-        for(let i = 0; i < ids.length; i++) {
-            if( ids[ i ] === id ) {
-                document.getElementById(id).innerText = formatMessage({ id: 'TRANSACTION_DETAIL.HAVE_COPIED' });
-            } else {
-                document.getElementById(ids[ i ]).innerText = formatMessage({ id: 'TRANSACTION_DETAIL.ENABLE_COPY' });
-            }
-        }
+        ids.forEach(v=>{
+            document.getElementById(v).innerText = formatMessage({ id: 'TRANSACTION_DETAIL.ENABLE_COPY' });
+        });
+        document.getElementById(id).innerText = formatMessage({ id: 'TRANSACTION_DETAIL.HAVE_COPIED' });
     }
     render() {
         const { help } = this.state;
@@ -85,6 +83,14 @@ class TransactionDetailController extends React.Component {
                                     <ReactTooltip id='hash' effect='solid' />
                                 </div>
                             </CopyToClipboard>
+                        </div>
+                        <div className='cell'>
+                            <div className='title'>
+                                <FormattedMessage id='TRANSACTION_DETAIL.TIME' />
+                            </div>
+                            <div className='content'>
+                                { moment(t.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                            </div>
                         </div>
                         <div className='cell'>
                             <div className='title'>

@@ -1,4 +1,3 @@
-import { setRecommendDappList } from '@tronlink/popup/src/reducers/appReducer';
 
 export default {
     init(duplex) {
@@ -108,12 +107,21 @@ export default {
         this.duplex.send('addNode', node, false);
     },
 
-    deleteNode() {
-
+    deleteNode(nodeID) {
+        this.duplex.send('deleteNode', nodeID, false);
     },
 
     getNodes() {
         return this.duplex.send('getNodes');
+    },
+
+    // Chain manage
+    getChains() {
+        return this.duplex.send('getChains');
+    },
+
+    selectChain(chainId) {
+        this.duplex.send('selectChain', chainId, false);
     },
 
     getSmartToken(address) {
@@ -193,8 +201,8 @@ export default {
         return this.duplex.send('isValidOverTotal', { receiverAddress, freezeAmount, requestUrl });
     },
 
-    getTransactionsByTokenId({tokenId,start,direction}) {
-        return this.duplex.send('getTransactionsByTokenId', {tokenId,start,direction});
+    getTransactionsByTokenId(tokenId,fingerprint,direction,limit) {
+        return this.duplex.send('getTransactionsByTokenId', {tokenId,fingerprint,direction,limit});
     },
 
     getNews() {
@@ -266,11 +274,65 @@ export default {
         this.duplex.send('updateTokens', tokens, false);
     },
 
-    getAllTokens() {
-        return this.duplex.send('getAllTokens');
+    getAllTokens(selectedChain) {
+        return this.duplex.send('getAllTokens',selectedChain);
     },
 
     setTransactionDetail(hash) {
        return this.duplex.send('setTransactionDetail', hash);
+    },
+
+    setAuthorizeDapps(authorizeDapps) {
+        this.duplex.send('setAuthorizeDapps', authorizeDapps, false);
+    },
+
+    getAuthorizeDapps(){
+        return this.duplex.send('getAuthorizeDapps');
+    },
+
+    setLedgerImportAddress(address){
+        this.duplex.send('setLedgerImportAddress', address, false);
+    },
+
+    getLedgerImportAddress(){
+        return this.duplex.send('getLedgerImportAddress');
+    },
+
+    getAbiCode(address){
+        return this.duplex.send('getAbiCode', address);
+    },
+
+    getVTokenList(){
+        return this.duplex.send('getVTokenList');
+    },
+
+    setPushMessage({iconUrl, title, message, hash}){
+        this.duplex.send('setPushMessage', {iconUrl, title, message, hash}, false);
+    },
+
+    depositTrx(amount){
+        return this.duplex.send('depositTrx', amount);
+    },
+
+    withdrawTrx(amount){
+        return this.duplex.send('withdrawTrx', amount);
+    },
+
+    depositTrc10(id, amount){
+        return this.duplex.send('depositTrc10', {id,amount});
+    },
+
+    withdrawTrc10(id, amount){
+        return this.duplex.send('withdrawTrc10', {id,amount});
+    },
+
+    depositTrc20(contract_address,amount){
+        return this.duplex.send('depositTrc20', {contract_address,amount});
+    },
+
+    withdrawTrc20(contract_address,amount){
+        return this.duplex.send('withdrawTrc20', {contract_address,amount});
     }
-};
+
+
+}

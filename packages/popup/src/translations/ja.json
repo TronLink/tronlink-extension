@@ -27,6 +27,7 @@
   "BUTTON.WHITELIST": "ホワイトリスト",
   "BUTTON.ADD_NODE": "ノードを追加する",
   "BUTTON.CLOSE": "閉める",
+  "BUTTON.GOT_IT": "分かりました",
 
   "TITLES.ACCOUNTS": "アカウント",
   "TITLES.TRANSACTIONS": "過去の取引",
@@ -48,28 +49,46 @@
   "INPUT.PASSWORD": "パスワード",
   "INPUT.REPEAT_PASSWORD": "もう一度パスワードを入力してください",
   "INPUT.ACCOUNT_NAME": "アカウント名",
-  "INPUT.NEW_TOKEN": "Custom TRC20 token address",
 
-  "CREATION": "Please choose whether you want to create a new wallet or restore an existing wallet",
   "CREATION.CREATE.TITLE": "作成する",
   "CREATION.CREATE.CONFIRM.MNEMONIC.TITLE": "回復フレーズを確認してください",
   "CREATION.CREATE.CONFIRM.MNEMONIC.DIALOG": "ニーモニックの順番が正しくありません",
-  "CREATION.CREATE.DESC": "Creates a new wallet with a mnemonic phrase, allowing 'change' addresses in a future update",
   "CREATION.CREATE.TIP":"新規ユーザーにお勧め",
   "CREATION.RESTORE.TITLE": "輸入",
-  "CREATION.RESTORE.DESC": "Restores an existing account from a variety of wallets via a private key or mnemonic phrase",
   "CREATION.RESTORE.TIP":"TRONアカウントを持つユーザーにお勧め",
   "CREATION.RESTORE.PRIVATE_KEY.TITLE": "秘密鍵でインポートする",
   "CREATION.RESTORE.MNEMONIC.TITLE": "回復フレーズでインポートします",
   "CREATION.RESTORE.MNEMONIC.RELATED_TO.ACCOUNT.TITLE": "アカウントを選択",
+  "CREATION.RESTORE.KEY_STORE.TITLE": "キーストアファイルをインポート",
+  "CREATION.RESTORE.KEY_STORE.UPLOAD_DESC": "tronscanエクスポートした.txtファイルのみ",
+  "CREATION.RESTORE.KEY_STORE.SELECT_FILE": "ファイルを選択",
+  "CREATION.RESTORE.KEY_STORE.INPUT_PASSWORD": "パスワードを入力",
+  "CREATION.RESTORE.KEY_STORE.EXCEPTION": "インポートに失敗しました。ファイルとパスワードが一致するかどうかを確認してください",
+  "CREATION.LEDGER.TITLE": "ハードウェアウォレット",
+  "CREATION.LEDGER.TIP": "Ledgerユーザー使用",
+  "CREATION.LEDGER.CONNECT_TITLE": "ハードウェアウォレットに接続",
+  "CREATION.LEDGER.PROCESS_1":"Ledgerをパソコンに接続し、<br />LedgerでTron APPを起動してください",
+  "CREATION.LEDGER.PROCESS_2":"インポートするアカウントのアドレスを確認します",
+  "CREATION.LEDGER.PROCESS_3":"接続完了、スタートください",
+  "CREATION.LEDGER.LOADING":"LedgerでTRON APPを起動してください",
+  "CREATION.LEDGER.CHOOSE_ADDRESS":"インポートするアカウントのアドレスを確認します",
+  "CREATION.LEDGER.CONNECT":"接続",
+  "CREATION.LEDGER.KNOW_MORE":"もっと詳しく",
+  "CREATION.LEDGER.CONNECT_TIMEOUT":"接続タイムアウトが発生しました。ledgerに接続し、TRON APPを起動してください",
+  "CREATION.LEDGER.AUTHORIZE_TIMEOUT":"認証タイムアウトが発生しました。もう一度お試しください",
+  "CREATION.LEDGER.REPEAT_IMPORT":"アカウントは既に存在しています",
+  "CREATION.LEDGER.REJECT":"拒否されました",
+  "CREATION.LEDGER.NO_TOKEN":"Ledgerは該当通貨での振替がサポートしていません",
+  "CREATION.LEDGER.ALERT.TIP":"ヒント",
+  "CREATION.LEDGER.ALERT.BODY":"現在、ハードウェアウォレットアカウントでは基本振替機能のみをサポートしており、DAPPの承認など操作をサポートしません。",
+  "CREATION.LEDGER.NOT_MATCH":"アカウントアドレスとLedgerは一致しません",
+  "CREATION.LEDGER.TIP_CANCEL_TRANSACTION":"キャンセルしました。ledgerで「拒否」ボタンを押してください。",
 
-  "CHOOSING_TYPE": "You can import from a variety of wallets. Please select whether you want to import from a private key or mnemonic phrase",
   "CHOOSING_TYPE.TITLE":"種類を選択してください",
   "CHOOSING_TYPE.MNEMONIC.TITLE": "ニーモニック",
   "CHOOSING_TYPE.MNEMONIC.NO_OPTIONS": "すべての選ベるアカウントがインポートされました",
-  "CHOOSING_TYPE.MNEMONIC.DESC": "Imports up to five accounts from a mnemonic phrase. Use this for importing from TronLink, Ledger or Trezor",
   "CHOOSING_TYPE.PRIVATE_KEY.TITLE": "秘密鍵",
-  "CHOOSING_TYPE.PRIVATE_KEY.DESC": "Imports a single account from a private key. Use this for importing from TronWatch, Tronscan or any other wallet",
+  "CHOOSING_TYPE.KEY_STORE.TITLE": "キーストアファイル",
 
   "CREATION_CRITERIA.HAS_LENGTH": "<strong>4文字</strong>以上とします",
   "CREATION_CRITERIA.IS_ALPHANUMERIC": "数字、文字、スペースのみを含む",
@@ -80,7 +99,7 @@
 
   "ACCOUNT_NAME.DESC": "新しいアカウントに覚えやすい名前を付けてください",
 
-  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、16、または24ワードとします。（スペース区切り）",
+  "MNEMONIC_IMPORT.DESC": "以下に回復フレーズを入力してください。長さは12、または24ワードとします。（スペース区切り）",
   "MNEMONIC_IMPORT.SELECTION": "下からインポートしたいアカウントを選んでください",
 
   "PRIVATE_KEY_IMPORT.DESC": "下に秘密のキーを入力してください。秘密のキーは16進数のみとします",
@@ -96,15 +115,20 @@
   "ACCOUNT.RECEIVE":"受け取る",
   "ACCOUNT.RECEIVE.DESC":"このアドレスはtrxとtokenをサポートしています",
   "ACCOUNT.RECEIVE.BUTTON":"复制地址",
-
   "ACCOUNT.SEND":"発送する",
   "ACCOUNT.ALL":"すべて",
   "ACCOUNT.SEND.PAY_ACCOUNT":"支払い口座",
   "ACCOUNT.SEND.RECEIVE_ADDRESS":"受取アドレス",
   "ACCOUNT.SEND.CHOOSE_TOKEN":"トークンを選ぶ",
   "ACCOUNT.SEND.TRANSFER_AMOUNT":"発送する数量",
-
-
+  "ACCOUNT.TRANSFER":"抵当",
+  "ACCOUNT.TRANSFER2":"引き出す",
+  "ACCOUNT.TRANSFER.DESC":"「抵当」とは、トークンをメインチェーンからサイドチェーンに移動する時、TRXとTRC-10トークンの場合、デフォルトで抵当可能となり、TRC20トークンの場合、プロジェクトが先にサイドチェーンでコントラクトデプロイしてから抵当可能となります。抵当は手数料をかかりません。",
+  "ACCOUNT.TRANSFER.DESC2":"「引き出す」とは、トークンをサイドチェーンからメインチェーンに移動する時、引き出す度に10TRXの手数料をかかるということです。",
+  "ACCOUNT.TRANSFER.SELECT_CHAIN":"着金するチェーンを選んでください",
+  "ACCOUNT.TRANSFER.WARNING.WITHDRAW_FEE":"（10TRXを消費する必要があります）",
+  "ACCOUNT.TRANSFER.WARNING.TRX_NOT_ENOUGH":"TRX残高が不足です",
+  "ACCOUNT.TRANSFER.WARNING.TRX_LIMIT":"最小の数量は10です",
 
   "TOKENS.SMART": "Smart TRC20 Tokens",
   "TOKENS.BASIC": "Basic TRC10 Tokens",
@@ -141,6 +165,8 @@
   "CONFIRMATIONS.QUANTITY": "数量",
   "CONFIRMATIONS.WHITELIST.TITLE": "自動サインを有効にする",
   "CONFIRMATIONS.WHITELIST.BODY": "TronLinkがあなたに代わって自動的に取引に署名することを許可する",
+  "CONFIRMATIONS.AUTO_AUTHORIZE.DESC":"アプリをホワイトリストに追加すると、ポップアップを廃止、自動承認となります。",
+  "CONFIRMATIONS.CLICK_SHOW_PARAMS":"click to display parameters",
 
   "CONFIRMATIONS.OPTIONS.NO": "自動サインを無効にする",
   "CONFIRMATIONS.OPTIONS.FIFTEEN_MINUTES": "自動サインを15分以内に有効にする",
@@ -148,6 +174,7 @@
   "CONFIRMATIONS.OPTIONS.ONE_HOUR": "自動サインを一時間以内に有効にする",
   "CONFIRMATIONS.OPTIONS.ONE_DAY": "自動サインを一日間以内に有効にする",
   "CONFIRMATIONS.OPTIONS.NEXT_LOGIN": "自動サインを再登録まで有効にする",
+  "CONFIRMATIONS.DELETE_NODE.BODY": "該当ノードを本当に削除しますか",
 
   "CONTRACTS.SignMessage": "メッセージに署名する",
   "CONTRACTS.AccountCreateContract": "アカウントを作成する",
@@ -189,6 +216,8 @@
   "SETTINGS.CUSTOM_NODE.EVENT_SERVER.PLACEHOLDER": "https://api.trongrid.io",
 
   "SETTING.TITLE":"設定する",
+  "SETTING.TITLE.DAPP_WHITELIST":"DAPPホワイトリスト",
+  "SETTING.TITLE.NODE_MANAGE":"ノード管理",
   "SETTING.TITLE.NODE":"切り替え節",
   "SETTING.TITLE.ADD_NODE":"追加ノード",
   "SETTING.TITLE.CURRENCY":"通貨を設定する",
@@ -202,24 +231,13 @@
   "SETTING.TITLE.AUTO_LOCK.30_MIN":"30分",
   "SETTING.TITLE.AUTO_LOCK.NEVER":"一度もない",
 
-  "SEND.RECIPIENT": "Recipient's address",
-  "SEND.RECIPIENT.PLACEHOLDER": "Enter recipient's address",
-  "SEND.TOKENS.TRX": "TRX",
-  "SEND.TOKENS.TRC10": "Basic TRC10",
-  "SEND.TOKENS.TRC20": "Smart TRC20",
-  "SEND.AMOUNT.PLACEHOLDER": "1000",
-  "SEND.BUTTON.TRX": "Send TRX",
-  "SEND.BUTTON.TRC10": "Send Basic Token",
-  "SEND.BUTTON.TRC20": "Send Smart Token",
   "SEND.SUCCESS": "取引がブロードキャストされました",
 
   "ACCOUNTS.CONFIRM_DELETE": "アカウントを削除する",
   "ACCOUNTS.CONFIRM_DELETE.BODY": "アカウントを削除しますか",
-
   "ACCOUNTS.EXPORT": "アカウントをエクスポートする",
   "ACCOUNTS.EXPORT.MNEMONIC": "ニーモニック",
   "ACCOUNTS.EXPORT.PRIVATE_KEY": "秘密鍵",
-
 
   "LOGIN.PASSWORD.BACK":"お帰りなさい",
 
@@ -302,7 +320,6 @@
   "BANK.RENTRECORD.NODATE":"これ以上データなし",
   "BANK.RENTRECORD.NORECORD":"データなし",
 
-
   "BANK.RENTDETAIL.TITLE":"注文書の詳細状況",
   "BANK.RENTDETAIL.STATUS":"注文書のスタンス",
   "BANK.RENTDETAIL.ORDERNUM":"注文書№",
@@ -331,7 +348,7 @@
 
   "BANK.RENTINFO.SUCCESS":"お支払いは成功しました。エネルギーは約1分後に入金されます。",
   "BANK.RENTINFO.FAILED":"賃借が失敗しました。1分間に5つ通りで注文できません",
-
+  "BANK.RENTINFO.TIMEOUT":"タイムアウトのお支払いは、ネットワークを確認してからやり直してください",
 
 
   "IEOS.BUY_ING":"その場で",
@@ -341,6 +358,7 @@
   "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",
   "EXCEPTION.ACCOUNT_EXIST":"アドレスは既に存在します。 再度追加しないでください。",
   "EXCEPTION.ADD_NODE.NAME":"4文字以上が必要です。",
+  "EXCEPTION.ADD_NODE.REPEAT_NAME":"重複なノード名称がダメです",
   "EXCEPTION.ADD_NODE.NODE_URL":"フォーマットが正しくありません。http：// または https：// で始めてください。",
   "EXCEPTION.SEND.ADDRESS_FORMAT_ERROR":"アドレスフォーマットが正しくありません",
   "EXCEPTION.SEND.ADDRESS_SAME_ERROR":"支払い先住所と受取人住所を同じにすることはできません。",
@@ -352,6 +370,7 @@
   "EXCEPTION.SEND.ENERGY_NOT_ENOUGH_ERROR":"エネルギーが不十分です。 少しの余分な TRX （1 以下） が消費されます。",
   "EXCEPTION.SEND.BANDWIDTH_ENERGY_NOT_ENOUGH_ERROR":"エネルギーと帯域幅が不十分です。 少しの余分な TRX （1 以下） が消費されます。",
   "EXCEPTION.SEND.ADDRESS_UNACTIVATED_TRC20_ERROR":"アドレスが有効になっていません。 アドレスを有効にするには、このアカウントに TRX を転送してください。",
+  "EXCEPTION.TRANSFER.MAIN_ADDRESS_NO_ACTIVATE":"このアドレスはTronメインチェーンではアクティブではありません。",
 
   "USDT.MAIN.INCOME_YESTERDAY":"昨日の収入 {earning}",
   "USDT.TEXT.YESTERDAY_INCOME":"昨日の収入",
@@ -397,11 +416,28 @@
   "TRANSACTION_DETAIL.SEND_ADDRESS": "送付先",
   "TRANSACTION_DETAIL.RECEIVE_ADDRESS": "受取先",
   "TRANSACTION_DETAIL.ID": "取引ID",
+  "TRANSACTION_DETAIL.TIME": "取引時間",
   "TRANSACTION_DETAIL.BLOCK_HEIGHT": "ブロック・ハイト",
   "TRANSACTION_DETAIL.FEE": "費用",
   "TRANSACTION_DETAIL.GO_TRONSCAN": "tronscanにアクセスして、詳細情報を確認します",
   "TRANSACTION_DETAIL.COPYED": "切り取った画像をクリップボードにコピーします",
   "TRANSACTION_DETAIL.ENABLE_COPY": "コピー可能です",
   "TRANSACTION_DETAIL.HAVE_COPIED": "コピー完了しました",
-  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。"
+  "TRANSACTION_DETAIL.EXPLAIN.CONSUME": "アドレスの有効化、または帯域幅エネルギーの不足などの原因で、TRXが消費されました。",
+
+  "DAPP_WHITELIST.URL":"URL",
+  "DAPP_WHITELIST.CONTRACT_ADDRESS":"コントラクトアドレス",
+  "DAPP_WHITELIST.ADD_TIME":"時間を追加",
+
+  "INDEX_ICON_TITLE.OFFICIAL_WEBSITE":"ホームページ",
+  "INDEX_ICON_TITLE.EXCHANGE":"trxmarket",
+  "INDEX_ICON_TITLE.LOCK":"アンカー",
+  "INDEX_ICON_TITLE.REFRESH":"更新",
+  "INDEX_ICON_TITLE.SETTING":"設定",
+
+  "NOTIFICATIONS.TITLE":"取引完了",
+  "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。",
+
+  "ALERT.UPDATE_DESCRIPTION.TITLE":"アップデートについての説明",
+  "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。"
 }

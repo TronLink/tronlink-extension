@@ -86,6 +86,8 @@
                     height: 16px;
                     cursor: pointer;
                     font-size: 14px;
+                    overflow: hidden;
+                    padding:4px;
                     &:before{
                         content: '';
                         width: 12px;
@@ -99,10 +101,24 @@
                             background-image: url('../../assets/images/new/icon-create.svg');
                         }
                     }
-                    &:last-child{
+                    &:nth-child(2){
                         &:before{
                             background-image: url('../../assets/images/new/icon-import.svg');
                         }
+                    }
+                    &:last-child{
+                        &:before{
+                            background-size:100% auto;
+                            background-image: url('../../assets/images/new/ledger/icon-ledger2.svg');
+                        }
+                        span{
+                            flex:1;
+                        }
+                    }
+                    span{
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
             }
@@ -200,6 +216,22 @@
                             color:#efefef;
                             height: 20px;
                             line-height: 20px;
+                            .nameWrap{
+                                display: flex;
+                                flex-direction: row;
+                                .ledger{
+                                    margin-top:-2px;
+                                    margin-left: 5px;
+                                    width: 24px;
+                                    height: 24px;
+                                    border-radius:100%;
+                                    background-color: rgba(0,0,0,.3);
+                                    background-size:auto 50%;
+                                    background-image: url("../../assets/images/new/ledger/icon-ledger3.svg");
+                                    background-position:center;
+                                    background-repeat:no-repeat;
+                                }
+                            }
                         }
                         .asset{
                             height: 22px;
@@ -263,7 +295,7 @@
         width: 100%;
         height: 100%;
         position: fixed;
-        z-index:11;
+        z-index:12;
         left: 0;
         top: 0;
         display: flex;
@@ -375,8 +407,8 @@
         color: #fff;
         .row1{
             width: 100%;
-            height: 20px;
-            margin-top: 14px;
+            height: 24px;
+            margin-top: 12px;
             position: relative;
             display: flex;
             flex-direction: row;
@@ -385,11 +417,12 @@
             padding:0 20px;
             .menu{
                 cursor: pointer;
-                width: 18px;
-                height: 13px;
+                width: 23px;
+                height: 18px;
                 background-image: url('../../assets/images/new/icon-more.svg');
             }
             .accountWrap{
+                font-size: 16px;
                 position: relative;
                 display: flex;
                 flex-direction: row;
@@ -397,8 +430,8 @@
                 justify-content: center;
                 cursor: pointer;
                 &:before{
-                    width: 18px;
-                    height: 16px;
+                    width: 27px;
+                    height: 23px;
                     content:'';
                     background-image: url("../../assets/images/new/icon-accounts.svg");
                     margin-right: 8px;
@@ -406,6 +439,17 @@
                 &>span{
                     text-overflow: ellipsis;
                     overflow: hidden;
+                }
+                .ledger{
+                    margin-left: 5px;
+                    width: 24px;
+                    height: 24px;
+                    border-radius:100%;
+                    background-color: rgba(0,0,0,.3);
+                    background-size:auto 50%;
+                    background-image: url('../../assets/images/new/ledger/icon-ledger3.svg');
+                    background-position:center;
+                    background-repeat:no-repeat;
                 }
             }
         }
@@ -567,9 +611,9 @@
         flex-direction: column;
         padding:12px 20px 0;
         border-radius:4px;
+        overflow:auto;
         .resource{
-            background-color: #fff;
-            padding:14px;
+            //padding:14px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -581,13 +625,17 @@
                 height:28px;
             }
             .cell{
-                border-radius: 2px;
-                height: 40px;
+                background-color: #fff;
+                border-radius: 4px;
+                padding:14px 11px;
+                flex:1;
+                height: 68px;
                 width: 135px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: space-between;
+
                 .title{
                     width: 100%;
                     height: 20px;
@@ -600,13 +648,25 @@
                         font-size:14px;
                     }
                     .bankBox{
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
                         cursor: pointer;
                         color:#636acc;
                         max-width: 52px;
-                        display: block;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        margin-right: 2px;
+                        &:before{
+                            margin-left: -2px;
+                            content:'';
+                            width: 22px;
+                            height: 22px;
+                            background-image: url('../../assets/images/new/icon-bank-entry.svg');
+                            background-repeat:no-repeat;
+                            background-size:100%;
+                        }
                     }
                     .num{
                         max-width: 83px;
@@ -614,51 +674,59 @@
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         transform: scale(0.8);
-                        transform-origin:(center,right);
+                        transform-origin:right center;
                         font-size: 12px;
                         span{
                             color: #c3c4ca;
                         }
                     }
                 }
-
-            }
-            .bankSingle{
-                position: relative;
-                .bankPopover{
-                    display: none;
-                    position: absolute;
-                    left: 0px;
-                    top: 19px;
-                    width: 62px;
-                    height: 28px;
-                    line-height: 32px;
-                    font-family:PingFang-SC-Medium;
-                    background: url('../../assets/images/new/popover.svg') no-repeat top left;
-                    background-size: contain;
-                    border-radius: 3px;
-                    box-sizing: border-box;
-                    .popoverTitle{
-                        text-align: center;
-                        font-size: 12px;
-                        color:#ffffff;
-                        font-family:PingFang-SC-Medium;
+                &:last-child{
+                    margin-left: 6px;
+                    cursor: pointer;
+                }
+                &.bankSingle{
+                    position: relative;
+                    transition: .2s all ease-in-out;
+                    &:hover{
+                        transform: translate(2px,-2px);
+                        box-shadow: 0 0 6px 0 rgba(61,55,40,0.12);
                     }
-                }
-                .hoverArrow{
-                    display: inline-block;
-                    position: absolute;
-                    width: 4px;
-                    height: 7px;
-                    top: 10px;
-                    background:#636acc;
-                }
-                .bankBox:hover{
                     .bankPopover{
-                        display: block;
+                        display: none;
+                        position: absolute;
+                        left: 0px;
+                        top: 19px;
+                        width: 62px;
+                        height: 28px;
+                        line-height: 32px;
+                        font-family: PingFang-SC-Medium;
+                        background: url('../../assets/images/new/popover.svg') no-repeat top left;
+                        background-size: contain;
+                        border-radius: 3px;
+                        box-sizing: border-box;
+                        .popoverTitle{
+                            text-align: center;
+                            font-size: 12px;
+                            color:#ffffff;
+                        }
+                    }
+                    .hoverArrow{
+                        display: inline-block;
+                        position: absolute;
+                        width: 4px;
+                        height: 7px;
+                        top: 10px;
+                        background:#636acc;
+                    }
+                    .bankBox:hover{
+                        .bankPopover{
+                            display: block;
+                        }
                     }
                 }
             }
+
             .bankArrow{
                 display: inline-block;
                 width: 6px;
@@ -792,18 +860,25 @@
                 &:first-child{
                     margin-top: 0;
                     .name{
-                        flex:2;
+                        flex:3;
                     }
                 }
-                img {
+                & > img {
                     width: 28px;
+                    border-radius:100%;
                 }
                 .name {
                     font-size: 14px;
                     color: #505160;
                     margin-left: 10px;
                     display: flex;
-                    flex-direction: column;
+                    flex-direction: row;
+                    align-items: center;
+                    img{
+                        margin-left: 8px;
+                        width: 12px;
+                        height: 12px;
+                    }
                     .income {
                         margin-top: 2px;
                         display: flex;
@@ -821,7 +896,7 @@
                     }
                 }
                 .worth{
-                    flex:1;
+                    flex:2;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;

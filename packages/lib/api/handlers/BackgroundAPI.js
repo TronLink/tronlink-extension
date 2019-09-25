@@ -14,10 +14,10 @@ export default {
 
         if(this.currentAccount === account)
             return;
-
+        const { address, name , type } = account;
         this.duplex.send('tab', 'tunnel', {
             action: 'setAccount',
-            data: account.address
+            data: { address, name, type }
         }, false);
 
         this.currentAccount = account;
@@ -28,6 +28,10 @@ export default {
             action: 'setNode',
             data: node
         }, false);
+    },
+
+    setChain(chain){
+        this.duplex.send('popup', 'setChain', chain, false);
     },
 
     setAccounts(accounts) {
@@ -71,6 +75,18 @@ export default {
 
     setDappList(dappList) {
         this.duplex.send('popup', 'setDappList',dappList ,false);
+    },
+
+    setAuthorizeDapps(dappList) {
+        this.duplex.send('popup', 'setAuthorizeDapps',dappList ,false);
+    },
+
+    setLedgerImportAddress(address) {
+        this.duplex.send('popup', 'setLedgerImportAddress',address ,false);
+    },
+
+    setVTokenList(vTokenList) {
+        this.duplex.send('popup', 'setVTokenList',vTokenList ,false);
     }
 
 };

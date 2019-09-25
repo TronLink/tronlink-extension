@@ -24,13 +24,18 @@ export const APP_STATE = {
     USDT_ACTIVITY_DETAIL: 17,
     DAPP_LIST: 18, // [X]show dapp list
     ASSET_MANAGE: 19, // [X]asset manage
-    TRANSACTION_DETAIL: 20 // [X] transaction detail
-
+    TRANSACTION_DETAIL: 20, // [X] transaction detail
+    DAPP_WHITELIST: 21, // [X] transaction detail
+    LEDGER: 22, // [X] connect ledger wallet
+    LEDGER_IMPORT_ACCOUNT: 23, // [X] connect ledger wallet
+    NODE_MANAGE:24, // node manage
+    TRANSFER:25 // transfer
 }; // User can delete *all* accounts. This will set the appState to UNLOCKED.
 
 export const ACCOUNT_TYPE = {
     MNEMONIC: 0,
-    PRIVATE_KEY: 1
+    PRIVATE_KEY: 1,
+    LEDGER:2
 };
 
 export const VALIDATION_STATE = {
@@ -58,6 +63,7 @@ export const RESTORATION_STAGE = {
     IMPORT_TRONWATCH_LEGACY: 3,
     IMPORT_TRONSCAN: 4,
     IMPORT_MNEMONIC: 5,
+    IMPORT_KEY_STORE: 7,
     SUCCESS: 6
 };
 
@@ -91,8 +97,11 @@ export const CONFIRMATION_TYPE = {
 };
 
 export const CONTRACT_ADDRESS = {
-    USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
-    //USDT:"TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA"
+    USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+    MAIN:"TWaPZru6PR5VjgT4sJrrZ481Zgp3iJ8Rfo",
+    SIDE:"TGKotco6YoULzbYisTBuP6DWXDjEgJSpYz",
+    //MAIN:"TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU", //testnet mainchain
+    //SIDE:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX", //testnet sidechain
 };
 
 export const USDT_ACTIVITY_STAGE = {
@@ -146,4 +155,31 @@ export const USDT_ACTIVITY_STAGE = {
         stage:7
     }
 
-}
+};
+
+export const TOP_TOKEN = {
+    mainchain:[
+        'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+        '1002000',
+        'TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7'
+    ],
+    sidechain:['1002000']
+};
+
+export const SIDE_CHAIN_ID = '41E209E4DE650F0150788E8EC5CAFA240A23EB8EB7';
+//export const SIDE_CHAIN_ID = '413AF23F37DA0D48234FDD43D89931E98E1144481B';
+
+export const NODE = {
+    //MAIN: {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
+    //SIDE: {fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
+    MAIN: {fullNode: 'https://api.trongrid.io', solidityNode: 'https://api.trongrid.io', eventServer: 'https://api.trongrid.io'},
+    SIDE: {fullNode: 'https://sun.tronex.io', solidityNode: 'https://sun.tronex.io', eventServer: 'https://sun.tronex.io'}
+};
+export const FEE = {
+    WITHDRAW_FEE:10000000,
+    DEPOSIT_FEE:0,
+    FEE_LIMIT:100000000,
+    MIN_DEPOSIT_OR_WITHDRAW:10000000
+};
+
+export const API_URL = 'https://list.tronlink.org';

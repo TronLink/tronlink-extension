@@ -1,0 +1,92 @@
+.insetContainer {
+  &.ledger {
+    padding:0;
+    overflow: auto;
+    .pageHeader {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .greyModal {
+      background-color: #fff !important;
+      flex:1;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 40px !important;
+      .top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .icon {
+          width: 82px;
+          height: 98px;
+          background-image: url('../../assets/images/new/ledger/LOGO.png');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size:auto 100%;
+          margin-bottom: 32px;
+        }
+        .customButton{
+          height: 46px;
+        }
+      }
+      .row{
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .line{
+          position: relative;
+          width: 100%;
+          height: 29px;
+          color: #fff;
+          font-size: 16px;
+          display: flex;
+          justify-content:center;
+          &:before{
+            content: '';
+            width: 100%;
+            height: 0;
+            border-top:1px dashed #D0D0D0;
+            position: absolute;
+            left: 0;
+            top: 15px;
+          }
+          &:after{
+            margin-left:-14px;
+            left: 50%;
+            top: 0;
+            position: absolute;
+            background-color: #B1B4E5;
+            border-radius:100%;
+            width: 29px;
+            height: 29px;
+            text-align: center;
+            line-height: 29px;
+            content:attr(index);
+          }
+        }
+        .desc{
+          margin-top: 20px;
+          font-size: 14px;
+          color: #898989;
+          text-align: center;
+        }
+        img{
+          height: 54px;
+          margin-top:14px;
+        }
+      }
+      .more{
+        color: #636acc;
+        margin-top: 20px;
+        font-size: 16px;
+        text-align:center;
+        &:hover{
+          color: #636acc;
+        }
+      }
+    }
+  }
+}

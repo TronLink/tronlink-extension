@@ -15,7 +15,7 @@ import { version } from './package.json';
 
 // Make error reporting user-configurable
 Sentry.init({
-    dsn: 'https://5d5f88b4905844f9a1be3d380f5569a8@sentry.io/1455160',
+    dsn: 'http://d29e163582a948cd8addab042f4c65c7@18.220.1.137:9000/6',
     release: `TronLink@${ version }`
 });
 
@@ -93,7 +93,7 @@ const backgroundScript = {
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
         duplex.on('rejectConfirmation', this.walletService.rejectConfirmation);
 
-        // WalletService: BLockchain actions
+        // WalletService: Blockchain actions
         duplex.on('sendTrx', this.walletService.sendTrx);
         duplex.on('sendBasicToken', this.walletService.sendBasicToken);
         duplex.on('sendSmartToken', this.walletService.sendSmartToken);
@@ -124,9 +124,13 @@ const backgroundScript = {
         // NodeService: Node management
         duplex.on('selectNode', this.walletService.selectNode);
         duplex.on('addNode', this.walletService.addNode);
-        // duplex.on('deleteNode', this.nodeService.deleteNode);
+        duplex.on('deleteNode', this.walletService.deleteNode);
         duplex.on('getNodes', this.nodeService.getNodes);
+
         duplex.on('getSmartToken', this.nodeService.getSmartToken);
+        // chain
+        duplex.on('getChains', this.nodeService.getChains);
+        duplex.on('selectChain', this.walletService.selectChain);
 
         // language
         duplex.on('getLanguage', this.walletService.getLanguage);
@@ -164,6 +168,27 @@ const backgroundScript = {
         duplex.on('updateTokens', this.walletService.updateTokens);
         duplex.on('getAllTokens', this.walletService.getAllTokens);
         duplex.on('setTransactionDetail', this.walletService.setTransactionDetail);
+        duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
+        duplex.on('getAuthorizeDapps', this.walletService.getAuthorizeDapps);
+
+        duplex.on('setLedgerImportAddress', this.walletService.setLedgerImportAddress);
+        duplex.on('getLedgerImportAddress', this.walletService.getLedgerImportAddress);
+
+        duplex.on('getAbiCode', this.walletService.getAbiCode);
+        duplex.on('getVTokenList', this.walletService.getVTokenList);
+        //duplex.on('setVTokenList', this.walletService.setVTokenList);
+        duplex.on('setPushMessage', this.walletService.setPushMessage);
+
+        // WalletService:deposit, withdraw
+        duplex.on('depositTrx', this.walletService.depositTrx);
+        duplex.on('withdrawTrx', this.walletService.withdrawTrx);
+
+        duplex.on('depositTrc10', this.walletService.depositTrc10);
+        duplex.on('withdrawTrc10', this.walletService.withdrawTrc10);
+
+        duplex.on('depositTrc20', this.walletService.depositTrc20);
+        duplex.on('withdrawTrc20', this.walletService.withdrawTrc20);
+
     },
 
     bindTabDuplex() {
@@ -179,18 +204,24 @@ const backgroundScript = {
                             fullNode: false,
                             solidityNode: false,
                             eventServer: false
-                        }
+                        },
+                        name:false,
+                        type:false
                     };
 
                     if(StorageService.ready) {
                         const node = NodeService.getCurrentNode();
-
-                        response.address = this.walletService.selectedAccount;
+                        const { address, name, type } = this.walletService.accounts[this.walletService.selectedAccount];
+                        const { phishingList } = this.walletService;
+                        response.address = address;
                         response.node = {
                             fullNode: node.fullNode,
                             solidityNode: node.solidityNode,
                             eventServer: node.eventServer
                         };
+                        response.name = name;
+                        response.type = type;
+                        response.phishingList = phishingList;
                     }
 
                     resolve({
@@ -221,10 +252,19 @@ const backgroundScript = {
 
                         const tronWeb = NodeService.tronWeb;
                         const account = this.walletService.getAccount(selectedAccount);
+                        const appWhitelist = this.walletService.appWhitelist.hasOwnProperty(hostname)?this.walletService.appWhitelist[ hostname ]:{};
 
                         if(typeof input === 'string') {
+                            const { duration = 0 } = appWhitelist;
                             const signedTransaction = await account.sign(input);
-
+                            if(appWhitelist && (duration === -1 || duration >= Date.now())){
+                                logger.info('Automatically signing transaction', signedTransaction);
+                                return resolve({
+                                    success: true,
+                                    data: signedTransaction,
+                                    uuid
+                                });
+                            }
                             return this.walletService.queueConfirmation({
                                 type: CONFIRMATION_TYPE.STRING,
                                 hostname,
@@ -234,7 +274,7 @@ const backgroundScript = {
                         }
 
                         const contractType = transaction.raw_data.contract[ 0 ].type;
-
+                        const contractAddress = TronWeb.address.fromHex(input.contract_address);
                         const {
                             mapped,
                             error
@@ -249,11 +289,12 @@ const backgroundScript = {
                         }
 
                         const signedTransaction = await account.sign(
-                            mapped.transaction ||
-                            mapped
+                            mapped.transaction || mapped,
+                            NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
                         );
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
+
 
                         if(contractType === 'TriggerSmartContract') {
                             const value = input.call_value || 0;
@@ -261,12 +302,25 @@ const backgroundScript = {
                             ga('send', 'event', {
                                 eventCategory: 'Smart Contract',
                                 eventAction: 'Used Smart Contract',
-                                eventLabel: TronWeb.address.fromHex(input.contract_address),
+                                eventLabel: contractAddress,
                                 eventValue: value,
                                 referrer: hostname,
                                 userId: Utils.hash(input.owner_address)
                             });
                         }
+
+                        // if(contractType !== 'TriggerSmartContract' && appWhitelist) {
+                        //     const { duration = 0 } = appWhitelist;
+                        //     if(duration === -1 || duration >= Date.now()) {
+                        //         logger.info('Automatically signing transaction', signedTransaction);
+                        //
+                        //         return resolve({
+                        //             success: true,
+                        //             data: signedTransaction,
+                        //             uuid
+                        //         });
+                        //     }
+                        // }
 
                         if(contractType === 'TriggerSmartContract' && whitelist) {
                             const expiration = whitelist[ hostname ];
@@ -280,6 +334,17 @@ const backgroundScript = {
                                     uuid
                                 });
                             }
+                        }
+
+                        const authorizeDapps = this.walletService.getAuthorizeDapps();
+                        if( contractType === 'TriggerSmartContract' && authorizeDapps.hasOwnProperty(contractAddress)){
+                            logger.info('Automatically signing transaction', signedTransaction);
+
+                            return resolve({
+                                success: true,
+                                data: signedTransaction,
+                                uuid
+                            });
                         }
 
                         this.walletService.queueConfirmation({
@@ -298,6 +363,29 @@ const backgroundScript = {
                             uuid
                         });
                     }
+                    break;
+                } case 'setVisited': {
+                    const { href = ''} = data;
+                    const phishingList =  this.walletService.phishingList;
+                    if(href){
+                        this.walletService.phishingList = phishingList.map(({url,isVisit})=>{
+                           const reg = new RegExp(url);
+                           if(href.match(reg)){
+                               isVisit = true;
+                           }
+                           return {url,isVisit};
+                        });
+                    }else{
+                        this.walletService.phishingList = phishingList.map(({url,isVisit})=>{
+                            isVisit = false;
+                            return {url,isVisit};
+                        });
+                    }
+                    resolve({
+                        success: true,
+                        data: '',
+                        uuid
+                    });
                     break;
                 } default:
                     resolve({
@@ -321,6 +409,11 @@ const backgroundScript = {
 
         this.walletService.on('setNode', node => (
             BackgroundAPI.setNode(node)
+        ));
+
+
+        this.walletService.on('setChain', chain => (
+            BackgroundAPI.setChain(chain)
         ));
 
         this.walletService.on('setAccounts', accounts => (
@@ -366,6 +459,19 @@ const backgroundScript = {
         this.walletService.on('setDappList', dappList => (
             BackgroundAPI.setDappList(dappList)
         ));
+
+        this.walletService.on('setAuthorizeDapps', authorizeDapps => (
+            BackgroundAPI.setAuthorizeDapps(authorizeDapps)
+        ));
+
+        this.walletService.on('setLedgerImportAddress', address => (
+            BackgroundAPI.setLedgerImportAddress(address)
+        ));
+
+        this.walletService.on('setVTokenList', vTokenList => (
+            BackgroundAPI.setVTokenList(vTokenList)
+        ));
+
     }
 };
 

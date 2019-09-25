@@ -26,6 +26,11 @@ import ActivityDetailController from '@tronlink/popup/src/controllers/ActivityDe
 import DappListController from '@tronlink/popup/src/controllers/DappListController';
 import AssetManageController from '@tronlink/popup/src/controllers/AssetManageController';
 import TransactionDetailController from '@tronlink/popup/src/controllers/TransactionDetailController';
+import DappWhitelistController from '@tronlink/popup/src/controllers/DappWhitelistController';
+import LedgerController from '@tronlink/popup/src/controllers/LedgerController';
+import LedgerAccountImportController from '@tronlink/popup/src/controllers/LedgerController/LedgerAccountImportController';
+import NodeManageController from '@tronlink/popup/src/controllers/NodeManageController';
+import TransferController from '@tronlink/popup/src/controllers/TransferController';
 
 import 'antd-mobile/dist/antd-mobile.css';
 import 'react-custom-scroll/dist/customScroll.css';
@@ -43,7 +48,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { appState,accounts,prices,nodes,language,lock,version } = this.props;
+        const { appState,accounts,prices,nodes,language,lock,version,authorizeDapps,vTokenList,chains } = this.props;
         let dom = null;
         switch(appState) {
             case APP_STATE.UNINITIALISED:
@@ -65,19 +70,22 @@ class App extends React.Component {
                 dom = <PageController />;
                 break;
             case APP_STATE.REQUESTING_CONFIRMATION:
-                dom = <ConfirmationController />;
+                dom = <ConfirmationController authorizeDapps={authorizeDapps} />;
                 break;
             case APP_STATE.RECEIVE:
                 dom = <ReceiveController accounts={accounts} address={accounts.selected.address} />;
                 break;
             case APP_STATE.SEND:
-                dom = <SendController accounts={accounts} />;
+                dom = <SendController chains={chains} accounts={accounts} />;
+                break;
+            case APP_STATE.TRANSFER:
+                dom = <TransferController accounts={accounts} chains={chains} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) }  />;
                 break;
             case APP_STATE.TRANSACTIONS:
-                dom = <TransactionsController prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <TransactionsController chains={chains} prices={prices} accounts={accounts} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.SETTING:
-                dom = <SettingController lock={lock} version={version} language={language} prices={prices} nodes={nodes} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
+                dom = <SettingController lock={lock} version={version} language={language} prices={prices} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />
                 break;
             case APP_STATE.ADD_TRC20_TOKEN:
                 dom = <AddTokenController tokens={accounts.selected.tokens} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
@@ -104,10 +112,22 @@ class App extends React.Component {
                 dom = <DappListController onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.ASSET_MANAGE:
-                dom = <AssetManageController selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
+                dom = <AssetManageController chains={chains} prices={prices} vTokenList={vTokenList} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.READY) } />;
                 break;
             case APP_STATE.TRANSACTION_DETAIL:
                 dom = <TransactionDetailController selectedToken={accounts.selectedToken} selected={accounts.selected} onCancel={ () => PopupAPI.changeState(APP_STATE.TRANSACTIONS) } />;
+                break;
+            case APP_STATE.DAPP_WHITELIST:
+                dom = <DappWhitelistController authorizeDapps={authorizeDapps} onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
+                break;
+            case APP_STATE.LEDGER:
+                dom = <LedgerController language={language} />;
+                break;
+            case APP_STATE.LEDGER_IMPORT_ACCOUNT:
+                dom = <LedgerAccountImportController chains={chains}  />;
+                break;
+            case APP_STATE.NODE_MANAGE:
+                dom = <NodeManageController nodes={nodes} chains={chains}  onCancel={ () => PopupAPI.changeState(APP_STATE.SETTING) } />;
                 break;
             default:
                 dom =
@@ -125,11 +145,14 @@ class App extends React.Component {
 }
 
 export default connect(state => ({
+    vTokenList: state.app.vTokenList,
     language: state.app.language,
     appState: state.app.appState,
     accounts: state.accounts,
     nodes: state.app.nodes,
     prices: state.app.prices,
     lock: state.app.setting.lock,
-    version: state.app.version
+    version: state.app.version,
+    authorizeDapps: state.app.authorizeDapps,
+    chains: state.app.chains
 }))(App);

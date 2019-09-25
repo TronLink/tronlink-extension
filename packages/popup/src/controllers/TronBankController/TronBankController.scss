@@ -2,7 +2,7 @@
  * @Author: lxm 
  * @Date: 2019-03-19 15:17:47 
  * @Last Modified by: lxm
- * @Last Modified time: 2019-04-18 17:42:13
+ * @Last Modified time: 2019-06-13 11:05:20
  * TronBankPage
  */
 
@@ -472,6 +472,9 @@
         color: #FFFFFF;
         text-align: center;
     }
+    .modalPayDisabled{
+        background: #c2c8d5;
+    }
     .operateBtn{
         margin:0;
         display: flex;
@@ -493,6 +496,7 @@
     color: #fff;
     opacity: 1;
 }
+
 
 
 

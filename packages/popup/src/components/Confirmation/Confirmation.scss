@@ -1,0 +1,51 @@
+.confirmWrap{
+  position: fixed;
+  z-index:99;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3,5,26,0.60);
+  .confirm{
+    margin:160px auto 0;
+    width: 300px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    padding:26px 23px;
+    .title{
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      width: 100%;
+      font-size: 20px;
+      color: #505160;
+    }
+    .body{
+      margin:20px 0 26px;
+      width: 100%;
+      height: 20px;
+      line-height: 20px;
+      font-size: 14px;
+      color: rgba(80,81,96,.5);
+      text-align: center;
+    }
+    .btn-group{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      button{
+        flex: 1;
+        height: 36px;
+        &:first-child{
+          background-color: #C2C8D5;
+        }
+        &:last-child{
+          margin-left: 14px;
+          background-color: #636ACC;;
+        }
+      }
+    }
+  }
+}
