@@ -61,7 +61,7 @@ class MnemonicImport extends React.Component {
         this.setState({
             isLoading: true
         });
-
+        const { chains } = this.props;
         const { mnemonic } = this.state;
         const { formatMessage } = this.props.intl;
         const addresses = [];
@@ -71,7 +71,8 @@ class MnemonicImport extends React.Component {
                 i
             );
             if(!(account.address in this.props.accounts)) {
-                let { balance } = await NodeService.tronWeb.trx.getAccount(account.address);
+                const accountInfo = await PopupAPI.getAccountInfo(account.address);
+                let balance = accountInfo[chains === '_'? 'mainchain':'sidechain'].balance;
                 balance = balance ? balance:0;
                 account.balance = balance;
                 addresses.push(account);
@@ -246,6 +247,7 @@ class MnemonicImport extends React.Component {
 
 export default injectIntl(
     connect(state => ({
+        chains: state.app.chains,
         accounts: state.accounts.accounts
     }))(MnemonicImport)
 );
