@@ -4,7 +4,7 @@
   "repository": "https://github.com/TronLink/TronLink",
   "author": "Kondax <kondaxsolutions@gmail.com>",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.1",
   "dependencies": {
     "@tronscan/client": "^0.2.48",
     "@ledgerhq/hw-transport-u2f": "^4.31.0",
