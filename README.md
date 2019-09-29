@@ -4,9 +4,8 @@ TronLink is firstly launched at TRON’s official website and backed by TRON fou
 
 Main functions:    
 
-Send and receive TRX, TRC10 and TRC20 tokens;  
-Integrate smart contract calls on developers’ site;   
-Use Dapps within the browser;  
+Sending and receiving TRX, TRC10 and TRC20 tokens;  
+Smart contract calls integrated;    
 
 
 ## Downloads
