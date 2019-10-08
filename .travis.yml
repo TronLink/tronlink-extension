@@ -1,6 +1,23 @@
 language: node_js
 node_js:
   - "10"
+install:
+  - yarn
 
-script:
-  - npm run-script lint
+matrix:
+  include:
+    - name: build
+      script:
+        - yarn build
+    - name: build_core
+      script:
+        - yarn build:core
+    - name: build_popup
+      script:
+        - yarn build:popup
+    - name: lint
+      script:
+        - yarn lint
+
+skip_build:
+  README.md
