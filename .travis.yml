@@ -4,17 +4,23 @@ node_js:
 install:
   - yarn
 
+cache: yarn
+
 matrix:
   include:
     - name: build
       script:
         - yarn build
+
     - name: build_core
       script:
         - yarn build:core
+
+
     - name: build_popup
       script:
         - yarn build:popup
+
     - name: lint
       script:
         - yarn lint
