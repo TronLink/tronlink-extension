@@ -10,6 +10,7 @@ matrix:
   include:
     - name: build
       script:
+        -
         - yarn build
 
     - name: build_core
