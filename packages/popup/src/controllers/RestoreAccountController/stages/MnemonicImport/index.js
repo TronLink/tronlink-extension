@@ -35,7 +35,7 @@ class MnemonicImport extends React.Component {
 
     onChange({ target: { value } }) {
         const isValid = Utils.validateMnemonic(value);
-        const error = !isValid ? 'EXCEPTION.FORMAT_ERROR' : '';
+        const error = !isValid ? 'EXCEPTION.FORMAT_ERROR_MNEMONIC' : '';
         this.setState({
             mnemonic: value,
             isValid,
