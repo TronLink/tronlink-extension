@@ -1,6 +1,26 @@
 language: node_js
 node_js:
-  - "10"
+  - "12"
+before_install:
+  - yarn upgrade ---latest
+  - npm install
+  - yarn install
 
-script:
-  - npm run-script lint
+cache:
+  yarn: true
+
+install:
+  - yarn
+
+matrix:
+  include:
+    - name: build
+      script:
+        - CI=false yarn build
+
+    - name: build_core
+      script:
+        - yarn build:core
+
+skip_build:
+  README.md
