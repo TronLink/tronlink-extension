@@ -78,7 +78,7 @@ class TransactionsController extends React.Component {
                         overflow: 'hidden'
                     } : {
                         overflow: id === CONTRACT_ADDRESS.USDT ? 'visible' : 'hidden',
-                        height: (id === '_' || (id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow) ? 216 : 176)
+                        height: (id === '_' || (id === CONTRACT_ADDRESS.USDT && airdropInfo.isShow) ? 216 : 'auto')
                     }}>
                         <img src={imgUrl ? imgUrl : token10DefaultImg}
                              onError={(e) => e.target.src = token10DefaultImg}/>
@@ -145,15 +145,7 @@ class TransactionsController extends React.Component {
                                                     </div>
                                                 </div>
                                                 :
-                                                <div className='desc token'>
-                                                    <FormattedMessage id='TRANSACTION.TOKEN_INFO.CONTRACT'/>:&nbsp;
-                                                    {id.substr(0, 7) + '...' + id.substr(-7)}
-                                                    <CopyToClipboard text={id} onCopy={() => {
-                                                        Toast.info(formatMessage({ id: 'TOAST.COPY' }));
-                                                    }}>
-                                                        <span className='copy'>&nbsp;</span>
-                                                    </CopyToClipboard>
-                                                </div>
+                                                <div></div>
                                         )
                                         :
                                         <div className='desc token'>
