@@ -358,7 +358,9 @@
 
     "IEOS.LAUNCH_BASE":"LaunchBase",
 
-    "EXCEPTION.FORMAT_ERROR":"Incorrect format",
+
+    "EXCEPTION.FORMAT_ERROR_MNEMONIC":"Please enter the correct and complete mnemonic.",
+    "EXCEPTION.FORMAT_ERROR":"Incorrect Format",
     "EXCEPTION.ACCOUNT_EXIST":"The address already exists. Please do not add again.",
     "EXCEPTION.ADD_NODE.NAME":"More than 4 characters are required.",
     "EXCEPTION.ADD_NODE.NODE_URL":"Incorrect format. Please start with http:// or https://",

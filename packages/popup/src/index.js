@@ -16,6 +16,8 @@ import { PopupAPI } from '@tronlink/lib/api';
 import { setConfirmations } from 'reducers/confirmationsReducer';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { version } from '@tronlink/popup/package';
+import { tokensMap } from './tokensMap.js';
+import axios from 'axios';
 
 import {
     setAppState,
@@ -49,11 +51,27 @@ import {
     faCircle,
     faDotCircle
 } from '@fortawesome/free-solid-svg-icons';
+
 addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
     dsn: 'http://7b03df289e7d42a7a4d5df9e1651bbd2@18.220.1.137:9000/13',
     release: `TronLink@${ process.env.REACT_APP_VERSION }`
 });
+
+localStorage.setItem('tokensMap', JSON.stringify(tokensMap));
+
+let getTokensMap = async function () {
+    let { data } = await axios.get(`https://apilist.tronscan.org/api/token?showAll=1&limit=4000`);
+    for (let i = 0; i < data.data.length; i++) {
+        if (!tokensMap[data.data[i].id]) {
+            tokensMap[data.data[i].id] = data.data[i].name + '_' + data.data[i].id + '_' + data.data[i].precision + '_' + data.data[i].abbr;
+        }
+    }
+
+    localStorage.setItem('tokensMap', JSON.stringify(tokensMap));
+};
+
+getTokensMap();
 
 const logger = new Logger('Popup');
 
@@ -94,7 +112,7 @@ export const app = {
     async getAppState() {
         PopupAPI.init(this.duplex);
         const setting = await PopupAPI.getSetting();
-        if(setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration) {
+        if (setting.lock.duration !== 0 && new Date().getTime() - setting.lock.lockTime > setting.lock.duration) {
             PopupAPI.lockWallet();
         }
         let [
@@ -125,9 +143,9 @@ export const app = {
             PopupAPI.getChains()
         ]);
         const lang = navigator.language || navigator.browserLanguage;
-        if ( lang.indexOf('zh') > -1 ) {
+        if (lang.indexOf('zh') > -1) {
             language = language || 'zh';
-        } else if ( lang.indexOf('ja') > -1 ) {
+        } else if (lang.indexOf('ja') > -1) {
             language = language || 'ja';
         } else {
             language = language || 'en';
@@ -135,7 +153,7 @@ export const app = {
         this.store.dispatch(setAppState(appState));
         this.store.dispatch(setNodes(nodes));
         this.store.dispatch(setAccounts(accounts));
-        this.store.dispatch(setPriceList([prices.priceList,prices.usdtPriceList]));
+        this.store.dispatch(setPriceList([prices.priceList, prices.usdtPriceList]));
         this.store.dispatch(setCurrency(prices.selected));
         this.store.dispatch(setConfirmations(confirmations));
         this.store.dispatch(setToken(selectedToken));
@@ -146,8 +164,9 @@ export const app = {
         this.store.dispatch(setLedgerImportAddress(ledgerImportAddress));
         this.store.dispatch(setVTokenList(vTokenList));
         this.store.dispatch(setChains(chains));
-        if(selectedAccount)
+        if (selectedAccount) {
             this.store.dispatch(setAccount(selectedAccount));
+        }
 
         logger.info('Set application state');
     },

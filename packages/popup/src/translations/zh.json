@@ -357,6 +357,7 @@
     "IEOS.LEFT_TIME":"距开抢{day}",
     "IEOS.LAUNCH_BASE":"LaunchBase",
 
+    "EXCEPTION.FORMAT_ERROR_MNEMONIC":"请输入正确且完整的助记词",
     "EXCEPTION.FORMAT_ERROR":"格式错误",
     "EXCEPTION.ACCOUNT_EXIST":"该地址已在账户列表中，请勿重复添加",
     "EXCEPTION.ADD_NODE.NAME":"需大于四个字符",

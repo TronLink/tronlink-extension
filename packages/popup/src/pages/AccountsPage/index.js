@@ -127,6 +127,7 @@ class AccountsPage extends React.Component {
         PopupAPI.selectChain(chainId);
         app.getNodes();
         this.handleShowChainList();
+        PopupAPI.refresh();
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {
@@ -313,6 +314,7 @@ class AccountsPage extends React.Component {
     }
 
     renderTokens(tokens) {
+
         const { prices, accounts,chains } = this.props;
         return (
             <div className='tokens'>
@@ -357,7 +359,8 @@ class AccountsPage extends React.Component {
                                 </div>
                                 <div className="worth">
                                     <span>{amount}</span>
-                                    <span>≈ {money} {prices.selected}</span>
+                                    {money > 0 && <span>≈ {money} {prices.selected}</span>}
+                                    {money == 0 && <span></span>}
                                 </div>
                             </div>
                         );
@@ -454,12 +457,14 @@ class AccountsPage extends React.Component {
         const { showChainList,mnemonic,privateKey,news,ieos,allTokens }  = this.state;
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng,vTokenList,chains } = this.props;
+
         const { selected: { airdropInfo } } = accounts;
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
         const trx = { tokenId: '_', name: 'TRX', balance: (accounts.selected.balance + (accounts.selected.frozenBalance ? accounts.selected.frozenBalance: 0)), abbr: 'TRX', decimals: 6, imgUrl: trxImg, price: trx_price,isMapping:true};
         let tokens = { ...accounts.selected.tokens.basic, ...accounts.selected.tokens.smart };
+
         const topArray = [];
         TOP_TOKEN[chains.selected === '_' ? 'mainchain':'sidechain'].forEach(v=>{
             if(tokens.hasOwnProperty(v)){
@@ -481,6 +486,7 @@ class AccountsPage extends React.Component {
 
             return { tokenId, ...token };
         });
+
         Object.entries(accounts.accounts).map(([address, account]) => {
             totalAsset = totalAsset.plus(new BigNumber(account.asset));
             totalTrx   = totalTrx.plus(new BigNumber(account.balance).shiftedBy(-6));

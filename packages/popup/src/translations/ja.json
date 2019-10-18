@@ -355,7 +355,9 @@
   "IEOS.LEFT_TIME":"{day}間オープン",
   "IEOS.LAUNCH_BASE":"LaunchBase",
 
-  "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",
+  "EXCEPTION.FORMAT_ERROR_MNEMONIC":"正しいニーモニックを入力してください",
+  "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",  
+
   "EXCEPTION.ACCOUNT_EXIST":"アドレスは既に存在します。 再度追加しないでください。",
   "EXCEPTION.ADD_NODE.NAME":"4文字以上が必要です。",
   "EXCEPTION.ADD_NODE.REPEAT_NAME":"重複なノード名称がダメです",
