@@ -45,6 +45,7 @@ class Account {
             basic: {},
             smart: {}
         };
+        this.trxAddress = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
         // this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
         //     abbr: 'USDT',
         //     name: 'Tether USD',
@@ -263,7 +264,7 @@ class Account {
             for (const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[key] || false;
                 const filter = basicTokenPriceList.length ? basicTokenPriceList.filter(({ first_token_id }) => first_token_id === key) : [];
-                const trc20Filter = smartTokenPriceList.length ? smartTokenPriceList.filter(({ fTokenAddr }) => key === fTokenAddr) : [];
+                const trc20Filter = smartTokenPriceList.length ? smartTokenPriceList.filter(({ fTokenAddr, sTokenAddr }) => key === fTokenAddr && sTokenAddr === this.trxAddress) : [];
                 let { precision = 0, price } = filter.length ? filter[0] : (trc20Filter.length ? {
                     price: trc20Filter[0].price,
                     precision: trc20Filter[0].sPrecision
@@ -328,7 +329,7 @@ class Account {
             });
             for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance } of smartTokens) {
                 let token = this.tokens.smart[tokenAddress] || false;
-                const filter = smartTokenPriceList.filter(({ fTokenAddr }) => fTokenAddr === tokenAddress);
+                const filter = smartTokenPriceList.filter(({ fTokenAddr, sTokenAddr }) => fTokenAddr === tokenAddress && sTokenAddr === this.trxAddress);
                 const price = filter.length ? new BigNumber(filter[0].price).shiftedBy(-decimals).toString() : 0;
 
                 token = {
