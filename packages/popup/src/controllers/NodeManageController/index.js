@@ -180,6 +180,17 @@ class NodeManageController extends React.Component {
         this.setState({showDeleteNodeDialog:false});
     }
 
+    linkNode = (chainId) => {
+        this.setState({selectedChain: chainId});
+        const {nodes} = this.props;
+
+        const connect = nodes.nodes[nodes.selected].connect;
+        if(connect){
+            PopupAPI.selectNode(connect);
+            app.getNodes();
+        }
+    }
+
     render() {
         const { showDeleteNodeDialog, showAddNodeDialog, selectedChain } = this.state;
         const { name, fullNode, solidityNode, eventServer, isValid } = this.state.customNode;
@@ -245,7 +256,7 @@ class NodeManageController extends React.Component {
                         {chains.chains[selectedChain].name}
                         <div className="chainWrap">
                             {
-                                Object.entries(chains.chains).map(([chainId,chain])=><div className="item" onClick={()=>this.setState({selectedChain:chainId})}>{chain.name}</div>)
+                                Object.entries(chains.chains).map(([chainId,chain])=><div className="item" onClick={()=>this.linkNode(chainId)}>{chain.name}</div>)
                             }
                         </div>
                     </div>

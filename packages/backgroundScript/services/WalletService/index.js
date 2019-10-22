@@ -590,6 +590,8 @@ class Wallet extends EventEmitter {
      */
 
     async addAccount({ mnemonic, name }) {
+        // 埋点
+
         logger.info(`Adding account '${ name }' from popup`);
         if(Object.keys(this.accounts).length === 0) {
             this.setCache();
@@ -611,6 +613,20 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
+
+        const params = {};
+        params[address]=1;
+
+        axios({
+            url: 'https://testpre.tronlink.org/api/wallet/node_info',
+            method: 'post',
+            data: [params],
+            headers: {
+                'System': 'Chrome',
+                "DeviceID" : window.navigator.userAgent,
+            }
+        });
+
         return true;
     }
 
@@ -624,6 +640,8 @@ class Wallet extends EventEmitter {
      */
 
     async importAccount({ privateKey, name }) {
+        // 埋点
+
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
@@ -644,6 +662,22 @@ class Wallet extends EventEmitter {
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
+
+        const params = {};
+
+        params[address]=2;
+
+        axios({
+            url: 'https://testpre.tronlink.org/api/wallet/node_info',
+            method: 'post',
+            data: [params],
+
+            headers: {
+                'System': 'Chrome',
+                "DeviceID" : window.navigator.userAgent,
+            }
+        });
+
         return true;
     }
 

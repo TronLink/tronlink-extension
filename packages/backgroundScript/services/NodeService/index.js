@@ -3,68 +3,77 @@ import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
 import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-import { CONTRACT_ADDRESS,SIDE_CHAIN_ID,NODE } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE } from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
 
 const NodeService = {
-    _chains:{
-        '_':{
-            name:'TRON',
-            default:true
+    _chains: {
+        '_': {
+            name: 'TRON',
+            default: true
         },
-        [ SIDE_CHAIN_ID ]:{
-            name:'DAppChain',
-            default:false
+        [SIDE_CHAIN_ID]: {
+            name: 'DAppChain',
+            default: false
         }
     },
     _nodes: {
-            // 'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
-            //     name: 'Mainnet Testnet',
-            //     fullNode: 'http://47.252.84.158:8070',
-            //     solidityNode: 'http://47.252.84.158:8071',
-            //     eventServer: 'http://47.252.81.14:8070',
-            //     default: true, // false
-            //     chain:'_',
-            //     connect: SIDE_CHAIN_ID
-            // },
-            'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
-                name: 'Mainnet',
-                fullNode: 'https://api.trongrid.io',
-                solidityNode: 'https://api.trongrid.io',
-                eventServer: 'https://api.trongrid.io',
-                default: true, // false
-                chain:'_' ,
-                connect: SIDE_CHAIN_ID
-            },
-            '6739be94-ee43-46af-9a62-690cf0947269': {
-                name: 'Shasta Testnet',
-                fullNode: 'https://api.shasta.trongrid.io',
-                solidityNode: 'https://api.shasta.trongrid.io',
-                eventServer: 'https://api.shasta.trongrid.io',
-                default: false,
-                chain:'_'
-            },
-            // 'a981e232-a995-4c81-9653-c85e4d05f598':{
-            //     name: 'SideChain Testnet',
-            //     fullNode: 'http://47.252.85.90:8070',
-            //     solidityNode: 'http://47.252.85.90:8071',
-            //     eventServer: 'http://47.252.87.129:8070',
-            //     default: true,
-            //     chain:SIDE_CHAIN_ID
-            // },
-            'a981e232-a995-4c81-9653-c85e4d05f599':{
-                name: 'DappChain',
-                fullNode: 'https://sun.tronex.io',
-                solidityNode: 'https://sun.tronex.io',
-                eventServer: 'https://sun.tronex.io',
-                default: true,
-                chain: SIDE_CHAIN_ID
-            },
+        /* 'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
+             name: 'Mainnet Testnet',
+             fullNode: 'http://47.252.84.158:8070',
+             solidityNode: 'http://47.252.84.158:8071',
+             eventServer: 'http://47.252.81.14:8070',
+             default: true, // false
+             chain:'_',
+             connect: SIDE_CHAIN_ID
+         }, */
+        'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
+            name: 'Mainnet',
+            fullNode: 'https://api.trongrid.io',
+            solidityNode: 'https://api.trongrid.io',
+            eventServer: 'https://api.trongrid.io',
+            default: true, // false
+            chain: '_',
+            connect: 'a981e232-a995-4c81-9653-c85e4d05f599'
+        },
+        '6739be94-ee43-46af-9a62-690cf0947269': {
+            name: 'Shasta Testnet',
+            fullNode: 'https://api.shasta.trongrid.io',
+            solidityNode: 'https://api.shasta.trongrid.io',
+            eventServer: 'https://api.shasta.trongrid.io',
+            default: false,
+            chain: '_'
+        },
+        '6739be94-ee43-46af-9a62-690cf0947111': {
+            name: 'DappChain Testnet',
+            fullNode: 'https://api.shasta.trongrid.io',
+            solidityNode: 'https://api.shasta.trongrid.io',
+            eventServer: 'https://api.shasta.trongrid.io',
+            default: false,
+            chain: '_',
+            connect: 'a981e232-a995-4c81-9653-c85e4d05f598'
+        },
+        'a981e232-a995-4c81-9653-c85e4d05f599': {
+            name: 'DappChain',
+            fullNode: 'https://sun.tronex.io',
+            solidityNode: 'https://sun.tronex.io',
+            eventServer: 'https://sun.tronex.io',
+            default: true,
+            chain: SIDE_CHAIN_ID
+        },
+        'a981e232-a995-4c81-9653-c85e4d05f598': {
+            name: 'DappChain Testnet',
+            fullNode: 'http://47.252.85.90:8070',
+            solidityNode: 'http://47.252.85.90:8071',
+            eventServer: 'http://47.252.87.129:8070',
+            default: false,
+            chain: SIDE_CHAIN_ID
+        },
 
     },
-    _selectedChain:'_',
+    _selectedChain: '_',
     _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
     _read() {
         logger.info('Reading nodes and chains from storage');
@@ -73,32 +82,35 @@ const NodeService = {
             chainList = {},
             selectedChain = false
         } = StorageService.chains;
-        this._chains = {...this._chains,...chainList};
+        this._chains = { ...this._chains, ...chainList };
 
         const {
             nodeList = {},
             selectedNode = false
         } = StorageService.nodes;
 
-
         this._nodes = {
             ...this._nodes,
             ...nodeList,
         };
 
-
-        this._nodes = Object.entries(this._nodes).map(([nodeId, node])=>{
-            if(!node.hasOwnProperty('chain')){
+        this._nodes = Object.entries(this._nodes).map(([nodeId, node]) => {
+            if (!node.hasOwnProperty('chain')) {
                 node.chain = '_';
             }
             return [nodeId, node];
-        }).reduce((accumulator, currentValue)=>{accumulator[currentValue[0]]=currentValue[1];return accumulator;},{});
+        }).reduce((accumulator, currentValue) => {
+            accumulator[currentValue[0]] = currentValue[1];
+            return accumulator;
+        }, {});
 
-        if(selectedChain)
+        if (selectedChain) {
             this._selectedChain = selectedChain;
+        }
 
-        if(selectedNode)
+        if (selectedNode) {
             this._selectedNode = selectedNode;
+        }
     },
 
     init() {
@@ -128,16 +140,19 @@ const NodeService = {
             solidityNode,
             eventServer
         );
-        if(!skipAddress)
+        if (!skipAddress) {
             this.setAddress();
+        }
     },
 
     setAddress() {
-        if(!this.tronWeb)
+        if (!this.tronWeb) {
             this._updateTronWeb();
+        }
 
-        if(!StorageService.selectedAccount)
+        if (!StorageService.selectedAccount) {
             return this._updateTronWeb(true);
+        }
 
         this.tronWeb.setAddress(
             StorageService.selectedAccount
@@ -146,12 +161,12 @@ const NodeService = {
 
     save() {
 
-        Object.entries(this._nodes).forEach(([ nodeID, node ]) => (
+        Object.entries(this._nodes).forEach(([nodeID, node]) => (
             StorageService.saveNode(nodeID, node)
         ));
 
-        Object.entries(this._chains).forEach(( [chainId, chain ])=>{
-            StorageService.saveChain(chainId, chain)
+        Object.entries(this._chains).forEach(([chainId, chain]) => {
+            StorageService.saveChain(chainId, chain);
         });
 
         StorageService.selectChain(this._selectedChain);
@@ -174,7 +189,7 @@ const NodeService = {
     },
 
     getCurrentNode() {
-        return this._nodes[ this._selectedNode ];
+        return this._nodes[this._selectedNode];
     },
 
     selectNode(nodeID) {
@@ -187,11 +202,11 @@ const NodeService = {
     deleteNode(nodeID) {
         StorageService.deleteNode(nodeID);
         delete this._nodes[nodeID];
-        if(nodeID === this._selectedNode) {
-            const nodeId = Object.entries(this._nodes).filter(([nodeId,node])=>node.default && node.chain === this._selectedChain)[0][0];
+        if (nodeID === this._selectedNode) {
+            const nodeId = Object.entries(this._nodes).filter(([nodeId, node]) => node.default && node.chain === this._selectedChain)[0][0];
             this.selectNode(nodeId);
             return nodeId;
-        }else{
+        } else {
             return false;
         }
     },
@@ -205,7 +220,7 @@ const NodeService = {
     addNode(node) {
         const nodeID = randomUUID();
 
-        this._nodes[ nodeID ] = {
+        this._nodes[nodeID] = {
             ...node,
             default: false
         };
@@ -217,8 +232,9 @@ const NodeService = {
         try {
             let balance;
             const contract = await this.tronWeb.contract().at(address);
-            if(!contract.name && !contract.symbol && !contract.decimals)
+            if (!contract.name && !contract.symbol && !contract.decimals) {
                 return false;
+            }
             const d = await contract.decimals().call();
             const name = await contract.name().call();
             const symbol = await contract.symbol().call();
@@ -231,12 +247,12 @@ const NodeService = {
             }
 
             return {
-                name: typeof name === 'object' ? name._name: name,
-                symbol: typeof symbol === 'object' ? symbol._symbol: symbol,
-                decimals: typeof decimals === 'object' ? decimals._decimals: decimals,
+                name: typeof name === 'object' ? name._name : name,
+                symbol: typeof symbol === 'object' ? symbol._symbol : symbol,
+                decimals: typeof decimals === 'object' ? decimals._decimals : decimals,
                 balance
             };
-        } catch(ex) {
+        } catch (ex) {
             logger.error(`Failed to fetch token ${ address }:`, ex);
             return false;
         }

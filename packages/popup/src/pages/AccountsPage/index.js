@@ -255,10 +255,10 @@ class AccountsPage extends React.Component {
                                     <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                             }
                             <div className='num'>
-                                {account.energy - account.energyUsed}<span>/{account.energy}</span>
+                                {(account.energy - account.energyUsed) < 0 ? 0 : (account.energy - account.energyUsed)}<span>/{account.energy < 0 ? 0 : account.energy}</span>
                             </div>
                         </div>
-                        <ProcessBar percentage={(account.energy - account.energyUsed) / account.energy} />
+                        <ProcessBar percentage={(account.energy <= 0 || (account.energy - account.energyUsed) < 0) ? 0 : (account.energy - account.energyUsed) / account.energy} />
                     </div>
                 </div>
                 :

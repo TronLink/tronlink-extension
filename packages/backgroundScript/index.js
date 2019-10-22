@@ -12,6 +12,7 @@ import * as Sentry from '@sentry/browser';
 import { CONFIRMATION_TYPE } from '@tronlink/lib/constants';
 import { BackgroundAPI } from '@tronlink/lib/api';
 import { version } from './package.json';
+import axios from 'axios/index';
 
 // Make error reporting user-configurable
 Sentry.init({
@@ -295,8 +296,10 @@ const backgroundScript = {
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
-
                         if(contractType === 'TriggerSmartContract') {
+
+                            // code bury
+
                             const value = input.call_value || 0;
 
                             ga('send', 'event', {
@@ -307,6 +310,23 @@ const backgroundScript = {
                                 referrer: hostname,
                                 userId: Utils.hash(input.owner_address)
                             });
+
+                            axios({
+                                url: 'https://testpre.tronlink.org/api/activity/add',
+                                method: 'post',
+                                data: {
+                                    "transactionString": JSON.stringify({raw_data:signedTransaction['raw_data'], txID:signedTransaction.txID}),
+                                    "dappName": "xxxxxx",
+                                    "dappUrl": hostname,
+                                    "contractAddress": contractAddress
+                                },
+
+                                headers: {
+                                    'System': 'Chrome',
+                                    "DeviceID" : window.navigator.userAgent,
+                                }
+                            });
+
                         }
 
                         // if(contractType !== 'TriggerSmartContract' && appWhitelist) {
