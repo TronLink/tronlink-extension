@@ -446,6 +446,8 @@
     "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details",
 
     "ALERT.UPDATE_DESCRIPTION.TITLE":"Update Description",
-    "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet."
+    "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet.",
+
+    "TIP.GET_USDT":"how to get"
 
 }

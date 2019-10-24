@@ -445,5 +445,7 @@
     "NOTIFICATIONS.MESSAGE":"点击跳转tronscan查看交易详情",
 
     "ALERT.UPDATE_DESCRIPTION.TITLE":"更新说明",
-    "ALERT.UPDATE_DESCRIPTION.BODY":"本次更新主要支持了Tron官方的sunnetwork，即添加了侧链功能。现在您可以将资产在主链与侧链之间转移，并可以通过TronLink使用优先支持了侧链的Dapp。请注意，目前侧链上暂不支持ledger"
+    "ALERT.UPDATE_DESCRIPTION.BODY":"本次更新主要支持了Tron官方的sunnetwork，即添加了侧链功能。现在您可以将资产在主链与侧链之间转移，并可以通过TronLink使用优先支持了侧链的Dapp。请注意，目前侧链上暂不支持ledger",
+
+    "TIP.GET_USDT":"如何获得"
 }

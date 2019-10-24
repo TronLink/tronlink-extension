@@ -911,6 +911,22 @@
                         }
                     }
                 }
+                .getUSDT{
+                    position:relative;
+                    left:-60px;
+                    top:12px;
+                    font-family: AvenirNext-Medium;
+                    font-size: 11px;
+                    color: #636ACC;
+                    border-radius: 10px;
+                    background: rgba(99,106,204,0.10);
+
+                    height: 19px;
+                    padding-top: 3px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+
+                }
             }
         }
         &>div:last-child{flex:1}
