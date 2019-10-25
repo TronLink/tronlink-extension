@@ -5844,6 +5844,11 @@ ini@^1.3.4, ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
 
+injectpromise@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/injectpromise/-/injectpromise-1.0.0.tgz#c621f7df2bbfc1164d714f1fb229adec2079da39"
+  integrity sha512-qNq5wy4qX4uWHcVFOEU+RqZkoVG65FhvGkyDWbuBxILMjK6A1LFf5A1mgXZkD4nRx5FCorD81X/XvPKp/zVfPA==
+
 inquirer@6.2.0, inquirer@^6.1.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-6.2.0.tgz#51adcd776f661369dc1e894859c2560a224abdd8"
@@ -6735,9 +6740,9 @@ js-tokens@^3.0.2:
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
 js-yaml@^3.12.0, js-yaml@^3.7.0, js-yaml@^3.9.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.12.0.tgz#eaed656ec8344f10f527c6bfa1b6e2244de167d1"
-  integrity sha512-PIt2cnwmPfL4hKNwqeiuz4bKfnzHTBv6HyVgjahA6mPLwPDzjDWrplJBMjHUFxku/N3FlmrbyPclad+I+4mJ3A==
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
+  integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
@@ -11203,10 +11208,10 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-tronweb@^2.6.4:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.7.1.tgz#714547728a2e6e87e808da91b7a5b1e178179503"
-  integrity sha512-BSqEFeCX3nM4utzWKzo/nCVbtvZ6MMbFvPKVje1as/ZPqACTH0KxaJnOdsxs2KESuT/uuWKXYcqrUQie4KHN2A==
+tronweb@^2.7.4:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.8.0.tgz#e70247486590376a4ee3497d4c5dd66aa5f312d6"
+  integrity sha512-B5vn2TsH8hV9z7jvxlmMlIcKjd+qq7TS4p5E1w4422FJ1tBVe3cQqQZ0YP09aj/9k6eJQsGdWfBB1WYQQb0d5Q==
   dependencies:
     "@babel/runtime" "^7.0.0"
     axios "^0.19.0"
@@ -11215,6 +11220,7 @@ tronweb@^2.6.4:
     elliptic "^6.4.1"
     ethers "^4.0.7"
     eventemitter3 "^3.1.0"
+    injectpromise "^1.0.0"
     lodash "^4.17.14"
     semver "^5.6.0"
     validator "^10.7.1"
