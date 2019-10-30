@@ -912,20 +912,18 @@
                     }
                 }
                 .getUSDT{
-                    position:relative;
-                    left:-50px;
-                    top:12px;
                     font-family: AvenirNext-Medium;
                     font-size: 11px;
-                    color: #636ACC;
+                    color: #636acc;
                     border-radius: 10px;
-                    background: rgba(99,106,204,0.10);
-
+                    background: rgba(99,106,204,.1);
                     height: 19px;
                     padding-top: 3px;
                     padding-left: 10px;
                     padding-right: 10px;
-
+                    float: left;
+                    margin-left: -60px;
+                    margin-top: 25px;
                 }
             }
         }

@@ -369,7 +369,7 @@ class AccountsPage extends React.Component {
 
                                 {
                                     token.abbr === 'USDT' &&
-                                        <a className="getUSDT" target="_blank" href={language!=='zh'?"https://support.tronlink.org/hc/en-us/articles/360034148772-How-to-get-TRC20-USDT-":"https://support.tronlink.org/hc/zh-cn/articles/360034519851-%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96TRC20-USDT"} onClick={(event)=>{event.stopPropagation()}}><FormattedMessage id='TIP.GET_USDT'/><img style={{marginLeft:'10px'}} src={require('@tronlink/popup/src/assets/images/new/arrow.svg')} /></a>
+                                        <a className="getUSDT" target="_blank" href={language!=='zh'?"https://support.tronlink.org/hc/en-us/articles/360034148772-How-to-get-TRC20-USDT-":"https://support.tronlink.org/hc/zh-cn/articles/360034519851-%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96TRC20-USDT"} onClick={(event)=>{event.stopPropagation()}}><FormattedMessage id='TIP.GET_USDT'/><img style={{marginLeft:'5px'}} src={require('@tronlink/popup/src/assets/images/new/arrow.svg')} /></a>
                                 }
                                 <div className="worth">
                                     <span>{amount}</span>
