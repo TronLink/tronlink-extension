@@ -125,9 +125,18 @@ class AccountsPage extends React.Component {
 
     handleSelectChain(chainId){
         PopupAPI.selectChain(chainId);
-        app.getNodes();
+        this.linkNode();
         this.handleShowChainList();
         PopupAPI.refresh();
+    }
+
+    linkNode = () => {
+        const {nodes} = this.props;
+        const connect = nodes.nodes[nodes.selected].connect;
+        if(connect){
+            PopupAPI.selectNode(connect);
+        }
+        app.getNodes();
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {

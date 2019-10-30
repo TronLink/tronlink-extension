@@ -187,8 +187,8 @@ class NodeManageController extends React.Component {
         const connect = nodes.nodes[nodes.selected].connect;
         if(connect){
             PopupAPI.selectNode(connect);
-            app.getNodes();
         }
+        app.getNodes();
     }
 
     render() {
