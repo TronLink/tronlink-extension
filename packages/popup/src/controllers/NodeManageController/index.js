@@ -181,6 +181,10 @@ class NodeManageController extends React.Component {
     }
 
     linkNode = (chainId) => {
+
+        if(this.state.selectedChain === chainId){
+            return;
+        }
         this.setState({selectedChain: chainId});
         const {nodes} = this.props;
 
@@ -189,6 +193,7 @@ class NodeManageController extends React.Component {
             PopupAPI.selectNode(connect);
         }
         app.getNodes();
+
     }
 
     render() {
