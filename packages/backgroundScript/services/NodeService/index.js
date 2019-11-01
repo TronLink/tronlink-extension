@@ -48,9 +48,9 @@ const NodeService = {
         },
         '6739be94-ee43-46af-9a62-000000000000': {
             name: 'DappChain Testnet',
-            fullNode: 'http://47.252.84.158:8070',
-            solidityNode: 'http://47.252.84.158:8071',
-            eventServer: 'http://47.252.81.14:8070',
+            fullNode: 'https://testhttpapi.tronex.io/wallet',
+            solidityNode: 'https://testhttpapi.tronex.io/walletsolidity',
+            eventServer: 'https://testapi.tronex.io',
             default: false,
             chain: '_',
             connect: 'a981e232-a995-4c81-9653-111111111111'
@@ -66,9 +66,9 @@ const NodeService = {
         },
         'a981e232-a995-4c81-9653-111111111111': {
             name: 'DappChain Testnet',
-            fullNode: 'http://47.252.85.90:8070',
-            solidityNode: 'http://47.252.85.90:8071',
-            eventServer: 'http://47.252.87.129:8070',
+            fullNode: 'https://suntest.tronex.io/wallet',
+            solidityNode: 'https://suntest.tronex.io/walletsolidity',
+            eventServer: 'https://suntest.tronex.io/event',
             default: false,
             chain: SIDE_CHAIN_ID,
             connect: '6739be94-ee43-46af-9a62-000000000000'
