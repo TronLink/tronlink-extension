@@ -285,15 +285,30 @@ class NodeManageController extends React.Component {
                                         <div className='r2'>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
-                                                <span>{fullNode}</span>
+                                                {
+                                                    fullNode.length<=30&&<span>{fullNode}</span>
+                                                }
+                                                {
+                                                    fullNode.length>30&&<span>{fullNode.substring(0,30)}...</span>
+                                                }
                                             </div>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
-                                                <span>{solidityNode}</span>
+                                                {
+                                                    solidityNode.length<=30&&<span>{solidityNode}</span>
+                                                }
+                                                {
+                                                    solidityNode.length>30&&<span>{solidityNode.substring(0,30)}...</span>
+                                                }
                                             </div>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
-                                                <span>{eventServer}</span>
+                                                {
+                                                    eventServer.length<=30&&<span>{eventServer}</span>
+                                                }
+                                                {
+                                                    eventServer.length>30&&<span>{eventServer.substring(0,30)}...</span>
+                                                }
                                             </div>
                                         </div>
                                     </div>
