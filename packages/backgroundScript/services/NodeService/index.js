@@ -78,12 +78,11 @@ const NodeService = {
         this._chains = { ...this._chains, ...chainList };
 
         const {
-            nodeList = {},
             selectedNode = false
         } = StorageService.nodes;
 
         this._nodes = {
-            ...this._nodes,
+            ...this._nodes
         };
 
 
@@ -96,9 +95,7 @@ const NodeService = {
             accumulator[currentValue[0]] = currentValue[1];
             return accumulator;
         }, {});
-
-        console.log('mmmmmmmmmmm');
-        console.log(this._nodes);
+        
 
         if (selectedChain) {
             this._selectedChain = selectedChain;
