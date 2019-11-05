@@ -84,9 +84,7 @@ const NodeService = {
 
         this._nodes = {
             ...this._nodes,
-            ...nodeList,
         };
-
 
 
         this._nodes = Object.entries(this._nodes).map(([nodeId, node]) => {
