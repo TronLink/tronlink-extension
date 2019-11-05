@@ -20,15 +20,6 @@ const NodeService = {
         }
     },
     _nodes: {
-        /* 'f0b1e38e-7bee-485e-9d3f-69410bf30682': {
-             name: 'Mainnet Testnet',
-             fullNode: 'http://47.252.84.158:8070',
-             solidityNode: 'http://47.252.84.158:8071',
-             eventServer: 'http://47.252.81.14:8070',
-             default: true, // false
-             chain:'_',
-             connect: SIDE_CHAIN_ID
-         }, */
         'f0b1e38e-7bee-485e-9d3f-69410bf00000': {
             name: 'Mainnet',
             fullNode: 'https://api.trongrid.io',
@@ -36,7 +27,7 @@ const NodeService = {
             eventServer: 'https://api.trongrid.io',
             default: true, // false
             chain: '_',
-            connect: 'a981e232-a995-4c81-9653-c85e4d022222'
+            connect: '2222e232-a995-4c81-9653-c85e4d022222'
         },
         '6739be94-ee43-46af-9a62-690cf0911111': {
             name: 'Shasta Testnet',
@@ -55,7 +46,7 @@ const NodeService = {
             chain: '_',
             connect: 'a981e232-a995-4c81-9653-111111111111'
         },
-        'a981e232-a995-4c81-9653-c85e4d022222': {
+        '2222e232-a995-4c81-9653-c85e4d022222': {
             name: 'DappChain',
             fullNode: 'https://sun.tronex.io',
             solidityNode: 'https://sun.tronex.io',
