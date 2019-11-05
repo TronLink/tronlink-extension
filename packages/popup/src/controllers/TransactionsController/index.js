@@ -29,19 +29,12 @@ class TransactionsController extends React.Component {
 
     async componentDidMount() {
 
-        this.nodes = await PopupAPI.getNodes();
-
         const {
             accounts
         } = this.props;
         const { id = '_' } = accounts.selectedToken;
         Toast.loading('', 0, false, false);
-        let transactions = await PopupAPI.getTransactionsByTokenId(id);
-        
-
-        if (!(this.nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || this.nodes.selected === 'a981e232-a995-4c81-9653-c85e4d05f599')) {
-            transactions.records = [];
-        }
+        const transactions = await PopupAPI.getTransactionsByTokenId(id);
 
         this.setState({ transactions });
         Toast.hide();

@@ -294,6 +294,7 @@ class TransferController extends React.Component {
         const { isOpen, selectedToken, loading, amount,allTokens,help } = this.state;
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
+      
         const { formatMessage } = this.props.intl;
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, frozenBalance:selected.frozenBalance ,abbr: 'TRX', decimals: 6, imgUrl: trxImg,isMapping:true };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };

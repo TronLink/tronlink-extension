@@ -30,7 +30,7 @@ const pageHook = {
             }
 
             if (node.fullNode) {
-                this.setNode(node);
+                this.setNode({node:node});
             }
 
             logger.info('TronLink initiated');

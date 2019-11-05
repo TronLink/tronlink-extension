@@ -125,12 +125,17 @@ class AccountsPage extends React.Component {
 
     handleSelectChain(chainId){
         PopupAPI.selectChain(chainId);
-        this.linkNode();
+        this.linkNode(chainId);
         this.handleShowChainList();
         PopupAPI.refresh();
     }
 
-    linkNode = () => {
+    linkNode = (chainId) => {
+
+        if(this.props.chains.selected === chainId){
+            return;
+        }
+
         const {nodes} = this.props;
         const connect = nodes.nodes[nodes.selected].connect;
         if(connect){

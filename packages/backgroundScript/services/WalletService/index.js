@@ -14,6 +14,9 @@ import {
     CONTRACT_ADDRESS,
     API_URL
 } from '@tronlink/lib/constants';
+import { PopupAPI } from '../../../lib/api';
+import { NODE, SIDE_CHAIN_ID } from '../../../lib/constants';
+import SunWeb from 'sunweb';
 
 const logger = new Logger('WalletService');
 let basicPrice;
@@ -363,9 +366,11 @@ class Wallet extends EventEmitter {
         const node = NodeService.getCurrentNode();
 
         this.emit('setNode', {
-            fullNode: node.fullNode,
-            solidityNode: node.solidityNode,
-            eventServer: node.eventServer
+            node: {
+                fullNode: node.fullNode,
+                solidityNode: node.solidityNode,
+                eventServer: node.eventServer
+            }
         });
     }
 
@@ -418,9 +423,11 @@ class Wallet extends EventEmitter {
         });
         const node = NodeService.getCurrentNode();
         this.emit('setNode', {
-            fullNode: node.fullNode,
-            solidityNode: node.solidityNode,
-            eventServer: node.eventServer
+            node: {
+                fullNode: node.fullNode,
+                solidityNode: node.solidityNode,
+                eventServer: node.eventServer
+            }
         });
         this.emit('setAccount', this.selectedAccount);
         const setting = this.getSetting();
@@ -777,7 +784,6 @@ class Wallet extends EventEmitter {
 
         const connectNode = nodes.nodes[nodes.nodes[nodeID].connect];
 
-
         if (!connectNode) {
 
             this.emit('setNode', {
@@ -788,6 +794,13 @@ class Wallet extends EventEmitter {
                     chain: node.chain
                 }
             });
+
+            NodeService.tronWeb = new TronWeb(
+                fullNode,
+                solidityNode,
+                eventServer
+            );
+
         } else {
 
             this.emit('setNode', {
@@ -805,6 +818,70 @@ class Wallet extends EventEmitter {
                     }
                 }
             );
+
+            if (node.fullNode === 'https://api.trongrid.io' && connectNode.fullNode === 'https://sun.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    CONTRACT_ADDRESS.MAIN,
+                    CONTRACT_ADDRESS.SIDE,
+                    SIDE_CHAIN_ID
+                );
+            }
+
+            if (connectNode.fullNode === 'https://api.trongrid.io' && node.fullNode === 'https://sun.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    {
+                        fullNode: node.fullNode,
+                        solidityNode: node.solidityNode,
+                        eventServer: node.eventServer
+                    },
+                    CONTRACT_ADDRESS.MAIN,
+                    CONTRACT_ADDRESS.SIDE,
+                    SIDE_CHAIN_ID
+                );
+            }
+
+            if (node.fullNode === 'https://testhttpapi.tronex.io' && connectNode.fullNode === 'https://suntest.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
+                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
+                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                );
+            }
+
+            if (connectNode.fullNode === 'https://testhttpapi.tronex.io' && node.fullNode === 'https://suntest.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    {
+                        fullNode: node.fullNode,
+                        solidityNode: node.solidityNode,
+                        eventServer: node.eventServer
+                    },
+                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
+                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
+                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                );
+            }
         }
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
@@ -1136,6 +1213,7 @@ class Wallet extends EventEmitter {
     async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = 'all', limit = 30 }) {
         const selectedChain = NodeService._selectedChain;
         const { fullNode } = NodeService.getCurrentNode();
+
         const address = this.selectedAccount;
         let params = { limit };
         let requestUrl = selectedChain === '_' ? 'https://apilist.tronscan.org' : 'https://dappchainapi.tronscan.org';
@@ -1202,6 +1280,13 @@ class Wallet extends EventEmitter {
         let newRecord = [];
         const finger = fingerprint || 0;
         params.start = limit * finger;
+
+        const nodes = NodeService.getNodes();
+
+        if (!(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'a981e232-a995-4c81-9653-c85e4d05f599')) {
+            return { records: [], finger };
+        }
+
         if (!tokenId.match(/^T/)) {
             if (tokenId === '_') {
                 requestUrl += '/api/simple-transaction';
