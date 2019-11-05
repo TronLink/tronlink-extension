@@ -796,9 +796,9 @@ class Wallet extends EventEmitter {
             });
 
             NodeService.tronWeb = new TronWeb(
-                fullNode,
-                solidityNode,
-                eventServer
+                node.fullNode,
+                node.solidityNode,
+                node.eventServer
             );
 
         } else {
