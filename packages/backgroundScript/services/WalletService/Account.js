@@ -213,17 +213,25 @@ class Account {
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
 
         if (!StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].length) return;
+
         const selectedChain = NodeService._selectedChain;
+        const node = NodeService.getNodes().selected;
+
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
-        const { data: { data: smartTokens } } = await axios.get(`${API_URL}/api/wallet/trc20_info`, {
+        let { data: { data: smartTokens } } = await axios.get(`${API_URL}/api/wallet/trc20_info`, {
             headers: { chain: selectedChain === '_' ? 'MainChain' : 'DAppChain' },
             params: { address }
         }).catch(e => {
             return { data: { data: [] } };
         });
+
+        if (!(node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || node === 'a981e232-a995-4c81-9653-c85e4d05f599')) {
+            smartTokens = [];
+        }
+
         try {
-            const node = NodeService.getNodes().selected;
+
             //if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
 

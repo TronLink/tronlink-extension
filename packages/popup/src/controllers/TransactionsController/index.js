@@ -23,27 +23,43 @@ class TransactionsController extends React.Component {
             isRequest: false,
             currentPage: 1
         };
+
+        this.nodes = '';
     }
 
     async componentDidMount() {
+
+        this.nodes = await PopupAPI.getNodes();
+
         const {
             accounts
         } = this.props;
         const { id = '_' } = accounts.selectedToken;
         Toast.loading('', 0, false, false);
-        const transactions = await PopupAPI.getTransactionsByTokenId(id);
+        let transactions = await PopupAPI.getTransactionsByTokenId(id);
+        
+
+        if (!(this.nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || this.nodes.selected === 'a981e232-a995-4c81-9653-c85e4d05f599')) {
+            transactions.records = [];
+        }
+
         this.setState({ transactions });
         Toast.hide();
+
+
     }
 
     render() {
-        const { index, isTop, transactions, isRequest, currentPage } = this.state;
+        let { transactions } = this.state;
+        const { index, isTop, isRequest, currentPage } = this.state;
         const {
             accounts,
             onCancel,
             prices,
-            chains
+            chains,
         } = this.props;
+
+
         const { formatMessage } = this.props.intl;
         const { address, airdropInfo, type } = accounts.selected;
         const { id = '_', name = 'TRX', decimals = 6, imgUrl, price = 0, amount, balance = 0, frozenBalance = 0 } = accounts.selectedToken;
@@ -85,9 +101,9 @@ class TransactionsController extends React.Component {
                         <div className='amount'>
                             {amount}
                         </div>
-                        {(id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) > 0 : (price * amount * prices.priceList[ prices.selected ]).toFixed(2) > 0) &&
+                        {(id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) > 0 : (price * amount * prices.priceList[prices.selected]).toFixed(2) > 0) &&
                         <div className='worth'>
-                            ≈ {id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2)} {prices.selected}
+                            ≈ {id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) : (price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
                         </div>
                         }
                         {

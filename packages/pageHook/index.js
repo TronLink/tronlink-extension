@@ -4,10 +4,11 @@ import TronWeb from 'tronweb';
 //import SunWeb from 'sunweb';
 
 import Utils from '@tronlink/lib/utils';
-import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE } from '@tronlink/lib/constants'
+import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE } from '@tronlink/lib/constants';
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 import SunWeb from './SunWeb';
+
 // import SunWeb from './SunWeb/js-sdk/src/index';
 
 const logger = new Logger('pageHook');
@@ -23,21 +24,23 @@ const pageHook = {
         this._bindEventChannel();
         this._bindEvents();
 
-        this.request('init').then(({ address, node, name, type, phishingList}) => {
-            if(address)
-                this.setAddress({address,name,type});
+        this.request('init').then(({ address, node, name, type, phishingList }) => {
+            if (address) {
+                this.setAddress({ address, name, type });
+            }
 
-            if(node.fullNode)
+            if (node.fullNode) {
                 this.setNode(node);
+            }
 
             logger.info('TronLink initiated');
             const href = window.location.origin;
-            const c = phishingList.filter(({url})=>{
+            const c = phishingList.filter(({ url }) => {
                 const reg = new RegExp(url);
                 return href.match(reg);
             });
-            if(c.length && !c[0].isVisit){
-                window.location = 'https://www.tronlink.org/phishing.html?href='+href;
+            if (c.length && !c[0].isVisit) {
+                window.location = 'https://www.tronlink.org/phishing.html?href=' + href;
             }
         }).catch(err => {
             logger.error('Failed to initialise TronWeb', err);
@@ -45,8 +48,9 @@ const pageHook = {
     },
 
     _bindTronWeb() {
-        if(window.tronWeb !== undefined)
+        if (window.tronWeb !== undefined) {
             logger.warn('TronWeb is already initiated. TronLink will overwrite the current instance');
+        }
 
         const tronWeb = new TronWeb(
             new ProxiedProvider(),
@@ -77,10 +81,8 @@ const pageHook = {
             SIDE_CHAIN_ID
         );
 
-
-
         tronWeb.extension = {}; //add a extension object for black list
-        tronWeb.extension.setVisited=(href)=>{
+        tronWeb.extension.setVisited = (href) => {
             this.setVisited(href);
         };
         this.proxiedMethods = {
@@ -90,10 +92,10 @@ const pageHook = {
             sign: tronWeb.trx.sign.bind(tronWeb)
         };
 
-        [ 'setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer' ].forEach(method => {
-            tronWeb[ method ] = () => new Error('TronLink has disabled this method');
-            sunWeb.mainchain[ method ] = () => new Error('TronLink has disabled this method');
-            sunWeb.sidechain[ method ] = () => new Error('TronLink has disabled this method');
+        ['setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer'].forEach(method => {
+            tronWeb[method] = () => new Error('TronLink has disabled this method');
+            sunWeb.mainchain[method] = () => new Error('TronLink has disabled this method');
+            sunWeb.sidechain[method] = () => new Error('TronLink has disabled this method');
         });
 
         tronWeb.trx.sign = (...args) => (
@@ -106,7 +108,6 @@ const pageHook = {
         sunWeb.sidechain.trx.sign = (...args) => (
             this.sign(...args)
         );
-
 
         window.sunWeb = sunWeb;
         window.tronWeb = tronWeb;
@@ -127,9 +128,9 @@ const pageHook = {
         ));
     },
 
-    setAddress({address,name,type}) {
+    setAddress({ address, name, type }) {
         // logger.info('TronLink: New address configured');
-        if(!tronWeb.isAddress(address)){
+        if (!tronWeb.isAddress(address)) {
             tronWeb.defaultAddress = {
                 hex: false,
                 base58: false
@@ -140,7 +141,7 @@ const pageHook = {
             this.proxiedMethods.setMainAddress(address);
             this.proxiedMethods.setSideAddress(address);
             tronWeb.defaultAddress.name = name;
-            tronWeb.defaultAddress.type =  type;
+            tronWeb.defaultAddress.type = type;
             sunWeb.mainchain.defaultAddress.name = name;
             sunWeb.mainchain.defaultAddress.type = type;
             sunWeb.sidechain.defaultAddress.name = name;
@@ -151,21 +152,45 @@ const pageHook = {
     },
 
     setNode(node) {
-        // logger.info('TronLink: New node configured');
-        tronWeb.fullNode.configure(node.fullNode);
-        tronWeb.solidityNode.configure(node.solidityNode);
-        tronWeb.eventServer.configure(node.eventServer);
 
-        sunWeb.mainchain.fullNode.configure(NODE.MAIN.fullNode);
-        sunWeb.mainchain.solidityNode.configure(NODE.MAIN.solidityNode);
-        sunWeb.mainchain.eventServer.configure(NODE.MAIN.eventServer);
+        logger.info(node);
 
-        sunWeb.sidechain.fullNode.configure(NODE.SIDE.fullNode);
-        sunWeb.sidechain.solidityNode.configure(NODE.SIDE.solidityNode);
-        sunWeb.sidechain.eventServer.configure(NODE.SIDE.eventServer);
+        tronWeb.fullNode.configure(node.node.fullNode);
+        tronWeb.solidityNode.configure(node.node.solidityNode);
+        tronWeb.eventServer.configure(node.node.eventServer);
+
+        if (node.node.chain === '_' && node.connectNode) {
+            sunWeb.mainchain.fullNode.configure(node.node.fullNode);
+            sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
+            sunWeb.mainchain.eventServer.configure(node.node.eventServer);
+
+            sunWeb.sidechain.fullNode.configure(node.connectNode.fullNode);
+            sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
+            sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
+        }
+
+        if ((node.node.chain === '_' && !node.connectNode) || (node.node.chain !== '_' && !node.connectNode)) {
+            sunWeb.mainchain.fullNode.configure(node.node.fullNode);
+            sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
+            sunWeb.mainchain.eventServer.configure(node.node.eventServer);
+
+            sunWeb.sidechain.fullNode.configure(node.node.fullNode);
+            sunWeb.sidechain.solidityNode.configure(node.node.solidityNode);
+            sunWeb.sidechain.eventServer.configure(node.node.eventServer);
+        }
+
+        if (node.node.chain !== '_' && node.connectNode) {
+            sunWeb.mainchain.fullNode.configure(node.connectNode.fullNode);
+            sunWeb.mainchain.solidityNode.configure(node.connectNode.solidityNode);
+            sunWeb.mainchain.eventServer.configure(node.connectNode.eventServer);
+
+            sunWeb.sidechain.fullNode.configure(node.node.fullNode);
+            sunWeb.sidechain.solidityNode.configure(node.node.solidityNode);
+            sunWeb.sidechain.eventServer.configure(node.node.eventServer);
+        }
     },
 
-    setVisited(href){
+    setVisited(href) {
         this.request('setVisited', {
             href
         }).then(res => res).catch(err => {
@@ -174,27 +199,31 @@ const pageHook = {
     },
 
     sign(transaction, privateKey = false, useTronHeader = true, callback = false) {
-        if(Utils.isFunction(privateKey)) {
+        if (Utils.isFunction(privateKey)) {
             callback = privateKey;
             privateKey = false;
         }
 
-        if(Utils.isFunction(useTronHeader)) {
+        if (Utils.isFunction(useTronHeader)) {
             callback = useTronHeader;
             useTronHeader = true;
         }
 
-        if(!callback)
+        if (!callback) {
             return Utils.injectPromise(this.sign.bind(this), transaction, privateKey, useTronHeader);
+        }
 
-        if(privateKey)
+        if (privateKey) {
             return this.proxiedMethods.sign(transaction, privateKey, useTronHeader, callback);
+        }
 
-        if(!transaction)
+        if (!transaction) {
             return callback('Invalid transaction provided');
+        }
 
-        if(!tronWeb.ready)
+        if (!tronWeb.ready) {
             return callback('User has not unlocked wallet');
+        }
         this.request('sign', {
             transaction,
             useTronHeader,
@@ -202,7 +231,7 @@ const pageHook = {
                 typeof transaction === 'string' ?
                     transaction :
                     transaction.__payload__ ||
-                    transaction.raw_data.contract[ 0 ].parameter.value
+                    transaction.raw_data.contract[0].parameter.value
             )
         }).then(transaction => (
             callback(null, transaction)
