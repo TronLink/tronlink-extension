@@ -87,6 +87,8 @@ const NodeService = {
             ...nodeList,
         };
 
+
+
         this._nodes = Object.entries(this._nodes).map(([nodeId, node]) => {
             if (!node.hasOwnProperty('chain')) {
                 node.chain = '_';
@@ -96,6 +98,9 @@ const NodeService = {
             accumulator[currentValue[0]] = currentValue[1];
             return accumulator;
         }, {});
+
+        console.log('mmmmmmmmmmm');
+        console.log(this._nodes);
 
         if (selectedChain) {
             this._selectedChain = selectedChain;
@@ -117,9 +122,6 @@ const NodeService = {
             solidityNode,
             eventServer
         } = this.getCurrentNode();
-
-        console.log("-----------");
-        console.log(this.getCurrentNode());
 
         this.sunWeb = new SunWeb(
             //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
