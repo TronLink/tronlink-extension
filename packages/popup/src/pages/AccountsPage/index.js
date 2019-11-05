@@ -251,14 +251,14 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className={'cell'+(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
+                    <div className={'cell'+(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf00000' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
-                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
+                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf00000' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
                             window.open('http://www.tronlending.org');
                     }}>
                         <div className='title'>
                             {
-                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf00000' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
                                     <span className='bankBox'>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
@@ -527,7 +527,7 @@ class AccountsPage extends React.Component {
                 <Header showChainList={showChainList} developmentMode={setting.developmentMode} chains={chains} handleSelectChain={this.handleSelectChain.bind(this)} handleShowChainList={this.handleShowChainList.bind(this)} />
                 <div className='space-controller'>
                     {
-                        nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
+                        nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf00000' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
                             <div className='advertisingWrap'>
                                 <div className='closed' onClick={async () => {
                                     const advertising = setting.advertising ? setting.advertising : {};

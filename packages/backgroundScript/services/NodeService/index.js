@@ -29,16 +29,16 @@ const NodeService = {
              chain:'_',
              connect: SIDE_CHAIN_ID
          }, */
-        'f0b1e38e-7bee-485e-9d3f-69410bf30681': {
+        'f0b1e38e-7bee-485e-9d3f-69410bf00000': {
             name: 'Mainnet',
             fullNode: 'https://api.trongrid.io',
             solidityNode: 'https://api.trongrid.io',
             eventServer: 'https://api.trongrid.io',
             default: true, // false
             chain: '_',
-            connect: 'a981e232-a995-4c81-9653-c85e4d05f599'
+            connect: 'a981e232-a995-4c81-9653-c85e4d022222'
         },
-        '6739be94-ee43-46af-9a62-690cf0947269': {
+        '6739be94-ee43-46af-9a62-690cf0911111': {
             name: 'Shasta Testnet',
             fullNode: 'https://api.shasta.trongrid.io',
             solidityNode: 'https://api.shasta.trongrid.io',
@@ -55,14 +55,14 @@ const NodeService = {
             chain: '_',
             connect: 'a981e232-a995-4c81-9653-111111111111'
         },
-        'a981e232-a995-4c81-9653-c85e4d05f599': {
+        'a981e232-a995-4c81-9653-c85e4d022222': {
             name: 'DappChain',
             fullNode: 'https://sun.tronex.io',
             solidityNode: 'https://sun.tronex.io',
             eventServer: 'https://sun.tronex.io',
             default: true,
             chain: SIDE_CHAIN_ID,
-            connect: 'f0b1e38e-7bee-485e-9d3f-69410bf30681'
+            connect: 'f0b1e38e-7bee-485e-9d3f-69410bf00000'
         },
         'a981e232-a995-4c81-9653-111111111111': {
             name: 'DappChain Testnet',
@@ -76,7 +76,7 @@ const NodeService = {
 
     },
     _selectedChain: '_',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf30681',
+    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf00000',
     _read() {
         logger.info('Reading nodes and chains from storage');
 
@@ -126,6 +126,9 @@ const NodeService = {
             solidityNode,
             eventServer
         } = this.getCurrentNode();
+
+        console.log("-----------");
+        console.log(this.getCurrentNode());
 
         this.sunWeb = new SunWeb(
             //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
