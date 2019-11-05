@@ -81,11 +81,6 @@ const NodeService = {
             selectedNode = false
         } = StorageService.nodes;
 
-        this._nodes = {
-            ...this._nodes
-        };
-
-
         this._nodes = Object.entries(this._nodes).map(([nodeId, node]) => {
             if (!node.hasOwnProperty('chain')) {
                 node.chain = '_';
@@ -95,7 +90,7 @@ const NodeService = {
             accumulator[currentValue[0]] = currentValue[1];
             return accumulator;
         }, {});
-        
+
 
         if (selectedChain) {
             this._selectedChain = selectedChain;
