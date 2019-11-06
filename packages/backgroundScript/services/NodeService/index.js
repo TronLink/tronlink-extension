@@ -86,7 +86,6 @@ const NodeService = {
             ...this._nodes,
             ...nodeList,
         };
-        
 
         let temp = {};
 
@@ -124,7 +123,7 @@ const NodeService = {
     },
 
     init() {
-        this._read();
+       // this._read();
         this._updateTronWeb();
     },
 
