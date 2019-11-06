@@ -105,11 +105,19 @@ const NodeService = {
                 temp[id] = this._nodes[id];
             }
 
+            let flag = false;
+
             Object.keys(temp).forEach((_id) => {
-                if (temp[_id].fullNode !== this._nodes[id].fullNode) {
-                    temp[id] = this._nodes[id];
+
+                if (temp[_id].fullNode === this._nodes[id].fullNode) {
+                    flag = true;
                 }
+
             });
+
+            if (!flag) {
+                temp[id] = this._nodes[id];
+            }
 
         });
 
