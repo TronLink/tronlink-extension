@@ -86,16 +86,7 @@ const NodeService = {
             ...this._nodes,
             ...nodeList,
         };
-
-        this._nodes = Object.entries(this._nodes).map(([nodeId, node]) => {
-            if (!node.hasOwnProperty('chain')) {
-                node.chain = '_';
-            }
-            return [nodeId, node];
-        }).reduce((accumulator, currentValue) => {
-            accumulator[currentValue[0]] = currentValue[1];
-            return accumulator;
-        }, {});
+        
 
         let temp = {};
 
