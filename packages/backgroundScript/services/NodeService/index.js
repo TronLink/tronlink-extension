@@ -97,6 +97,24 @@ const NodeService = {
             return accumulator;
         }, {});
 
+        let temp = {};
+
+        Object.keys(this._nodes).forEach((id) => {
+
+            if (Object.keys(temp).length === 0) {
+                temp[id] = this._nodes[id];
+            }
+
+            Object.keys(temp).forEach((_id) => {
+                if (temp[_id].fullNode !== this._nodes[id].fullNode) {
+                    temp[id] = this._nodes[id];
+                }
+            });
+
+        });
+
+        this._nodes = temp;
+
         if (selectedChain) {
             this._selectedChain = selectedChain;
         }
