@@ -34,7 +34,8 @@ const pageHook = {
             }
 
             logger.info('TronLink initiated');
-            if (phishingList) {
+
+            if(phishingList) {
                 const href = window.location.origin;
                 const c = phishingList.filter(({ url }) => {
                     const reg = new RegExp(url);
@@ -173,7 +174,6 @@ const pageHook = {
         }
 
         if ((node.node.chain === '_' && !node.connectNode) || (node.node.chain !== '_' && !node.connectNode)) {
-
             sunWeb.mainchain.fullNode.configure(node.node.fullNode);
             sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
             sunWeb.mainchain.eventServer.configure(node.node.eventServer);
@@ -182,9 +182,9 @@ const pageHook = {
                 sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
                 sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
             } else {
-                sunWeb.sidechain.fullNode.configure(NODE.SIDE);
-                sunWeb.sidechain.solidityNode.configure(NODE.SIDE);
-                sunWeb.sidechain.eventServer.configure(NODE.SIDE);
+                sunWeb.sidechain.fullNode.configure(NODE.SIDE.fullNode);
+                sunWeb.sidechain.solidityNode.configure(NODE.SIDE.solidityNode);
+                sunWeb.sidechain.eventServer.configure(NODE.SIDE.eventServer);
             }
         }
 
