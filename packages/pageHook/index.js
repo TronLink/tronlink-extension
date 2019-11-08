@@ -30,17 +30,19 @@ const pageHook = {
             }
 
             if (node.fullNode) {
-                this.setNode({node:node});
+                this.setNode({ node: node });
             }
 
             logger.info('TronLink initiated');
-            const href = window.location.origin;
-            const c = phishingList.filter(({ url }) => {
-                const reg = new RegExp(url);
-                return href.match(reg);
-            });
-            if (c.length && !c[0].isVisit) {
-                window.location = 'https://www.tronlink.org/phishing.html?href=' + href;
+            if (phishingList) {
+                const href = window.location.origin;
+                const c = phishingList.filter(({ url }) => {
+                    const reg = new RegExp(url);
+                    return href.match(reg);
+                });
+                if (c.length && !c[0].isVisit) {
+                    window.location = 'https://www.tronlink.org/phishing.html?href=' + href;
+                }
             }
         }).catch(err => {
             logger.error('Failed to initialise TronWeb', err);
@@ -167,16 +169,23 @@ const pageHook = {
             sunWeb.sidechain.fullNode.configure(node.connectNode.fullNode);
             sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
             sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
+
         }
 
         if ((node.node.chain === '_' && !node.connectNode) || (node.node.chain !== '_' && !node.connectNode)) {
+
             sunWeb.mainchain.fullNode.configure(node.node.fullNode);
             sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
             sunWeb.mainchain.eventServer.configure(node.node.eventServer);
-
-            sunWeb.sidechain.fullNode.configure(node.node.fullNode);
-            sunWeb.sidechain.solidityNode.configure(node.node.solidityNode);
-            sunWeb.sidechain.eventServer.configure(node.node.eventServer);
+            if (node.connectNode) {
+                sunWeb.sidechain.fullNode.configure(node.connectNode.fullNode);
+                sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
+                sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
+            } else {
+                sunWeb.sidechain.fullNode.configure(NODE.SIDE);
+                sunWeb.sidechain.solidityNode.configure(NODE.SIDE);
+                sunWeb.sidechain.eventServer.configure(NODE.SIDE);
+            }
         }
 
         if (node.node.chain !== '_' && node.connectNode) {

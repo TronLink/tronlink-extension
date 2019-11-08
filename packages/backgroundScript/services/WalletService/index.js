@@ -647,7 +647,7 @@ class Wallet extends EventEmitter {
         params[address] = 1;
 
         axios({
-            url: 'https://testpre.tronlink.org/api/wallet/node_info',
+            url: 'https://list.tronlink.org/api/wallet/node_info',
             method: 'post',
             data: [params],
             headers: {
@@ -696,7 +696,7 @@ class Wallet extends EventEmitter {
         params[address] = 2;
 
         axios({
-            url: 'https://testpre.tronlink.org/api/wallet/node_info',
+            url: 'https://list.tronlink.org/api/wallet/node_info',
             method: 'post',
             data: [params],
 

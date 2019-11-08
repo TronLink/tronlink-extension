@@ -312,7 +312,7 @@ const backgroundScript = {
                             });
 
                             axios({
-                                url: 'https://testpre.tronlink.org/api/activity/add',
+                                url: 'https://list.tronlink.org/api/activity/add',
                                 method: 'post',
                                 data: {
                                     "transactionString": JSON.stringify({raw_data:signedTransaction['raw_data'], txID:signedTransaction.txID}),
