@@ -61,7 +61,7 @@ const backgroundScript = {
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
-        ga('create', 'UA-126129673-2', 'auto');
+        ga('create', 'UA-117929022-12', 'auto');
         ga('send', 'pageview');
         ga('set', 'checkProtocolTask', null);
         ga('set', 'appName', 'TronLink');
@@ -196,7 +196,6 @@ const backgroundScript = {
         duplex.on('tabRequest', async ({ hostname, resolve, data: { action, data, uuid } }) => {
             // Abstract this so we can just do resolve(data) or reject(data)
             // and it will map to { success, data, uuid }
-
             switch(action) {
                 case 'init': {
                     const response = {
@@ -246,12 +245,19 @@ const backgroundScript = {
                             transaction,
                             input
                         } = data;
-
+                        
                         const {
                             selectedAccount
                         } = this.walletService;
 
-                        const tronWeb = NodeService.tronWeb;
+                        let tronWeb = NodeService.tronWeb;
+                        let chainType = 0;
+                        console.log(transaction, 'transactionTransaction1')
+                        if (!!transaction && transaction.chainType == 1) {
+                            console.log(transaction, 'transactionTransaction')
+                            chainType = transaction.chainType;
+                            tronWeb = NodeService.sunWeb.sidechain;
+                        }
                         const account = this.walletService.getAccount(selectedAccount);
                         const appWhitelist = this.walletService.appWhitelist.hasOwnProperty(hostname)?this.walletService.appWhitelist[ hostname ]:{};
 
@@ -288,10 +294,10 @@ const backgroundScript = {
                                 uuid
                             });
                         }
-
                         const signedTransaction = await account.sign(
                             mapped.transaction || mapped,
-                            NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
+                            Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
+                            // NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
                         );
 
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
@@ -312,7 +318,7 @@ const backgroundScript = {
                             });
 
                             axios({
-                                url: 'https://testpre.tronlink.org/api/activity/add',
+                                url: 'https://list.tronlink.org/api/activity/add',
                                 method: 'post',
                                 data: {
                                     "transactionString": JSON.stringify({raw_data:signedTransaction['raw_data'], txID:signedTransaction.txID}),

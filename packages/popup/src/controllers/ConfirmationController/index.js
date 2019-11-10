@@ -37,6 +37,7 @@ class ConfirmationController extends React.Component {
             contractType,
             input: { parameter, contract_address, function_selector }
         } = this.props.confirmation;
+        console.log(this.props.confirmation, 111)
         if (contractType === 'TriggerSmartContract') {
             const abi = await PopupAPI.getAbiCode(contract_address);
             const args = Utils.decodeParams(parameter, abi, function_selector);
@@ -401,6 +402,7 @@ class ConfirmationController extends React.Component {
             type,
             input: { parameter, contract_address }
         } = this.props.confirmation;
+        // const popHeader = 'CONFIRMATIONS.HEADER' + 'chantType';
         return (
             <div className='insetContainer confirmationController'>
                 {

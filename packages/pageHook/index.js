@@ -65,9 +65,9 @@ const pageHook = {
         );
 
         const tronWeb2 = new TronWeb(
-            new ProxiedProvider(),
-            new ProxiedProvider(),
-            new ProxiedProvider()
+            new ProxiedProvider(1),
+            new ProxiedProvider(1),
+            new ProxiedProvider(1)
         );
         const sunWeb = new SunWeb(
             tronWeb1,

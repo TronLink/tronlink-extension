@@ -6,13 +6,14 @@ const { HttpProvider } = TronWeb.providers;
 const logger = new Logger('ProxiedProvider');
 
 class ProxiedProvider extends HttpProvider {
-    constructor() {
+    constructor(chainType = 0) {
         super('http://127.0.0.1');
 
         logger.info('Provider initialised');
 
         this.ready = false;
         this.queue = [];
+        this.chainType = chainType;
     }
 
     configure(url) {
@@ -47,6 +48,7 @@ class ProxiedProvider extends HttpProvider {
             logger.info(`Request to ${ endpoint } has been queued`);
 
             return new Promise((resolve, reject) => {
+                payload.chainType = this.chainType;
                 this.queue.push({
                     args: [ endpoint, payload, method ],
                     resolve,
@@ -57,14 +59,14 @@ class ProxiedProvider extends HttpProvider {
 
         return super.request(endpoint, payload, method).then(res => {
             const response = res.transaction || res;
-
+            response.chainType = this.chainType;
             Object.defineProperty(response, '__payload__', {
                 writable: false,
                 enumerable: false,
                 configurable: false,
                 value: payload
             });
-
+            console.log(res, 'resresres')
             return res;
         });
     }
