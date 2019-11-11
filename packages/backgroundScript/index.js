@@ -278,7 +278,7 @@ const backgroundScript = {
                         const {
                             mapped,
                             error
-                        } = await transactionBuilder(tronWeb, contractType, input); // NodeService.getCurrentNode()
+                        } = await transactionBuilder(tronWeb, contractType, transaction); // NodeService.getCurrentNode()
 
                         if(error) {
                             return resolve({
