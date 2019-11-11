@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "TronLink（波宝钱包）",
-    "version": "3.2.1",
+    "version": "3.2.2",
     "version_name": "3.2.1",
     "description": "The first and most popular TRON wallet. Recommended by TRON Foundation.",
     "author": "Kondax <kondaxsolutions@gmail.com>",
