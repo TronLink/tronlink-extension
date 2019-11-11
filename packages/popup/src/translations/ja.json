@@ -149,7 +149,7 @@
   "TRANSACTIONS.TYPE.UnfreezeBalanceContract": "Unfroze TRX",
   "TRANSACTIONS.TYPE.TriggerSmartContract": "Used smart contract",
 
-  "CONFIRMATIONS.HEADER": "ご依頼を確認する",
+  "CONFIRMATIONS.HEADER": "ご依頼を確認する ({chainType})",
   "CONFIRMATIONS.BODY": "ウェブサイト {hostname} お願いいたします {action}",
   "CONFIRMATIONS.RESOURCE.BANDWIDTH": "Bandwidth",
   "CONFIRMATIONS.RESOURCE.ENERGY": "Energy",

@@ -252,9 +252,7 @@ const backgroundScript = {
 
                         let tronWeb = NodeService.tronWeb;
                         let chainType = 0;
-                        console.log(transaction, 'transactionTransaction1')
                         if (!!transaction && transaction.chainType == 1) {
-                            console.log(transaction, 'transactionTransaction')
                             chainType = transaction.chainType;
                             tronWeb = NodeService.sunWeb.sidechain;
                         }
@@ -297,9 +295,7 @@ const backgroundScript = {
                         const signedTransaction = await account.sign(
                             mapped.transaction || mapped,
                             Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
-                            // NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
                         );
-
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
                         if(contractType === 'TriggerSmartContract') {
@@ -374,6 +370,7 @@ const backgroundScript = {
                         }
 
                         this.walletService.queueConfirmation({
+                            chainType,
                             type: CONFIRMATION_TYPE.TRANSACTION,
                             hostname,
                             signedTransaction,

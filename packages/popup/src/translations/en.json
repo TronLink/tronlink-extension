@@ -149,7 +149,7 @@
     "TRANSACTIONS.TYPE.UnfreezeBalanceContract": "Unfroze TRX",
     "TRANSACTIONS.TYPE.TriggerSmartContract": "Used smart contract",
 
-    "CONFIRMATIONS.HEADER": "Confirmation Request",
+    "CONFIRMATIONS.HEADER": "Confirmation Request ({chainType})",
     "CONFIRMATIONS.BODY": "The website {hostname} is requesting your permission to {action}",
     "CONFIRMATIONS.RESOURCE.BANDWIDTH": "Bandwidth",
     "CONFIRMATIONS.RESOURCE.ENERGY": "Energy",

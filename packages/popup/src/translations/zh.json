@@ -149,7 +149,7 @@
     "TRANSACTIONS.TYPE.UnfreezeBalanceContract": "Unfroze TRX",
     "TRANSACTIONS.TYPE.TriggerSmartContract": "Used smart contract",
 
-    "CONFIRMATIONS.HEADER": "确认请求",
+    "CONFIRMATIONS.HEADER": "确认请求 ({chainType})",
     "CONFIRMATIONS.BODY": "网站 {hostname} 请求您 {action}",
     "CONFIRMATIONS.RESOURCE.BANDWIDTH": "带宽",
     "CONFIRMATIONS.RESOURCE.ENERGY": "能量",

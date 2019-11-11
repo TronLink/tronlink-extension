@@ -66,7 +66,6 @@ class ProxiedProvider extends HttpProvider {
                 configurable: false,
                 value: payload
             });
-            console.log(res, 'resresres')
             return res;
         });
     }
