@@ -3,7 +3,7 @@ import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
 import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE, SIDE_CHAIN_ID_TEST } from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
@@ -20,54 +20,54 @@ const NodeService = {
         }
     },
     _nodes: {
-        'f0b1e38e-7bee-485e-9d3f-69410bf00000': {
+        '3672f655-68a1-5c62-8929-d151c90ac21d': {
             name: 'Mainnet',
             fullNode: 'https://api.trongrid.io',
             solidityNode: 'https://api.trongrid.io',
             eventServer: 'https://api.trongrid.io',
             default: true, // false
             chain: '_',
-            connect: '2222e232-a995-4c81-9653-c85e4d022222'
+            connect: '9dd662e3-052c-584d-9a13-df395a0d68f6'
         },
-        '6739be94-ee43-46af-9a62-690cf0911111': {
+        'bb99520f-d86e-5722-92a3-e0bcbe409b3f': {
             name: 'Shasta Testnet',
             fullNode: 'https://api.shasta.trongrid.io',
             solidityNode: 'https://api.shasta.trongrid.io',
             eventServer: 'https://api.shasta.trongrid.io',
             default: false,
-            chain: '_'
+            chain: '_',
         },
-        '6739be94-ee43-46af-9a62-000000000000': {
+        '9670cbd2-5289-57df-82c2-1c80b6bd8511': {
             name: 'DappChain Testnet',
             fullNode: 'https://testhttpapi.tronex.io',
             solidityNode: 'https://testhttpapi.tronex.io',
             eventServer: 'https://testapi.tronex.io',
             default: false,
             chain: '_',
-            connect: 'a981e232-a995-4c81-9653-111111111111'
+            connect: '89895c8f-d355-5533-b9b3-d63f2408af7e'
         },
-        '2222e232-a995-4c81-9653-c85e4d022222': {
+        '9dd662e3-052c-584d-9a13-df395a0d68f6': {
             name: 'DappChain',
             fullNode: 'https://sun.tronex.io',
             solidityNode: 'https://sun.tronex.io',
             eventServer: 'https://sun.tronex.io',
             default: true,
             chain: SIDE_CHAIN_ID,
-            connect: 'f0b1e38e-7bee-485e-9d3f-69410bf00000'
+            connect: '3672f655-68a1-5c62-8929-d151c90ac21d',
         },
-        'a981e232-a995-4c81-9653-111111111111': {
+        '89895c8f-d355-5533-b9b3-d63f2408af7e': {
             name: 'DappChain Testnet',
             fullNode: 'https://suntest.tronex.io',
             solidityNode: 'https://suntest.tronex.io',
             eventServer: 'https://suntest.tronex.io',
             default: false,
             chain: SIDE_CHAIN_ID,
-            connect: '6739be94-ee43-46af-9a62-000000000000'
+            connect: '9670cbd2-5289-57df-82c2-1c80b6bd8511',
         },
 
     },
     _selectedChain: '_',
-    _selectedNode: 'f0b1e38e-7bee-485e-9d3f-69410bf00000',
+    _selectedNode: '3672f655-68a1-5c62-8929-d151c90ac21d',
     _read() {
         logger.info('Reading nodes and chains from storage');
 

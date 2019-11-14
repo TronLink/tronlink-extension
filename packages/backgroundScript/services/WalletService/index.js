@@ -1283,7 +1283,7 @@ class Wallet extends EventEmitter {
 
         const nodes = NodeService.getNodes();
 
-        if (!(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf00000' || nodes.selected === '2222e232-a995-4c81-9653-c85e4d022222')) {
+        if (!(nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' || nodes.selected === '9dd662e3-052c-584d-9a13-df395a0d68f6')) {
             return { records: [], finger };
         }
 
