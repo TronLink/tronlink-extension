@@ -1,7 +1,7 @@
 import EventChannel from '@tronlink/lib/EventChannel';
 import Logger from '@tronlink/lib/logger';
 import TronWeb from 'tronweb';
-//import SunWeb from 'sunweb';
+// import NodeService from '@tronlink/backgroundScript/services/NodeService';
 
 import Utils from '@tronlink/lib/utils';
 import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE, SIDE_CHAIN_ID_TEST } from '@tronlink/lib/constants';
@@ -9,7 +9,6 @@ import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
 import SunWeb from './SunWeb';
 
-// import SunWeb from './SunWeb/js-sdk/src/index';
 
 const logger = new Logger('pageHook');
 
@@ -25,14 +24,12 @@ const pageHook = {
         this._bindTronWeb();
         this._bindEventChannel();
         this._bindEvents();
-
-        this.request('init').then(({ address, node, name, type, phishingList }) => {
+        this.request('init').then(({ address, node, name, type, phishingList, connectNode = false }) => {
             if (address) {
                 this.setAddress({ address, name, type });
             }
-
             if (node.fullNode) {
-                this.setNode({ node: node });
+                this.setNode({ node: node, connectNode: connectNode});
             }
 
             logger.info('TronLink initiated');
@@ -77,10 +74,6 @@ const pageHook = {
         const sunWeb = new SunWeb(
             tronWeb1,
             tronWeb2,
-            //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
-            //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
-            //{fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},
-            //{fullNode:'http://47.252.85.90:8070',solidityNode:'http://47.252.85.90:8071',eventServer:'http://47.252.87.129:8070'},
             CONTRACT_ADDRESS.MAIN,
             CONTRACT_ADDRESS.SIDE,
             SIDE_CHAIN_ID
@@ -167,7 +160,7 @@ const pageHook = {
         if(node.fullNode === 'https://suntest.tronex.io') {
             this.proxiedMethods.setMainGatewayAddress(CONTRACT_ADDRESS.MAIN_TEST);
             this.proxiedMethods.setSideGatewayAddress(CONTRACT_ADDRESS.SIDE_TEST);
-            this.proxiedMethods.setChainId(SIDE_CHAIN_ID);
+            this.proxiedMethods.setChainId(SIDE_CHAIN_ID_TEST);
         } else {
             this.proxiedMethods.setMainGatewayAddress(CONTRACT_ADDRESS.MAIN);
             this.proxiedMethods.setSideGatewayAddress(CONTRACT_ADDRESS.SIDE);
@@ -175,66 +168,68 @@ const pageHook = {
         }
     },
 
-    setNode(node) {
-        tronWeb.fullNode.configure(node.node.fullNode);
-        tronWeb.solidityNode.configure(node.node.solidityNode);
-        tronWeb.eventServer.configure(node.node.eventServer);
+    setTronWebNode(node, type = false) {
+        if (type === 'main') {
+            sunWeb.mainchain.fullNode.configure(node.fullNode);
+            sunWeb.mainchain.solidityNode.configure(node.solidityNode);
+            sunWeb.mainchain.eventServer.configure(node.eventServer);
+            this.setSideGatewayInfo(node);
+        } else if (type === 'side') {
+            sunWeb.sidechain.fullNode.configure(node.fullNode);
+            sunWeb.sidechain.solidityNode.configure(node.solidityNode);
+            sunWeb.sidechain.eventServer.configure(node.eventServer);
+            this.setSideGatewayInfo(node);
+        } else {
+            tronWeb.fullNode.configure(node.fullNode);
+            tronWeb.solidityNode.configure(node.solidityNode);
+            tronWeb.eventServer.configure(node.eventServer);
+        }
+    },
 
-        if (node.node.chain === '_' && node.connectNode) {
+    setNode(node) {
+
+        if (node.node.chain === '_') {
             tronWeb.fullNode.configure(node.node.fullNode);
             tronWeb.solidityNode.configure(node.node.solidityNode);
             tronWeb.eventServer.configure(node.node.eventServer);
-
-            sunWeb.mainchain.fullNode.configure(node.node.fullNode);
-            sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
-            sunWeb.mainchain.eventServer.configure(node.node.eventServer);
-
-            sunWeb.sidechain.fullNode.configure(node.connectNode.fullNode);
-            sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
-            sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
-            
-            this.setSideGatewayInfo(node.connectNode);
-
-        }
-
-        if ((node.node.chain === '_' && !node.connectNode) || (node.node.chain !== '_' && !node.connectNode)) {
-            if (node.node.chain === '_') {
-                tronWeb.fullNode.configure(node.node.fullNode);
-                tronWeb.solidityNode.configure(node.node.solidityNode);
-                tronWeb.eventServer.configure(node.node.eventServer);
-            }
-            sunWeb.mainchain.fullNode.configure(node.node.fullNode);
-            sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
-            sunWeb.mainchain.eventServer.configure(node.node.eventServer);
-
             if (node.connectNode) {
+                sunWeb.mainchain.fullNode.configure(node.node.fullNode);
+                sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
+                sunWeb.mainchain.eventServer.configure(node.node.eventServer);
+
                 sunWeb.sidechain.fullNode.configure(node.connectNode.fullNode);
                 sunWeb.sidechain.solidityNode.configure(node.connectNode.solidityNode);
                 sunWeb.sidechain.eventServer.configure(node.connectNode.eventServer);
+                
                 this.setSideGatewayInfo(node.connectNode);
             } else {
+                sunWeb.mainchain.fullNode.configure(node.node.fullNode);
+                sunWeb.mainchain.solidityNode.configure(node.node.solidityNode);
+                sunWeb.mainchain.eventServer.configure(node.node.eventServer);
+    
                 sunWeb.sidechain.fullNode.configure(NODE.SIDE.fullNode);
                 sunWeb.sidechain.solidityNode.configure(NODE.SIDE.solidityNode);
                 sunWeb.sidechain.eventServer.configure(NODE.SIDE.eventServer);
                 this.setSideGatewayInfo(NODE.SIDE);
             }
+        } else  {
+            if (node.connectNode) {
+                tronWeb.fullNode.configure(node.connectNode.fullNode);
+                tronWeb.solidityNode.configure(node.connectNode.solidityNode);
+                tronWeb.eventServer.configure(node.connectNode.eventServer);
+                
+                sunWeb.mainchain.fullNode.configure(node.connectNode.fullNode);
+                sunWeb.mainchain.solidityNode.configure(node.connectNode.solidityNode);
+                sunWeb.mainchain.eventServer.configure(node.connectNode.eventServer);
+
+                sunWeb.sidechain.fullNode.configure(node.node.fullNode);
+                sunWeb.sidechain.solidityNode.configure(node.node.solidityNode);
+                sunWeb.sidechain.eventServer.configure(node.node.eventServer);
+
+                this.setSideGatewayInfo(node.node);
+            } 
         }
-
-        if (node.node.chain !== '_' && node.connectNode) {
-            tronWeb.fullNode.configure(node.connectNode.fullNode);
-            tronWeb.solidityNode.configure(node.connectNode.solidityNode);
-            tronWeb.eventServer.configure(node.connectNode.eventServer);
-            
-            sunWeb.mainchain.fullNode.configure(node.connectNode.fullNode);
-            sunWeb.mainchain.solidityNode.configure(node.connectNode.solidityNode);
-            sunWeb.mainchain.eventServer.configure(node.connectNode.eventServer);
-
-            sunWeb.sidechain.fullNode.configure(node.node.fullNode);
-            sunWeb.sidechain.solidityNode.configure(node.node.solidityNode);
-            sunWeb.sidechain.eventServer.configure(node.node.eventServer);
-
-            this.setSideGatewayInfo(node.node);
-        }
+       
     },
 
     setVisited(href) {

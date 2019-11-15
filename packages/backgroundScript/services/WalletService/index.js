@@ -783,7 +783,6 @@ class Wallet extends EventEmitter {
         const nodes = NodeService.getNodes();
 
         const connectNode = nodes.nodes[nodes.nodes[nodeID].connect];
-
         if (!connectNode) {
 
             this.emit('setNode', {
@@ -800,7 +799,6 @@ class Wallet extends EventEmitter {
                 node.solidityNode,
                 node.eventServer
             );
-
         } else {
 
             this.emit('setNode', {

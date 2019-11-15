@@ -131,9 +131,9 @@ const NodeService = {
         const {
             fullNode,
             solidityNode,
-            eventServer
+            eventServer,
         } = this.getCurrentNode();
-
+        
         this.sunWeb = new SunWeb(
             //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
             //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
@@ -149,6 +149,20 @@ const NodeService = {
             solidityNode,
             eventServer
         );
+        if (fullNode === 'https://suntest.tronex.io') {
+            this.tronWeb = new TronWeb(
+                'https://testhttpapi.tronex.io',
+                'https://testhttpapi.tronex.io',
+                'https://testapi.tronex.io',
+            );
+        }
+        if (fullNode === 'https://sun.tronex.io') {
+            this.tronWeb = new TronWeb(
+                'https://api.trongrid.io',
+                'https://api.trongrid.io',
+                'https://api.trongrid.io',
+            );
+        }
         if (!skipAddress) {
             this.setAddress();
         }

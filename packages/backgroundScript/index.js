@@ -205,20 +205,24 @@ const backgroundScript = {
                             solidityNode: false,
                             eventServer: false
                         },
+                        connectNode: false,
                         name:false,
                         type:false
                     };
-
                     if(StorageService.ready) {
                         const node = NodeService.getCurrentNode();
                         const { address, name, type } = this.walletService.accounts[this.walletService.selectedAccount];
                         const { phishingList } = this.walletService;
                         response.address = address;
                         response.node = {
-                            fullNode: node.fullNode,
-                            solidityNode: node.solidityNode,
-                            eventServer: node.eventServer
+                            ...node
                         };
+                        if (node.connect) {
+                            const nodes = NodeService.getNodes();
+                            const connectNode = nodes.nodes[node.connect];
+                            response.connectNode = { ...connectNode };
+                        }
+
                         response.name = name;
                         response.type = type;
                         response.phishingList = phishingList;
@@ -254,7 +258,7 @@ const backgroundScript = {
                         let chainType = 0;
                         if (!!transaction && transaction.chainType == 1) {
                             chainType = transaction.chainType;
-                            tronWeb = NodeService.sunWeb.sidechain;
+                            // tronWeb = NodeService.sunWeb.sidechain;
                         }
                         const account = this.walletService.getAccount(selectedAccount);
                         const appWhitelist = this.walletService.appWhitelist.hasOwnProperty(hostname)?this.walletService.appWhitelist[ hostname ]:{};
@@ -283,8 +287,7 @@ const backgroundScript = {
                         const {
                             mapped,
                             error
-                        } = await transactionBuilder(tronWeb, contractType, input); // NodeService.getCurrentNode()
-
+                        } = await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : tronWeb, contractType, input); // NodeService.getCurrentNode()
                         if(error) {
                             return resolve({
                                 success: false,
