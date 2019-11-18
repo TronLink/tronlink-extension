@@ -149,20 +149,7 @@ const NodeService = {
             solidityNode,
             eventServer
         );
-        if (fullNode === 'https://suntest.tronex.io') {
-            this.tronWeb = new TronWeb(
-                'https://testhttpapi.tronex.io',
-                'https://testhttpapi.tronex.io',
-                'https://testapi.tronex.io',
-            );
-        }
-        if (fullNode === 'https://sun.tronex.io') {
-            this.tronWeb = new TronWeb(
-                'https://api.trongrid.io',
-                'https://api.trongrid.io',
-                'https://api.trongrid.io',
-            );
-        }
+
         if (!skipAddress) {
             this.setAddress();
         }

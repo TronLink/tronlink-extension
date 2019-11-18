@@ -779,7 +779,7 @@ class Wallet extends EventEmitter {
 
         const node = NodeService.getCurrentNode();
         NodeService.selectChain(node.chain);
-
+        
         const nodes = NodeService.getNodes();
 
         const connectNode = nodes.nodes[nodes.nodes[nodeID].connect];

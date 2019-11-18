@@ -287,7 +287,7 @@ const backgroundScript = {
                         const {
                             mapped,
                             error
-                        } = await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : tronWeb, contractType, input); // NodeService.getCurrentNode()
+                        } = await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain, contractType, input); // NodeService.getCurrentNode()
                         if(error) {
                             return resolve({
                                 success: false,
