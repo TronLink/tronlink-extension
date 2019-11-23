@@ -779,7 +779,7 @@ class Wallet extends EventEmitter {
 
         const node = NodeService.getCurrentNode();
         NodeService.selectChain(node.chain);
-        
+
         const nodes = NodeService.getNodes();
 
         const connectNode = nodes.nodes[nodes.nodes[nodeID].connect];
@@ -819,12 +819,8 @@ class Wallet extends EventEmitter {
 
             if (node.fullNode === 'https://api.trongrid.io' && connectNode.fullNode === 'https://sun.tronex.io') {
                 NodeService.sunWeb = new SunWeb(
-                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
-                    {
-                        fullNode: connectNode.fullNode,
-                        solidityNode: connectNode.solidityNode,
-                        eventServer: connectNode.eventServer
-                    },
+                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
+                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
                     CONTRACT_ADDRESS.MAIN,
                     CONTRACT_ADDRESS.SIDE,
                     SIDE_CHAIN_ID
@@ -833,16 +829,8 @@ class Wallet extends EventEmitter {
 
             if (connectNode.fullNode === 'https://api.trongrid.io' && node.fullNode === 'https://sun.tronex.io') {
                 NodeService.sunWeb = new SunWeb(
-                    {
-                        fullNode: connectNode.fullNode,
-                        solidityNode: connectNode.solidityNode,
-                        eventServer: connectNode.eventServer
-                    },
-                    {
-                        fullNode: node.fullNode,
-                        solidityNode: node.solidityNode,
-                        eventServer: node.eventServer
-                    },
+                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
+                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
                     CONTRACT_ADDRESS.MAIN,
                     CONTRACT_ADDRESS.SIDE,
                     SIDE_CHAIN_ID
@@ -851,12 +839,8 @@ class Wallet extends EventEmitter {
 
             if (node.fullNode === 'https://testhttpapi.tronex.io' && connectNode.fullNode === 'https://suntest.tronex.io') {
                 NodeService.sunWeb = new SunWeb(
-                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
-                    {
-                        fullNode: connectNode.fullNode,
-                        solidityNode: connectNode.solidityNode,
-                        eventServer: connectNode.eventServer
-                    },
+                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
+                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
                     'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
                     'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
                     '413AF23F37DA0D48234FDD43D89931E98E1144481B'
@@ -865,16 +849,8 @@ class Wallet extends EventEmitter {
 
             if (connectNode.fullNode === 'https://testhttpapi.tronex.io' && node.fullNode === 'https://suntest.tronex.io') {
                 NodeService.sunWeb = new SunWeb(
-                    {
-                        fullNode: connectNode.fullNode,
-                        solidityNode: connectNode.solidityNode,
-                        eventServer: connectNode.eventServer
-                    },
-                    {
-                        fullNode: node.fullNode,
-                        solidityNode: node.solidityNode,
-                        eventServer: node.eventServer
-                    },
+                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
+                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
                     'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
                     'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
                     '413AF23F37DA0D48234FDD43D89931E98E1144481B'
