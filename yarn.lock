@@ -6496,7 +6496,7 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-ethers@^4.0.32, ethers@^4.0.33, ethers@^4.0.7:
+ethers@^4.0.33, ethers@^4.0.7:
   version "4.0.33"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.33.tgz#f7b88d2419d731a39aefc37843a3f293e396f918"
   integrity sha512-lAHkSPzBe0Vj+JrhmkEHLtUEKEheVktIjGDyE9gbzF4zf1vibjYgB57LraDHu4/ItqWVkztgsm8GWqcDMN+6vQ==
@@ -14042,15 +14042,13 @@ stylehacks@^4.0.0:
     postcss "^7.0.0"
     postcss-selector-parser "^3.0.0"
 
-sunweb@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/sunweb/-/sunweb-1.0.7.tgz#9a4d09e0b5848060c60b8e99740076132c91f49c"
-  integrity sha512-2Nr1haGdTjtylgE53y83aGy5Edx8SyUQMB/Fs/LEnTF5bZuMvPNFpljXUiae0xy5j/UMuEb0Q1a6ONKmSsQpCw==
+sunweb@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/sunweb/-/sunweb-1.0.8.tgz#f7adcd9b71e1a1f68020868792219d3c1e1a0054"
+  integrity sha512-4KyrxcnWIvozQ9ZrRdggDVl+pUrPDssI4T2ApVk105DkxKwosPAa5987LmpLV9tXykIg77ZNihy4dX2UGoawsA==
   dependencies:
     "@babel/runtime" "^7.4.5"
     babel-runtime "^6.26.0"
-    ethers "^4.0.32"
-    tronweb "^2.7.1"
 
 supports-color@5.4.0:
   version "5.4.0"
@@ -14433,22 +14431,6 @@ trim-right@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
-
-tronweb@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-2.7.1.tgz#714547728a2e6e87e808da91b7a5b1e178179503"
-  integrity sha512-BSqEFeCX3nM4utzWKzo/nCVbtvZ6MMbFvPKVje1as/ZPqACTH0KxaJnOdsxs2KESuT/uuWKXYcqrUQie4KHN2A==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    axios "^0.19.0"
-    babel-runtime "^6.26.0"
-    bignumber.js "^7.2.1"
-    elliptic "^6.4.1"
-    ethers "^4.0.7"
-    eventemitter3 "^3.1.0"
-    lodash "^4.17.14"
-    semver "^5.6.0"
-    validator "^10.7.1"
 
 tronweb@^2.7.4:
   version "2.7.4"

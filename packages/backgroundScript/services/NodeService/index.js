@@ -27,7 +27,16 @@ const NodeService = {
             eventServer: 'https://api.trongrid.io',
             default: true, // false
             chain: '_',
-            connect: '9dd662e3-052c-584d-9a13-df395a0d68f6'
+            connect: '9dd662e3-052c-584d-9a13-df395a0d68f6',
+            chainType: 0,
+            connectChain: {
+                fullNode: 'https://api.trongrid.io',
+                solidityNode: 'https://api.trongrid.io',
+                eventServer: 'https://api.trongrid.io',
+                mainGateway: CONTRACT_ADDRESS.MAIN,
+                sideGateway: CONTRACT_ADDRESS.SIDE,
+                chainId: SIDE_CHAIN_ID,
+            }
         },
         'bb99520f-d86e-5722-92a3-e0bcbe409b3f': {
             name: 'Shasta Testnet',
@@ -36,6 +45,8 @@ const NodeService = {
             eventServer: 'https://api.shasta.trongrid.io',
             default: false,
             chain: '_',
+            chainType: 0,
+            connectChain: false,
         },
         '9670cbd2-5289-57df-82c2-1c80b6bd8511': {
             name: 'DappChain Testnet',
@@ -44,7 +55,16 @@ const NodeService = {
             eventServer: 'https://testapi.tronex.io',
             default: false,
             chain: '_',
-            connect: '89895c8f-d355-5533-b9b3-d63f2408af7e'
+            connect: '89895c8f-d355-5533-b9b3-d63f2408af7e',
+            chainType: 0,
+            connectChain: {
+                fullNode: 'https://suntest.tronex.io',
+                solidityNode: 'https://suntest.tronex.io',
+                eventServer: 'https://suntest.tronex.io',
+                mainGateway: CONTRACT_ADDRESS.MAIN_TEST,
+                sideGateway: CONTRACT_ADDRESS.SIDE_TEST,
+                chainId: SIDE_CHAIN_ID_TEST,
+            }
         },
         '9dd662e3-052c-584d-9a13-df395a0d68f6': {
             name: 'DappChain',
@@ -54,6 +74,15 @@ const NodeService = {
             default: true,
             chain: SIDE_CHAIN_ID,
             connect: '3672f655-68a1-5c62-8929-d151c90ac21d',
+            chainType: 1,
+            mainGateway: CONTRACT_ADDRESS.MAIN,
+            sideGateway: CONTRACT_ADDRESS.SIDE,
+            sideChainId: SIDE_CHAIN_ID,
+            connectChain: {
+                fullNode: 'https://api.trongrid.io',
+                solidityNode: 'https://api.trongrid.io',
+                eventServer: 'https://api.trongrid.io',
+            }
         },
         '89895c8f-d355-5533-b9b3-d63f2408af7e': {
             name: 'DappChain Testnet',
@@ -63,6 +92,15 @@ const NodeService = {
             default: false,
             chain: SIDE_CHAIN_ID,
             connect: '9670cbd2-5289-57df-82c2-1c80b6bd8511',
+            chainType: 1,
+            mainGateway: CONTRACT_ADDRESS.MAIN_TEST,
+            sideGateway: CONTRACT_ADDRESS.SIDE_TEST,
+            sideChainId: SIDE_CHAIN_ID_TEST,
+            connectChain: {
+                fullNode: 'https://testhttpapi.tronex.io',
+                solidityNode: 'https://testhttpapi.tronex.io',
+                eventServer: 'https://testapi.tronex.io',
+            }
         },
 
     },
@@ -132,18 +170,55 @@ const NodeService = {
             fullNode,
             solidityNode,
             eventServer,
+            connectNode,
+            chainType,
+            connectChain,
+            mainGateway,
+            sideGateway,
+            sideChainId,
         } = this.getCurrentNode();
         
-        this.sunWeb = new SunWeb(
-            //{fullNode:'https://api.trongrid.io',solidityNode:'https://api.trongrid.io',eventServer:'https://api.trongrid.io'},
-            //{fullNode:'https://sun.tronex.io',solidityNode:'https://sun.tronex.io',eventServer:'https://sun.tronex.io'},
-            NODE.MAIN,
-            NODE.SIDE,
-            CONTRACT_ADDRESS.MAIN,
-            CONTRACT_ADDRESS.SIDE,
-            SIDE_CHAIN_ID
-        );
+        // this.sunWeb = new SunWeb(
+        //     NODE.MAIN,
+        //     NODE.SIDE,
+        //     CONTRACT_ADDRESS.MAIN,
+        //     CONTRACT_ADDRESS.SIDE,
+        //     SIDE_CHAIN_ID
+        // );
+        { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+        {
+            fullNode: connectNode.fullNode,
+            solidityNode: connectNode.solidityNode,
+            eventServer: connectNode.eventServer
+        },
+        CONTRACT_ADDRESS.MAIN,
+        CONTRACT_ADDRESS.SIDE,
+        SIDE_CHAIN_ID
 
+        if (Number(chainType) === 0) {
+            if (connectChain) {
+               this.sunWeb = new SunWeb(
+                new TronWeb(
+                    fullNode, 
+                    solidityNode, 
+                    eventServer, 
+               ), new TronWeb(
+                   connectChain.fullNode, 
+                   connectChain.solidityNode, 
+                   connectNode.eventServer, 
+               ), 
+               connectNode.mainGateway, 
+               connectNode.sidechain, 
+               connectNode.chainId);
+            } 
+        } else  {
+            this.sunWeb = new SunWeb(
+                new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer),
+                new TronWeb(fullNode, solidityNode, eventServer),
+                mainGateway, 
+                sideGateway, 
+                sideChainId);
+        }
         this.tronWeb = new TronWeb(
             fullNode,
             solidityNode,
