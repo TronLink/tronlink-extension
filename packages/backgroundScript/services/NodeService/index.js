@@ -177,7 +177,6 @@ const NodeService = {
             sideGateway,
             sideChainId,
         } = this.getCurrentNode();
-
         if (Number(chainType) === 0) {
             if (connectChain) {
                this.sunWeb = new SunWeb(
@@ -188,11 +187,11 @@ const NodeService = {
                ), new TronWeb(
                    connectChain.fullNode,
                    connectChain.solidityNode,
-                   connectNode.eventServer,
+                   connectChain.eventServer,
                ),
-               connectNode.mainGateway,
-               connectNode.sidechain,
-               connectNode.chainId);
+               connectChain.mainGateway,
+               connectChain.sideGateway,
+               connectChain.chainId);
             }
         } else  {
             this.sunWeb = new SunWeb(
@@ -207,7 +206,6 @@ const NodeService = {
             solidityNode,
             eventServer
         );
-
         if (!skipAddress) {
             this.setAddress();
         }
