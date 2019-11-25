@@ -23,8 +23,6 @@ class TransactionsController extends React.Component {
             isRequest: false,
             currentPage: 1
         };
-
-        this.nodes = '';
     }
 
     async componentDidMount() {
@@ -50,6 +48,7 @@ class TransactionsController extends React.Component {
             onCancel,
             prices,
             chains,
+            nodes,
         } = this.props;
 
 
@@ -284,7 +283,7 @@ class TransactionsController extends React.Component {
                             null
                     }
                     {
-                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER && nodes.nodes[nodes.selected].connect ?
                             <button className='transfer' onClick={(e) => {
                                 PopupAPI.changeState(APP_STATE.TRANSFER);
                             }}>
