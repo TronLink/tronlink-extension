@@ -178,18 +178,6 @@ const NodeService = {
             sideChainId,
         } = this.getCurrentNode();
 
-        this.sunWeb = new SunWeb(
-            { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
-            {
-                fullNode: connectNode.fullNode,
-                solidityNode: connectNode.solidityNode,
-                eventServer: connectNode.eventServer
-            },
-            CONTRACT_ADDRESS.MAIN,
-            CONTRACT_ADDRESS.SIDE,
-            SIDE_CHAIN_ID
-        );
-
         if (Number(chainType) === 0) {
             if (connectChain) {
                this.sunWeb = new SunWeb(
