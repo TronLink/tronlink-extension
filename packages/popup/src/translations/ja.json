@@ -149,7 +149,7 @@
   "TRANSACTIONS.TYPE.UnfreezeBalanceContract": "Unfroze TRX",
   "TRANSACTIONS.TYPE.TriggerSmartContract": "Used smart contract",
 
-  "CONFIRMATIONS.HEADER": "ご依頼を確認する",
+  "CONFIRMATIONS.HEADER": "ご依頼を確認する ({chainType})",
   "CONFIRMATIONS.BODY": "ウェブサイト {hostname} お願いいたします {action}",
   "CONFIRMATIONS.RESOURCE.BANDWIDTH": "Bandwidth",
   "CONFIRMATIONS.RESOURCE.ENERGY": "Energy",
@@ -356,7 +356,7 @@
   "IEOS.LAUNCH_BASE":"LaunchBase",
 
   "EXCEPTION.FORMAT_ERROR_MNEMONIC":"正しいニーモニックを入力してください",
-  "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",  
+  "EXCEPTION.FORMAT_ERROR":"フォーマットが正しくありません",
 
   "EXCEPTION.ACCOUNT_EXIST":"アドレスは既に存在します。 再度追加しないでください。",
   "EXCEPTION.ADD_NODE.NAME":"4文字以上が必要です。",
@@ -441,5 +441,7 @@
   "NOTIFICATIONS.MESSAGE":"クリックして、tronscanにジャンプし取引詳細をご覧ください。",
 
   "ALERT.UPDATE_DESCRIPTION.TITLE":"アップデートについての説明",
-  "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。"
+  "ALERT.UPDATE_DESCRIPTION.BODY":"今回のアップデートでTRON公式のSUN NETWORKをサポートして、サイドチェーン機能を添加しました。現在から、資産をメインチェーンとサイドチェーンの間で移動することができ、およびTronLinkを通じて、先にサイドチェーンをサポートするDAppをご利用になります。しかし、現時点にサイドチェーンがledgerをサポートしていません、ご了承ください。",
+
+  "TIP.GET_USDT":"取得方法"
 }

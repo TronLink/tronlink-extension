@@ -14,11 +14,15 @@ import {
     CONTRACT_ADDRESS,
     API_URL
 } from '@tronlink/lib/constants';
+import { PopupAPI } from '../../../lib/api';
+import { NODE, SIDE_CHAIN_ID } from '../../../lib/constants';
+import SunWeb from 'sunweb';
 
 const logger = new Logger('WalletService');
 let basicPrice;
 let smartPrice;
 let usdtPrice;
+
 class Wallet extends EventEmitter {
     constructor() {
         super();
@@ -49,12 +53,13 @@ class Wallet extends EventEmitter {
     }
 
     async _checkStorage() {
-        if(await StorageService.dataExists() || StorageService.needsMigrating)
-            this._setState(APP_STATE.PASSWORD_SET); // initstatus APP_STATE.PASSWORD_SET
+        if (await StorageService.dataExists() || StorageService.needsMigrating) {
+            this._setState(APP_STATE.PASSWORD_SET);
+        } // initstatus APP_STATE.PASSWORD_SET
     }
 
     migrate(password) {
-        if(!StorageService.needsMigrating) {
+        if (!StorageService.needsMigrating) {
             logger.info('No migration required');
             return false;
         }
@@ -67,8 +72,9 @@ class Wallet extends EventEmitter {
             selectedAccount
         } = StorageService.migrate();
 
-        if(error)
+        if (error) {
             return false;
+        }
 
         localStorage.setItem('TronLink_WALLET.bak', localStorage.getItem('TronLink_WALLET'));
         localStorage.removeItem('TronLink_WALLET');
@@ -89,8 +95,9 @@ class Wallet extends EventEmitter {
     }
 
     _setState(appState) {
-        if(this.state === appState)
+        if (this.state === appState) {
             return;
+        }
 
         logger.info(`Setting app state to ${ appState }`);
 
@@ -112,7 +119,7 @@ class Wallet extends EventEmitter {
     _loadAccounts() {
         const accounts = StorageService.getAccounts();
         const selected = StorageService.selectedAccount;
-        Object.entries(accounts).forEach(([ address, account ]) => {
+        Object.entries(accounts).forEach(([address, account]) => {
             const accountObj = new Account(
                 account.type,
                 account.mnemonic || account.privateKey || account.address,
@@ -122,7 +129,7 @@ class Wallet extends EventEmitter {
             accountObj.loadCache();
             accountObj.update([], [], 0);
 
-            this.accounts[ address ] = accountObj;
+            this.accounts[address] = accountObj;
         });
 
         this.selectedAccount = selected;
@@ -130,13 +137,13 @@ class Wallet extends EventEmitter {
 
     async _pollAccounts() {
         clearTimeout(this.timer);
-        if(!this.shouldPoll) {
+        if (!this.shouldPoll) {
             logger.info('Stopped polling');
             return;
         }
 
         const accounts = Object.values(this.accounts);
-        if(accounts.length > 0) {
+        if (accounts.length > 0) {
             // const { data: { data: basicTokenPriceList } } = await axios.get('https://bancor.trx.market/api/exchanges/list?sort=-balance').catch(e => {
             //     logger.error('get trc10 token price fail');
             //     return { data: { data: [] } };
@@ -149,7 +156,7 @@ class Wallet extends EventEmitter {
             //basicPrice = basicTokenPriceList;
             basicPrice = [];
             smartPrice = smartTokenPriceList;
-            usdtPrice = prices.usdtPriceList ? prices.usdtPriceList[ prices.selected ] : 0;
+            usdtPrice = prices.usdtPriceList ? prices.usdtPriceList[prices.selected] : 0;
             for (const account of accounts) {
                 if (account.address === this.selectedAccount) {
                     Promise.all([account.update(basicPrice, smartPrice, usdtPrice)]).then(() => {
@@ -171,8 +178,9 @@ class Wallet extends EventEmitter {
     }
 
     async _updatePrice() {
-        if(!StorageService.ready)
+        if (!StorageService.ready) {
             return;
+        }
 
         const prices = axios('https://min-api.cryptocompare.com/data/price?fsym=TRX&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
         const usdtPrices = axios('https://min-api.cryptocompare.com/data/price?fsym=USDT&tsyms=USD,CNY,GBP,EUR,BTC,ETH');
@@ -180,7 +188,7 @@ class Wallet extends EventEmitter {
             StorageService.setPrices(res[0].data, res[1].data);
             this.emit('setPriceList', [res[0].data, res[1].data]);
         }).catch(e => {
-            logger.error('Failed to update prices',e);
+            logger.error('Failed to update prices', e);
         });
 
     }
@@ -192,7 +200,7 @@ class Wallet extends EventEmitter {
 
     async _updateWindow() {
         return new Promise(resolve => {
-            if(typeof chrome !== 'undefined') {
+            if (typeof chrome !== 'undefined') {
                 return extensionizer.windows.update(this.popup.id, { focused: true }, window => {
                     resolve(!!window);
                 });
@@ -205,13 +213,15 @@ class Wallet extends EventEmitter {
     }
 
     async _openPopup() {
-        if(this.popup && this.popup.closed)
+        if (this.popup && this.popup.closed) {
             this.popup = false;
+        }
 
-        if(this.popup && await this._updateWindow())
+        if (this.popup && await this._updateWindow()) {
             return;
+        }
 
-        if(typeof chrome !== 'undefined') {
+        if (typeof chrome !== 'undefined') {
             return extensionizer.windows.create({
                 url: 'packages/popup/build/index.html',
                 type: 'popup',
@@ -233,11 +243,13 @@ class Wallet extends EventEmitter {
     }
 
     _closePopup() {
-        if(this.confirmations.length)
+        if (this.confirmations.length) {
             return;
+        }
 
-        if(!this.popup)
+        if (!this.popup) {
             return;
+        }
 
         extensionizer.windows.remove(this.popup.id);
         this.popup = false;
@@ -259,16 +271,16 @@ class Wallet extends EventEmitter {
         this.setCache(false);
         let res;
         const accounts = Object.values(this.accounts);
-        for(const account of accounts) {
-            if(account.address === this.selectedAccount) {
+        for (const account of accounts) {
+            if (account.address === this.selectedAccount) {
                 const r = await account.update(basicPrice, smartPrice, usdtPrice).catch(e => false);
-                if(r) {
+                if (r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
                 } else {
                     res = false;
                 }
-            }else{
+            } else {
                 continue;
                 //await account.update(basicPrice,smartPrice);
             }
@@ -303,8 +315,9 @@ class Wallet extends EventEmitter {
             APP_STATE.NODE_MANAGE,
             APP_STATE.TRANSFER
         ];
-        if(!stateAry.includes(appState))
+        if (!stateAry.includes(appState)) {
             return logger.error(`Attempted to change app state to ${ appState }. Only 'restoring' and 'creating' is permitted`);
+        }
 
         this._setState(appState);
     }
@@ -312,28 +325,34 @@ class Wallet extends EventEmitter {
     async resetState() {
         logger.info('Resetting app state');
 
-        if(!await StorageService.dataExists())
+        if (!await StorageService.dataExists()) {
             return this._setState(APP_STATE.UNINITIALISED);
+        }
 
-        if(!StorageService.hasAccounts && !StorageService.ready)
+        if (!StorageService.hasAccounts && !StorageService.ready) {
             return this._setState(APP_STATE.PASSWORD_SET);
+        }
 
-        if(!StorageService.hasAccounts && StorageService.ready)
+        if (!StorageService.hasAccounts && StorageService.ready) {
             return this._setState(APP_STATE.UNLOCKED);
+        }
 
-        if(StorageService.needsMigrating)
+        if (StorageService.needsMigrating) {
             return this._setState(APP_STATE.MIGRATING);
+        }
 
-        if(this.state === APP_STATE.REQUESTING_CONFIRMATION && this.confirmations.length)
+        if (this.state === APP_STATE.REQUESTING_CONFIRMATION && this.confirmations.length) {
             return;
+        }
 
         this._setState(APP_STATE.READY);
     }
 
     // We shouldn't handle requests directly in WalletService.
     setPassword(password) {
-        if(this.state !== APP_STATE.UNINITIALISED)
+        if (this.state !== APP_STATE.UNINITIALISED) {
             return Promise.reject('ERRORS.ALREADY_INITIALISED');
+        }
 
         StorageService.authenticate(password);
         StorageService.save();
@@ -347,34 +366,37 @@ class Wallet extends EventEmitter {
         const node = NodeService.getCurrentNode();
 
         this.emit('setNode', {
-            fullNode: node.fullNode,
-            solidityNode: node.solidityNode,
-            eventServer: node.eventServer
+            node: {
+                fullNode: node.fullNode,
+                solidityNode: node.solidityNode,
+                eventServer: node.eventServer
+            }
         });
     }
 
     async unlockWallet(password) {
-        if(this.state !== APP_STATE.PASSWORD_SET) {
+        if (this.state !== APP_STATE.PASSWORD_SET) {
             logger.error('Attempted to unlock wallet whilst not in PASSWORD_SET state');
             return Promise.reject('ERRORS.NOT_LOCKED');
         }
 
-        if(StorageService.needsMigrating) {
+        if (StorageService.needsMigrating) {
             const success = this.migrate(password);
 
-            if(!success)
+            if (!success) {
                 return Promise.reject('ERRORS.INVALID_PASSWORD');
+            }
 
             return;
         }
 
         const unlockFailed = await StorageService.unlock(password);
-        if(unlockFailed) {
+        if (unlockFailed) {
             logger.error(`Failed to unlock wallet: ${ unlockFailed }`);
             return Promise.reject(unlockFailed);
         }
 
-        if(!StorageService.hasAccounts) {
+        if (!StorageService.hasAccounts) {
             logger.info('Wallet does not have any accounts');
             return this._setState(APP_STATE.UNLOCKED);
         }
@@ -386,23 +408,26 @@ class Wallet extends EventEmitter {
 
         // Bandage fix to change old ANTE to new ANTE
         Object.keys(this.accounts).forEach(address => {
-            const account = this.accounts[ address ];
+            const account = this.accounts[address];
             const tokens = account.tokens;
 
             const oldAddress = 'TBHN6guS6ztVVXbFivajdG3PxFUZ5UXGxY';
             const newAddress = 'TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E';
 
-            if(!tokens.hasOwnProperty(oldAddress))
+            if (!tokens.hasOwnProperty(oldAddress)) {
                 return;
+            }
 
-            tokens[ newAddress ] = tokens[ oldAddress ];
-            delete tokens[ oldAddress ];
+            tokens[newAddress] = tokens[oldAddress];
+            delete tokens[oldAddress];
         });
         const node = NodeService.getCurrentNode();
         this.emit('setNode', {
-            fullNode: node.fullNode,
-            solidityNode: node.solidityNode,
-            eventServer: node.eventServer
+            node: {
+                fullNode: node.fullNode,
+                solidityNode: node.solidityNode,
+                eventServer: node.eventServer
+            }
         });
         this.emit('setAccount', this.selectedAccount);
         const setting = this.getSetting();
@@ -438,8 +463,9 @@ class Wallet extends EventEmitter {
         //     return;
         // }
 
-        if(this.state !== APP_STATE.REQUESTING_CONFIRMATION)
+        if (this.state !== APP_STATE.REQUESTING_CONFIRMATION) {
             this._setState(APP_STATE.REQUESTING_CONFIRMATION);
+        }
 
         logger.info('Added confirmation to queue', confirmation);
 
@@ -458,13 +484,14 @@ class Wallet extends EventEmitter {
         //if(!address)
         //    return Promise.reject('INVALID_CONFIRMATION');
 
-        if(contractType !== 'TriggerSmartContract'){
+        if (contractType !== 'TriggerSmartContract') {
             //return Promise.reject('INVALID_CONFIRMATION');
             //this.contractWhitelist[ hostname ] = {};
-            if(!this.appWhitelist[ hostname ])
-                this.appWhitelist[ hostname ] = {};
+            if (!this.appWhitelist[hostname]) {
+                this.appWhitelist[hostname] = {};
+            }
 
-            this.appWhitelist[ hostname ].duration = duration === -1 ? -1 : Date.now() + duration;
+            this.appWhitelist[hostname].duration = duration === -1 ? -1 : Date.now() + duration;
             logger.info(`Added auto sign on host ${ hostname } with duration ${ duration } to whitelist`);
 
             ga('send', 'event', {
@@ -477,10 +504,11 @@ class Wallet extends EventEmitter {
             });
 
         } else {
-            if(!this.contractWhitelist[ address ])
-                this.contractWhitelist[ address ] = {};
+            if (!this.contractWhitelist[address]) {
+                this.contractWhitelist[address] = {};
+            }
 
-            this.contractWhitelist[ address ][ hostname ] = (
+            this.contractWhitelist[address][hostname] = (
                 duration === -1 ?
                     -1 :
                     Date.now() + duration
@@ -498,18 +526,17 @@ class Wallet extends EventEmitter {
             });
         }
 
-
-
-
         this.acceptConfirmation();
     }
 
     acceptConfirmation(whitelistDuration) {
-        if(!this.confirmations.length)
+        if (!this.confirmations.length) {
             return Promise.reject('NO_CONFIRMATIONS');
+        }
 
-        if(this.isConfirming)
+        if (this.isConfirming) {
             return Promise.reject('ALREADY_CONFIRMING');
+        }
 
         this.isConfirming = true;
 
@@ -519,8 +546,9 @@ class Wallet extends EventEmitter {
             uuid
         } = this.confirmations.pop();
 
-        if(whitelistDuration !== false)
+        if (whitelistDuration !== false) {
             this.whitelistContract(confirmation, whitelistDuration);
+        }
 
         ga('send', 'event', {
             eventCategory: 'Transaction',
@@ -538,7 +566,7 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-        if(this.confirmations.length) {
+        if (this.confirmations.length) {
             this.emit('setConfirmations', this.confirmations);
         }
         this._closePopup();
@@ -546,8 +574,9 @@ class Wallet extends EventEmitter {
     }
 
     rejectConfirmation() {
-        if(this.isConfirming)
+        if (this.isConfirming) {
             return Promise.reject('ALREADY_CONFIRMING');
+        }
 
         this.isConfirming = true;
 
@@ -575,7 +604,7 @@ class Wallet extends EventEmitter {
         });
 
         this.isConfirming = false;
-        if(this.confirmations.length) {
+        if (this.confirmations.length) {
             this.emit('setConfirmations', this.confirmations);
         }
         this._closePopup();
@@ -590,8 +619,10 @@ class Wallet extends EventEmitter {
      */
 
     async addAccount({ mnemonic, name }) {
+        // 埋点
+
         logger.info(`Adding account '${ name }' from popup`);
-        if(Object.keys(this.accounts).length === 0) {
+        if (Object.keys(this.accounts).length === 0) {
             this.setCache();
         }
 
@@ -606,14 +637,27 @@ class Wallet extends EventEmitter {
 
         account.name = name;
 
-        this.accounts[ address ] = account;
+        this.accounts[address] = account;
         StorageService.saveAccount(account);
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
+
+        const params = {};
+        params[address] = 1;
+
+        axios({
+            url: 'https://list.tronlink.org/api/wallet/node_info',
+            method: 'post',
+            data: [params],
+            headers: {
+                'System': 'Chrome',
+                'DeviceID': window.navigator.userAgent,
+            }
+        });
+
         return true;
     }
-
 
     // This and the above func should be merged into one
     /**
@@ -624,6 +668,8 @@ class Wallet extends EventEmitter {
      */
 
     async importAccount({ privateKey, name }) {
+        // 埋点
+
         logger.info(`Importing account '${ name }' from popup`);
 
         const account = new Account(
@@ -636,23 +682,43 @@ class Wallet extends EventEmitter {
         } = account;
 
         account.name = name;
-        if(Object.keys(this.accounts).length === 0) {
+        if (Object.keys(this.accounts).length === 0) {
             this.setCache();
         }
-        this.accounts[ address ] = account;
+        this.accounts[address] = account;
         StorageService.saveAccount(account);
 
         this.emit('setAccounts', this.getAccounts());
         this.selectAccount(address);
+
+        const params = {};
+
+        params[address] = 2;
+
+        axios({
+            url: 'https://list.tronlink.org/api/wallet/node_info',
+            method: 'post',
+            data: [params],
+
+            headers: {
+                'System': 'Chrome',
+                'DeviceID': window.navigator.userAgent,
+            }
+        });
+
         return true;
     }
 
-    async setCache(isResetPhishingList = true ){
+    async setCache(isResetPhishingList = true) {
         const selectedChain = NodeService._selectedChain;
-        const dapps   = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
-        const dapps2  = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
+        const dapps = axios.get('https://dappradar.com/api/xchain/dapps/theRest');
+        const dapps2 = axios.get('https://dappradar.com/api/xchain/dapps/list/0');
         Promise.all([dapps, dapps2]).then(res => {
-            const tronDapps =  res[ 0 ].data.data.list.concat(res[ 1 ].data.data.list).filter(({ protocols: [ type ] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({ icon, href, name }));
+            const tronDapps = res[0].data.data.list.concat(res[1].data.data.list).filter(({ protocols: [type] }) => type === 'tron').map(({ logo: icon, url: href, title: name }) => ({
+                icon,
+                href,
+                name
+            }));
             StorageService.saveAllDapps(tronDapps);
         });
         const trc10tokens = axios.get('https://apilist.tronscan.org/api/token?showAll=1&limit=4000&fields=tokenID,name,precision,abbr,imgUrl,isBlack');
@@ -661,25 +727,39 @@ class Wallet extends EventEmitter {
         Promise.all([trc10tokens, trc20tokens, trc20tokens_s]).then(res => {
             let t = [];
             let t2 = [];
-            res[ 0 ].data.data.concat( res[ 1 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
-                t.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
+            res[0].data.data.concat(res[1].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t.push({
+                    tokenId: tokenID ? tokenID.toString() : contractAddress,
+                    abbr,
+                    name,
+                    imgUrl,
+                    decimals: precision || decimal || 0,
+                    isBlack
+                });
             });
-            res[ 0 ].data.data.concat( res[ 2 ].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
-                t2.push({ tokenId: tokenID ? tokenID.toString() : contractAddress, abbr, name, imgUrl, decimals: precision || decimal || 0, isBlack });
+            res[0].data.data.concat(res[2].data.tokens).forEach(({ abbr, name, imgUrl = false, tokenID = false, contractAddress = false, decimal = false, precision = false, isBlack = false }) => {
+                t2.push({
+                    tokenId: tokenID ? tokenID.toString() : contractAddress,
+                    abbr,
+                    name,
+                    imgUrl,
+                    decimals: precision || decimal || 0,
+                    isBlack
+                });
             });
-            StorageService.saveAllTokens(t,t2);
+            StorageService.saveAllTokens(t, t2);
         });
 
-        if(isResetPhishingList) {
-            axios.get(`${API_URL}/api/wallet/official_token`,{headers:{chain:selectedChain==='_'?'MainChain':'DAppChain'}}).then(res=>{
+        if (isResetPhishingList) {
+            axios.get(`${API_URL}/api/wallet/official_token`, { headers: { chain: selectedChain === '_' ? 'MainChain' : 'DAppChain' } }).then(res => {
                 StorageService.saveVTokenList(res.data.data);
-                this.emit('setVTokenList',res.data.data);
+                this.emit('setVTokenList', res.data.data);
             }).catch(e => {
-                this.emit('setVTokenList',StorageService.vTokenList);
+                this.emit('setVTokenList', StorageService.vTokenList);
             });
 
-            const {data: {data: phishingList}} = await axios.get(`${API_URL}/api/activity/website/blacklist`).catch(e => ({data: {data: []}}));
-            this.phishingList = phishingList.map(v => ({url: v, isVisit: false}));
+            const { data: { data: phishingList } } = await axios.get(`${API_URL}/api/activity/website/blacklist`).catch(e => ({ data: { data: [] } }));
+            this.phishingList = phishingList.map(v => ({ url: v, isVisit: false }));
         }
     }
 
@@ -699,18 +779,115 @@ class Wallet extends EventEmitter {
 
         const node = NodeService.getCurrentNode();
         NodeService.selectChain(node.chain);
-        this.emit('setNode', {
-            fullNode: node.fullNode,
-            solidityNode: node.solidityNode,
-            eventServer: node.eventServer
-        });
+        
+        const nodes = NodeService.getNodes();
+
+        const connectNode = nodes.nodes[nodes.nodes[nodeID].connect];
+        if (!connectNode) {
+
+            this.emit('setNode', {
+                node: {
+                    fullNode: node.fullNode,
+                    solidityNode: node.solidityNode,
+                    eventServer: node.eventServer,
+                    chain: node.chain
+                }
+            });
+
+            NodeService.tronWeb = new TronWeb(
+                node.fullNode,
+                node.solidityNode,
+                node.eventServer
+            );
+        } else {
+
+            this.emit('setNode', {
+                    node: {
+                        fullNode: node.fullNode,
+                        solidityNode: node.solidityNode,
+                        eventServer: node.eventServer,
+                        chain: node.chain
+                    },
+                    connectNode: {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer,
+                        chain: connectNode.chain
+                    }
+                }
+            );
+
+            if (node.fullNode === 'https://api.trongrid.io' && connectNode.fullNode === 'https://sun.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    CONTRACT_ADDRESS.MAIN,
+                    CONTRACT_ADDRESS.SIDE,
+                    SIDE_CHAIN_ID
+                );
+            }
+
+            if (connectNode.fullNode === 'https://api.trongrid.io' && node.fullNode === 'https://sun.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    {
+                        fullNode: node.fullNode,
+                        solidityNode: node.solidityNode,
+                        eventServer: node.eventServer
+                    },
+                    CONTRACT_ADDRESS.MAIN,
+                    CONTRACT_ADDRESS.SIDE,
+                    SIDE_CHAIN_ID
+                );
+            }
+
+            if (node.fullNode === 'https://testhttpapi.tronex.io' && connectNode.fullNode === 'https://suntest.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
+                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
+                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                );
+            }
+
+            if (connectNode.fullNode === 'https://testhttpapi.tronex.io' && node.fullNode === 'https://suntest.tronex.io') {
+                NodeService.sunWeb = new SunWeb(
+                    {
+                        fullNode: connectNode.fullNode,
+                        solidityNode: connectNode.solidityNode,
+                        eventServer: connectNode.eventServer
+                    },
+                    {
+                        fullNode: node.fullNode,
+                        solidityNode: node.solidityNode,
+                        eventServer: node.eventServer
+                    },
+                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
+                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
+                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
+                );
+            }
+        }
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
 
     }
 
     async selectChain(chainId) {
-        if(StorageService.chains.selectedChain !== chainId) {
+        if (StorageService.chains.selectedChain !== chainId) {
             const chains = NodeService.getChains();
             const nodes = NodeService.getNodes();
             const node = Object.entries(nodes.nodes).filter(([nodeId, node]) => node.chain === chainId && node.default)[0];
@@ -722,23 +899,24 @@ class Wallet extends EventEmitter {
     }
 
     addNode(node) {
-        NodeService.addNode(node)
+        NodeService.addNode(node);
         // this.selectNode(
         //
         // );
     }
 
-    deleteNode(nodeId){
+    deleteNode(nodeId) {
         const id = NodeService.deleteNode(nodeId);
-        id  ? this.selectNode(id) : null;
+        id ? this.selectNode(id) : null;
     }
 
     getAccounts(sideChain = false) {
-        const accounts = Object.entries(this.accounts).reduce((accounts, [ address, account ]) => {
-            if(sideChain && account.type === ACCOUNT_TYPE.LEDGER)
+        const accounts = Object.entries(this.accounts).reduce((accounts, [address, account]) => {
+            if (sideChain && account.type === ACCOUNT_TYPE.LEDGER) {
                 return;
+            }
 
-            accounts[ address ] = {
+            accounts[address] = {
                 name: account.name,
                 balance: account.balance + account.frozenBalance,
                 energyUsed: account.energyUsed,
@@ -765,7 +943,13 @@ class Wallet extends EventEmitter {
     }
 
     getSelectedToken() {
-        return JSON.stringify(StorageService.selectedToken) === '{}' ? { id: '_', name: 'TRX', abbr:'trx', amount: 0, decimals: 6 } : StorageService.selectedToken;
+        return JSON.stringify(StorageService.selectedToken) === '{}' ? {
+            id: '_',
+            name: 'TRX',
+            abbr: 'trx',
+            amount: 0,
+            decimals: 6
+        } : StorageService.selectedToken;
     }
 
     setLanguage(language) {
@@ -787,7 +971,7 @@ class Wallet extends EventEmitter {
     }
 
     getAccountDetails(address) {
-        if(!address) {
+        if (!address) {
             return {
                 tokens: {
                     basic: {},
@@ -804,32 +988,33 @@ class Wallet extends EventEmitter {
             };
         }
 
-        return this.accounts[ address ].getDetails();
+        return this.accounts[address].getDetails();
     }
 
     getSelectedAccount() {
-        if(!this.selectedAccount)
+        if (!this.selectedAccount) {
             return false;
+        }
 
         return this.getAccountDetails(this.selectedAccount);
     }
 
     getAccount(address) {
-        return this.accounts[ address ];
+        return this.accounts[address];
     }
 
     deleteAccount() {
-        delete this.accounts[ this.selectedAccount ];
+        delete this.accounts[this.selectedAccount];
         StorageService.deleteAccount(this.selectedAccount);
 
         this.emit('setAccounts', this.getAccounts());
 
-        if(!Object.keys(this.accounts).length) {
+        if (!Object.keys(this.accounts).length) {
             this.selectAccount(false);
             return this._setState(APP_STATE.UNLOCKED);
         }
 
-        this.selectAccount(Object.keys(this.accounts)[ 0 ]);
+        this.selectAccount(Object.keys(this.accounts)[0]);
     }
 
     async addSmartToken(token) {
@@ -837,7 +1022,7 @@ class Wallet extends EventEmitter {
             selectedAccount: address
         } = this;
 
-        await this.accounts[ address ].addSmartToken(token);
+        await this.accounts[address].addSmartToken(token);
         this.emit('setAccount', address);
     }
 
@@ -850,14 +1035,14 @@ class Wallet extends EventEmitter {
     }
 
     async sendTrx({ recipient, amount }) {
-        return await this.accounts[ this.selectedAccount ].sendTrx(
+        return await this.accounts[this.selectedAccount].sendTrx(
             recipient,
             amount
         );
     }
 
     async sendBasicToken({ recipient, amount, token }) {
-        return await this.accounts[ this.selectedAccount ].sendBasicToken(
+        return await this.accounts[this.selectedAccount].sendBasicToken(
             recipient,
             amount,
             token
@@ -865,7 +1050,7 @@ class Wallet extends EventEmitter {
     }
 
     async sendSmartToken({ recipient, amount, token }) {
-        return await this.accounts[ this.selectedAccount ].sendSmartToken(
+        return await this.accounts[this.selectedAccount].sendSmartToken(
             recipient,
             amount,
             token
@@ -875,7 +1060,7 @@ class Wallet extends EventEmitter {
     async rentEnergy({ _freezeAmount, _payAmount, _days, _energyAddress }) {
         const {
             privateKey
-        } = this.accounts[ this.selectedAccount ];
+        } = this.accounts[this.selectedAccount];
         try {
             const bankContractAddress = this.bankContractAddress;
             const contractInstance = await NodeService.tronWeb.contract().at(bankContractAddress);
@@ -887,90 +1072,127 @@ class Wallet extends EventEmitter {
                 privateKey
             );
             return result;
-        } catch(ex) {
+        } catch (ex) {
             logger.error('Failed to rent energy:', ex);
             return Promise.reject(ex);
         }
     }
 
     async bankOrderNotice({ energyAddress, trxHash, requestUrl }) {
-        const { data: isValid } = await axios.post(requestUrl, { receiver_address: energyAddress, trxHash } )
+        const { data: isValid } = await axios.post(requestUrl, { receiver_address: energyAddress, trxHash })
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!isValid)
+            .catch(err => {
+                logger.error(err);
+            });
+        if (!isValid) {
             return logger.warn('Failed to get bank order data');
+        }
         return isValid;
     }
 
     async getBankDefaultData({ requestUrl }) {
         const { data: defaultData } = await axios(requestUrl)
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!defaultData)
+            .catch(err => {
+                logger.error(err);
+            });
+        if (!defaultData) {
             return logger.warn('Failed to get default data');
+        }
         return defaultData;
     }
 
-    async isValidOverTotal ({ receiverAddress, freezeAmount, requestUrl }) {
-        const { data: isValid } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount } })
+    async isValidOverTotal({ receiverAddress, freezeAmount, requestUrl }) {
+        const { data: isValid } = await axios.get(requestUrl, {
+            params: {
+                receiver_address: receiverAddress,
+                freezeAmount
+            }
+        })
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
+            .catch(err => {
+                logger.error(err);
+            });
         let isValidVal = 0;
-        if(isValid) isValidVal = 0;else isValidVal = 1;
+        if (isValid) isValidVal = 0; else isValidVal = 1;
         return isValidVal;
     }
 
-    async calculateRentCost ({ receiverAddress, freezeAmount, days, requestUrl }) {
-        const { data: calculateData } = await axios.get(requestUrl, { params: { receiver_address: receiverAddress, freezeAmount, days } })
+    async calculateRentCost({ receiverAddress, freezeAmount, days, requestUrl }) {
+        const { data: calculateData } = await axios.get(requestUrl, {
+            params: {
+                receiver_address: receiverAddress,
+                freezeAmount,
+                days
+            }
+        })
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!calculateData)
+            .catch(err => {
+                logger.error(err);
+            });
+        if (!calculateData) {
             return logger.warn('Failed to get payMount data');
+        }
         return calculateData;
     }
 
     async isValidOrderAddress({ address, requestUrl }) {
         const { data: isRentData } = await axios.get(requestUrl, { params: { receiver_address: address } })
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!isRentData)
+            .catch(err => {
+                logger.error(err);
+            });
+        if (!isRentData) {
             return logger.warn('Failed to get valid order address data');
+        }
         return isRentData;
     }
 
     async isValidOnlineAddress({ address }) {
         // const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
         const account = await NodeService.tronWeb.trx.getAccountResources(address);
-        if(!account.TotalEnergyLimit)
+        if (!account.TotalEnergyLimit) {
             return logger.warn('Failed to get online address data');
+        }
         return account;
     }
 
     async getBankRecordList({ address, limit, start, type, requestUrl }) {
-        const { data: { data: recordData } } = await axios.get(requestUrl, { params: { receiver_address: address, limit, start, type } })
-        if(!recordData)
+        const { data: { data: recordData } } = await axios.get(requestUrl, {
+            params: {
+                receiver_address: address,
+                limit,
+                start,
+                type
+            }
+        });
+        if (!recordData) {
             return logger.warn('Failed to get bank record data');
+        }
         return recordData;
     }
 
     //setting bank record id
     setSelectedBankRecordId(id) {
-        this.accounts[ this.selectedAccount ].selectedBankRecordId = id;
+        this.accounts[this.selectedAccount].selectedBankRecordId = id;
         this.emit('setAccount', this.selectedAccount);
     }
 
     async getBankRecordDetail({ id, requestUrl }) {
         const { data: bankRecordDetail } = await axios.get(requestUrl, { params: { id } })
             .then(res => res.data)
-            .catch(err => { logger.error(err); });
-        if(!bankRecordDetail)
+            .catch(err => {
+                logger.error(err);
+            });
+        if (!bankRecordDetail) {
             return logger.warn('Failed to get bank record detail data');
+        }
         return bankRecordDetail;
     }
 
     changeDealCurrencyPage(status) { // change deal currency page status
         console.log(`STATUS改成了${status}`);
-        this.accounts[ this.selectedAccount ].dealCurrencyPage = status;
+        this.accounts[this.selectedAccount].dealCurrencyPage = status;
         this.emit('setAccount', this.selectedAccount);
     }
 
@@ -978,7 +1200,7 @@ class Wallet extends EventEmitter {
         const {
             mnemonic,
             privateKey
-        } = this.accounts[ this.selectedAccount ];
+        } = this.accounts[this.selectedAccount];
 
         return {
             mnemonic: mnemonic || false,
@@ -986,11 +1208,12 @@ class Wallet extends EventEmitter {
         };
     }
 
-    async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = "all" ,limit = 30 }) {
+    async getTransactionsByTokenId({ tokenId, fingerprint = '', direction = 'all', limit = 30 }) {
         const selectedChain = NodeService._selectedChain;
         const { fullNode } = NodeService.getCurrentNode();
+
         const address = this.selectedAccount;
-        let params = {limit};
+        let params = { limit };
         let requestUrl = selectedChain === '_' ? 'https://apilist.tronscan.org' : 'https://dappchainapi.tronscan.org';
         // if(selectedChain === '_') {
         //     params.fingerprint = fingerprint;
@@ -1052,57 +1275,81 @@ class Wallet extends EventEmitter {
         //         return {records: lists, finger};
         //     }
         // } else {
-            let newRecord = [];
-            const finger = fingerprint || 0;
-            params.start = limit * finger;
-            if(!tokenId.match(/^T/)) {
-                if(tokenId === '_') {
-                    requestUrl += '/api/simple-transaction';
-                } else {
-                    requestUrl += '/api/simple-transfer';
-                    params.token_id = tokenId;
-                }
-                if(direction === 'all') {
-                    params = {...params, address};
-                } else if(direction === 'to') {
-                    params = { ...params, from: address };
-                } else {
-                    params = { ...params, to: address };
-                }
-                const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({ data: { data: [], total: 0 }}));
+        let newRecord = [];
+        const finger = fingerprint || 0;
+        params.start = limit * finger;
 
-                newRecord = records.filter(({contractType,contractData})=>![2,5,11,12,30,31].includes(contractType) || (contractType === 31 && contractData.hasOwnProperty('call_value')) ).map(({hash, transactionHash = '', timestamp, contractData = {},toAddress,ownerAddress,transferFromAddress = '',transferToAddress= '' ,amount})=>{
-                    return {hash : hash || transactionHash,timestamp,toAddress : toAddress || transferToAddress || ownerAddress,fromAddress:ownerAddress || transferFromAddress,amount:contractData['call_value'] || contractData.amount || amount || 0};
-                });
+        const nodes = NodeService.getNodes();
 
-                return { records: newRecord, finger };
+        if (!(nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' || nodes.selected === '9dd662e3-052c-584d-9a13-df395a0d68f6')) {
+            return { records: [], finger };
+        }
+
+        if (!tokenId.match(/^T/)) {
+            if (tokenId === '_') {
+                requestUrl += '/api/simple-transaction';
             } else {
-                params.address = address;
-                params.contract = tokenId;
-                const { data: { data: transactions } } = await axios.get(`${requestUrl}/api/contract/events`, {
-                    params
-                }).catch(err => {
-                    return { data: { data: [] } };
-                });
-                const transactions2 = transactions.map(({transactionHash,transferFromAddress,transferToAddress,amount,timestamp})=>{
-                    return {fromAddress:transferFromAddress,toAddress:transferToAddress,hash:transactionHash,timestamp,amount};
-                });
-                if(direction === 'all') {
-                    return { records: transactions2, finger};
-                }else if(direction === 'to') {
-                    return { records: transactions2.filter(({ fromAddress }) => fromAddress === address),finger };
-                }else {
-                    return { records: transactions2.filter(({ toAddress })=> toAddress === address),finger };
-                }
+                requestUrl += '/api/simple-transfer';
+                params.token_id = tokenId;
             }
+            if (direction === 'all') {
+                params = { ...params, address };
+            } else if (direction === 'to') {
+                params = { ...params, from: address };
+            } else {
+                params = { ...params, to: address };
+            }
+            const { data: { data: records } } = await axios.get(requestUrl, { params }).catch(err => ({
+                data: {
+                    data: [],
+                    total: 0
+                }
+            }));
+
+            newRecord = records.filter(({ contractType, contractData }) => ![2, 5, 11, 12, 30, 31].includes(contractType) || (contractType === 31 && contractData.hasOwnProperty('call_value'))).map(({ hash, transactionHash = '', timestamp, contractData = {}, toAddress, ownerAddress, transferFromAddress = '', transferToAddress = '', amount }) => {
+                return {
+                    hash: hash || transactionHash,
+                    timestamp,
+                    toAddress: toAddress || transferToAddress || ownerAddress,
+                    fromAddress: ownerAddress || transferFromAddress,
+                    amount: contractData['call_value'] || contractData.amount || amount || 0
+                };
+            });
+
+            return { records: newRecord, finger };
+        } else {
+            params.address = address;
+            params.contract = tokenId;
+            const { data: { data: transactions } } = await axios.get(`${requestUrl}/api/contract/events`, {
+                params
+            }).catch(err => {
+                return { data: { data: [] } };
+            });
+            const transactions2 = transactions.map(({ transactionHash, transferFromAddress, transferToAddress, amount, timestamp }) => {
+                return {
+                    fromAddress: transferFromAddress,
+                    toAddress: transferToAddress,
+                    hash: transactionHash,
+                    timestamp,
+                    amount
+                };
+            });
+            if (direction === 'all') {
+                return { records: transactions2, finger };
+            } else if (direction === 'to') {
+                return { records: transactions2.filter(({ fromAddress }) => fromAddress === address), finger };
+            } else {
+                return { records: transactions2.filter(({ toAddress }) => toAddress === address), finger };
+            }
+        }
 
         //}
     }
 
     async getNews() {
         const apiUrl = API_URL;
-        const res = await axios.get(apiUrl+'/api/activity/announcement/reveal_v2').catch(e=>false);
-        if(res) {
+        const res = await axios.get(apiUrl + '/api/activity/announcement/reveal_v2').catch(e => false);
+        if (res) {
             return res.data.data;
         } else {
             return [];
@@ -1111,8 +1358,8 @@ class Wallet extends EventEmitter {
 
     async getIeos() {
         const apiUrl = API_URL;
-        const res = await axios.get(apiUrl+'/api/wallet/ieo').catch(e=>false);
-        if(res) {
+        const res = await axios.get(apiUrl + '/api/wallet/ieo').catch(e => false);
+        if (res) {
             return res.data.data;
         } else {
             return [];
@@ -1121,8 +1368,8 @@ class Wallet extends EventEmitter {
 
     async addCount(id) {
         const apiUrl = API_URL;
-        const res = await axios.post(apiUrl+'/api/activity/announcement/pv',{id}).catch(e=>false);
-        if(res && res.data.code === 0) {
+        const res = await axios.post(apiUrl + '/api/activity/announcement/pv', { id }).catch(e => false);
+        if (res && res.data.code === 0) {
             return true;
         } else {
             return false;
@@ -1132,9 +1379,9 @@ class Wallet extends EventEmitter {
     async setAirdropInfo(address) {
         const apiUrl = API_URL;
         const hexAddress = TronWeb.address.toHex(address);
-        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction',{ params: { address: hexAddress } }).catch(e=>false);
-        if(res && res.data.code === 0) {
-            this.accounts[ this.selectedAccount ].airdropInfo = res.data.data;
+        const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction', { params: { address: hexAddress } }).catch(e => false);
+        if (res && res.data.code === 0) {
+            this.accounts[this.selectedAccount].airdropInfo = res.data.data;
             this.emit('setAirdropInfo', res.data.data);
         }
     }
@@ -1170,7 +1417,7 @@ class Wallet extends EventEmitter {
     }
 
     updateTokens(tokens) {
-        this.accounts[ this.selectedAccount ].tokens = tokens;
+        this.accounts[this.selectedAccount].tokens = tokens;
         this.emit('setAccount', this.selectedAccount);
     }
 
@@ -1180,101 +1427,116 @@ class Wallet extends EventEmitter {
 
     async setTransactionDetail(hash) {
         const selectedChain = NodeService._selectedChain;
-        const requestUrl = selectedChain === '_'?'https://apilist.tronscan.org':'https://dappchainapi.tronscan.org';
+        const requestUrl = selectedChain === '_' ? 'https://apilist.tronscan.org' : 'https://dappchainapi.tronscan.org';
         //const reauestUrl = 'https://apilist.tronscan.org';
-        const res = await axios.get(`${requestUrl}/api/transaction-info`, { params: { hash } }).catch(e=>false);
-        if(res) {
-            let { confirmed, ownerAddress, toAddress, hash, block,timestamp = 0 ,cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
-            if( contractType === 31 && tokenTransferInfo ) {
+        const res = await axios.get(`${requestUrl}/api/transaction-info`, { params: { hash } }).catch(e => false);
+        if (res) {
+            let { confirmed, ownerAddress, toAddress, hash, block, timestamp = 0, cost, tokenTransferInfo = false, trigger_info, contractType, contractData } = res.data;
+            if (contractType === 31 && tokenTransferInfo) {
                 ownerAddress = tokenTransferInfo.from_address;
                 toAddress = tokenTransferInfo.to_address;
             }
-            this.accounts[ this.selectedAccount ].transactionDetail = { confirmed, timestamp, ownerAddress, toAddress, hash, block, cost, tokenTransferInfo, trigger_info, contractType, contractData };
+            this.accounts[this.selectedAccount].transactionDetail = {
+                confirmed,
+                timestamp,
+                ownerAddress,
+                toAddress,
+                hash,
+                block,
+                cost,
+                tokenTransferInfo,
+                trigger_info,
+                contractType,
+                contractData
+            };
             this.emit('setAccount', this.selectedAccount);
         }
         return res;
     }
 
-    getAuthorizeDapps(){
+    getAuthorizeDapps() {
         return StorageService.hasOwnProperty('authorizeDapps') ? StorageService.authorizeDapps : {};
     }
 
     setAuthorizeDapps(authorizeDapps) {
         StorageService.setAuthorizeDapps(authorizeDapps);
-        this.emit('setAuthorizeDapps',authorizeDapps);
+        this.emit('setAuthorizeDapps', authorizeDapps);
     }
 
-    setLedgerImportAddress(address){
+    setLedgerImportAddress(address) {
         this.ledgerImportAddress = address;
-        this.emit('setLedgerImportAddress',address);
+        this.emit('setLedgerImportAddress', address);
     }
 
-    getLedgerImportAddress(){
-        return this.hasOwnProperty('ledgerImportAddress')?this.ledgerImportAddress:[];
+    getLedgerImportAddress() {
+        return this.hasOwnProperty('ledgerImportAddress') ? this.ledgerImportAddress : [];
     }
 
-    async getAbiCode(contract_address){
+    async getAbiCode(contract_address) {
         const contract = await NodeService.tronWeb.contract().at(contract_address);
         return contract.abi;
     }
 
-    getVTokenList(){
+    getVTokenList() {
         return StorageService.hasOwnProperty('vTokenList') ? StorageService.vTokenList : [];
     }
 
-    setPushMessage({iconUrl='packages/popup/static/icon.png', title, message, hash}){
-        const timer = setInterval(async()=>{
+    setPushMessage({ iconUrl = 'packages/popup/static/icon.png', title, message, hash }) {
+        const timer = setInterval(async () => {
             this.times++;
-            if(this.times === 16){
+            if (this.times === 16) {
                 clearInterval(timer);
                 this.times = 0;
                 return;
             }
             const transaction = await NodeService.tronWeb.trx.getConfirmedTransaction(hash);
-            if(transaction && transaction.txID === hash){
+            if (transaction && transaction.txID === hash) {
                 clearInterval(timer);
-                extensionizer.notifications.getPermissionLevel((level)=>{
-                    if(level === 'granted'){
+                extensionizer.notifications.getPermissionLevel((level) => {
+                    if (level === 'granted') {
                         extensionizer.notifications.create(
                             hash,
-                            {type: "basic", iconUrl, title, message, isClickable: true},
-                            notifyId=>{}
+                            { type: 'basic', iconUrl, title, message, isClickable: true },
+                            notifyId => {
+                            }
                         );
-                        extensionizer.notifications.onClicked.addListener(notifyId=>{
-                            window.open('https://tronscan.org/#/transaction/'+notifyId)
+                        extensionizer.notifications.onClicked.addListener(notifyId => {
+                            window.open('https://tronscan.org/#/transaction/' + notifyId);
                         });
-                    } else {}
-                })
+                    } else {
+                    }
+                });
             }
-        },10000);
+        }, 10000);
     }
 
-    async depositTrx(amount){
-        return await this.accounts[ this.selectedAccount ].depositTrx(amount);
+    async depositTrx(amount) {
+        return await this.accounts[this.selectedAccount].depositTrx(amount);
     }
 
-    async withdrawTrx(amount){
-        return await this.accounts[ this.selectedAccount ].withdrawTrx(amount);
-
-    }
-
-    async depositTrc10({id,amount}){
-        return await this.accounts[ this.selectedAccount ].depositTrc10(id,amount);
-    }
-
-    async withdrawTrc10({id,amount}){
-        return await this.accounts[ this.selectedAccount ].withdrawTrc10(id,amount);
+    async withdrawTrx(amount) {
+        return await this.accounts[this.selectedAccount].withdrawTrx(amount);
 
     }
 
-    async depositTrc20({contract_address,amount}){
-        return await this.accounts[ this.selectedAccount ].depositTrc20(contract_address,amount);
+    async depositTrc10({ id, amount }) {
+        return await this.accounts[this.selectedAccount].depositTrc10(id, amount);
+    }
+
+    async withdrawTrc10({ id, amount }) {
+        return await this.accounts[this.selectedAccount].withdrawTrc10(id, amount);
 
     }
 
-    async withdrawTrc20({contract_address,amount}){
-        return await this.accounts[ this.selectedAccount ].withdrawTrc20(contract_address,amount);
+    async depositTrc20({ contract_address, amount }) {
+        return await this.accounts[this.selectedAccount].depositTrc20(contract_address, amount);
+
+    }
+
+    async withdrawTrc20({ contract_address, amount }) {
+        return await this.accounts[this.selectedAccount].withdrawTrc20(contract_address, amount);
 
     }
 }
+
 export default Wallet;

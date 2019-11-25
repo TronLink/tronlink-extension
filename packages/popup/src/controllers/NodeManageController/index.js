@@ -180,6 +180,22 @@ class NodeManageController extends React.Component {
         this.setState({showDeleteNodeDialog:false});
     }
 
+    linkNode = (chainId) => {
+
+        if(this.state.selectedChain === chainId){
+            return;
+        }
+        this.setState({selectedChain: chainId});
+        const {nodes} = this.props;
+
+        const connect = nodes.nodes[nodes.selected].connect;
+        if(connect){
+            PopupAPI.selectNode(connect);
+        }
+        app.getNodes();
+
+    }
+
     render() {
         const { showDeleteNodeDialog, showAddNodeDialog, selectedChain } = this.state;
         const { name, fullNode, solidityNode, eventServer, isValid } = this.state.customNode;
@@ -245,7 +261,7 @@ class NodeManageController extends React.Component {
                         {chains.chains[selectedChain].name}
                         <div className="chainWrap">
                             {
-                                Object.entries(chains.chains).map(([chainId,chain])=><div className="item" onClick={()=>this.setState({selectedChain:chainId})}>{chain.name}</div>)
+                                Object.entries(chains.chains).map(([chainId,chain])=><div className="item" onClick={()=>this.linkNode(chainId)}>{chain.name}</div>)
                             }
                         </div>
                     </div>
@@ -269,15 +285,30 @@ class NodeManageController extends React.Component {
                                         <div className='r2'>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.FULL_NODE" />
-                                                <span>{fullNode}</span>
+                                                {
+                                                    fullNode.length<=30&&<span>{fullNode}</span>
+                                                }
+                                                {
+                                                    fullNode.length>30&&<span>{fullNode.substring(0,30)}...</span>
+                                                }
                                             </div>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.SOLIDITY_NODE" />
-                                                <span>{solidityNode}</span>
+                                                {
+                                                    solidityNode.length<=30&&<span>{solidityNode}</span>
+                                                }
+                                                {
+                                                    solidityNode.length>30&&<span>{solidityNode.substring(0,30)}...</span>
+                                                }
                                             </div>
                                             <div className='cell'>
                                                 <FormattedMessage id="SETTINGS.NODES.EVENT_SERVER" />
-                                                <span>{eventServer}</span>
+                                                {
+                                                    eventServer.length<=30&&<span>{eventServer}</span>
+                                                }
+                                                {
+                                                    eventServer.length>30&&<span>{eventServer.substring(0,30)}...</span>
+                                                }
                                             </div>
                                         </div>
                                     </div>

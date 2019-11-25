@@ -26,24 +26,32 @@ class TransactionsController extends React.Component {
     }
 
     async componentDidMount() {
+
         const {
             accounts
         } = this.props;
         const { id = '_' } = accounts.selectedToken;
         Toast.loading('', 0, false, false);
         const transactions = await PopupAPI.getTransactionsByTokenId(id);
+
         this.setState({ transactions });
         Toast.hide();
+
+
     }
 
     render() {
-        const { index, isTop, transactions, isRequest, currentPage } = this.state;
+        let { transactions } = this.state;
+        const { index, isTop, isRequest, currentPage } = this.state;
         const {
             accounts,
             onCancel,
             prices,
-            chains
+            chains,
+            nodes,
         } = this.props;
+
+
         const { formatMessage } = this.props.intl;
         const { address, airdropInfo, type } = accounts.selected;
         const { id = '_', name = 'TRX', decimals = 6, imgUrl, price = 0, amount, balance = 0, frozenBalance = 0 } = accounts.selectedToken;
@@ -85,9 +93,9 @@ class TransactionsController extends React.Component {
                         <div className='amount'>
                             {amount}
                         </div>
-                        {(id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) > 0 : (price * amount * prices.priceList[ prices.selected ]).toFixed(2) > 0) &&
+                        {(id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) > 0 : (price * amount * prices.priceList[prices.selected]).toFixed(2) > 0) &&
                         <div className='worth'>
-                            ≈ {id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2)} {prices.selected}
+                            ≈ {id === '_' || id === CONTRACT_ADDRESS.USDT ? (price * amount).toFixed(2) : (price * amount * prices.priceList[prices.selected]).toFixed(2)} {prices.selected}
                         </div>
                         }
                         {
@@ -275,7 +283,7 @@ class TransactionsController extends React.Component {
                             null
                     }
                     {
-                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER ?
+                        accounts.selectedToken.isMapping && type !== ACCOUNT_TYPE.LEDGER && nodes.nodes[nodes.selected].connect ?
                             <button className='transfer' onClick={(e) => {
                                 PopupAPI.changeState(APP_STATE.TRANSFER);
                             }}>
