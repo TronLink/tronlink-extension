@@ -177,46 +177,41 @@ const NodeService = {
             sideGateway,
             sideChainId,
         } = this.getCurrentNode();
-        
-        // this.sunWeb = new SunWeb(
-        //     NODE.MAIN,
-        //     NODE.SIDE,
-        //     CONTRACT_ADDRESS.MAIN,
-        //     CONTRACT_ADDRESS.SIDE,
-        //     SIDE_CHAIN_ID
-        // );
-        { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
-        {
-            fullNode: connectNode.fullNode,
-            solidityNode: connectNode.solidityNode,
-            eventServer: connectNode.eventServer
-        },
-        CONTRACT_ADDRESS.MAIN,
-        CONTRACT_ADDRESS.SIDE,
-        SIDE_CHAIN_ID
+
+        this.sunWeb = new SunWeb(
+            { fullNode: node.fullNode, solidityNode: node.solidityNode, eventServer: node.eventServer },
+            {
+                fullNode: connectNode.fullNode,
+                solidityNode: connectNode.solidityNode,
+                eventServer: connectNode.eventServer
+            },
+            CONTRACT_ADDRESS.MAIN,
+            CONTRACT_ADDRESS.SIDE,
+            SIDE_CHAIN_ID
+        );
 
         if (Number(chainType) === 0) {
             if (connectChain) {
                this.sunWeb = new SunWeb(
                 new TronWeb(
-                    fullNode, 
-                    solidityNode, 
-                    eventServer, 
+                    fullNode,
+                    solidityNode,
+                    eventServer,
                ), new TronWeb(
-                   connectChain.fullNode, 
-                   connectChain.solidityNode, 
-                   connectNode.eventServer, 
-               ), 
-               connectNode.mainGateway, 
-               connectNode.sidechain, 
+                   connectChain.fullNode,
+                   connectChain.solidityNode,
+                   connectNode.eventServer,
+               ),
+               connectNode.mainGateway,
+               connectNode.sidechain,
                connectNode.chainId);
-            } 
+            }
         } else  {
             this.sunWeb = new SunWeb(
                 new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer),
                 new TronWeb(fullNode, solidityNode, eventServer),
-                mainGateway, 
-                sideGateway, 
+                mainGateway,
+                sideGateway,
                 sideChainId);
         }
         this.tronWeb = new TronWeb(
