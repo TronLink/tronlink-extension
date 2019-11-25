@@ -213,26 +213,18 @@ class Account {
     async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
 
         if (!StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].length) return;
-
         const selectedChain = NodeService._selectedChain;
-        const node = NodeService.getNodes().selected;
-
         const { address } = this;
         logger.info(`Requested update for ${ address }`);
-        let { data: { data: smartTokens } } = await axios.get(`${API_URL}/api/wallet/trc20_info`, {
+        const { data: { data: smartTokens } } = await axios.get(`${API_URL}/api/wallet/trc20_info`, {
             headers: { chain: selectedChain === '_' ? 'MainChain' : 'DAppChain' },
             params: { address }
         }).catch(e => {
             return { data: { data: [] } };
         });
-
-        if (!(node === '3672f655-68a1-5c62-8929-d151c90ac21d' || node === '9dd662e3-052c-584d-9a13-df395a0d68f6')) {
-            smartTokens = [];
-        }
-
         try {
-
-            //if (node === '3672f655-68a1-5c62-8929-d151c90ac21d') {
+            const node = NodeService.getNodes().selected;
+            //if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681') {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
 
             if (!account.address) {
@@ -278,7 +270,7 @@ class Account {
                     precision: trc20Filter[0].sPrecision
                 } : { price: 0, precision: 0 });
                 price = price / Math.pow(10, precision);
-                if (node === '3672f655-68a1-5c62-8929-d151c90ac21d' || node === '9dd662e3-052c-584d-9a13-df395a0d68f6') {
+                if (node === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || node === 'a981e232-a995-4c81-9653-c85e4d05f599') {
                     if (StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].filter(({ tokenId }) => tokenId === key).length === 0) return;
                     const {
                         name = 'TRX',

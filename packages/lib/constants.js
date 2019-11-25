@@ -100,8 +100,8 @@ export const CONTRACT_ADDRESS = {
     USDT:"TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
     MAIN:"TWaPZru6PR5VjgT4sJrrZ481Zgp3iJ8Rfo",
     SIDE:"TGKotco6YoULzbYisTBuP6DWXDjEgJSpYz",
-    MAIN_TEST:"TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU", //testnet mainchain
-    SIDE_TEST:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX", //testnet sidechain
+    //MAIN:"TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU", //testnet mainchain
+    //SIDE:"TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX", //testnet sidechain
 };
 
 export const USDT_ACTIVITY_STAGE = {
@@ -167,7 +167,7 @@ export const TOP_TOKEN = {
 };
 
 export const SIDE_CHAIN_ID = '41E209E4DE650F0150788E8EC5CAFA240A23EB8EB7';
-export const SIDE_CHAIN_ID_TEST = '413AF23F37DA0D48234FDD43D89931E98E1144481B';
+//export const SIDE_CHAIN_ID = '413AF23F37DA0D48234FDD43D89931E98E1144481B';
 
 export const NODE = {
     //MAIN: {fullNode:'http://47.252.84.158:8070',solidityNode:'http://47.252.84.158:8071',eventServer:'http://47.252.81.14:8070'},

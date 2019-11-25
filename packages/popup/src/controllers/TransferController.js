@@ -11,7 +11,6 @@ import { Toast } from 'antd-mobile';
 import { Popover } from 'antd-mobile';
 import Utils  from '@tronlink/lib/utils';
 import Alert from '@tronlink/popup/src/components/Alert';
-import { connect } from 'react-redux';
 const trxImg = require('@tronlink/popup/src/assets/images/new/trx.png');
 class TransferController extends React.Component {
     constructor(props) {
@@ -238,10 +237,9 @@ class TransferController extends React.Component {
             loading: true,
             success: false
         });
-        const { chains, onCancel, nodes } = this.props;
+        const { chains, onCancel } = this.props;
         const { formatMessage } = this.props.intl;
         const { value: amount } = this.state.amount;
-
         const {
             id,
             decimals
@@ -294,7 +292,6 @@ class TransferController extends React.Component {
         const { isOpen, selectedToken, loading, amount,allTokens,help } = this.state;
         const { selected } = this.props.accounts;
         const { chains,onCancel } = this.props;
-
         const { formatMessage } = this.props.intl;
         const trx = { tokenId: '_', name: 'TRX', balance: selected.balance, frozenBalance:selected.frozenBalance ,abbr: 'TRX', decimals: 6, imgUrl: trxImg,isMapping:true };
         let tokens = { ...selected.tokens.basic, ...selected.tokens.smart };
@@ -420,9 +417,4 @@ class TransferController extends React.Component {
     }
 }
 
-export default injectIntl(
-    connect(state => ({
-    chains:state.app.chains,
-    nodes: state.app.nodes,
-}))(TransferController));
-
+export default injectIntl(TransferController);
