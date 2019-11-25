@@ -125,23 +125,9 @@ class AccountsPage extends React.Component {
 
     handleSelectChain(chainId){
         PopupAPI.selectChain(chainId);
-        this.linkNode(chainId);
+        app.getNodes();
         this.handleShowChainList();
         PopupAPI.refresh();
-    }
-
-    linkNode = (chainId) => {
-
-        if(this.props.chains.selected === chainId){
-            return;
-        }
-
-        const {nodes} = this.props;
-        const connect = nodes.nodes[nodes.selected].connect;
-        if(connect){
-            PopupAPI.selectNode(connect);
-        }
-        app.getNodes();
     }
 
     renderAccountInfo(accounts, prices, totalMoney) {
@@ -251,14 +237,14 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className={'cell'+(nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
+                    <div className={'cell'+(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
-                        if(nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
+                        if(nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
                             window.open('http://www.tronlending.org');
                     }}>
                         <div className='title'>
                             {
-                                nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
+                                nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
                                     <span className='bankBox'>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
@@ -269,10 +255,10 @@ class AccountsPage extends React.Component {
                                     <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                             }
                             <div className='num'>
-                                {(account.energy - account.energyUsed) < 0 ? 0 : (account.energy - account.energyUsed)}<span>/{account.energy < 0 ? 0 : account.energy}</span>
+                                {account.energy - account.energyUsed}<span>/{account.energy}</span>
                             </div>
                         </div>
-                        <ProcessBar percentage={(account.energy <= 0 || (account.energy - account.energyUsed) < 0) ? 0 : (account.energy - account.energyUsed) / account.energy} />
+                        <ProcessBar percentage={(account.energy - account.energyUsed) / account.energy} />
                     </div>
                 </div>
                 :
@@ -329,7 +315,7 @@ class AccountsPage extends React.Component {
 
     renderTokens(tokens) {
 
-        const { prices, accounts,chains, language } = this.props;
+        const { prices, accounts,chains } = this.props;
         return (
             <div className='tokens'>
                 {
@@ -355,7 +341,7 @@ class AccountsPage extends React.Component {
                             }}
                             >
                                 <img src={token.imgUrl || token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} alt=""/>
-                                <div className="name" style={token.abbr==='USDT'?{marginBottom:'15px'}:{}}>
+                                <div className="name">
                                     <span>{token.abbr || token.symbol || token.name}</span>
                                     {
                                         token.isShow ?
@@ -371,11 +357,6 @@ class AccountsPage extends React.Component {
                                             null
                                     }
                                 </div>
-
-                                {
-                                    token.abbr === 'USDT' &&
-                                        <a className="getUSDT" target="_blank" href={language!=='zh'?"https://support.tronlink.org/hc/en-us/articles/360034148772-How-to-get-TRC20-USDT-":"https://support.tronlink.org/hc/zh-cn/articles/360034519851-%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96TRC20-USDT"} onClick={(event)=>{event.stopPropagation()}}><FormattedMessage id='TIP.GET_USDT'/><img style={{marginLeft:'5px'}} src={require('@tronlink/popup/src/assets/images/new/arrow.svg')} /></a>
-                                }
                                 <div className="worth">
                                     <span>{amount}</span>
                                     {money > 0 && <span>≈ {money} {prices.selected}</span>}
@@ -527,7 +508,7 @@ class AccountsPage extends React.Component {
                 <Header showChainList={showChainList} developmentMode={setting.developmentMode} chains={chains} handleSelectChain={this.handleSelectChain.bind(this)} handleShowChainList={this.handleShowChainList.bind(this)} />
                 <div className='space-controller'>
                     {
-                        nodes.selected === '3672f655-68a1-5c62-8929-d151c90ac21d' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
+                        nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30681' && id !== 0 && (!setting.advertising[ id ] || (setting.advertising[ id ] && setting.advertising[ id ][ mode ])) ?
                             <div className='advertisingWrap'>
                                 <div className='closed' onClick={async () => {
                                     const advertising = setting.advertising ? setting.advertising : {};

@@ -399,25 +399,19 @@ class ConfirmationController extends React.Component {
     render() {
         const {
             type,
-            input: { parameter, contract_address },
-            chainType
+            input: { parameter, contract_address }
         } = this.props.confirmation;
-        const chainTypeText = Number(chainType) === 1 ? 'DAppChain' : 'TRON';
         return (
             <div className='insetContainer confirmationController'>
                 {
                     this.props.type !== ACCOUNT_TYPE.LEDGER
                         ?
                         <div className='greyModal confirmModal'>
-                            <FormattedMessage id='CONFIRMATIONS.HEADER'
-                                values={{
-                                    chainType: chainTypeText
-                                }}
-                                children={text => (
-                                    <div className='pageHeader hasBottomMargin'>
-                                        {text}
-                                    </div>
-                                )}
+                            <FormattedMessage id='CONFIRMATIONS.HEADER' children={text => (
+                                <div className='pageHeader hasBottomMargin'>
+                                    {text}
+                                </div>
+                            )}
                             />
                             {type === CONFIRMATION_TYPE.STRING ?
                                 this.renderMessage() :

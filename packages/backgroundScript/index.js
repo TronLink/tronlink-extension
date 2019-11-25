@@ -12,7 +12,6 @@ import * as Sentry from '@sentry/browser';
 import { CONFIRMATION_TYPE } from '@tronlink/lib/constants';
 import { BackgroundAPI } from '@tronlink/lib/api';
 import { version } from './package.json';
-import axios from 'axios/index';
 
 // Make error reporting user-configurable
 Sentry.init({
@@ -61,7 +60,7 @@ const backgroundScript = {
             'https://www.google-analytics.com/analytics.js'
         ), 'ga');
 
-        ga('create', 'UA-117929022-12', 'auto');
+        ga('create', 'UA-126129673-2', 'auto');
         ga('send', 'pageview');
         ga('set', 'checkProtocolTask', null);
         ga('set', 'appName', 'TronLink');
@@ -196,6 +195,7 @@ const backgroundScript = {
         duplex.on('tabRequest', async ({ hostname, resolve, data: { action, data, uuid } }) => {
             // Abstract this so we can just do resolve(data) or reject(data)
             // and it will map to { success, data, uuid }
+
             switch(action) {
                 case 'init': {
                     const response = {
@@ -205,24 +205,20 @@ const backgroundScript = {
                             solidityNode: false,
                             eventServer: false
                         },
-                        connectNode: false,
                         name:false,
                         type:false
                     };
+
                     if(StorageService.ready) {
                         const node = NodeService.getCurrentNode();
                         const { address, name, type } = this.walletService.accounts[this.walletService.selectedAccount];
                         const { phishingList } = this.walletService;
                         response.address = address;
                         response.node = {
-                            ...node
+                            fullNode: node.fullNode,
+                            solidityNode: node.solidityNode,
+                            eventServer: node.eventServer
                         };
-                        if (node.connect) {
-                            const nodes = NodeService.getNodes();
-                            const connectNode = nodes.nodes[node.connect];
-                            response.connectNode = { ...connectNode };
-                        }
-
                         response.name = name;
                         response.type = type;
                         response.phishingList = phishingList;
@@ -249,17 +245,12 @@ const backgroundScript = {
                             transaction,
                             input
                         } = data;
-                        
+
                         const {
                             selectedAccount
                         } = this.walletService;
 
-                        let tronWeb = NodeService.tronWeb;
-                        let chainType = 0;
-                        if (!!transaction && transaction.chainType == 1) {
-                            chainType = transaction.chainType;
-                            // tronWeb = NodeService.sunWeb.sidechain;
-                        }
+                        const tronWeb = NodeService.tronWeb;
                         const account = this.walletService.getAccount(selectedAccount);
                         const appWhitelist = this.walletService.appWhitelist.hasOwnProperty(hostname)?this.walletService.appWhitelist[ hostname ]:{};
 
@@ -287,7 +278,8 @@ const backgroundScript = {
                         const {
                             mapped,
                             error
-                        } = await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain, contractType, input); // NodeService.getCurrentNode()
+                        } = await transactionBuilder(tronWeb, contractType, input); // NodeService.getCurrentNode()
+
                         if(error) {
                             return resolve({
                                 success: false,
@@ -295,16 +287,16 @@ const backgroundScript = {
                                 uuid
                             });
                         }
+
                         const signedTransaction = await account.sign(
                             mapped.transaction || mapped,
-                            Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
+                            NodeService._selectedChain === '_' ? NodeService.sunWeb.mainchain : NodeService.sunWeb.sidechain
                         );
+
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
+
                         if(contractType === 'TriggerSmartContract') {
-
-                            // code bury
-
                             const value = input.call_value || 0;
 
                             ga('send', 'event', {
@@ -315,23 +307,6 @@ const backgroundScript = {
                                 referrer: hostname,
                                 userId: Utils.hash(input.owner_address)
                             });
-
-                            axios({
-                                url: 'https://list.tronlink.org/api/activity/add',
-                                method: 'post',
-                                data: {
-                                    "transactionString": JSON.stringify({raw_data:signedTransaction['raw_data'], txID:signedTransaction.txID}),
-                                    "dappName": "xxxxxx",
-                                    "dappUrl": hostname,
-                                    "contractAddress": contractAddress
-                                },
-
-                                headers: {
-                                    'System': 'Chrome',
-                                    "DeviceID" : window.navigator.userAgent,
-                                }
-                            });
-
                         }
 
                         // if(contractType !== 'TriggerSmartContract' && appWhitelist) {
@@ -373,7 +348,6 @@ const backgroundScript = {
                         }
 
                         this.walletService.queueConfirmation({
-                            chainType,
                             type: CONFIRMATION_TYPE.TRANSACTION,
                             hostname,
                             signedTransaction,
