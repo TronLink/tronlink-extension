@@ -226,13 +226,13 @@ class Account {
             return { data: { data: [] } };
         });
 
-        if (!(node === '3672f655-68a1-5c62-8929-d151c90ac21d' || node === '9dd662e3-052c-584d-9a13-df395a0d68f6')) {
+        if (!(node === '109c64ad-e59c-46fe-ba87-179587e6c772' || node === '51a36e5a-2480-4b57-989c-539345a13be2')) {
             smartTokens = [];
         }
 
         try {
 
-            //if (node === '3672f655-68a1-5c62-8929-d151c90ac21d') {
+            //if (node === '109c64ad-e59c-46fe-ba87-179587e6c772') {
             const account = await NodeService.tronWeb.trx.getUnconfirmedAccount(address);
 
             if (!account.address) {
@@ -278,7 +278,7 @@ class Account {
                     precision: trc20Filter[0].sPrecision
                 } : { price: 0, precision: 0 });
                 price = price / Math.pow(10, precision);
-                if (node === '3672f655-68a1-5c62-8929-d151c90ac21d' || node === '9dd662e3-052c-584d-9a13-df395a0d68f6') {
+                if (node === '109c64ad-e59c-46fe-ba87-179587e6c772' || node === '51a36e5a-2480-4b57-989c-539345a13be2') {
                     if (StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].filter(({ tokenId }) => tokenId === key).length === 0) return;
                     const {
                         name = 'TRX',
