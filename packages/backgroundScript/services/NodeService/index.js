@@ -30,9 +30,9 @@ const NodeService = {
             connect: '51a36e5a-2480-4b57-989c-539345a13be2',
             chainType: 0,
             connectChain: {
-                fullNode: 'https://api.trongrid.io',
-                solidityNode: 'https://api.trongrid.io',
-                eventServer: 'https://api.trongrid.io',
+                fullNode: 'https://sun.tronex.io',
+                solidityNode: 'https://sun.tronex.io',
+                eventServer: 'https://sun.tronex.io',
                 mainGateway: CONTRACT_ADDRESS.MAIN,
                 sideGateway: CONTRACT_ADDRESS.SIDE,
                 chainId: SIDE_CHAIN_ID,
@@ -170,7 +170,6 @@ const NodeService = {
             fullNode,
             solidityNode,
             eventServer,
-            connectNode,
             chainType,
             connectChain,
             mainGateway,
@@ -178,6 +177,11 @@ const NodeService = {
             sideChainId,
         } = this.getCurrentNode();
         if (Number(chainType) === 0) {
+            this.tronWeb = new TronWeb(
+                fullNode,
+                solidityNode,
+                eventServer
+            );
             if (connectChain) {
                this.sunWeb = new SunWeb(
                 new TronWeb(
@@ -192,8 +196,14 @@ const NodeService = {
                connectChain.mainGateway,
                connectChain.sideGateway,
                connectChain.chainId);
+            } else {
+                this.sunWeb.mainchain = new TronWeb(fullNode,
+                    solidityNode,
+                    eventServer,)
             }
         } else  {
+            this.tronWeb = new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer);
+               
             this.sunWeb = new SunWeb(
                 new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer),
                 new TronWeb(fullNode, solidityNode, eventServer),
@@ -201,11 +211,6 @@ const NodeService = {
                 sideGateway,
                 sideChainId);
         }
-        this.tronWeb = new TronWeb(
-            fullNode,
-            solidityNode,
-            eventServer
-        );
         if (!skipAddress) {
             this.setAddress();
         }
@@ -223,6 +228,8 @@ const NodeService = {
         this.tronWeb.setAddress(
             StorageService.selectedAccount
         );
+        this.sunWeb.mainchain.setAddress(StorageService.selectedAccount);
+        this.sunWeb.sidechain.setAddress(StorageService.selectedAccount);
     },
 
     save() {

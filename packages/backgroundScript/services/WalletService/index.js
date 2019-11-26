@@ -859,6 +859,7 @@ class Wallet extends EventEmitter {
         }
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
+        NodeService.setAddress();
 
     }
 
