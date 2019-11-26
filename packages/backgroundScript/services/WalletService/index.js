@@ -793,12 +793,6 @@ class Wallet extends EventEmitter {
                     chain: node.chain
                 }
             });
-
-            NodeService.tronWeb = new TronWeb(
-                node.fullNode,
-                node.solidityNode,
-                node.eventServer
-            );
         } else {
 
             this.emit('setNode', {
@@ -816,50 +810,9 @@ class Wallet extends EventEmitter {
                     }
                 }
             );
-
-            if (node.fullNode === 'https://api.trongrid.io' && connectNode.fullNode === 'https://sun.tronex.io') {
-                NodeService.sunWeb = new SunWeb(
-                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
-                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
-                    CONTRACT_ADDRESS.MAIN,
-                    CONTRACT_ADDRESS.SIDE,
-                    SIDE_CHAIN_ID
-                );
-            }
-
-            if (connectNode.fullNode === 'https://api.trongrid.io' && node.fullNode === 'https://sun.tronex.io') {
-                NodeService.sunWeb = new SunWeb(
-                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
-                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
-                    CONTRACT_ADDRESS.MAIN,
-                    CONTRACT_ADDRESS.SIDE,
-                    SIDE_CHAIN_ID
-                );
-            }
-
-            if (node.fullNode === 'https://testhttpapi.tronex.io' && connectNode.fullNode === 'https://suntest.tronex.io') {
-                NodeService.sunWeb = new SunWeb(
-                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
-                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
-                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
-                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
-                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
-                );
-            }
-
-            if (connectNode.fullNode === 'https://testhttpapi.tronex.io' && node.fullNode === 'https://suntest.tronex.io') {
-                NodeService.sunWeb = new SunWeb(
-                    new TronWeb(connectNode.fullNode, connectNode.solidityNode, connectNode.eventServer),
-                    new TronWeb(node.fullNode, node.solidityNode, node.eventServer),
-                    'TFLtPoEtVJBMcj6kZPrQrwEdM3W3shxsBU',
-                    'TRDepx5KoQ8oNbFVZ5sogwUxtdYmATDRgX',
-                    '413AF23F37DA0D48234FDD43D89931E98E1144481B'
-                );
-            }
         }
         this.emit('setAccounts', this.getAccounts());
         this.emit('setAccount', this.selectedAccount);
-        NodeService.setAddress();
 
     }
 
