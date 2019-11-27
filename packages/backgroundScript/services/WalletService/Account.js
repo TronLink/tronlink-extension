@@ -604,7 +604,7 @@ class Account {
                 return Promise.resolve(transactionId);
             } else {
                 const sidechain = NodeService.sunWeb.sidechain;
-                const { transaction } = await NodeService.tronWeb.transactionBuilder.triggerSmartContract(TronWeb.address.toHex(token), 'transfer(address,uint256)', { feeLimit: 1000000 }, [{
+                const { transaction } = await NodeService.sunWeb.sidechain.transactionBuilder.triggerSmartContract(TronWeb.address.toHex(token), 'transfer(address,uint256)', { feeLimit: 1000000 }, [{
                     'type': 'address',
                     'value': recipient
                 }, { 'type': 'uint256', 'value': amount }]);
