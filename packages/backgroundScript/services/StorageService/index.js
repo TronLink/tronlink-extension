@@ -395,7 +395,7 @@ const StorageService = {
             name,
             abbr,
             precision: decimals = 0
-        } = await NodeService.tronWeb.trx.getTokenFromID(tokenID);
+        } = NodeService._selectedChain === '_' ? await NodeService.tronWeb.trx.getTokenFromID(tokenID) : await NodeService.sunWeb.sidechain.trx.getTokenFromID(tokenID);
         this.tokenCache[ tokenID ] = {
             name,
             abbr,
