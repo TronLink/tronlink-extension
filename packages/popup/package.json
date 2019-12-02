@@ -36,7 +36,7 @@
     "redux-starter-kit": "^0.2.0",
     "sweetalert2": "^7.29.2",
     "sweetalert2-react-content": "^1.0.1",
-    "tronweb": "^2.7.4",
+    "tronweb": "^2.8.1",
     "babel-core": "6.26.0",
     "babel-eslint": "7.2.3",
     "babel-jest": "20.0.3",
