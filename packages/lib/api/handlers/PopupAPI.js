@@ -155,6 +155,10 @@ export default {
         return this.duplex.send('getSelectedToken');
     },
 
+    getMultiSignRecord() {
+        return this.duplex.send('getMultiSignRecord');
+    },
+
     //get type of language package
 
     getLanguage() {

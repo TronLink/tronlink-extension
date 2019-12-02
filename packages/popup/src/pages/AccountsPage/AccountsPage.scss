@@ -290,6 +290,48 @@
     overflow: hidden;
     display: flex;
     background-color: #F7F8FA;
+    .multi-sign-count {
+        background: #DB705C;
+        border-radius: 50%;
+        font-size: 10px;
+        color: #F7F8FA; 
+        text-align: center;
+        min-width: 10px;
+    }
+    .multi-sign-count-hide {
+        display: none;
+    }
+    .multi-sign-dg {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 80px;
+        color: #FFFFFF;
+        text-align: center;
+        background: rgba(0,0,0,0.70);
+        padding: 20px;
+        .click-view-btn {
+            border: 0 solid #E2BD53;
+            border-radius: 12.5px;
+            height: 21px;
+            line-height: 21px;
+            padding: 0 15px;
+            span {
+                display: inline-block;
+                padding: 0 15px;
+                border: 0 solid #E2BD53;
+                border-radius: 12.5px;
+                color: #E2BD53;
+            }
+        }
+        .multi-sign-close {
+            opacity:0;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            background-image: url('../../assets/images/new/icon-close.svg');
+        }
+    }
     .popUp{
         background: #505160;
         width: 100%;

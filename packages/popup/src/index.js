@@ -40,7 +40,8 @@ import {
     setToken,
     setSelectedBankRecordId,
     changeDealCurrencyPage,
-    setAirdropInfo
+    setAirdropInfo,
+    getMultiSignRecord,
 } from 'reducers/accountsReducer';
 
 // This should be added into it's own class, and just call IconLibrary.init();
@@ -51,6 +52,7 @@ import {
     faCircle,
     faDotCircle
 } from '@fortawesome/free-solid-svg-icons';
+import { setMultiSignRecord } from './reducers/accountsReducer.js';
 
 addLocaleData([...en, ...zh, ...ja]);
 Sentry.init({
@@ -127,7 +129,8 @@ export const app = {
             authorizeDapps,
             ledgerImportAddress,
             vTokenList,
-            chains
+            chains,
+            multiSignRecord,
         ] = await Promise.all([
             PopupAPI.requestState(),
             PopupAPI.getNodes(),
@@ -140,7 +143,8 @@ export const app = {
             PopupAPI.getAuthorizeDapps(),
             PopupAPI.getLedgerImportAddress(),
             PopupAPI.getVTokenList(),
-            PopupAPI.getChains()
+            PopupAPI.getChains(),
+            PopupAPI.getMultiSignRecord(),
         ]);
         const lang = navigator.language || navigator.browserLanguage;
         if (lang.indexOf('zh') > -1) {
@@ -164,6 +168,7 @@ export const app = {
         this.store.dispatch(setLedgerImportAddress(ledgerImportAddress));
         this.store.dispatch(setVTokenList(vTokenList));
         this.store.dispatch(setChains(chains));
+        this.store.dispatch(setMultiSignRecord(multiSignRecord));
         if (selectedAccount) {
             this.store.dispatch(setAccount(selectedAccount));
         }
@@ -215,6 +220,10 @@ export const app = {
         this.duplex.on('setSelectedToken', token => this.store.dispatch(
             setToken(token)
         ));
+
+        // this.duplex.on('setMultiSignRecord', multiSignRecord => this.store.dispatch(
+        //     setMultiSignRecord(multiSignRecord)
+        // ));
 
         this.duplex.on('setLanguage', language => this.store.dispatch(
             setLanguage(language)

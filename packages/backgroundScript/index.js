@@ -90,6 +90,9 @@ const backgroundScript = {
         duplex.on('setSelectedToken', this.walletService.setSelectedToken);
         duplex.on('getSelectedToken', this.walletService.getSelectedToken);
 
+        // duplex.on('setMultiSignRecord', this.walletService.setMultiSignRecord);
+        duplex.on('getMultiSignRecord', this.walletService.getMultiSignRecord);
+
         // WalletService: Confirmation responses
         duplex.on('acceptConfirmation', this.walletService.acceptConfirmation);
         duplex.on('rejectConfirmation', this.walletService.rejectConfirmation);
@@ -112,6 +115,7 @@ const backgroundScript = {
         duplex.on('selectCurrency', this.walletService.selectCurrency);
         duplex.on('deleteAccount', this.walletService.deleteAccount);
         duplex.on('exportAccount', this.walletService.exportAccount);
+        // duplex.on('getMultiSignRecord', this.walletService.getMultiSignRecord);
 
         // WalletService: State management
         duplex.on('changeState', this.walletService.changeState);
@@ -432,7 +436,11 @@ const backgroundScript = {
         this.walletService.on('setAccount', address => BackgroundAPI.setAccount(
             this.walletService.getAccountDetails(address)
         ));
-
+        
+        // this.walletService.on('setMultiSignRecord', address => BackgroundAPI.setMultiSignRecord(
+        //     this.walletService.getMultiSignRecord(address)
+        // ));
+        
         this.walletService.on('setNode', node => (
             BackgroundAPI.setNode(node)
         ));

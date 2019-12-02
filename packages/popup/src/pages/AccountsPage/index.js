@@ -60,6 +60,7 @@ class AccountsPage extends React.Component {
             this.runTime(ieos);
         }
         await PopupAPI.setAirdropInfo(accounts.selected.address);
+        await PopupAPI.getMultiSignRecord(accounts.selected.address);
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
         app.getChains();
@@ -144,10 +145,15 @@ class AccountsPage extends React.Component {
         app.getNodes();
     }
 
-    renderAccountInfo(accounts, prices, totalMoney) {
+    renderAccountInfo(accounts, prices, totalMoney, multiSignCount) {
         const { formatMessage } = this.props.intl;
         const { showMenuList } = this.state;
         const { chains } = this.props;
+        console.log(accounts.selected, 66666);
+        // const multiSignCount = accounts && accounts.selected && accounts.selected.multiSignRecord ? Object.keys(accounts.selected.multiSignRecord).length : 0;
+        console.log(multiSignCount, 88888888);
+        // console.log(Object(accounts.selected.multiSignRecord).keys.filter(item => item.status ));
+        // multiSignCount = Object(accounts.selected.multiSignRecord).keys.filter(item => item.status );
         return (
             <div className='accountInfo'>
                 <div className='row1'>
@@ -182,6 +188,16 @@ class AccountsPage extends React.Component {
                                     <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/sr/votes?from=tronlink`); }} className='item'>
                                         <span className='icon vote'>&nbsp;</span>
                                         <FormattedMessage id='MENU.VOTE' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
+                                accounts.selected.type !== ACCOUNT_TYPE.LEDGER ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=multiSign`); }} className='item'>
+                                        <span className='icon multi-sign'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.MULTI_SIGN' />
+                                        <span className={multiSignCount > 0 ? 'multi-sign-count' : 'multi-sign-count-hide'}>{multiSignCount > 0 ? multiSignCount : ''}</span>
                                     </div>
                                     :
                                     null
@@ -233,6 +249,7 @@ class AccountsPage extends React.Component {
                         <FormattedMessage id='ACCOUNT.SEND' />
                     </div>
                 </div>
+               
             </div>
         );
     }
@@ -512,6 +529,12 @@ class AccountsPage extends React.Component {
         });
         const asset = accounts.accounts[ accounts.selected.address ] && accounts.accounts[ accounts.selected.address ].asset ? accounts.accounts[accounts.selected.address].asset : 0;
         const totalMoney = new BigNumber(asset).multipliedBy(prices.priceList[ prices.selected ]).toFixed(2);
+
+
+        console.log(accounts.selected, 999999, Object.values(accounts.selected.multiSignRecord).filter(item => !item));
+        let multiSignCount = 0;
+        multiSignCount = accounts && accounts.selected && accounts.selected.multiSignRecord ? Object.values(accounts.selected.multiSignRecord).filter(item => !item).length : 0;
+        console.log(multiSignCount, 444444)
         return (
             <div className='accountsPage' onClick={() => {
                 this.setState({
@@ -639,7 +662,7 @@ class AccountsPage extends React.Component {
                         }}>
                         </div>
                     </div>
-                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney) : null }
+                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney, multiSignCount) : null }
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
@@ -663,6 +686,23 @@ class AccountsPage extends React.Component {
                     :
                     null
                 }
+                {/* {
+                    accounts.selected.address && Number(multiSignCount) > 0 
+                        ? 
+                    <div className='multi-sign-dg'>
+                        <div className="multi-sign-close" onClick={
+                            console.log(66666, 1111)
+                        }></div>
+                        <FormattedMessage id='NOTIFICATIONS.MULTI_SIGN_WAITTING' />
+                        <div className='click-view-btn'> 
+                            <FormattedMessage id='NOTIFICATIONS.MULTI_SIGN_BTN_TEXT' onClick={
+                                console.log(12314143)
+                            }/>
+                        </div>
+                     </div>
+                        :
+                    null
+                } */}
             </div>
         );
     }

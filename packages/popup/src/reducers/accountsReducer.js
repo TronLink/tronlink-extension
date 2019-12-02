@@ -9,6 +9,7 @@ export const setAccounts = createAction('setAccounts');
 export const setSelectedBankRecordId = createAction('setSelectedBankRecordId');
 export const changeDealCurrencyPage = createAction('changeDealCurrencyPage');
 export const setAirdropInfo = createAction('setAirdropInfo');
+export const setMultiSignRecord = createAction('setMultiSignRecord');
 
 export const accountsReducer = createReducer({
     selected: {
@@ -28,14 +29,17 @@ export const accountsReducer = createReducer({
         selectedBankRecordId: 0,
         dealCurrencyPage: 0,
         airdropInfo: {},
-        hash: ''
+        hash: '',
+        multiSignRecord: {},
     },
     accounts: { },
     selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 }
 }, {
     [ setAccount ]: (state, { payload: { transactions, ...account } }) => {
+        // console.log(account)
         state.selected = account;
         state.selected.transactions = transactions;
+        // state.multiSignRecord = multiSignRecord;
         // const {
         //     cached,
         //     uncached
@@ -69,5 +73,8 @@ export const accountsReducer = createReducer({
     },
     [ setAirdropInfo ]: (state, { payload } ) => {
         state.selected.airdropInfo = payload;
-    }
+    },
+    [ setMultiSignRecord ]: (state, { payload } ) => {
+        state.selected.multiSignRecord = payload;
+    },
 });

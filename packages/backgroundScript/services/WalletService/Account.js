@@ -45,6 +45,7 @@ class Account {
             basic: {},
             smart: {}
         };
+        this.multiSignRecord = {};
         this.trxAddress = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
         // this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
         //     abbr: 'USDT',
@@ -131,7 +132,8 @@ class Account {
             energy,
             energyUsed,
             lastUpdated,
-            asset
+            asset,
+            multiSignRecord,
         } = StorageService.getAccount(this.address);
 
         // Old TRC10 structure are no longer compatible
@@ -203,6 +205,7 @@ class Account {
          */
         this.tokens.smart = {};
         this.tokens.basic = {};
+        this.multiSignRecord = {};
     }
 
     /** update data of an account
@@ -210,7 +213,7 @@ class Account {
      * smartTokenPriceList  trc20token price list(source from trxmarket)
      * usdtPrice            price of usdt
      **/
-    async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0) {
+    async update(basicTokenPriceList = [], smartTokenPriceList = [], usdtPrice = 0, multiSignRecord = {}) {
 
         if (!StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].length) return;
 
@@ -448,6 +451,8 @@ class Account {
             await Promise.all([
                 this.updateBalance(),
             ]);
+            this.multiSignRecord = await this.getMultiSignRecord(address);
+            console.log(this.multiSignRecord, 77777)
             logger.info(`Account ${address} successfully updated`);
             Object.keys(StorageService.getAccounts()).includes(this.address) && this.save();
         } catch (error) {
@@ -455,6 +460,101 @@ class Account {
         }
         return true;
     }
+
+    async getMultiSignRecord(address) {
+        // address = 'TGjdouJUAuCLbtf8dJtDHuQGfhuPfWcuGo';
+        let { chainType, netType, } = NodeService.getCurrentNode();
+        chainType = Number(chainType === 1) ? 'DAppChain' : 'MainChain';
+        netType = Number(netType === 1) ? 'shasta' : 'main_net';
+    
+        const url = 'https://testlist.tronlink.org/api/wallet/multi/trx_record';
+        let res = await axios.get(url, 
+            { headers: { chain: NodeService._selectedChain === '_' ? 'MainChain' : 'DAppChain' },
+              params: {
+                  start: 0,
+                  limit: 1000,
+                  state: 0,
+                  netType,
+                  address,
+              }
+            });
+        res = {
+            "code": 0,
+            "message": "OK",
+            "data": {
+                "total": 12,
+                "data": [
+                    {
+                        "hash": "66799d70be841151f94d3a5cbd440b0a31cd71ba4cf7de8e24650e90c0799c6d",
+                        "contractType": "TransferContract",
+                        "currentWeight": 2,
+                        "isSign": 0,
+                        "signatureProgress": [
+                            {
+                                "address": "TApUDmCr9X1SzhgBzmQxpfe85QzESPhAFZ",
+                                "weight": 1,
+                                "isSign": 0
+                            },
+                            {
+                                "address": "TCsSECZsCeaUiZkeZ1nc1nqLN15H2xrWRe",
+                                "weight": 1,
+                                "isSign": 0
+                            }
+                        ],
+                        "contractData": {
+                            "amount": 1000000,
+                            "owner_address": "TNh7swaW1BnYbJJoe6M36VaRbwh6vbhuoY",
+                            "to_address": "TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1"
+                        },
+                        "trc20Info": {
+                            "decimals": 6,
+                            "name": "TRONAce",
+                            "symbol": "ACE"
+                        },
+                        "currentTransaction": {
+                            "raw_data": {
+                                "ref_block_bytes": "27aa",
+                                "ref_block_hash": "f119dbf5b5b0e115",
+                                "expiration": 1560239738710,
+                                "contract": [
+                                    {
+                                        "type": "TransferContract",
+                                        "parameter": {
+                                            "type_url": "type.googleapis.com/protocol.TransferContract",
+                                            "value": "0a15418b8eb41da5ad213cde27c5cc44fee834e71c86aa1215416f7c313ee89c7b98aa91e5cbe611c48dc2876d0d18c0843d"
+                                        },
+                                        "Permission_id": 4
+                                    }
+                                ],
+                                "timestamp": 1560233738260
+                            },
+                            "signature": [
+                                "008a7f63a41d8236a72b6b332f6a8a93d2f798fdeb9c981000b6df2152f659750f26b0134040af0480bb5048556fa89415c11f3f8fd72af8939b162b6b95de7f01",
+                                "60b5dc67e6e8b9a4fd159befb0ade870031edc35c109b0b119f5671b3e68939c2e5e20c692746b55b1a3350b56eb27b7ebdfd89cb92e6238f8752d5cbefe30bf00"
+                            ]
+                        },
+                        "currentTransaction2": "{\"raw_data\":{\"ref_block_bytes\":\"27aa\",\"ref_block_hash\":\"f119dbf5b5b0e115\",\"expiration\":1560239738710,\"contract\":[{\"type\":\"TransferContract\",\"parameter\":{\"type_url\":\"type.googleapis.com/protocol.TransferContract\",\"value\":\"0a15418b8eb41da5ad213cde27c5cc44fee834e71c86aa1215416f7c313ee89c7b98aa91e5cbe611c48dc2876d0d18c0843d\"},\"Permission_id\":4}],\"timestamp\":1560233738260},\"signature\":[\"008a7f63a41d8236a72b6b332f6a8a93d2f798fdeb9c981000b6df2152f659750f26b0134040af0480bb5048556fa89415c11f3f8fd72af8939b162b6b95de7f01\",\"60b5dc67e6e8b9a4fd159befb0ade870031edc35c109b0b119f5671b3e68939c2e5e20c692746b55b1a3350b56eb27b7ebdfd89cb92e6238f8752d5cbefe30bf00\"]}"
+                    }
+                ]
+            }
+        }
+        const data = res.data && res.data.data ? res.data.data : [];
+        const multiSignRecord = {};
+       
+        data.map((item) => {
+            if (Number(item.isSign) === 0) {
+                // Object.assign(multiSignRecord, {item.hash})
+                // multiSignRecord.push({ hash: item.hash, status: 0 });
+                multiSignRecord[item.hash] = {status: (multiSignRecord[item.hash] &&  multiSignRecord[item.hash].status) || false} // false: clicked
+            };
+        });
+        console.log('multiSignRecord', multiSignRecord)
+        return multiSignRecord;
+                // StorageService.saveMultiSignRecord(res.data.data);
+                // this.emit('setMultiSignRecord', res.data.data);
+            // this.emit('setMultiSignRecord', StorageService.multiSignRecord);
+
+    }   
 
     async updateBalance() {
         const { address } = this;
@@ -516,7 +616,8 @@ class Account {
             selectedBankRecordId: this.selectedBankRecordId,
             dealCurrencyPage: this.dealCurrencyPage,
             airdropInfo: this.airdropInfo,
-            transactionDetail: this.transactionDetail
+            transactionDetail: this.transactionDetail,
+            multiSignRecord: this.multiSignRecord,
         };
     }
 

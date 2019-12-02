@@ -272,8 +272,9 @@ class Wallet extends EventEmitter {
         let res;
         const accounts = Object.values(this.accounts);
         for (const account of accounts) {
+            console.log(account)
             if (account.address === this.selectedAccount) {
-                const r = await account.update(basicPrice, smartPrice, usdtPrice).catch(e => false);
+                const r = await account.update(basicPrice, smartPrice, usdtPrice, multiSignRecord).catch(e => false);
                 if (r) {
                     res = true;
                     this.emit('setAccount', this.selectedAccount);
@@ -842,6 +843,7 @@ class Wallet extends EventEmitter {
 
     getAccounts(sideChain = false) {
         const accounts = Object.entries(this.accounts).reduce((accounts, [address, account]) => {
+
             if (sideChain && account.type === ACCOUNT_TYPE.LEDGER) {
                 return;
             }
@@ -880,6 +882,104 @@ class Wallet extends EventEmitter {
             amount: 0,
             decimals: 6
         } : StorageService.selectedToken;
+    }
+
+    async getMultiSignRecord(address) {
+        // const apiUrl = API_URL;
+        // const hexAddress = TronWeb.address.toHex(address);
+        // const res = await axios.get(apiUrl + '/api/wallet/airdrop_transaction', { params: { address: hexAddress } }).catch(e => false);
+        // if (res && res.data.code === 0) {
+        //     this.accounts[this.selectedAccount].airdropInfo = res.data.data;
+        //     this.emit('setAirdropInfo', res.data.data);
+        // }
+
+        let { chainType, netType, } = NodeService.getCurrentNode();
+        chainType = Number(chainType === 1) ? 'DAppChain' : 'MainChain';
+        netType = Number(netType === 1) ? 'shasta' : 'main_net';
+    
+        const url = 'https://testlist.tronlink.org/api/wallet/multi/trx_record';
+        let res = await axios.get(url, 
+            { headers: { chain: NodeService._selectedChain === '_' ? 'MainChain' : 'DAppChain' },
+              params: {
+                  start: 0,
+                  limit: 1000,
+                  state: 0,
+                  netType,
+                  address,
+              }
+            });
+        res = {
+            "code": 0,
+            "message": "OK",
+            "data": {
+                "total": 12,
+                "data": [
+                    {
+                        "hash": "66799d70be841151f94d3a5cbd440b0a31cd71ba4cf7de8e24650e90c0799c6d",
+                        "contractType": "TransferContract",
+                        "currentWeight": 2,
+                        "isSign": 0,
+                        "signatureProgress": [
+                            {
+                                "address": "TApUDmCr9X1SzhgBzmQxpfe85QzESPhAFZ",
+                                "weight": 1,
+                                "isSign": 0
+                            },
+                            {
+                                "address": "TCsSECZsCeaUiZkeZ1nc1nqLN15H2xrWRe",
+                                "weight": 1,
+                                "isSign": 0
+                            }
+                        ],
+                        "contractData": {
+                            "amount": 1000000,
+                            "owner_address": "TNh7swaW1BnYbJJoe6M36VaRbwh6vbhuoY",
+                            "to_address": "TL8gnPX2kVCFZbkHnrKEuUBP2DeG8wRLC1"
+                        },
+                        "trc20Info": {
+                            "decimals": 6,
+                            "name": "TRONAce",
+                            "symbol": "ACE"
+                        },
+                        "currentTransaction": {
+                            "raw_data": {
+                                "ref_block_bytes": "27aa",
+                                "ref_block_hash": "f119dbf5b5b0e115",
+                                "expiration": 1560239738710,
+                                "contract": [
+                                    {
+                                        "type": "TransferContract",
+                                        "parameter": {
+                                            "type_url": "type.googleapis.com/protocol.TransferContract",
+                                            "value": "0a15418b8eb41da5ad213cde27c5cc44fee834e71c86aa1215416f7c313ee89c7b98aa91e5cbe611c48dc2876d0d18c0843d"
+                                        },
+                                        "Permission_id": 4
+                                    }
+                                ],
+                                "timestamp": 1560233738260
+                            },
+                            "signature": [
+                                "008a7f63a41d8236a72b6b332f6a8a93d2f798fdeb9c981000b6df2152f659750f26b0134040af0480bb5048556fa89415c11f3f8fd72af8939b162b6b95de7f01",
+                                "60b5dc67e6e8b9a4fd159befb0ade870031edc35c109b0b119f5671b3e68939c2e5e20c692746b55b1a3350b56eb27b7ebdfd89cb92e6238f8752d5cbefe30bf00"
+                            ]
+                        },
+                        "currentTransaction2": "{\"raw_data\":{\"ref_block_bytes\":\"27aa\",\"ref_block_hash\":\"f119dbf5b5b0e115\",\"expiration\":1560239738710,\"contract\":[{\"type\":\"TransferContract\",\"parameter\":{\"type_url\":\"type.googleapis.com/protocol.TransferContract\",\"value\":\"0a15418b8eb41da5ad213cde27c5cc44fee834e71c86aa1215416f7c313ee89c7b98aa91e5cbe611c48dc2876d0d18c0843d\"},\"Permission_id\":4}],\"timestamp\":1560233738260},\"signature\":[\"008a7f63a41d8236a72b6b332f6a8a93d2f798fdeb9c981000b6df2152f659750f26b0134040af0480bb5048556fa89415c11f3f8fd72af8939b162b6b95de7f01\",\"60b5dc67e6e8b9a4fd159befb0ade870031edc35c109b0b119f5671b3e68939c2e5e20c692746b55b1a3350b56eb27b7ebdfd89cb92e6238f8752d5cbefe30bf00\"]}"
+                    }
+                ]
+            }
+        }
+        const data = res.data && res.data.data ? res.data.data : [];
+        const multiSignRecord = {};
+       
+        data.map((item) => {
+            if (Number(item.isSign) === 0) {
+                // Object.assign(multiSignRecord, {item.hash})
+                // multiSignRecord.push({ hash: item.hash, status: 0 });
+                multiSignRecord[item.hash] = {status: (multiSignRecord[item.hash] &&  multiSignRecord[item.hash].status) || false} // false: clicked
+            };
+        });
+        console.log('multiSignRecord', multiSignRecord)
+        return multiSignRecord;
     }
 
     setLanguage(language) {
@@ -1125,6 +1225,8 @@ class Wallet extends EventEmitter {
         this.accounts[this.selectedAccount].dealCurrencyPage = status;
         this.emit('setAccount', this.selectedAccount);
     }
+
+   
 
     exportAccount() {
         const {

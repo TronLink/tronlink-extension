@@ -253,6 +253,7 @@
     "MENU.FROZEN_UNFROZEN":"Frozen/Unfrozen",
     "MENU.VOTE":"Vote",
     "MENU.ACCOUNTS.TOTAL_ASSET":"Asset{sign}",
+    "MENU.MULTI_SIGN": "Multi Sign",
 
     "TOAST.COPY":"Copied",
     "TOAST.ADDED":"added",
@@ -444,6 +445,8 @@
 
     "NOTIFICATIONS.TITLE":"transaction finished",
     "NOTIFICATIONS.MESSAGE":"go to Tronscan to check details",
+    "NOTIFICATIONS.MULTI_SIGN_WAITTING": "You have {count} transaction waiting to be signed",
+    "NOTIFICATIONS.MULTI_SIGN_BTN_TEXT": "click to View",
 
     "ALERT.UPDATE_DESCRIPTION.TITLE":"Update Description",
     "ALERT.UPDATE_DESCRIPTION.BODY":"The update mainly supports TRON's official SUN Network. A side chain feature has been added. Now you can transfer your assets between the main chain and the side chain, and use Dapps that have already supported side chain by TronLink. Please note that the side chain does not support ledger yet.",

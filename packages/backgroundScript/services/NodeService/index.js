@@ -29,6 +29,7 @@ const NodeService = {
             chain: '_',
             connect: '51a36e5a-2480-4b57-989c-539345a13be2',
             chainType: 0,
+            netType: 0,
             connectChain: {
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
@@ -46,6 +47,7 @@ const NodeService = {
             default: false,
             chain: '_',
             chainType: 0,
+            netType: 1,
             connectChain: false,
         },
         'f14212e2-a6a0-4391-9419-07b55f8be63e': {
@@ -57,6 +59,7 @@ const NodeService = {
             chain: '_',
             connect: '01eda3a0-5a58-4e44-9f95-f7f1f59dd728',
             chainType: 0,
+            netType: 1,
             connectChain: {
                 fullNode: 'https://suntest.tronex.io',
                 solidityNode: 'https://suntest.tronex.io',
@@ -75,6 +78,7 @@ const NodeService = {
             chain: SIDE_CHAIN_ID,
             connect: '109c64ad-e59c-46fe-ba87-179587e6c772',
             chainType: 1,
+            netType: 0,
             mainGateway: CONTRACT_ADDRESS.MAIN,
             sideGateway: CONTRACT_ADDRESS.SIDE,
             sideChainId: SIDE_CHAIN_ID,
@@ -93,6 +97,7 @@ const NodeService = {
             chain: SIDE_CHAIN_ID,
             connect: 'f14212e2-a6a0-4391-9419-07b55f8be63e',
             chainType: 1,
+            netType: 1,
             mainGateway: CONTRACT_ADDRESS.MAIN_TEST,
             sideGateway: CONTRACT_ADDRESS.SIDE_TEST,
             sideChainId: SIDE_CHAIN_ID_TEST,
