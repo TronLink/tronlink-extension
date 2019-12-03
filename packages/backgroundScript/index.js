@@ -295,10 +295,19 @@ const backgroundScript = {
                                 uuid
                             });
                         }
-                        const signedTransaction = await account.sign(
-                            mapped.transaction || mapped,
-                            Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
-                        );
+                        let signedTransaction = {};
+                        if (transaction.raw_data.contract[ 0 ].Permission_id != undefined) {
+                            signedTransaction = await account.multiSign(
+                                mapped.transaction || mapped,
+                                Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
+                            )
+                        } else {
+                            signedTransaction = await account.sign(
+                                mapped.transaction || mapped,
+                                Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
+                            );
+                        }
+                       
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
 
                         if(contractType === 'TriggerSmartContract') {

@@ -541,6 +541,19 @@ class Account {
         return await signedTransaction;
     }
 
+    async multiSign(transaction, tronWeb = NodeService.tronWeb) {
+        if (!this.privateKey) {
+            return 'CREATION.LEDGER.ALERT.BODY';
+        }
+        const signedTransaction = tronWeb.trx.multiSign(
+            transaction,
+            this.privateKey,
+            transaction.raw_data.contract[ 0 ].Permission_id
+        );
+
+        return await signedTransaction;
+    }
+
     async sendTrx(recipient, amount) {
         const selectedChain = NodeService._selectedChain;
         try {

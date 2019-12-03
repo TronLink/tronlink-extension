@@ -21,5 +21,6 @@
     "ProposalDeleteContract": "wallet/proposaldelete",
     "UnfreezeAssetContract": "wallet/unfreezeasset",
     "AccountUpdateContract": "wallet/updateaccount",
-    "WitnessUpdateContract": "wallet/updatewitness"
+    "WitnessUpdateContract": "wallet/updatewitness",
+    "AccountPermissionUpdateContract": "wallet/accountpermissionupdate"
 }

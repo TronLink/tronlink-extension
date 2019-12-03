@@ -20,6 +20,7 @@ const pageHook = {
         sign: false,
         setMainGatewayAddress: false,
         setSideGatewayAddress: false,
+        multiSign: false,
     },
 
     init() {
@@ -93,6 +94,7 @@ const pageHook = {
             setMainGatewayAddress: sunWeb.setMainGatewayAddress.bind(sunWeb),
             setSideGatewayAddress: sunWeb.setSideGatewayAddress.bind(sunWeb),
             setChainId: sunWeb.setChainId.bind(sunWeb),
+            multiSign: tronWeb.trx.multiSign.bind(tronWeb),
         };
 
         ['setPrivateKey', 'setAddress', 'setFullNode', 'setSolidityNode', 'setEventServer'].forEach(method => {
@@ -114,6 +116,18 @@ const pageHook = {
         );
         sunWeb.sidechain.trx.sign = (...args) => (
             this.sign(...args)
+        );
+
+        tronWeb.trx.multiSign = (...args) => (
+            this.multiSign(...args)
+        );
+
+        sunWeb.mainchain.trx.multiSign = (...args) => (
+            this.multiSign(...args)
+        );
+
+        sunWeb.sidechain.trx.multiSign = (...args) => (
+            this.multiSign(...args)
         );
 
         window.sunWeb = sunWeb;
@@ -268,6 +282,7 @@ const pageHook = {
         if (!tronWeb.ready) {
             return callback('User has not unlocked wallet');
         }
+
         this.request('sign', {
             transaction,
             useTronHeader,
@@ -283,7 +298,50 @@ const pageHook = {
             logger.error('Failed to sign transaction:', err);
             callback(err);
         });
+    },
+
+    multiSign(transaction = false, privateKey = false, permissionId = false, callback = false) {
+        if (Utils.isFunction(permissionId)) {
+            callback = permissionId;
+            permissionId = 0;
+        }
+
+        if (Utils.isFunction(privateKey)) {
+            callback = privateKey;
+            privateKey = false;
+            permissionId = 0;
+        }
+
+        if (!callback)
+            return Utils.injectPromise(this.multiSign.bind(this), transaction, privateKey, permissionId);
+
+        if (!tronWeb.ready) {
+            return callback('User has not unlocked wallet');
+        }
+
+        if (!Utils.isObject(transaction) || !transaction.raw_data || !transaction.raw_data.contract)
+            return callback('Invalid transaction provided');
+            
+        if (privateKey) {
+            return this.proxiedMethods.multiSign(transaction, privateKey, permissionId, callback);
+        }
+    
+        this.request('sign', {
+            transaction,
+            useTronHeader: true,
+            input: (
+                    transaction.__payload__ ||
+                    transaction.raw_data.contract[0].parameter.value
+            )
+        }).then(transaction => (
+            callback(null, transaction, permissionId)
+        )).catch(err => {
+            logger.error('Failed to sign transaction:', err);
+            callback(err);
+        });
+       
     }
+
 };
 
 pageHook.init();
