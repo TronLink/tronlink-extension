@@ -7,7 +7,9 @@ import Utils from '@tronlink/lib/utils';
 import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE, SIDE_CHAIN_ID_TEST } from '@tronlink/lib/constants';
 import RequestHandler from './handlers/RequestHandler';
 import ProxiedProvider from './handlers/ProxiedProvider';
-import SunWeb from './SunWeb';
+
+import SunWeb from 'sunweb';
+
 
 
 const logger = new Logger('pageHook');
