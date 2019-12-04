@@ -281,13 +281,12 @@ const backgroundScript = {
                                 input
                             }, uuid, resolve);
                         }
-
                         const contractType = transaction.raw_data.contract[ 0 ].type;
                         const contractAddress = TronWeb.address.fromHex(input.contract_address);
                         const {
                             mapped,
                             error
-                        } = await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain, contractType, input); // NodeService.getCurrentNode()
+                        } = !!data.multiSign && data.permissionId != undefined ? {mapped: transaction, error: null} : await transactionBuilder(Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain, contractType, input); // NodeService.getCurrentNode()
                         if(error) {
                             return resolve({
                                 success: false,
@@ -296,10 +295,11 @@ const backgroundScript = {
                             });
                         }
                         let signedTransaction = {};
-                        if (transaction.raw_data.contract[ 0 ].Permission_id != undefined) {
+                        if (!!data.multiSign && data.permissionId != undefined) {
                             signedTransaction = await account.multiSign(
                                 mapped.transaction || mapped,
-                                Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain
+                                Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain,
+                                data.permissionId
                             )
                         } else {
                             signedTransaction = await account.sign(
@@ -309,11 +309,9 @@ const backgroundScript = {
                         }
                        
                         const whitelist = this.walletService.contractWhitelist[ input.contract_address ];
-
                         if(contractType === 'TriggerSmartContract') {
 
                             // code bury
-
                             const value = input.call_value || 0;
 
                             ga('send', 'event', {

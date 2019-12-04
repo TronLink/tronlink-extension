@@ -332,7 +332,9 @@ const pageHook = {
             input: (
                     transaction.__payload__ ||
                     transaction.raw_data.contract[0].parameter.value
-            )
+            ),
+            multiSign: true,
+            permissionId,
         }).then(transaction => (
             callback(null, transaction, permissionId)
         )).catch(err => {
