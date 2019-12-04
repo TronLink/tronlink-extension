@@ -249,15 +249,14 @@ const backgroundScript = {
                             transaction,
                             input
                         } = data;
-                        
                         const {
                             selectedAccount
                         } = this.walletService;
 
                         let tronWeb = NodeService.tronWeb;
                         let chainType = 0;
-                        if (!!transaction && transaction.chainType == 1) {
-                            chainType = transaction.chainType;
+                        if (!!transaction && data.input.chainType == 1) {
+                            chainType = data.input.chainType;
                             // tronWeb = NodeService.sunWeb.sidechain;
                         }
                         const account = this.walletService.getAccount(selectedAccount);
