@@ -458,7 +458,7 @@ class Account {
 
     async updateBalance() {
         const { address } = this;
-        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = await NodeService.tronWeb.trx.getAccountResources(address);
+        const { EnergyLimit = 0, EnergyUsed = 0, freeNetLimit = 0, NetLimit = 0, freeNetUsed = 0, NetUsed = 0, TotalEnergyWeight, TotalEnergyLimit } = NodeService._selectedChain === '_' ? await NodeService.tronWeb.trx.getAccountResources(address) : await NodeService.sunWeb.sidechain.trx.getAccountResources(address);
         this.energy = EnergyLimit;
         this.energyUsed = EnergyUsed;
         this.netLimit = freeNetLimit + NetLimit;
