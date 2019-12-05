@@ -252,6 +252,7 @@
   "MENU.FROZEN_UNFROZEN":"凍結/解除",
   "MENU.VOTE":"投票",
   "MENU.ACCOUNTS.TOTAL_ASSET":"総資産{sign}",
+  "MENU.MULTI_SIGN": "マルチ署名",
 
   "TOAST.COPY":"コピー済み",
   "TOAST.ADDED":"追加しました",

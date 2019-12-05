@@ -253,6 +253,7 @@
     "MENU.FROZEN_UNFROZEN":"Frozen/Unfrozen",
     "MENU.VOTE":"Vote",
     "MENU.ACCOUNTS.TOTAL_ASSET":"Asset{sign}",
+    "MENU.MULTI_SIGN": "Multi Sign",
 
     "TOAST.COPY":"Copied",
     "TOAST.ADDED":"added",

@@ -187,6 +187,15 @@ class AccountsPage extends React.Component {
                                     null
                             }
                             {
+                                chains.selected === '_' ?
+                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=multiSign`); }} className='item'>
+                                        <span className='icon multi-sign'>&nbsp;</span>
+                                        <FormattedMessage id='MENU.MULTI_SIGN' />
+                                    </div>
+                                    :
+                                    null
+                            }
+                            {
                                 accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_' ?
                                     <div onClick={ this.onExport } className='item'>
                                         <span className='icon backup'>&nbsp;</span>

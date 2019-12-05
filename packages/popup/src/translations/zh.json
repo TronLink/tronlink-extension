@@ -254,6 +254,7 @@
     "MENU.FROZEN_UNFROZEN":"冻结/解冻",
     "MENU.VOTE":"投票",
     "MENU.ACCOUNTS.TOTAL_ASSET":"总资产{sign}",
+    "MENU.MULTI_SIGN": "多重签名",
 
     "TOAST.COPY":"已复制",
     "TOAST.ADDED":"已添加",
