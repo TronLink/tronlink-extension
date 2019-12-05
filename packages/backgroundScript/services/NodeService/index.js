@@ -28,7 +28,7 @@ const NodeService = {
             default: true, // false
             chain: '_',
             connect: '51a36e5a-2480-4b57-989c-539345a13be2',
-            chainType: 0,
+            chainType: 0,  // 0: Tron, 1: DappChain
             connectChain: {
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
@@ -292,9 +292,9 @@ const NodeService = {
 
     addNode(node) {
         const nodeID = randomUUID();
-
         this._nodes[nodeID] = {
             ...node,
+            chainType: 0,
             default: false
         };
         this.save();
