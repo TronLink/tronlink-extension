@@ -264,7 +264,7 @@ const backgroundScript = {
 
                         if(typeof input === 'string') {
                             const { duration = 0 } = appWhitelist;
-                            const signedTransaction = await account.sign(input);
+                            const signedTransaction = !!data.multiSign ? await account.multiSign(transaction,  Number(chainType) === 1 ? NodeService.sunWeb.sidechain : NodeService.sunWeb.mainchain, data.permissionId) : await account.sign(input);
                             if(appWhitelist && (duration === -1 || duration >= Date.now())){
                                 logger.info('Automatically signing transaction', signedTransaction);
                                 return resolve({
