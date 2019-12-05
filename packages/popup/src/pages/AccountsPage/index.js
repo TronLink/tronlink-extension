@@ -163,7 +163,7 @@ class AccountsPage extends React.Component {
                         }
                     </div>
                     <div className='menu' onClick={(e) => { e.stopPropagation();this.setState({ showMenuList: !showMenuList, showNodeList: false }); }}>
-                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 30 * (accounts.selected.type !== ACCOUNT_TYPE.LEDGER && chains.selected === '_'?6:2), opacity: 1 } : {}}>
+                        <div className='dropList menuList' style={ showMenuList ? { width: '160px', height: 'auto', opacity: 1 } : {}}>
                             <div onClick={ () => { PopupAPI.changeState(APP_STATE.ASSET_MANAGE); }} className='item'>
                                 <span className='icon asset'>&nbsp;</span>
                                 <FormattedMessage id='ASSET.ASSET_MANAGE' />
