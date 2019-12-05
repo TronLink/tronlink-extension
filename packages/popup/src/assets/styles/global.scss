@@ -1839,6 +1839,9 @@ html, body {
         }
         .modalDesc {
             font-size: 13px;
+            span{
+                word-break: break-word;
+            }
         }
         &.loginModel,&.registrationModel{
             background: transparent;
