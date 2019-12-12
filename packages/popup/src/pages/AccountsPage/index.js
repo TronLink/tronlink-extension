@@ -343,7 +343,7 @@ class AccountsPage extends React.Component {
             <div className='tokens'>
                 {
                     tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({ tokenId, ...token }) => {
-                        const amount = new BigNumber(token.balance)
+                        const amount = new BigNumber(token.balanceStr)
                             .shiftedBy(-token.decimals)
                             .toString();
                         const price = token.price === undefined ? 0 : token.price;

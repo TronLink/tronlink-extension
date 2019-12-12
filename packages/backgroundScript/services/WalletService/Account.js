@@ -342,6 +342,7 @@ class Account {
                 token = {
                     price: 0,
                     balance: 0,
+                    balanceStr: '0',
                     name,
                     abbr: shortName,
                     decimals,
