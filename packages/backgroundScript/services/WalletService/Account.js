@@ -334,7 +334,7 @@ class Account {
                     delete this.tokens.smart[tokenId];
                 }
             });
-            for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance } of smartTokens) {
+            for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance, balanceStr } of smartTokens) {
                 let token = this.tokens.smart[tokenAddress] || false;
                 const filter = smartTokenPriceList.filter(({ fTokenAddr, sTokenAddr }) => fTokenAddr === tokenAddress && sTokenAddr === this.trxAddress);
                 const price = filter.length ? new BigNumber(filter[0].price).shiftedBy(-decimals).toString() : 0;
@@ -355,6 +355,7 @@ class Account {
                     ...token,
                     price: tokenAddress === CONTRACT_ADDRESS.USDT ? usdtPrice : price,
                     balance,
+                    balanceStr,
                     chain: selectedChain
                 };
                 //this.tokens.smart[ tokenAddress ] = !TOP_TOKEN[selectedChain === '_' ? 'mainchain':'sidechain'].includes(tokenAddress) ? {...this.tokens.smart[ tokenAddress ],chain:selectedChain} : this.tokens.smart[ tokenAddress ];
