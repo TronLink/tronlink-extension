@@ -45,6 +45,7 @@ class Account {
             basic: {},
             smart: {}
         };
+        this.multiSignRecords = {};
         this.trxAddress = 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
         // this.tokens.smart[ CONTRACT_ADDRESS.USDT ] = {
         //     abbr: 'USDT',
@@ -131,7 +132,8 @@ class Account {
             energy,
             energyUsed,
             lastUpdated,
-            asset
+            asset,
+            multiSignRecords,
         } = StorageService.getAccount(this.address);
 
         // Old TRC10 structure are no longer compatible
@@ -167,6 +169,7 @@ class Account {
         this.lastUpdated = lastUpdated;
         this.asset = asset;
         this.hash = '';
+        this.multiSignRecords = multiSignRecords;
     }
 
     matches(accountType, importData) {
@@ -203,6 +206,7 @@ class Account {
          */
         this.tokens.smart = {};
         this.tokens.basic = {};
+        this.multiSignRecords = {};
     }
 
     /** update data of an account
@@ -449,6 +453,7 @@ class Account {
             this.lastUpdated = Date.now();
             await Promise.all([
                 this.updateBalance(),
+                this.fetchMultiSignRecords(address),
             ]);
             logger.info(`Account ${address} successfully updated`);
             Object.keys(StorageService.getAccounts()).includes(this.address) && this.save();
@@ -467,6 +472,38 @@ class Account {
         this.netUsed = NetUsed + freeNetUsed;
         this.totalEnergyWeight = TotalEnergyWeight;
         this.TotalEnergyLimit = TotalEnergyLimit;
+    }
+
+    async fetchMultiSignRecords(address) {
+        let { chainType, netType, } = NodeService.getCurrentNode();
+        chainType = Number(chainType === 1) ? 'DAppChain' : 'MainChain';
+        netType = Number(netType === 1) ? 'shasta' : 'main_net';
+        let data = [];
+        const url = `${API_URL}/api/wallet/multi/trx_record`;
+        let res = await axios.get(url, 
+            { headers: { chain: NodeService._selectedChain === '_' ? 'MainChain' : 'DAppChain' },
+              params: {
+                  start: 0,
+                  limit: 1000,
+                  state: 0,
+                  netType,
+                  address,
+              }
+            }).catch(e => {
+                data = [];
+            });
+        data = res.data.data.data || [];
+        let multiSignRecords = StorageService.multiSignRecords[address] || {};
+        data.map((item) => {
+            if (Number(item.isSign) === 0) {
+                if (multiSignRecords[item.hash] === undefined) {
+                    multiSignRecords[item.hash] = { status: true };
+                } 
+            };
+        });
+        StorageService.saveMultiSignRecords(multiSignRecords, address);
+        this.multiSignRecords = multiSignRecords;
+        return multiSignRecords;
     }
 
     async addSmartToken({ address, name, decimals, symbol }) {
@@ -518,7 +555,8 @@ class Account {
             selectedBankRecordId: this.selectedBankRecordId,
             dealCurrencyPage: this.dealCurrencyPage,
             airdropInfo: this.airdropInfo,
-            transactionDetail: this.transactionDetail
+            transactionDetail: this.transactionDetail,
+            multiSignRecords: this.multiSignRecords,
         };
     }
 

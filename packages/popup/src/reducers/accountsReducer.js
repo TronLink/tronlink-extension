@@ -28,7 +28,8 @@ export const accountsReducer = createReducer({
         selectedBankRecordId: 0,
         dealCurrencyPage: 0,
         airdropInfo: {},
-        hash: ''
+        hash: '',
+        multiSignRecords: {}
     },
     accounts: { },
     selectedToken: { id: '_', name: 'TRX', decimals: 6, amount: 0 }

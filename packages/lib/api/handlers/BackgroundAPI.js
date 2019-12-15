@@ -73,6 +73,10 @@ export default {
         this.duplex.send('popup', 'setAirdropInfo', airdropInfo, false);
     },
 
+    setMultiSignViewed(address) {
+        this.duplex.send('popup', 'setMultiSignViewed', address, false);
+    },
+
     setDappList(dappList) {
         this.duplex.send('popup', 'setDappList',dappList ,false);
     },

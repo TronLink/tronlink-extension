@@ -164,6 +164,7 @@ class Wallet extends EventEmitter {
                             this.emit('setAccount', this.selectedAccount);
                         }
                     }).catch(e => {
+                        logger.error('error2222')
                         logger.error(`update account ${account.address} fail`, e);
                     });
                 } else {
@@ -1353,6 +1354,19 @@ class Wallet extends EventEmitter {
 
     getAllTokens(selectedChain = '_') {
         return StorageService.hasOwnProperty('allTokens') ? (selectedChain === '_' ? StorageService.allTokens.mainchain : StorageService.allTokens.sidechain) : {};
+    }
+
+    setMultiSignViewed(address) {
+        console.log(this.accounts[this.selectedAccount], this.selectedAccount);
+        Object.keys(this.accounts[this.selectedAccount]['multiSignRecords']).forEach(item => {
+            this.accounts[this.selectedAccount]['multiSignRecords'][item].status = false;
+        })
+        StorageService.saveMultiSignRecords(this.accounts[this.selectedAccount]['multiSignRecords'], this.selectedAccount);
+        this.emit('setAccount', this.selectedAccount);
+    }
+
+    getMultiSignRecords(address) {
+        return StorageService.multiSignRecords && StorageService.multiSignRecords[address] ? StorageService.multiSignRecords[address] : false;
     }
 
     async setTransactionDetail(hash) {

@@ -168,6 +168,7 @@ const backgroundScript = {
         duplex.on('getAllDapps', this.walletService.getAllDapps);
         duplex.on('updateTokens', this.walletService.updateTokens);
         duplex.on('getAllTokens', this.walletService.getAllTokens);
+        duplex.on('setMultiSignViewed', this.walletService.setMultiSignViewed);
         duplex.on('setTransactionDetail', this.walletService.setTransactionDetail);
         duplex.on('setAuthorizeDapps', this.walletService.setAuthorizeDapps);
         duplex.on('getAuthorizeDapps', this.walletService.getAuthorizeDapps);
@@ -442,7 +443,10 @@ const backgroundScript = {
         this.walletService.on('setNode', node => (
             BackgroundAPI.setNode(node)
         ));
-
+        
+        this.walletService.on('setMultiSignViewed', address => {
+            BackgroundAPI.setMultiSignViewed(address)
+        });
 
         this.walletService.on('setChain', chain => (
             BackgroundAPI.setChain(chain)

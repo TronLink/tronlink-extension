@@ -24,6 +24,7 @@ class AccountsPage extends React.Component {
         this.onClick = this.onClick.bind(this);
         this.onDelete = this.onDelete.bind(this);
         this.onExport = this.onExport.bind(this);
+        this.setMultiSignViewed = this.setMultiSignViewed.bind(this);
         this.state = {
             mnemonic: false,
             privateKey: false,
@@ -33,7 +34,9 @@ class AccountsPage extends React.Component {
             showDelete: false,
             news: [],
             ieos: [],
-            allTokens: []
+            allTokens: [],
+            multiSignCount: 1,
+            multiSignDgVisible: true,
         };
     }
 
@@ -46,7 +49,6 @@ class AccountsPage extends React.Component {
                 this.setState({allTokens});
             }
         },100);
-
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', abbr:'trx', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
@@ -63,6 +65,7 @@ class AccountsPage extends React.Component {
         const dappList = await PopupAPI.getDappList(false);
         PopupAPI.setDappList(dappList);
         app.getChains();
+        this.setState({multiSignDgVisible: true});
     }
 
     runTime(ieos) {
@@ -116,6 +119,16 @@ class AccountsPage extends React.Component {
         });
     }
 
+    async setMultiSignViewed(e, isOpen = true) {
+        e.stopPropagation();
+        const { selected } = this.props.accounts;
+        await PopupAPI.setMultiSignViewed(selected.address);
+        if (isOpen) {
+            window.open(`${tronscanUrl}/account?from=tronlink&type=multiSign`); 
+        }
+       
+    }
+
     handleShowChainList() {
         this.setState({
             showMenuList: false,
@@ -144,7 +157,7 @@ class AccountsPage extends React.Component {
         app.getNodes();
     }
 
-    renderAccountInfo(accounts, prices, totalMoney) {
+    renderAccountInfo(accounts, prices, totalMoney, multiSignCount) {
         const { formatMessage } = this.props.intl;
         const { showMenuList } = this.state;
         const { chains } = this.props;
@@ -188,9 +201,10 @@ class AccountsPage extends React.Component {
                             }
                             {
                                 chains.selected === '_' ?
-                                    <div onClick={(e) => { e.stopPropagation();window.open(`${tronscanUrl}/account?from=tronlink&type=multiSign`); }} className='item'>
+                                    <div onClick={(e) => { this.setMultiSignViewed(e); }} className='item'>
                                         <span className='icon multi-sign'>&nbsp;</span>
                                         <FormattedMessage id='MENU.MULTI_SIGN' />
+                                        <span className={Number(multiSignCount) > 0 ? 'multi-sign-count' : 'multi-sign-count-hide'}>{Number(multiSignCount) > 0 ? multiSignCount : ''}</span>
                                     </div>
                                     :
                                     null
@@ -487,7 +501,7 @@ class AccountsPage extends React.Component {
         const id = news.length > 0 ? news[0].id : 0;
         const { accounts,prices,nodes,setting,language:lng,vTokenList,chains } = this.props;
 
-        const { selected: { airdropInfo } } = accounts;
+        const { selected: { airdropInfo, multiSignRecords } } = accounts;
         const mode = 'productionMode';
         const { formatMessage } = this.props.intl;
         const trx_price = prices.priceList[prices.selected];
@@ -522,6 +536,10 @@ class AccountsPage extends React.Component {
         });
         const asset = accounts.accounts[ accounts.selected.address ] && accounts.accounts[ accounts.selected.address ].asset ? accounts.accounts[accounts.selected.address].asset : 0;
         const totalMoney = new BigNumber(asset).multipliedBy(prices.priceList[ prices.selected ]).toFixed(2);
+
+        let multiSignCount = Object.keys(multiSignRecords).filter(item => multiSignRecords[item].status).length;
+        
+
         return (
             <div className='accountsPage' onClick={() => {
                 this.setState({
@@ -649,7 +667,7 @@ class AccountsPage extends React.Component {
                         }}>
                         </div>
                     </div>
-                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney) : null }
+                    { accounts.selected.address ? this.renderAccountInfo(accounts, prices, totalMoney, multiSignCount) : null }
                     <div className="listWrap">
                         { this.renderResource(accounts.accounts[accounts.selected.address]) }
                         { this.renderIeos(ieos) }
@@ -671,6 +689,28 @@ class AccountsPage extends React.Component {
                                }} />
                     </div>
                     :
+                    null
+                }
+                {
+                    accounts.selected.address && Number(multiSignCount) > 0 && this.state.multiSignDgVisible
+                        ? 
+                    <div className='multi-sign-dg'>
+                        <div className="multi-sign-close" onClick={
+                            (e) => {
+                                this.setState({multiSignDgVisible: false});
+                                this.setMultiSignViewed(e, false);
+                            }
+                        }></div>
+                        <FormattedMessage id='NOTIFICATIONS.MULTI_SIGN_WAITTING' 
+                         values={{
+                            count: multiSignCount
+                         }}
+                        />
+                        <div className='click-view-btn' onClick={(e) => { this.setMultiSignViewed(e);}}> 
+                            <FormattedMessage id='NOTIFICATIONS.MULTI_SIGN_BTN_TEXT' />
+                        </div>
+                     </div>
+                        :
                     null
                 }
             </div>

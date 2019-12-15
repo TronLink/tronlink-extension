@@ -23,6 +23,7 @@ const StorageService = {
         'authorizeDapps',
         'vTokenList',
         'chains',
+        'multiSignRecords'
     ],
 
     storage: extensionizer.storage.local,
@@ -85,6 +86,7 @@ const StorageService = {
     allSideTokens : [],
     authorizeDapps: {},
     vTokenList: [],
+    multiSignRecords: {},
     get needsMigrating() {
         return localStorage.hasOwnProperty('TronLink_WALLET');
     },
@@ -210,6 +212,12 @@ const StorageService = {
 
         this.chains.chainList[ chainId ] = chain;
         this.save('chains');
+    },
+
+    saveMultiSignRecords(multiSignRecords, address) {
+        logger.info('Saving multiSignRecords', multiSignRecords);
+        this.multiSignRecords[address] = multiSignRecords;
+        this.save('multiSignRecords');
     },
 
     selectNode(nodeID) {

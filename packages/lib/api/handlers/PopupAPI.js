@@ -278,6 +278,14 @@ export default {
         return this.duplex.send('getAllTokens',selectedChain);
     },
 
+    getMultiSignRecords(address) {
+        return this.duplex.send('getMultiSignRecords', address);
+    },
+
+    setMultiSignViewed(address) {
+        return this.duplex.send('setMultiSignViewed', address);
+    },
+
     setTransactionDetail(hash) {
        return this.duplex.send('setTransactionDetail', hash);
     },
