@@ -69,6 +69,17 @@ const NodeService = {
                 chainId: SIDE_CHAIN_ID_TEST,
             }
         },
+        '910d7fa5-da35-419d-b454-fd4ee22087cd': {
+            name: 'Nile Testnet',
+            fullNode: 'https://httpapi.nileex.io',
+            solidityNode: 'https://httpapi.nileex.io',
+            eventServer: 'https://api.nileex.io',
+            default: false,
+            chain: '_',
+            chainType: 0,
+            netType: 1,
+            connectChain: false,
+        },
         '51a36e5a-2480-4b57-989c-539345a13be2': {
             name: 'DappChain',
             fullNode: 'https://sun.tronex.io',
