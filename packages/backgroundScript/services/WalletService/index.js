@@ -1277,7 +1277,7 @@ class Wallet extends EventEmitter {
     }
 
     async getNews() {
-        const apiUrl = API_URL;
+        const apiUrl = 'https://testlist.tronlink.org';
         const res = await axios.get(apiUrl + '/api/activity/announcement/reveal_v2').catch(e => false);
         if (res) {
             return res.data.data;
