@@ -230,7 +230,7 @@ class Account {
             return { data: { data: [] } };
         });
 
-        if (!(node === '109c64ad-e59c-46fe-ba87-179587e6c772' || node === '51a36e5a-2480-4b57-989c-539345a13be2')) {
+        if (Number(NodeService.getNodes().nodes[node].netType) !== 0) { // filter testnet and custom node
             smartTokens = [];
         }
 
@@ -338,6 +338,7 @@ class Account {
                     delete this.tokens.smart[tokenId];
                 }
             });
+            
             for (let { tokenAddress, logoUrl = false, decimals = 6, isMapping, name, shortName, balance, balanceStr } of smartTokens) {
                 let token = this.tokens.smart[tokenAddress] || false;
                 const filter = smartTokenPriceList.filter(({ fTokenAddr, sTokenAddr }) => fTokenAddr === tokenAddress && sTokenAddr === this.trxAddress);

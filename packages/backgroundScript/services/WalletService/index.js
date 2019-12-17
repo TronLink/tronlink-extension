@@ -1357,7 +1357,6 @@ class Wallet extends EventEmitter {
     }
 
     setMultiSignViewed(address) {
-        console.log(this.accounts[this.selectedAccount], this.selectedAccount);
         Object.keys(this.accounts[this.selectedAccount]['multiSignRecords']).forEach(item => {
             this.accounts[this.selectedAccount]['multiSignRecords'][item].status = false;
         })

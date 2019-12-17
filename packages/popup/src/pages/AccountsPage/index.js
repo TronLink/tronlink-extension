@@ -537,7 +537,7 @@ class AccountsPage extends React.Component {
         const asset = accounts.accounts[ accounts.selected.address ] && accounts.accounts[ accounts.selected.address ].asset ? accounts.accounts[accounts.selected.address].asset : 0;
         const totalMoney = new BigNumber(asset).multipliedBy(prices.priceList[ prices.selected ]).toFixed(2);
 
-        let multiSignCount = Object.keys(multiSignRecords).filter(item => multiSignRecords[item].status).length;
+        let multiSignCount = multiSignRecords ? Object.keys(multiSignRecords).filter(item => multiSignRecords[item].status).length : 0;
         
 
         return (

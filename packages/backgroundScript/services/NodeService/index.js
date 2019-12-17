@@ -21,7 +21,7 @@ const NodeService = {
     },
     _nodes: {
         '109c64ad-e59c-46fe-ba87-179587e6c772': {
-            name: 'Mainnet',
+            name: 'Mainnet (trongrid)',
             fullNode: 'https://api.trongrid.io',
             solidityNode: 'https://api.trongrid.io',
             eventServer: 'https://api.trongrid.io',
@@ -30,6 +30,25 @@ const NodeService = {
             connect: '51a36e5a-2480-4b57-989c-539345a13be2',
             chainType: 0,  // 0: Tron, 1: DappChain
             netType: 0,
+            connectChain: {
+                fullNode: 'https://sun.tronex.io',
+                solidityNode: 'https://sun.tronex.io',
+                eventServer: 'https://sun.tronex.io',
+                mainGateway: CONTRACT_ADDRESS.MAIN,
+                sideGateway: CONTRACT_ADDRESS.SIDE,
+                chainId: SIDE_CHAIN_ID,
+            }
+        },
+        '8eeb5be6-5e10-4283-ae61-03c0e4726fe0': {
+            name: 'Mainnet (tronex)',
+            fullNode: 'https://httpapi.tronex.io',
+            solidityNode: 'https://httpapi.tronex.io',
+            eventServer: 'https://api.trongrid.io',
+            default: false, 
+            chain: '_',
+            connect: '51a36e5a-2480-4b57-989c-539345a13be2',
+            chainType: 0,  // 0: Tron, 1: DappChain
+            netType: 0,   // 0: mainnet, 1: testnet
             connectChain: {
                 fullNode: 'https://sun.tronex.io',
                 solidityNode: 'https://sun.tronex.io',
@@ -51,7 +70,7 @@ const NodeService = {
             connectChain: false,
         },
         'f14212e2-a6a0-4391-9419-07b55f8be63e': {
-            name: 'DappChain Testnet',
+            name: 'Tronex Testnet',
             fullNode: 'https://testhttpapi.tronex.io',
             solidityNode: 'https://testhttpapi.tronex.io',
             eventServer: 'https://testapi.tronex.io',
@@ -71,9 +90,9 @@ const NodeService = {
         },
         '910d7fa5-da35-419d-b454-fd4ee22087cd': {
             name: 'Nile Testnet',
-            fullNode: 'https://httpapi.nileex.io',
-            solidityNode: 'https://httpapi.nileex.io',
-            eventServer: 'https://api.nileex.io',
+            fullNode: 'https://api.nileex.io',
+            solidityNode: 'https://api.nileex.io',
+            eventServer: 'https://event.nileex.io',
             default: false,
             chain: '_',
             chainType: 0,
@@ -81,7 +100,7 @@ const NodeService = {
             connectChain: false,
         },
         '51a36e5a-2480-4b57-989c-539345a13be2': {
-            name: 'DappChain',
+            name: 'DappChain Mainnet',
             fullNode: 'https://sun.tronex.io',
             solidityNode: 'https://sun.tronex.io',
             eventServer: 'https://sun.tronex.io',
@@ -100,7 +119,7 @@ const NodeService = {
             }
         },
         '01eda3a0-5a58-4e44-9f95-f7f1f59dd728': {
-            name: 'DappChain Testnet',
+            name: 'DappChain Tronex Testnet',
             fullNode: 'https://suntest.tronex.io',
             solidityNode: 'https://suntest.tronex.io',
             eventServer: 'https://suntest.tronex.io',
