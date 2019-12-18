@@ -281,7 +281,7 @@ class Account {
                     precision: trc20Filter[0].sPrecision
                 } : { price: 0, precision: 0 });
                 price = price / Math.pow(10, precision);
-                if (node === '109c64ad-e59c-46fe-ba87-179587e6c772' || node === '51a36e5a-2480-4b57-989c-539345a13be2') {
+                if (Number(NodeService.getNodes().nodes[node].netType) === 0) {
                     if (StorageService.allTokens[NodeService._selectedChain === '_' ? 'mainchain' : 'sidechain'].filter(({ tokenId }) => tokenId === key).length === 0) return;
                     const {
                         name = 'TRX',

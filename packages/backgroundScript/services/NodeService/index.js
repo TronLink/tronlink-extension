@@ -3,7 +3,7 @@ import randomUUID from 'uuid/v4';
 import TronWeb from 'tronweb';
 import SunWeb from 'sunweb';
 import Logger from '@tronlink/lib/logger';
-import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE, SIDE_CHAIN_ID_TEST } from '@tronlink/lib/constants';
+import { CONTRACT_ADDRESS, SIDE_CHAIN_ID, NODE, SIDE_CHAIN_ID_TEST,  SIDE_CHAIN_ID_TEST_NILE} from '@tronlink/lib/constants';
 import { BigNumber } from 'bignumber.js';
 
 const logger = new Logger('NodeService');
@@ -46,17 +46,10 @@ const NodeService = {
             eventServer: 'https://api.trongrid.io',
             default: false, 
             chain: '_',
-            connect: '51a36e5a-2480-4b57-989c-539345a13be2',
+            // connect: '51a36e5a-2480-4b57-989c-539345a13be2',
             chainType: 0,  // 0: Tron, 1: DappChain
             netType: 0,   // 0: mainnet, 1: testnet
-            connectChain: {
-                fullNode: 'https://sun.tronex.io',
-                solidityNode: 'https://sun.tronex.io',
-                eventServer: 'https://sun.tronex.io',
-                mainGateway: CONTRACT_ADDRESS.MAIN,
-                sideGateway: CONTRACT_ADDRESS.SIDE,
-                chainId: SIDE_CHAIN_ID,
-            }
+            connectChain: false
         },
         'b9424719-b45b-45aa-95d0-1b1b25fc75ae': {
             name: 'Shasta Testnet',
@@ -97,7 +90,7 @@ const NodeService = {
             chain: '_',
             chainType: 0,
             netType: 1,
-            connectChain: false,
+            connectChain: false
         },
         '51a36e5a-2480-4b57-989c-539345a13be2': {
             name: 'DappChain Mainnet',
@@ -340,6 +333,7 @@ const NodeService = {
         try {
             let balance;
             const contract = await this.tronWeb.contract().at(address);
+            const contract = await this._selectedChain === '_' ? await this.tronWeb.contract().at(address) : await this.sunWeb.sidechain.contract().at(address);
             if (!contract.name && !contract.symbol && !contract.decimals) {
                 return false;
             }

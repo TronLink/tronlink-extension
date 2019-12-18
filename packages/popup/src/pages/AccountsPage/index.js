@@ -274,14 +274,14 @@ class AccountsPage extends React.Component {
                         </div>
                         <ProcessBar percentage={(account.netLimit - account.netUsed) / account.netLimit} />
                     </div>
-                    <div className={'cell'+(nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682'?' bankSingle':'')} onClick={ () => {
+                    <div className={'cell'+(nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' ||  nodes.selected === '8eeb5be6-5e10-4283-ae61-03c0e4726fe0' ? ' bankSingle':'')} onClick={ () => {
                         //PopupAPI.changeState(APP_STATE.TRONBANK);
-                        if(nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682')
+                        if(nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' ||  nodes.selected === '8eeb5be6-5e10-4283-ae61-03c0e4726fe0')
                             window.open('http://www.tronlending.org');
                     }}>
                         <div className='title'>
                             {
-                                nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' || nodes.selected === 'f0b1e38e-7bee-485e-9d3f-69410bf30682' ?
+                                nodes.selected === '109c64ad-e59c-46fe-ba87-179587e6c772' ||  nodes.selected === '8eeb5be6-5e10-4283-ae61-03c0e4726fe0' ?
                                     <span className='bankBox'>
                                         <FormattedMessage id='CONFIRMATIONS.RESOURCE.ENERGY' />
                                         {/*<img className='bankArrow' src={require('../../assets/images/new/tronBank/rightArrow.svg')} alt='arrow'/>*/}
@@ -351,14 +351,13 @@ class AccountsPage extends React.Component {
     }
 
     renderTokens(tokens) {
-
         const { prices, accounts,chains, language } = this.props;
         return (
             <div className='tokens'>
                 {
                     tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({ tokenId, ...token }) => {
                         const balance = token.balanceStr != undefined ? token.balanceStr : token.balance;
-                        const amount = new BigNumber(Number(balance))
+                        const amount = new BigNumber(balance)
                             .shiftedBy(-token.decimals)
                             .toString();
                         const price = token.price === undefined ? 0 : token.price;
