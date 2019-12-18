@@ -332,7 +332,6 @@ const NodeService = {
     async getSmartToken(address) {
         try {
             let balance;
-            const contract = await this.tronWeb.contract().at(address);
             const contract = await this._selectedChain === '_' ? await this.tronWeb.contract().at(address) : await this.sunWeb.sidechain.contract().at(address);
             if (!contract.name && !contract.symbol && !contract.decimals) {
                 return false;
