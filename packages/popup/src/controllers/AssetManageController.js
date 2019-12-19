@@ -182,7 +182,7 @@ class AssetManageController extends React.Component {
                     <div className='leftSpace scroll'>
                         <div className='cellWrap'>
                             {
-                                filterTokens.map(({ tokenId, symbol = false, abbr = false, imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0, isVerify = false ,isTop = false}) => {
+                                filterTokens.map(({ tokenId, symbol = false, abbr = '', imgUrl, name, isList = false, html = `${name}(${abbr})`, decimals, balance = 0, isVerify = false ,isTop = false}) => {
                                     return (
                                         <div className='cell'>
                                             <img src={imgUrl ? imgUrl : token10DefaultImg} onError={(e) => { e.target.src = token10DefaultImg; }} />

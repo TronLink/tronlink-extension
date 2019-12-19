@@ -40,9 +40,9 @@ const NodeService = {
             }
         },
         '8eeb5be6-5e10-4283-ae61-03c0e4726fe0': {
-            name: 'Mainnet (tronex)',
-            fullNode: 'https://httpapi.tronex.io',
-            solidityNode: 'https://httpapi.tronex.io',
+            name: 'Mainnet (tronstack)',
+            fullNode: 'https://api.tronstack.io',
+            solidityNode: 'https://api.tronstack.io',
             eventServer: 'https://api.trongrid.io',
             default: false, 
             chain: '_',

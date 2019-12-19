@@ -306,7 +306,6 @@ class Account {
                     if ((!token && !StorageService.tokenCache.hasOwnProperty(key))) {
                         await StorageService.cacheToken(key);
                     }
-
                     if (StorageService.tokenCache.hasOwnProperty(key)) {
                         const {
                             name,

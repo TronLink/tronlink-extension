@@ -397,7 +397,7 @@ const StorageService = {
      */
 
     async cacheToken(tokenID) {
-
+        
 
         const {
             name,
