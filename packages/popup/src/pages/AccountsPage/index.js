@@ -357,11 +357,19 @@ class AccountsPage extends React.Component {
                 {
                     tokens.filter(({tokenId, ...token})=>!token.hasOwnProperty('chain') || token.chain === chains.selected).map(({ tokenId, ...token }) => {
                         const balance = token.balanceStr != undefined ? token.balanceStr : token.balance;
-                        const amount = new BigNumber(balance)
+                        let amount = new BigNumber(balance)
                             .shiftedBy(-token.decimals)
                             .toString();
                         const price = token.price === undefined ? 0 : token.price;
                         const money = (tokenId === '_' || tokenId === CONTRACT_ADDRESS.USDT) ? (price * amount).toFixed(2) : (price * amount * prices.priceList[ prices.selected ]).toFixed(2);
+                        if (amount) {
+                            let amountArr = amount.split('.');
+                            let fractional = amountArr[1];
+                            if (fractional) {
+                                fractional = fractional.length > 6 ? fractional.substr(0, 6) + '...' : fractional;
+                                amount = String(amountArr[0]) + '.' + fractional;
+                            }
+                        }
                         return (
                             <div className='tokenItem' onClick={ () => {
                                 let o = { id: tokenId, name: token.name, abbr: token.abbr || token.symbol, decimals: token.decimals, amount, price: token.price, imgUrl: token.imgUrl ? token.imgUrl : token10DefaultImg,isMapping:token.isMapping};

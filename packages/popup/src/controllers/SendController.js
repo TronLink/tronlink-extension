@@ -92,7 +92,7 @@ class SendController extends React.Component {
         const { selected } = nextProps.accounts;
         const { selectedToken } = this.state;
         const field = selectedToken.id.match(/^T/) ? 'smart':'basic';
-        const balance = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].balance : 0;
+        const balance = selected.tokens[field].hasOwnProperty(selectedToken.id) ? (selected.tokens[field][ selectedToken.id ].balanceStr != undefined ? selected.tokens[field][ selectedToken.id ].balanceStr : selected.tokens[field][ selectedToken.id ].balance ): 0;
         const decimals = selected.tokens[field].hasOwnProperty(selectedToken.id) ? selected.tokens[field][ selectedToken.id ].decimals : 6;
         if(selectedToken.id === '_') {
             selectedToken.amount = selected.balance / Math.pow(10, 6);
@@ -487,13 +487,14 @@ class SendController extends React.Component {
                                 <span title={`${selectedToken.name}(${selectedToken.amount})`}>{`${selectedToken.name}(${selectedToken.amount})`}</span>{selectedToken.id !== '_' ? (<span>id:{selectedToken.id.length === 7 ? selectedToken.id : selectedToken.id.substr(0, 6) + '...' + selectedToken.id.substr(-6)}</span>) : ''}</div>
                             <div className='dropWrap' style={isOpen.token ? (tokens.length <= 5 ? { height: 36 * tokens.length } : { height: 180, overflow: 'scroll' }) : {}}>
                                 {
-                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, name, decimals, decimal = false, abbr = false, symbol = false, imgUrl = false,frozenBalance = 0 }) => {
+                                    tokens.filter(({ isLocked = false }) => !isLocked ).map(({ tokenId: id, balance, balanceStr, name, decimals, decimal = false, abbr = false, symbol = false, imgUrl = false,frozenBalance = 0 }) => {
                                         const d =  decimal || decimals;
+                                        balance = balanceStr != undefined ? balanceStr : balance;
                                         const BN = BigNumber.clone({
                                             DECIMAL_PLACES: d,
                                             ROUNDING_MODE: Math.min(8, d)
                                         });
-                                        const amount = new BN(balance)
+                                        let amount = new BN(balance)
                                             .shiftedBy(-d)
                                             .toString();
                                         const frozenAmount = new BN(frozenBalance)

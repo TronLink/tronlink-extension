@@ -237,7 +237,7 @@ class Account {
         try {
 
             const account = NodeService._selectedChain === '_' ? await NodeService.tronWeb.trx.getUnconfirmedAccount(address) : await NodeService.sunWeb.sidechain.trx.getUnconfirmedAccount(address);
-
+            let tronWeb = NodeService._selectedChain === '_' ? NodeService.tronWeb : NodeService.sunWeb.sidechain;
             if (!account.address) {
                 logger.info(`Account ${address} does not exist on the network`);
                 this.reset();
@@ -245,7 +245,7 @@ class Account {
             }
             const addSmartTokens = Object.entries(this.tokens.smart).filter(([tokenId, token]) => !token.hasOwnProperty('abbr'));
             for (const [tokenId, token] of addSmartTokens) {
-                const contract = await NodeService.tronWeb.contract().at(tokenId).catch(e => false);
+                const contract = await tronWeb.contract().at(tokenId).catch(e => false);
                 if (contract) {
                     let balance;
                     const number = await contract.balanceOf(address).call();
@@ -272,6 +272,7 @@ class Account {
             this.frozenBalance = (account.frozen && account.frozen[0]['frozen_balance'] || 0) + (account['account_resource']['frozen_balance_for_energy'] && account['account_resource']['frozen_balance_for_energy']['frozen_balance'] || 0) + (account['delegated_frozen_balance_for_bandwidth'] || 0) + (account['account_resource']['delegated_frozen_balance_for_energy'] || 0);
             this.balance = account.balance || 0;
             const filteredTokens = (account.assetV2 || []).filter(({ value }) => value >= 0);
+            this.tokens.basic = {};
             for (const { key, value } of filteredTokens) {
                 let token = this.tokens.basic[key] || false;
                 const filter = basicTokenPriceList.length ? basicTokenPriceList.filter(({ first_token_id }) => first_token_id === key) : [];
