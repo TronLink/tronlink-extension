@@ -44,7 +44,7 @@ const NodeService = {
             fullNode: 'https://api.tronstack.io',
             solidityNode: 'https://api.tronstack.io',
             eventServer: 'https://api.trongrid.io',
-            default: false, 
+            default: false,
             chain: '_',
             // connect: '51a36e5a-2480-4b57-989c-539345a13be2',
             chainType: 0,  // 0: Tron, 1: DappChain
@@ -231,7 +231,7 @@ const NodeService = {
             }
         } else  {
             this.tronWeb = new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer);
-               
+
             this.sunWeb = new SunWeb(
                 new TronWeb(connectChain.fullNode, connectChain.solidityNode, connectChain.eventServer),
                 new TronWeb(fullNode, solidityNode, eventServer),
@@ -340,7 +340,7 @@ const NodeService = {
             const name = await contract.name().call();
             const symbol = await contract.symbol().call();
             const decimals = typeof d === 'object' && d._decimals ? d : new BigNumber(d).toNumber();
-            const number = await contract.balanceOf(address).call();
+            const number = await contract.balanceOf(this.tronWeb.defaultAddress.base58).call();
             if (number.balance) {
                 balance = new BigNumber(number.balance).toString();
             } else {
