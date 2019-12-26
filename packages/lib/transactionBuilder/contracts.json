@@ -22,5 +22,6 @@
     "UnfreezeAssetContract": "wallet/unfreezeasset",
     "AccountUpdateContract": "wallet/updateaccount",
     "WitnessUpdateContract": "wallet/updatewitness",
-    "AccountPermissionUpdateContract": "wallet/accountpermissionupdate"
+    "AccountPermissionUpdateContract": "wallet/accountpermissionupdate",
+    "UpdateBrokerageContract": "wallet/updateBrokerage"
 }
