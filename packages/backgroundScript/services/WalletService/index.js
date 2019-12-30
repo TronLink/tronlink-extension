@@ -1444,7 +1444,7 @@ class Wallet extends EventEmitter {
                             }
                         );
                         extensionizer.notifications.onClicked.addListener(notifyId => {
-                            window.open('https://tronscan.org/#/transaction/' + notifyId);
+                            window.open('https://tronscan.io/#/transaction/' + notifyId);
                         });
                     } else {
                     }

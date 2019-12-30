@@ -67,7 +67,7 @@ class TransactionsController extends React.Component {
                     {
                         id !== '_' ?
                             <span className='detail' onClick={() => {
-                                let url = 'https://tronscan.org/#/';
+                                let url = 'https://tronscan.io/#/';
                                 url += (id.match(/^T/) ? 'token20/' + id : 'token/' + id);
                                 window.open(url);
                             }

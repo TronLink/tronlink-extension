@@ -136,7 +136,7 @@ class TransactionDetailController extends React.Component {
                                 null
                         }
                     </div>
-                    <div className='part3' onClick={() => window.open(`https://tronscan.org/#/transaction/${t.hash}`)}>
+                    <div className='part3' onClick={() => window.open(`https://tronscan.io/#/transaction/${t.hash}`)}>
                         <FormattedMessage id='TRANSACTION_DETAIL.GO_TRONSCAN' />
                     </div>
                 </div>

@@ -52,7 +52,7 @@ class AccountsPage extends React.Component {
         const { prices, accounts } = this.props;
         const t = { name: 'TRX', abbr:'trx', id: '_', amount: 0, decimals: 6, price: prices.priceList[ prices.selected ], imgUrl: trxImg };
         PopupAPI.setSelectedToken(t);
-        tronscanUrl = 'https://tronscan.org/#';
+        tronscanUrl = 'https://tronscan.io/#';
         const news = await PopupAPI.getNews();
         const ieos = await PopupAPI.getIeos();
         if(news.length > 0) {
