@@ -25,11 +25,12 @@ class TransactionDetailController extends React.Component {
     }
     render() {
         const { help } = this.state;
-        const { selectedToken, selected, onCancel } = this.props;
+        const { selectedToken, selected, onCancel, chains } = this.props;
         const { formatMessage } = this.props.intl;
         const { transactionDetail: t, address, } = selected;
         let amount = t.contractType === 31 ? ( t.tokenTransferInfo ? t.tokenTransferInfo.amount_str : t.trigger_info.call_value ) : t.contractData.amount;
         amount = new BigNumber(amount).shiftedBy(-selectedToken.decimals).toString();
+        const tronScanUrl = chains.selected === '_' ? 'https://tronscan.io/#/transaction/' : 'https://dappchain.tronscan.io/#/transaction/'
         return (
             <div className='insetContainer transactions' onClick={ () => { this.setState({ isOpen: { account: false, token: false } }); } }>
                 <div className='pageHeader'>
@@ -136,7 +137,7 @@ class TransactionDetailController extends React.Component {
                                 null
                         }
                     </div>
-                    <div className='part3' onClick={() => window.open(`https://tronscan.io/#/transaction/${t.hash}`)}>
+                    <div className='part3' onClick={() => window.open(`${tronScanUrl}${t.hash}`)}>
                         <FormattedMessage id='TRANSACTION_DETAIL.GO_TRONSCAN' />
                     </div>
                 </div>

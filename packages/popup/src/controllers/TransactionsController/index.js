@@ -51,7 +51,6 @@ class TransactionsController extends React.Component {
             nodes,
         } = this.props;
 
-
         const { formatMessage } = this.props.intl;
         const { address, airdropInfo, type } = accounts.selected;
         const { id = '_', name = 'TRX', decimals = 6, imgUrl, price = 0, amount, balance = 0, frozenBalance = 0 } = accounts.selectedToken;
@@ -67,7 +66,7 @@ class TransactionsController extends React.Component {
                     {
                         id !== '_' ?
                             <span className='detail' onClick={() => {
-                                let url = 'https://tronscan.io/#/';
+                                let url = chains.selected === '_' ? 'https://tronscan.io/#/' : 'https://dappchain.tronscan.io/#/';
                                 url += (id.match(/^T/) ? 'token20/' + id : 'token/' + id);
                                 window.open(url);
                             }
